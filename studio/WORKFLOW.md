@@ -23,6 +23,8 @@ Read this file plus the current film brief first; load only the skills needed fo
    Establish visual hierarchy and coherent camera movement here. Intentional quiet holds are allowed when logged.
 5. Expand the approved direction; every shot must add information or emotion. Alternate wide/close/detail shots when the assets support them.
    Flat input photos limit lighting/camera realism: request better assets or choose a suitable graphic treatment; never invent product evidence.
+6. Before full expansion, fill each shot's `craft` block in production.json (scale, camera, focal, transition, depth layers, primary motions, audio cue). Preflight now warns on accidental repetition, low craft coverage and >2 competing primary motions. These warnings trigger inspection, not an automatic aesthetic verdict.
+7. For cinematic motion, prefer `lib/cinema.js` + `lib/depth.js`: one shared camera, motivated rack focus, bounded micro-drift only when appropriate, and a settled hold for product/copy. Use `lib/rhythm.mjs` to see beat/phrase timing without forcing edits onto every beat.
 
 ## Commands (from studio/)
 ```bash
@@ -67,6 +69,8 @@ Run one independent final critique on extracted frames and motion playback. Reco
 | Light/material | believable image treatment; no muddy edges, fake reflections or inconsistent cut-outs |
 | Typography | readable on phone; Arabic shaping correct; hierarchy consistent; time to read |
 | Motion/edit | motivated transitions, no doubled products, intentional pace, camera settles for reading |
+| Creative variety | shot scale/camera/transition changes are motivated; no accidental template repetition or effect monoculture |
+| Cinematic depth | layers share believable parallax/focus/shadow; movement never exposes seams or invents a new viewpoint |
 | Sound | useful accents, balanced mix, cuts/music in sync; listen to the exported file |
 | Finish | inspect at 100% and in the share copy for blur, banding, halos and cropping |
 
