@@ -9,10 +9,10 @@ Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `s
 Read studio/WORKFLOW.md first; studio/SKILLS.md routes optional departments. Do not re-read the historical prompt.
 
 1. Record viewer, real evidence, one promise, CTA, duration/placements and asset limitations. Owner-authorized work proceeds without repeated approval.
-2. If concept is open, compare at most three directions; pick one. Three style frames: hook, proof, payoff.
+2. If concept is open, load creative-director. Compare at most three genuinely different directions; pick one. Three style frames: hook, proof, payoff. Fill shot craft metadata before expensive motion.
 3. New films use production.json (studio/templates/production.json) referenced by config.production. Share shot times with picture and sound.
 4. Prepare only needed assets/layers. Use animation-lab/camera-director when needed, not all skills.
-5. Build one 8–12s proof with one real transition. Draft is silent; review profile is required to judge sound.
+5. Run production preflight first; creative repetition/overload findings are warnings to inspect, not taste scores. Then build one 8–12s proof with one real transition. Draft is silent; review profile is required to judge sound.
 6. Expand, then fix changed ranges plus entry/exit. Final build uses `node make.mjs <film> --profile=final`.
 7. One separate final critique: frames + actual motion/audio playback, brief and ledger. A fresh reviewer is preferred when available.
 8. Close blocker/major findings and report verified output plus any limitation. No unbounded review loops.
