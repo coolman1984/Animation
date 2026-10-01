@@ -1,6 +1,6 @@
 # BRIEF — Film 2 "خُد لحظتك" · BALACONBAR matcha × coconut (60 s Facebook ad)
 
-**Status:** take 2 in build after the independent judge's round 1 (see LEDGER.md). Owner asked for the film
+**Status:** take 3 delivered — all 28 automatic gates pass; independent judge rounds 1–2 addressed (see LEDGER.md). Owner asked for the film
 directly (subject, goal, tone, music given) → production started without a separate storyboard stop. Film 1 (demo ordering app) is parked.
 
 ## 1. Inputs

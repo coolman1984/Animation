@@ -202,9 +202,9 @@ function renderS3(t) {
   show(s3.root, vis); show(s3.frame, vis); if (!vis) return;
   s3.hero.set(camS3(t), { ref: { cx: 836.7, cy: 1058.7 }, pBg: 0.9, pCarton: 0.98, sweepP: ramp(t, 16.2, 17.9) });
   // Portal: the balcony arch draws itself, then opens to fill the frame.
-  const cx = 715, cy0 = 735;
+  const cx = 715, cy0 = 770;
   const grow = ease.inOutCubic(ramp(t, 13.45, 14.5));
-  const w = lerp(230, 3000, grow), h = lerp(320, 4200, grow), cy = lerp(cy0, cy0 + 600, grow);
+  const w = lerp(370, 3000, grow), h = lerp(480, 4200, grow), cy = lerp(cy0, cy0 + 600, grow);
   const d = archAt(cx, cy, w, h);
   const peek = prog(t, 13.15, 13.5);
   s3.root.style.clipPath = grow >= 1 ? 'none' : `path('${d}')`;
@@ -267,8 +267,8 @@ function renderS4(t) {
   const wv = t >= 20.85 && t < 22.45;
   show(s4.wave, wv);
   if (wv) {
-    const yTop = lerp(H + 80, -140, ease.inCubic(ramp(t, 20.9, 21.55)) * 0.35 + ease.outCubic(ramp(t, 20.9, 21.55)) * 0.65);
-    const yBot = lerp(H + 160, -200, ease.inOutCubic(ramp(t, 21.47, 22.3)));
+    const yTop = lerp(H + 80, -140, ease.inCubic(ramp(t, 20.9, 21.45)) * 0.35 + ease.outCubic(ramp(t, 20.9, 21.45)) * 0.65);
+    const yBot = lerp(H + 160, -200, ease.inOutCubic(ramp(t, 21.36, 22.2)));
     const top = surface(W, yTop, t, 0.7), bot = surface(W, yBot, t, 2.1).reverse();
     const pathOf = (pts) => pts.map((p, i) => `${i ? 'L' : 'M'} ${p[0]} ${p[1].toFixed(1)}`).join(' ');
     s4.body.setAttribute('d', pathOf(top) + ' ' + pathOf(bot).replace(/^M/, 'L') + ' Z');
@@ -284,10 +284,10 @@ function renderS4(t) {
   show(s4.root, vis); if (!vis) return;
   // Camera: one slow push; the swing cup then dissolves into the real cup (scene 4b).
   const close = false;
-  const theta = 1.25 * Math.sin((2 * Math.PI * (t - 21.6)) / 3.9 + 0.5) * (Math.PI / 180);
+  const theta = swingTheta(t);
   const pivot = [540, -900];
   let cam;
-  if (!close) cam = { cx: 540, cy: 660, s: lerp(1.035, 1.09, ease.inOutSine(ramp(t, 21.6, 27.3))) };
+  if (!close) cam = swingCam(t);
   else {
     // follow the cup centre (rotating with the swing) with a lagged, smoothed path
     const lag = 1.25 * Math.sin((2 * Math.PI * (t - 0.35 - 21.6)) / 3.9 + 0.5) * (Math.PI / 180);
@@ -310,6 +310,18 @@ function renderS4(t) {
   s4.logo.style.opacity = (prog(t, 22.0, 22.9) * (1 - prog(t, 25.7, 26.3))).toFixed(3);
 }
 
+// Where the swing cup's printed logo is on screen at time t (rotation about the pivot, then the
+// scene-4 camera), and the hero-cup scale that makes the two logos the same size (88 px vs 145 px).
+const SWING_LOGO = [551, 695];
+function swingCam(t) { return { cx: 540, cy: 660, s: lerp(1.035, 1.09, ease.inOutSine(ramp(t, 21.6, 27.3))) }; }
+function swingTheta(t) { return 1.25 * Math.sin((2 * Math.PI * (t - 21.6)) / 3.9 + 0.5) * (Math.PI / 180); }
+function swingLogoAt(t) {
+  const th = swingTheta(t), px = 540, py = -900;
+  const dx = SWING_LOGO[0] - px, dy = SWING_LOGO[1] - py;
+  const x = px + dx * Math.cos(th) - dy * Math.sin(th), y = py + dx * Math.sin(th) + dy * Math.cos(th);
+  const k = camT(swingCam(t), 1, { cx: 540, cy: 675 });
+  return [k.x + x * k.s, k.y + y * k.s, k.s * 88 / 145];
+}
 // Scene 4b: the swing cup dissolves into the real cup — the drink this ad sells — on a brand backdrop
 // with slow floating pearls; the "every sip" line sits on clean space above the product.
 const T4B = [8 * BAR + 2 * BAR - 0.3, 12 * BAR + 0.6];
@@ -328,7 +340,7 @@ function initS4b() {
     const g = el('g', {}, svg); const rad = near ? 30 + r() * 28 : 10 + r() * 16;
     el('circle', { r: rad, fill: `url(#${id})` }, g);
     el('ellipse', { cx: -rad * 0.32, cy: -rad * 0.38, rx: rad * 0.28, ry: rad * 0.18, fill: `url(#${id}h)`, transform: 'rotate(-30)' }, g);
-    let x = r() * W; if (!near && x > 300 && x < 780) x = x < 540 ? x - 260 : x + 260;
+    let x = r() * W; if (x > 290 && x < 790) x = x < 540 ? x - 270 : x + 270;
     return { g, x, y: 380 + r() * 900, ph: r() * 6.28, sp: 0.25 + r() * 0.3, blur: near ? 6 + r() * 6 : 1.5 + r() * 2 };
   });
   const far = mk(back, 'pgb', 9, false), near = mk(front, 'pgf', 4, true);
@@ -342,8 +354,9 @@ function renderS4b(t) {
   show(s.root, vis); if (!vis) return;
   s.root.style.opacity = prog(t, T4B[0], T4B[0] + 0.6).toFixed(3);
   // Start where the swing cup is (match), then settle into the hero framing.
-  const g = ease.inOutCubic(ramp(t, T4B[0], T4B[0] + 1.6));
-  const X = lerp(549, 540, g), Y = lerp(719, 790, g) , sc = lerp(0.64, 0.9, g) + 0.04 * ramp(t, T4B[0] + 1.6, T4B[1]);
+  const g = ease.inOutCubic(ramp(t, T4B[0] + 0.55, T4B[0] + 2.1));
+  const [sx, sy, ss] = swingLogoAt(t);
+  const X = lerp(sx, 540, g), Y = lerp(sy, 790, g), sc = lerp(ss, 0.9, g) + 0.04 * ramp(t, T4B[0] + 2.1, T4B[1]);
   const cam = { cx: CUP_C[0] - (X - W / 2) / sc, cy: CUP_C[1] - (Y - H / 2) / sc, s: sc };
   place(s.cup, cam);
   place(s.refl, cam, 1, undefined, ' translate(0px, 3096px) scale(1, -1)');
@@ -354,7 +367,7 @@ function renderS4b(t) {
     const x = p.x + 18 * Math.sin(t * 0.5 + p.ph);
     p.g.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
     p.g.style.filter = `blur(${p.blur}px)`;
-    p.g.style.opacity = (prog(t, T4B[0] + 0.4, T4B[0] + 1.4) * (1 - prog(t, 31.2, 31.7))).toFixed(3);
+    p.g.style.opacity = (0.88 * prog(t, T4B[0] + 0.4, T4B[0] + 1.4) * (1 - prog(t, 31.2, 31.7))).toFixed(3);
   };
   s.far.forEach((p) => drift(p, 1)); s.near.forEach((p) => drift(p, 2.2));
   playLine(s.l1, t, 27.35, 30.95);
@@ -369,15 +382,15 @@ const SHOTS = [
   { img: 'hero', a: { cx: 1000, cy: 1000, s: 1.05 }, b: { cx: 1060, cy: 990, s: 1.08 } },
   { img: 'hero', a: { cx: 1150, cy: 1450, s: 1.4 }, b: { cx: 1090, cy: 1400, s: 1.45 } },
   { img: 'hero', a: { cx: 1060, cy: 1500, s: 1.5 }, b: { cx: 1130, cy: 1500, s: 1.5 } },
-  { img: 'hero', a: { cx: 1000, cy: 770, s: 1.5 }, b: { cx: 1060, cy: 790, s: 1.5 } },
+  { img: 'hero', a: { cx: 960, cy: 960, s: 1.25 }, b: { cx: 1050, cy: 975, s: 1.27 } },
   { img: 'hero', a: { cx: 880, cy: 880, s: 0.95 }, b: { cx: 880, cy: 870, s: 1.03 } },
 ];
 function pearl(svg, id) {
   const defs = el('defs', {}, svg);
   const g = el('radialGradient', { id, cx: '0.38', cy: '0.32', r: '0.75' }, defs);
-  el('stop', { offset: '0', 'stop-color': '#8a5a3c' }, g); el('stop', { offset: '0.28', 'stop-color': '#3a1f12' }, g); el('stop', { offset: '1', 'stop-color': '#0a0503' }, g);
+  el('stop', { offset: '0', 'stop-color': '#3b3029' }, g); el('stop', { offset: '0.3', 'stop-color': '#16100c' }, g); el('stop', { offset: '1', 'stop-color': '#040302' }, g);
   const hg = el('radialGradient', { id: id + 'h', cx: '0.5', cy: '0.5', r: '0.5' }, defs);
-  el('stop', { offset: '0', 'stop-color': 'rgba(255,250,240,0.95)' }, hg); el('stop', { offset: '1', 'stop-color': 'rgba(255,250,240,0)' }, hg);
+  el('stop', { offset: '0', 'stop-color': 'rgba(255,250,240,0.55)' }, hg); el('stop', { offset: '1', 'stop-color': 'rgba(255,250,240,0)' }, hg);
 }
 function initS5() {
   const root = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', background: '#0b0806' } }, stage);
@@ -418,7 +431,6 @@ function renderS5(t) {
   const cam = sh.img === 'hero' ? fill(raw, 1600, 1600) : fill(raw, 1080, 1350);
   show(s5.hero.box, sh.img === 'hero'); show(s5.swing.box, sh.img === 'swing');
   place(sh.img === 'hero' ? s5.hero : s5.swing, cam, 1, sh.img === 'hero' ? undefined : { cx: 540, cy: 675 });
-  s5.root.style.opacity = 1 - prog(t, T.s6[0], T.s6[0] + 0.45);
 }
 
 function initS6() {
@@ -439,7 +451,7 @@ function initS6() {
   const l1 = line(root, 'قعدتك الحلوة…', FONT.display, 86, C.cream, centered(1078));
   const l2 = line(root, 'مستنياك.', FONT.ruqaa, 100, C.matchaLight, centered(1190));
   const logo = el('img', { src: P('logo-white.png'), class: 'abs', style: { width: '186px', left: (W / 2 - 93) + 'px', top: '24px', filter: 'drop-shadow(0 2px 14px rgba(0,0,0,0.35))' } }, root);
-  const sub = el('div', { class: 'abs', text: 'CHOCOLATE CAFE', style: { top: '192px', left: '0', width: W + 'px', textAlign: 'center', fontFamily: 'Montserrat', fontWeight: 500, fontSize: '19px', letterSpacing: '0.42em', color: C.cream, opacity: 0 } }, root);
+  const sub = el('div', { class: 'abs', text: 'CHOCOLATE CAFE', style: { top: '192px', left: '0', width: W + 'px', textAlign: 'center', fontFamily: 'Montserrat', fontWeight: 600, fontSize: '25px', letterSpacing: '0.3em', color: C.cream, opacity: 0 } }, root);
   const name = line(root, 'ماتشا جوز الهند بالبوبا', FONT.display, 62, C.cream, centered(1100));
   const pill = el('div', { class: 'abs', style: { left: '0', top: '1212px', width: W + 'px', display: 'flex', justifyContent: 'center' } }, root);
   const pillIn = el('div', { style: { background: C.matcha, color: C.ink, fontFamily: 'El Messiri', fontWeight: 700, fontSize: '50px', lineHeight: 1, padding: '20px 54px 26px', borderRadius: '999px', boxShadow: '0 10px 30px rgba(0,0,0,0.35)', direction: 'rtl' } }, pill);
@@ -488,8 +500,8 @@ function renderS6(t) {
     p.style.opacity = (1 - railOut).toFixed(3);
   }
   // The cup stands behind the railing; in S7 the arch fills with the real duo photo.
-  const cupIn = ease.outExpo(ramp(t, t0 + 0.45, t0 + 1.6));
-  const cupOut = prog(t, t7 + 0.1, t7 + 0.9);
+  const cupIn = ease.outExpo(ramp(t, t0 + 0.1, t0 + 1.2));
+  const cupOut = prog(t, t7 + 0.15, t7 + 0.9);
   const cs = 0.74 + 0.03 * ramp(t, t0, t7);
   const cupCam = { cx: CUP_C[0] - (W / 2 - W / 2) / cs, cy: CUP_C[1] - (lerp(735, 694, cupIn) - H / 2) / cs, s: cs };
   place(s6.cup, cupCam);
@@ -501,8 +513,8 @@ function renderS6(t) {
   show(s6.inside, duoIn > 0);
   if (duoIn > 0) {
     // Begin pixel-matched to the cut-out cup (screen 540,694 at s 0.77), then settle on the duo.
-    const mm = ease.inOutCubic(ramp(t, t7 + 0.1, t7 + 1.5));
-    const dc = { cx: lerp(1005, 840, mm), cy: lerp(1125.3, 1000, mm), s: lerp(0.77, 0.7, mm) + 0.045 * ease.inOutSine(ramp(t, t7 + 1.5, 59.5)) };
+    const mm = ease.inOutCubic(ramp(t, t7 + 0.95, t7 + 2.2));
+    const dc = { cx: lerp(1005, 840, mm), cy: lerp(1125.3, 1000, mm), s: lerp(0.77, 0.7, mm) + 0.045 * ease.inOutSine(ramp(t, t7 + 2.2, 59.5)) };
     s6.duo.set(dc, { ref: { cx: 1005, cy: 1125.3 }, sweepP: ramp(t, 54.4, 56.0) });
   }
   s6.ink.style.opacity = prog(t, t7 + 0.1, t7 + 1.1).toFixed(3);
@@ -513,7 +525,7 @@ function renderS6(t) {
   s6.logo.style.opacity = lp.toFixed(3);
   s6.logo.style.transform = `translateY(${lerp(16, 0, lp).toFixed(2)}px) scale(${lerp(0.94, 1, lp).toFixed(4)})`;
   s6.logo.style.filter = `blur(${(8 * (1 - lp)).toFixed(2)}px) drop-shadow(0 2px 14px rgba(0,0,0,0.35))`;
-  s6.sub.style.opacity = (0.85 * ease.outExpo(ramp(t, t7 + 1.3, t7 + 2.2))).toFixed(3);
+  s6.sub.style.opacity = (0.95 * ease.outExpo(ramp(t, t7 + 1.3, t7 + 2.2))).toFixed(3);
   playLine(s6.name, t, t7 + 1.6, 99);
   const pp = ease.outBack(ramp(t, t7 + 2.6, t7 + 3.25), 1.6);
   show(s6.pill, t >= t7 + 2.6);

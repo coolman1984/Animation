@@ -13,3 +13,8 @@
 10. **Render speed:** 4 Chromium workers on 4 cores ≈ 5 fps at 1080×1350 (60 s ≈ 6 min). Full make (3 versions + mastering) ≈ 11.5 min.
 11. **Audio without ears:** spectrogram + per-stem waveforms + `lowpass=40,volumedetect`; FM Rhodes at 1:1 makes DC → high-pass 90 Hz. SFX bus needed ×2.6 to be audible next to the music.
 12. **Dead air shows up in 6 fps strips, not in single frames:** the window draw started 0.8 s after the cut into a dark backdrop — moved to start 0.25 s *before* the cut.
+13. **Dissolves between two different shots of a product must be pixel-matched on the logo**, computed per frame when the source is moving (swing rotation) — "approximately the same place" reads as a doubled cup to a strict eye (judge J2).
+14. **Hold the camera still until a dissolve has finished**, then move. Moving during the dissolve re-introduces the double image (end card, J2).
+15. **In a "chocolate café" ad, glossy brown spheres read as truffles**, not boba — pearls must be near-black, low shine, and never over the product.
+16. **A mood visual of a different drink gets ≤ 2 bars** and should hand over to the real product on screen (swing → real cup).
+17. **Independent judge rounds pay:** round 1 found 1 blocker + 5 majors that all 25 automatic gates passed. Gates catch numbers; only eyes catch "text on the logo" and "two cups".

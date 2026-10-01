@@ -21,3 +21,13 @@
 | J1 | MINOR carton ghost in isolation; green hold 0.5 s | carton defocuses (blur 18 px) while fading; liquid hold now ~0.1 s | — |
 | J1 | MINOR end card: double cup dissolve, no "CHOCOLATE CAFE", CTA dims at 59.5 | duo camera starts matched to the cut-out cup; lock-up line added; fade 59.25–60 | — |
 | J1 | NIT carton cropped into letter shapes in the arch | kept (whole carton doesn't fit the arch with the cup at readable size) | — |
+| J2 (judge re-check, take02) | 5 fixed, 5 partly, 2 not (owner decisions: recipe, carton sign-off) | — | blocker gone |
+| J2 | MAJOR 26.8 s: cups out of line in the swing → real-cup dissolve | real cup starts on the swinging cup's logo (rotation + camera computed per frame, logo-size matched 88/145) and moves only after the dissolve | logos coincide during dissolve |
+| J2 | MINOR orbit pearls read as chocolate truffles, one covers the cup | darker, low-shine, 88 % opacity, none inside x 290–790 | — |
+| J2 | MINOR 40.5 s name cut by frame edge | shot 7 reframed (s 1.25, cy 960) | name fully in |
+| J2 | Portal arch cuts "B"/"R" | arch starts 370×480 around logo + name | — |
+| J2 | Green hold, near-empty frames at 42.7 s | liquid bottom starts 21.36 s; montage stays opaque under scene 6; cup enters at +0.1 s | — |
+| J2 | End card still dissolves two cups | duo camera holds the matched cup until the dissolve ends (t7+0.95), then moves | — |
+| J2 | NIT "CHOCOLATE CAFE" unreadable | 25 px Montserrat 600, 0.3 em | — |
+| Accepted | Swing poster drink is not the hero drink; its logo prints dark | owner's own key visual, kept to 5 s and turned into the real cup | owner may drop it |
+| Accepted | Carton letters cropped by the arch | whole carton can't fit with the cup readable | — |
