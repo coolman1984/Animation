@@ -6,14 +6,14 @@ const hash = data => createHash('sha256').update(data).digest('hex');
 const stable = value => Array.isArray(value) ? value.map(stable) : value && typeof value === 'object' ? Object.fromEntries(Object.keys(value).sort().map(k => [k, stable(value[k])])) : value;
 export function fingerprint(root, paths, settings = {}, exclude = []) {
   const files = new Set();
-  function visit(path) {
+  function visit(path, explicit = false) {
     if (exclude.includes(relative(root, path))) return;
     if (!existsSync(path)) { files.add(path); return; }
     if (statSync(path).isDirectory()) for (const name of readdirSync(path).sort()) {
       if (!['node_modules', '.git', 'takes', 'out'].includes(name)) visit(join(path, name));
-    } else if (!/\.(md|txt)$/i.test(path)) files.add(path);
+    } else if (explicit || !/\.md$/i.test(path)) files.add(path);
   }
-  for (const path of paths) visit(join(root, path));
+  for (const path of paths) visit(join(root, path), true);
   return hash(JSON.stringify(stable({ settings, files: [...files].sort().map(path => [relative(root, path), existsSync(path) ? hash(readFileSync(path)) : 'MISSING']) })));
 }
 export function cacheHit(manifest, key, outputs) {

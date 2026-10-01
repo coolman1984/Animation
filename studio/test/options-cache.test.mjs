@@ -33,6 +33,10 @@ test('content/settings/dependencies invalidate cache even with preserved timesta
     writeFileSync(score, 'audio change'); assert.equal(key(), k1);
     writeFileSync(picture, 'new'); utimesSync(picture, 1, 1); assert.notEqual(key(), k1);
     assert.equal(cacheHit(manifest, key(), [out]), false);
+    const textAsset = join(root, 'assets', 'claims.txt'); writeFileSync(textAsset, 'verified claim');
+    const textKey = key(); writeFileSync(textAsset, 'new claim'); assert.notEqual(key(), textKey);
+    const sourceDoc = join(root, 'source.md'); writeFileSync(sourceDoc, 'source one');
+    const sourceKey = fingerprint(root, ['source.md']); writeFileSync(sourceDoc, 'source two'); assert.notEqual(fingerprint(root, ['source.md']), sourceKey);
     const k2 = key(); writeFileSync(asset, 'changed image'); assert.notEqual(key(), k2);
     assert.notEqual(fingerprint(root, ['film'], { fps: 15 }), fingerprint(root, ['film'], { fps: 30 }));
     saveCache(manifest, key(), [out]); writeFileSync(out, 'broken'); assert.equal(cacheHit(manifest, key(), [out]), false);
