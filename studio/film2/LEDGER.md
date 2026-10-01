@@ -34,3 +34,4 @@
 | R1 (Reels take04) | Gates: callouts + "مستنياك." inside bottom UI zone; frozen spans 41–50 s, 57 s (backdrops clamped to a fixed cover scale) | S2 settles in 2.6 s at y 580; end card group −34 px; montage zoom remapped (1.23 + 0.75·(s−0.9)); backdrop pushes on S6/S7 | reels15 green |
 | R2 (Reels take05) | Gates: S2 static 8–11.8 s, S6 47.6–49.7 s; one line 1 px over safe edge | S2 slow push into the portal framing; S6 backdrop push+pan; S6 lines up 10 px (Reels only) | rebuild |
 | R2 regression | Shared-code edits had shifted 4:5 frames (gradient centre, 0.05 px ref) | made exact for 4:5 | 4:5 stills == take03 code at 16 times (PSNR ∞) |
+| R3 (Reels take06) | — | — | all 20 Reels gates pass; text and end card inside the safe band on every sampled frame |
