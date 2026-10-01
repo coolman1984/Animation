@@ -70,3 +70,9 @@ CSS-size screencast at "1.5×" → gate on JPEG width. 2×/3× too slow → time
 
 ## 10. Final report
 Ready? + files · what the viewer sees (5 bullets) · numbers (duration, resolution, fps, loudness, true peak, frozen seconds, gates) · staged / not verified / approximate · max 3 next options with cost/benefit · the one rebuild command. Simple Egyptian Arabic when the owner writes Arabic.
+
+## Owner-authorized update — 2026-10-01
+The owner subsequently requested faster execution, fewer repeated reviews/tokens and stronger art direction.
+`WORKFLOW.md` specifies the updated iteration policy: targeted drafts/reviews, cached artifacts, medium routine effort,
+high art direction/critique, design-first proof segment, and one complete final technical/artistic review.
+The original prompt above is preserved. Its full rebuild after every minor edit applies at final delivery; during iteration use the new scoped checks.

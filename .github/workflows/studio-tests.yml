@@ -1,0 +1,29 @@
+name: Studio checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+concurrency:
+  group: studio-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  studio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install video tools
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Unit checks
+        working-directory: studio
+        run: npm test
+      - name: Actual browser and encoder checks
+        working-directory: studio
+        env:
+          STUDIO_CHROMIUM: /usr/bin/google-chrome
+        run: npm run test:render

@@ -4,6 +4,8 @@
   "type": "module",
   "engines": { "node": ">=22" },
   "scripts": {
-    "doctor": "node lib/doctor.mjs"
+    "doctor": "node lib/doctor.mjs",
+    "test": "node --test test/*.test.mjs",
+    "test:render": "STUDIO_RENDER_TEST=1 node --test --test-concurrency=1 test/*.test.mjs"
   }
 }

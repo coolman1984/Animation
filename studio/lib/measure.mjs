@@ -45,16 +45,17 @@ export function gates(m, brief) {
   const add = (name, ok, value) => g.push({ name, ok: !!ok, value });
   add('plays (probe)', m.probe.width > 0 && m.probe.duration > 0, `${m.probe.width}x${m.probe.height} ${m.probe.fps}fps ${m.probe.vcodec}/${m.probe.acodec}`);
   add('size = brief', m.probe.width === brief.w && m.probe.height === brief.h, `${m.probe.width}x${m.probe.height}`);
+  if (brief.fps) add('frame rate = brief', Math.abs(m.probe.fps - brief.fps) < 0.01, `${m.probe.fps} fps`);
   add('duration within ±10 %', Math.abs(m.probe.duration - brief.duration) <= brief.duration * 0.1, `${m.probe.duration.toFixed(2)} s`);
   if (m.loud) {
-    add(`loudness ${brief.lufs} LUFS ±1`, Math.abs(m.loud.I - brief.lufs) <= 1, `${m.loud.I} LUFS`);
-    add('true peak ≤ -1.5 dBTP (+0.2 tol)', m.loud.TP <= -1.3, `${m.loud.TP} dBTP`);
-    add('LRA < 8 LU', m.loud.LRA < 8, `${m.loud.LRA} LU`);
+    add(`loudness ${brief.lufs} LUFS ±1`, Number.isFinite(m.loud.I) && Math.abs(m.loud.I - brief.lufs) <= 1, `${m.loud.I} LUFS`);
+    add(`true peak ≤ ${brief.tp ?? -1.5} dBTP (+0.2 tol)`, Number.isFinite(m.loud.TP) && m.loud.TP <= (brief.tp ?? -1.5) + 0.2, `${m.loud.TP} dBTP`);
+    add('LRA < 8 LU', Number.isFinite(m.loud.LRA) && m.loud.LRA < 8, `${m.loud.LRA} LU`);
   }
   const allowedFrozen = (brief.holds || []);
-  const badFrozen = m.frozen.filter((f) => !allowedFrozen.some(([a, b]) => f.start >= a - 0.1 && (f.end ?? 1e9) <= b + 0.1));
+  const badFrozen = m.frozen.filter((f) => !allowedFrozen.some(([a, b]) => f.start >= a - 0.1 && (f.end ?? m.probe.duration) <= b + 0.1));
   add('no frozen span > 1 s', badFrozen.length === 0, badFrozen.length ? JSON.stringify(badFrozen) : `${m.frozen.length} (all logged holds)`);
-  const badBlack = m.black.filter((b) => b.start > 0.05 && b.end < m.probe.duration - 1.5);
+  const badBlack = m.black.filter(b => !((b.start <= 0.05 && b.end <= 0.1) || b.start >= m.probe.duration - (brief.fadeOut || 0) - 0.1));
   add('no black frames mid-film', badBlack.length === 0, badBlack.length ? JSON.stringify(badBlack) : 'ok');
   if (m.text) add('text inside safe area, no overlaps', m.text.issues.length === 0, m.text.issues.length ? `${m.text.issues.length} issues, first: ${JSON.stringify(m.text.issues[0])}` : `${m.text.lines.length} lines checked every 0.1 s`);
   if (m.share) add(`share copy ≤ ${brief.shareMB} MB`, m.share.sizeMB <= brief.shareMB, `${m.share.sizeMB} MB`);

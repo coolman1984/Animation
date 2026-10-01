@@ -12,7 +12,8 @@ export async function launch({ width = 1280, height = 720, scale = 1, headless =
   const profile = mkdtempSync(join(tmpdir(), 'studio-chrome-'));
   const args = [
     headless ? '--headless=new' : '',
-    '--no-sandbox', '--disable-gpu', '--hide-scrollbars', '--mute-audio',
+    '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage', '--hide-scrollbars', '--mute-audio',
+    '--no-first-run', '--no-default-browser-check', '--disable-background-networking',
     '--font-render-hinting=none', '--disable-lcd-text', '--force-color-profile=srgb',
     '--disable-background-timer-throttling', '--disable-renderer-backgrounding',
     '--allow-file-access-from-files', '--remote-debugging-port=0',
@@ -20,16 +21,22 @@ export async function launch({ width = 1280, height = 720, scale = 1, headless =
     `--user-data-dir=${profile}`, ...extraArgs, 'about:blank',
   ].filter(Boolean);
   const proc = spawn(bin, args, { stdio: ['ignore', 'ignore', 'pipe'] });
-  const wsUrl = await new Promise((res, rej) => {
-    let buf = '';
-    const t = setTimeout(() => rej(new Error('Chromium did not start')), 20000);
-    proc.stderr.on('data', (d) => {
-      buf += d;
-      const m = buf.match(/DevTools listening on (ws:\/\/\S+)/);
-      if (m) { clearTimeout(t); res(m[1]); }
+  let wsUrl;
+  try {
+    wsUrl = await new Promise((res, rej) => {
+      let buf = '';
+      const t = setTimeout(() => rej(new Error('Chromium did not start: ' + buf.slice(-1500))), 20000);
+      proc.stderr.on('data', d => {
+        buf += d;
+        const m = buf.match(/DevTools listening on (ws:\/\/\S+)/);
+        if (m) { clearTimeout(t); res(m[1]); }
+      });
+      proc.on('error', error => { clearTimeout(t); rej(error); });
+      proc.on('exit', (code, signal) => { clearTimeout(t); rej(new Error(`Chromium exited ${code ?? signal}: ${buf.slice(-1500)}`)); });
     });
-    proc.on('exit', (c) => rej(new Error(`Chromium exited ${c}`)));
-  });
+  } catch (error) {
+    proc.kill('SIGKILL'); rmSync(profile, { recursive: true, force: true }); throw error;
+  }
   const port = new URL(wsUrl).port;
   const targets = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
   const page = targets.find((t) => t.type === 'page');

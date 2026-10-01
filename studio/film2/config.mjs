@@ -7,6 +7,9 @@ export default {
   film: 'film2/film.js',
   score: 'film2/score.mjs',
   w: 1080, h: 1350, fps: 30, lufs: -14, tp: -1.5, shareMB: 27,
+  preview: { delivery: 'hero60', range: [0, 12] },
+  // Extra imported modules/assets outside film2/, lib/ and assets/: include in cache hashes.
+  cacheInputs: [],
   deliveries: [
     { name: 'hero60', duration: 60 },
     { name: 'cut15', duration: 15, segments: `0-${f(2 * BAR)},${f(5 * BAR)}-${f(6.25 * BAR)},${f(19 * BAR)}-57`, fadeOut: 0.6 },

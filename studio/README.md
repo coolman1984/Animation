@@ -1,15 +1,23 @@
 # Studio — code-driven video, animation & editing
 
+Start with [WORKFLOW.md](WORKFLOW.md): art direction, effort settings, short previews and final review.
+
 ```bash
 cd studio
-node lib/doctor.mjs                     # 1. check the machine (Chromium, ffmpeg, fonts)
-node film2/plates.mjs                   # 2. cut-outs / clean plates from the owner's photos (once)
-node lib/render.mjs stills film2/film.js --times=0,5,10 --out=takes/film2/p   # 3. preview frames + sheet.png
-node make.mjs film2                     # 4. ONE command: score → render all versions → master → measure → gates
-open out/film2/takeNN/                  # 5. master, share copy, cut-downs, captions, thumbs, measure.json
+node lib/doctor.mjs                         # check Chromium, ffmpeg, fonts
+node film2/plates.mjs                       # prepare owner-supplied photos once
+node make.mjs film2                         # quick 12-second silent draft, one version
+node make.mjs film2 --range=24:36            # export a changed interval
+node make.mjs film2 --profile=review         # one full version with sound + technical checks
+node make.mjs film2 --profile=final          # all final versions, extras + full technical QA
+npm test                                   # cache/options/gate regression tests
+npm run test:render                         # real Chromium/ffmpeg integration tests
 ```
 
-- A film = `<film>/film.js` (pure `render(t)` on `lib/composer.html`) + `<film>/score.mjs` + `<film>/config.mjs`.
-- How to drive each part professionally: `../.claude/skills/*/SKILL.md` (start with `film-director`).
-- Standing order: `PROMPT_STUDIO.md` · lessons: `CRAFT.md` · licences: `ASSETS.md`.
-- `takes/` and `out/` are not in git (big). Everything else is.
+Every run writes a new `out/<film>/takeNN/` with `measure.json`. Inspect the actual film before calling it ready.
+Final success means technical gates passed; artistic acceptance is a separate pass in `<film>/LEDGER.md`.
+A film is `<film>/film.js` (pure time-based render), `score.mjs` and `config.mjs`.
+Inputs/results are cached independently by content; declare additional dependencies in config.cacheInputs.
+Client source photos/derived plates are intentionally excluded from git: restore them locally before rendering film2.
+Instructions: `../.claude/skills/*/SKILL.md`; original prompt: `PROMPT_STUDIO.md`; lessons: `CRAFT.md`; rights: `ASSETS.md`.
+Never commit `takes/` or `out/`.
