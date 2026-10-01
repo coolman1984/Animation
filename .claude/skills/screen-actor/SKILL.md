@@ -3,6 +3,8 @@ name: screen-actor
 description: Write on-screen actor skills (login, create, approve…) that drive a real app and prove their result from the system of record, with look() hints for the camera. Use when filming a product UI.
 ---
 # screen-actor
+Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `studio/SKILLS.md`.
+
 
 **When:** capturing a real app (film 1 type). Each action = one function in `studio/skills/<action>.mjs`.
 

@@ -2,14 +2,29 @@
 // captions (SRT + VTT) from the read-back text timeline, thumbnails, animated preview.
 import { writeFileSync, readFileSync, rmSync } from 'node:fs';
 import { run } from './render.mjs';
-import { loudness } from './measure.mjs';
+import { loudness, probe } from './measure.mjs';
 
-// Cut a wav into segments (film seconds) joined with 20 ms crossfades, optional fade-out at the end.
+// Cut at exact picture times. 20ms edge fades suppress clicks; these are NOT overlap crossfades.
+// True crossfades would shorten the output unless handles were added to each picture edit.
 export async function assembleAudio(src, out, { segments, fadeOut = 0 } = {}) {
-  if (!segments) { await run('ffmpeg', ['-v', 'error', '-y', '-i', src, '-c:a', 'pcm_f32le', out]); return out; }
+  const info = await probe(src);
+  if (!info.acodec || !Number.isFinite(info.duration)) throw new Error('source has no usable audio');
+  if (info.vcodec) throw new Error('assembleAudio requires audio-only input; extract with prepareMusic first');
+  if (!Number.isFinite(fadeOut) || fadeOut < 0) throw new Error('invalid audio fadeOut');
+  if (!segments) {
+    if (fadeOut > info.duration) throw new Error('audio fadeOut exceeds duration');
+    const filters = fadeOut ? ['-af', `afade=t=out:st=${info.duration - fadeOut}:d=${fadeOut}`] : [];
+    await run('ffmpeg', ['-v', 'error', '-y', '-i', src, ...filters, '-c:a', 'pcm_f32le', out]); return out;
+  }
   const segs = segments.split(',').map((s) => s.split('-').map(Number));
-  const parts = segs.map(([a, b], i) => `[0]atrim=${a}:${b},asetpts=PTS-STARTPTS,afade=t=in:d=0.02,afade=t=out:st=${(b - a - 0.02).toFixed(4)}:d=0.02[s${i}]`);
+  if (segs.some(s => s.length !== 2 || !s.every(Number.isFinite) || s[0] < 0 || s[1] <= s[0] || s[1] > info.duration + 1 / info.sampleRate))
+    throw new Error('invalid audio segments or source too short');
+  const parts = segs.map(([a, b], i) => {
+    const edge = Math.min(0.02, (b - a) / 2);
+    return `[0:a]atrim=${a}:${b},asetpts=PTS-STARTPTS,afade=t=in:d=${edge},afade=t=out:st=${b - a - edge}:d=${edge}[s${i}]`;
+  });
   const total = segs.reduce((x, [a, b]) => x + b - a, 0);
+  if (fadeOut > total) throw new Error('audio fadeOut exceeds duration');
   const tail = fadeOut ? `,afade=t=out:st=${(total - fadeOut).toFixed(3)}:d=${fadeOut}` : '';
   const graph = `${parts.join(';')};${segs.map((_, i) => `[s${i}]`).join('')}concat=n=${segs.length}:v=0:a=1${tail}[out]`;
   await run('ffmpeg', ['-v', 'error', '-y', '-i', src, '-filter_complex', graph, '-map', '[out]', '-c:a', 'pcm_f32le', out]);
@@ -18,7 +33,11 @@ export async function assembleAudio(src, out, { segments, fadeOut = 0 } = {}) {
 
 // Loudness master to a target (LUFS) with a true-peak ceiling. Measured, not assumed.
 export async function masterAudio(src, out, { lufs = -14, tp = -1.5 } = {}) {
+  if (!Number.isFinite(lufs) || lufs < -70 || lufs > -5 || !Number.isFinite(tp) || tp < -9 || tp > 0)
+    throw new Error('invalid loudness/true-peak target');
   const raw = await loudness(src);
+  if (![raw.I, raw.TP, raw.LRA].every(Number.isFinite) || raw.I <= -70)
+    throw new Error('cannot master silent or unmeasurable audio');
   const pre = lufs - raw.I + 1.5; // drive slightly hot into the limiter, loudnorm trims back
   const tmp = out + '.pre.wav';
   let ceiling = tp - 1.0;
@@ -39,6 +58,9 @@ export async function masterAudio(src, out, { lufs = -14, tp = -1.5 } = {}) {
 }
 
 export async function mux(video, audio, out) {
+  const [v, a] = await Promise.all([probe(video), probe(audio)]);
+  if (!a.acodec || !Number.isFinite(a.duration) || a.duration + 0.05 < v.duration)
+    throw new Error('audio shorter than picture; refusing to truncate the film');
   await run('ffmpeg', ['-v', 'error', '-y', '-i', video, '-i', audio, '-map', '0:v', '-map', '1:a', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '256k', '-ar', '48000', '-shortest', '-movflags', '+faststart', out]);
   return out;
 }

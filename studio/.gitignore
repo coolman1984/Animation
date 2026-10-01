@@ -8,7 +8,14 @@ film2/plates/check-*.png
 # Client material stays out of this PUBLIC repo (owner decision pending): photos + plates derived from them.
 film2/source/
 film2/plates/
-
-# film3 client material (public repo)
-film3/source/
-film3/plates/
+# New films and licensed recordings follow the same privacy rule as film2.
+**/source/
+**/plates/
+assets/audio/
+*.mp3
+*.m4a
+*.aac
+*.flac
+*.ogg
+*.aif
+*.aiff

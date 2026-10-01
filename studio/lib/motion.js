@@ -3,7 +3,7 @@
 
 export const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
 export const lerp = (a, b, p) => a + (b - a) * p;
-export const ramp = (t, a, b) => clamp((t - a) / (b - a));
+export const ramp = (t, a, b) => b === a ? (t < a ? 0 : 1) : clamp((t - a) / (b - a));
 export const mix = (a, b, p) => (typeof a === 'number' ? lerp(a, b, p) : a.map((v, i) => lerp(v, b[i], p)));
 
 export const ease = {
@@ -65,8 +65,9 @@ export function show(e, visible) {
 // A kinetic text line: words are separate spans so Arabic shaping stays intact inside a word.
 // Words enter in reading order (first word first — rightmost in RTL), staggered.
 export function textLine(parent, text, style = {}) {
+  if (typeof text !== 'string' || !text.trim()) throw new Error('textLine needs nonempty text');
   const line = el('div', { class: 'line', style: { position: 'absolute', display: 'flex', flexWrap: 'nowrap', direction: 'rtl', whiteSpace: 'nowrap', ...style } }, parent);
-  const words = text.split(' ').map((w) => el('span', { class: 'word', text: w, style: { display: 'inline-block', willChange: 'transform', marginInlineEnd: '0.24em' } }, line));
+  const words = text.trim().split(/\s+/u).map((w) => el('span', { class: 'word', text: w, style: { display: 'inline-block', willChange: 'transform', marginInlineEnd: '0.24em' } }, line));
   words[words.length - 1].style.marginInlineEnd = '0';
   return { line, words };
 }

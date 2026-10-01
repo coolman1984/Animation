@@ -1,20 +1,13 @@
 ---
 name: post-mortem
-description: After each film — compare what the viewer saw with the intent, record numbers, append 5 lessons to CRAFT.md. Use when a film is delivered or a take is rejected.
+description: Record only new reusable lessons after delivery or a rejected take, without a lesson quota.
 ---
 # post-mortem
+Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `studio/SKILLS.md`.
 
-## Steps
-1. Re-watch the hero at phone size, muted, then with sound.
-2. For each storyboard beat: intended vs seen (one line each).
-3. Numbers from `measure.json`: render fps, duration, LUFS, TP, size, gates.
-4. Owner feedback verbatim (if any).
-5. Append **5 lessons** to `studio/CRAFT.md` — short, specific, with a number or a file path.
 
-## Lesson style
-Bad: "transitions should be smoother". Good: "Liquid wipe: full-frame green for 0.45 s reads as an intentional
-immersion; longer than 0.6 s reads as a blank frame (film 2, 21.55–22.0 s)."
-
-## Checklist
-1. Muted phone view. 2. Sound view. 3. Beat table compared. 4. Numbers copied. 5. Owner words kept.
-6. 5 lessons. 7. Each lesson has a number/path. 8. Skills updated if a rule changed. 9. LEDGER closed. 10. Commit.
+Use actual owner feedback and exported evidence. Compare intention vs observed result only where useful.
+Append 0–3 genuinely new lessons to CRAFT.md: failure → cause → correction → evidence/file/timecode.
+No compulsory five lessons, duplicated generic advice or re-research after every build.
+If a lesson changes operating policy, update the relevant department and WORKFLOW.md together to prevent contradictions.
+Keep the ledger's history. Do not claim token savings without usage data; use measured build seconds/cache hits for runtime claims.
