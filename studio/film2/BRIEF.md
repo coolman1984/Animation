@@ -11,7 +11,7 @@ directly (subject, goal, tone, music given) → production started without a sep
 | One action | Go to the café and try this drink | Owner |
 | Language | Egyptian Arabic, elegant and respectful, no slang; Arabic RTL | Owner |
 | Brand | From the real cup: balcony-window logo + "BALACONBAR / CHOCOLATE CAFE", deep teal `#1F5E55`; matcha green, cream, peach `#F1C7A3` from the photos | Owner's photos |
-| Length / format | **60 s, 4:5 1080×1350, 30 fps** master · 9:16 Reels version · 15 s cut-down · 6 s bumper | Owner + Meta specs |
+| Length / format | **60 s, 4:5 1080×1350, 30 fps** master · 15 s cut-down · 6 s bumper · **Reels 9:16 1080×1920: 60 s + 15 s** (owner asked) | Owner + Meta specs |
 | Music | Bossa-nova / lo-fi café jazz, ~90 BPM, synthesised in code (no licence) | Research §3 |
 | Never claimed | No "best/first/only", no "100 % natural", no prices, no hours, no "since 1930", no partnership with the carton's maker, no address until the owner gives one | Truth rules |
 
@@ -42,7 +42,7 @@ for the small "×" and callout dots · one big move at a time · grain + vignett
 max upscale of a source photo ≈ 1.6× (keeps it sharp).
 
 ## 5. Decisions for the owner (do not block production)
-1. **Drink name and recipe** — film says "ماتشا جوز الهند بالبوبا" and that the milk layer is coconut milk. Confirm or correct.
-2. **The carton's brand** — the carton belongs to another company and its logo is visible in your photo. Showing it is common, but the film makes no partnership claim. Confirm you're comfortable (or I blur/crop its logo).
+1. ✅ **Confirmed by owner (name correct).** Drink name and recipe — film says "ماتشا جوز الهند بالبوبا" and that the milk layer is coconut milk. Confirm or correct.
+2. ✅ **Owner: keep the carton visible.** The carton's brand — the carton belongs to another company and its logo is visible in your photo. Showing it is common, but the film makes no partnership claim. Confirm you're comfortable (or I blur/crop its logo).
 3. **Address / branch line** for the end card (empty now) — Facebook's own button can carry directions.
 4. **Name spelling** — real cup says *BALACONBAR*; the vintage board says *BALAKON BAR*. Film uses the cup.

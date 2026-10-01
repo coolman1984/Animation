@@ -11,6 +11,10 @@ export default {
     { name: 'hero60', duration: 60 },
     { name: 'cut15', duration: 15, segments: `0-${f(2 * BAR)},${f(5 * BAR)}-${f(6.25 * BAR)},${f(19 * BAR)}-57`, fadeOut: 0.6 },
     { name: 'bumper6', duration: 6, segments: `0-${f(BAR)},${f(19 * BAR)}-54`, fadeOut: 0.4 },
+    // Reels / Stories 9:16 — text and logo kept inside Meta's unified safe zone
+    // (top 14 %, bottom 35 %, sides 6 % → x 65–1015, y 269–1248).
+    { name: 'reels60', duration: 60, w: 1080, h: 1920, safe: [65, 269, 1015, 1248], shareMB: 27, poster: 55.5 },
+    { name: 'reels15', duration: 15, w: 1080, h: 1920, safe: [65, 269, 1015, 1248], segments: `0-${f(2 * BAR)},${f(5 * BAR)}-${f(6.25 * BAR)},${f(19 * BAR)}-57`, fadeOut: 0.6, shareMB: 10 },
   ],
   thumbs: [1.6, 15.8, 53.0],
   poster: 55.5,

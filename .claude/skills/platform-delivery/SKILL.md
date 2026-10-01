@@ -15,6 +15,11 @@ description: Per-platform specs and upload checklist — aspect, length, bitrate
 
 All: H.264 High, yuv420p, bt709, AAC 48 kHz, faststart.
 
+## 9:16 from a 4:5 film (how film 2 did it)
+Composer stage 1080×1920; film detects `H/W > 1.5` and puts the 1080×1350 design at y 285; backdrops bleed,
+photo cameras go through `fill()` (min 1.2× for a 1600² photo), text kept in x 65–1015 / y 269–1248, end card scaled as
+a group. Deliveries `reels60` / `reels15` in `studio/film2/config.mjs` with `w, h, safe`. Regression-check the 4:5 output after.
+
 ## Filenames
 `<film>-<delivery>-<W>x<H>.mp4`, `<film>-<delivery>-share-27MB.mp4`, `<film>-music-only.m4a`,
 `<film>-<delivery>.ar.srt/.vtt`, `.en.srt/.vtt`, `thumb-N.jpg`, `poster.jpg`, `contact-sheet.png`, `measure.json`.

@@ -39,21 +39,22 @@ const fresh = (file) => existsSync(file) && statSync(file).mtimeMs > Math.max(..
 const report = { film: filmName, take: n, at: new Date().toISOString(), deliveries: {} };
 let allOk = true;
 for (const d of cfg.deliveries) {
-  if (opt.only && opt.only !== d.name) continue;
+  if (opt.only && !opt.only.split(',').includes(d.name)) continue;
+  const dw = d.w || cfg.w, dh = d.h || cfg.h;
   const silent = join(TAKES, `${d.name}-video.mp4`);
   if (!fresh(silent)) {
     log(`render ${d.name}`);
-    const r = await video({ film: join(ROOT, cfg.film), out: silent, w: cfg.w, h: cfg.h, segments: d.segments, fadeOut: d.fadeOut });
+    const r = await video({ film: join(ROOT, cfg.film), out: silent, w: dw, h: dh, segments: d.segments, fadeOut: d.fadeOut });
     log(`  ${r.frames} frames in ${r.seconds.toFixed(0)} s (${(r.frames / r.seconds).toFixed(1)} fps)`);
   } else log(`render ${d.name}: cached`);
   log(`text read-back ${d.name}`);
-  const text = await textTimeline({ film: join(ROOT, cfg.film), w: cfg.w, h: cfg.h, segments: d.segments });
+  const text = await textTimeline({ film: join(ROOT, cfg.film), w: dw, h: dh, segments: d.segments, safeRect: d.safe });
   log(`audio ${d.name}`);
   const cut = join(TAKES, `${d.name}-mix.wav`);
   await assembleAudio(join(TAKES, 'mix.wav'), cut, { segments: d.segments, fadeOut: d.fadeOut });
   const master = join(TAKES, `${d.name}-master.wav`);
   await masterAudio(cut, master, { lufs: cfg.lufs, tp: cfg.tp });
-  const file = join(OUT, `${filmName}-${d.name}-${cfg.w}x${cfg.h}.mp4`);
+  const file = join(OUT, `${filmName}-${d.name}-${dw}x${dh}.mp4`);
   await mux(silent, master, file);
   const m = { probe: await probe(file), loud: await loudness(file), frozen: await frozen(file), black: await black(file), text };
   if (d.name === 'hero60') {
@@ -72,8 +73,14 @@ for (const d of cfg.deliveries) {
     await stillAt(file, cfg.poster, join(OUT, 'poster.jpg'));
     await contactSheet(file, join(OUT, 'contact-sheet.png'));
   }
+  if (d.shareMB) {
+    const share = join(OUT, `${filmName}-${d.name}-share-${d.shareMB}MB.mp4`);
+    await shareCopy(file, share, { targetMB: d.shareMB, duration: m.probe.duration });
+    m.share = await probe(share);
+  }
+  if (d.poster) await stillAt(file, d.poster, join(OUT, `poster-${d.name}.jpg`));
   if (d.name === 'bumper6') await webpPreview(file, join(OUT, `${filmName}-bumper6-preview.webp`));
-  const g = gates(m, { w: cfg.w, h: cfg.h, duration: d.duration, lufs: cfg.lufs, shareMB: cfg.shareMB, holds: cfg.holds });
+  const g = gates(m, { w: dw, h: dh, duration: d.duration, lufs: cfg.lufs, shareMB: d.shareMB || cfg.shareMB, holds: cfg.holds });
   report.deliveries[d.name] = { file, ...m, gates: g };
   console.log(`\n  ${d.name}`);
   for (const x of g) { console.log(`   ${x.ok ? 'PASS' : 'FAIL'}  ${x.name.padEnd(36)} ${x.value}`); allOk &&= x.ok; }

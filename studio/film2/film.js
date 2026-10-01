@@ -13,6 +13,15 @@ const FONT = {
 const SHADOW = '0 2px 24px rgba(0,0,0,0.55), 0 1px 3px rgba(0,0,0,0.5)';
 
 let W, H, stage, grainAt;
+// Reels (9:16): the 1080×1350 design area sits in the middle of a 1080×1920 stage; R switches the
+// per-scene adjustments, Y0..Y1 is the design-space band the picture must cover (bleed).
+let R = false, OFF = 0, Y0 = 0, Y1 = 0, VH = 0;
+const bleed = (style = {}) => ({ ...style, top: Y0 + 'px', width: W + 'px', height: VH + 'px' });
+function sceneRoot(bg) {
+  const root = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px' } }, stage);
+  if (bg) el('div', { class: 'abs', style: bleed({ background: bg }) }, root);
+  return root;
+}
 const S = {}; // scene handles
 
 // ---------- photo layers --------------------------------------------------------------------------
@@ -36,8 +45,9 @@ function place(layer, cam, p = 1, ref, extra = '') {
 const proj = (k, x, y) => [k.x + x * k.s, k.y + y * k.s];
 // Keep a camera inside its image so the frame is always filled.
 function fill(cam, iw, ih) {
-  const s = Math.max(cam.s, W / iw, H / ih);
-  return { s, cx: clamp(cam.cx, W / 2 / s, iw - W / 2 / s), cy: clamp(cam.cy, H / 2 / s, ih - H / 2 / s) };
+  const up = H / 2 - Y0, down = Y1 - H / 2;
+  const s = Math.max(cam.s, W / iw, (up + down) / ih);
+  return { s, cx: clamp(cam.cx, W / 2 / s, iw - W / 2 / s), cy: clamp(cam.cy, up / s, ih - down / s) };
 }
 
 // The hero photo as three depth layers (background plate, carton, cup) + light sweeps.
@@ -59,7 +69,7 @@ function heroGroup(parent) {
   const sweepCup = sweep(P('hero-cup.png'));
   return {
     g, bg, carton, cup, sweepCarton, sweepCup,
-    set(cam, { pBg = 0.88, pCarton = 0.97, sweepP = -1, ref } = {}) {
+    set(cam, { pBg = R ? 1 : 0.88, pCarton = 0.97, sweepP = -1, ref } = {}) {
       place(bg, cam, pBg, ref); place(carton, cam, pCarton, ref); const k = place(cup, cam, 1, ref);
       place(sweepCarton, cam, pCarton, ref); place(sweepCup, cam, 1, ref);
       const on = sweepP > 0 && sweepP < 1;
@@ -97,12 +107,13 @@ const T = {
 function initS1() {
   const root = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px' } }, stage);
   const hero = heroGroup(root);
-  const top = el('div', { class: 'abs', style: { width: W + 'px', height: '420px', background: 'linear-gradient(180deg, rgba(8,6,4,0.55), rgba(8,6,4,0))' } }, root);
-  const l1 = line(root, 'مش أي ماتشا…', FONT.display, 96, C.cream, { top: '112px', right: '48px', justifyContent: 'flex-start' });
+  const top = el('div', { class: 'abs', style: { top: Y0 + 'px', width: W + 'px', height: (420 - Y0) + 'px', background: 'linear-gradient(180deg, rgba(8,6,4,0.55), rgba(8,6,4,0))' } }, root);
+  const l1 = line(root, 'مش أي ماتشا…', FONT.display, 96, C.cream, { top: '112px', right: (R ? 72 : 48) + 'px', justifyContent: 'flex-start' });
   S.s1 = { root, hero, top, l1 };
 }
 const camS1 = (t) => {
   const p = ease.outCubic(ramp(t, 0, T.s1[1]));
+  if (R) return fill({ cx: lerp(1005, 900, p), cy: lerp(1000, 800, p), s: lerp(1.6, 1.21, p) }, 1600, 1600);
   return { cx: lerp(1005, 900, p), cy: lerp(1010, 900, p), s: lerp(1.5, 0.98, p) };
 };
 function renderS1(t) {
@@ -120,20 +131,23 @@ function renderS1(t) {
 }
 
 const CUP_C = [1005, 1150];
+const S2_END_Y = () => (R ? 580 : 770);
 function camS2(t) {
-  const p = ease.inOutSine(ramp(t, T.s2[0], T.s2[1] + 1));
-  const X = lerp(642.9, 715, p), Y = lerp(920, 770, p), s = lerp(0.98, 1.04, p);
+  // Reels: settle within 2.6 s so every callout lands above the bottom UI zone.
+  const p = ease.inOutSine(R ? ramp(t, T.s2[0], T.s2[0] + 2.6) : ramp(t, T.s2[0], T.s2[1] + 1));
+  const [X0, Yb, s0] = R ? [667.05, 1098.5, 1.21] : [642.9, 920, 0.98];
+  const X = lerp(X0, 715, p), Y = lerp(Yb, S2_END_Y(), p), s = lerp(s0, 1.04, p);
   return { cx: CUP_C[0] - (X - W / 2) / s, cy: CUP_C[1] - (Y - H / 2) / s, s };
 }
 function initS2() {
-  const root = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', background: '#0b0806' } }, stage);
+  const root = sceneRoot('#0b0806');
   const back = photo(root, P('hero-bg.png'), 1600, 1600, { filter: 'blur(28px) brightness(0.42) saturate(0.9)' });
-  el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', background: 'radial-gradient(ellipse 46% 38% at 60% 52%, rgba(255,186,110,0.22), rgba(255,186,110,0) 70%), linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0) 30%, rgba(0,0,0,0) 70%, rgba(0,0,0,0.45))' } }, root);
+  el('div', { class: 'abs', style: { ...bleed(), background: 'radial-gradient(ellipse 46% 38% at 60% 52%, rgba(255,186,110,0.22), rgba(255,186,110,0) 70%), linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0) 30%, rgba(0,0,0,0) 70%, rgba(0,0,0,0.45))' } }, root);
   const shadow = el('div', { class: 'abs', style: { width: '520px', height: '70px', borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(0,0,0,0.65), rgba(0,0,0,0))' } }, root);
   const refl = photo(root, P('hero-cup.png'), 1600, 1600, { opacity: 0.17, WebkitMaskImage: 'linear-gradient(180deg, rgba(0,0,0,0) 1240px, rgba(0,0,0,1) 1540px)' });
   const cup = photo(root, P('hero-cup.png'), 1600, 1600);
   const sweep = el('div', { class: 'abs', style: { width: '1600px', height: '1600px', transformOrigin: '0 0', mixBlendMode: 'screen', WebkitMaskImage: `url(${P('hero-cup.png')})`, WebkitMaskSize: '1600px 1600px', backgroundImage: 'linear-gradient(100deg, rgba(255,255,255,0) 44%, rgba(255,246,228,0.45) 50%, rgba(255,255,255,0) 56%)', backgroundSize: '300% 100%', backgroundRepeat: 'no-repeat' } }, root);
-  const head = line(root, 'جوّاها إيه؟', FONT.display, 84, C.cream, centered(70));
+  const head = line(root, 'جوّاها إيه؟', FONT.display, 84, C.cream, centered(R ? -10 : 70));
   const callouts = [
     { label: 'ماتشا', a: [800, 965], tIn: T.s2[0] + 1.15 },
     { label: 'لبن جوز الهند', a: [830, 1352], tIn: T.s2[0] + 3.3 },
@@ -141,7 +155,7 @@ function initS2() {
   ].map((c) => {
     const dot = el('div', { class: 'abs', style: { width: '18px', height: '18px', borderRadius: '50%', background: C.cream, boxShadow: '0 0 0 6px rgba(246,238,223,0.18), 0 0 18px rgba(255,240,210,0.7)' } }, root);
     const bar = el('div', { class: 'abs', style: { height: '2.5px', background: `linear-gradient(270deg, ${C.cream}, rgba(246,238,223,0.6))`, transformOrigin: '100% 50%', boxShadow: '0 0 8px rgba(0,0,0,0.4)' } }, root);
-    const L = line(root, c.label, FONT.display, 56, C.cream, { top: '0', left: '0' });
+    const L = line(root, c.label, FONT.display, R ? 52 : 56, C.cream, { top: '0', left: '0' });
     return { ...c, dot, bar, L };
   });
   S.s2 = { root, back, shadow, refl, cup, sweep, head, callouts };
@@ -152,7 +166,8 @@ function renderS2(t) {
   show(s2.root, vis); if (!vis) return;
   s2.root.style.opacity = prog(t, T.s2[0] - 0.45, T.s2[0]);
   const cam = camS2(t);
-  place(s2.back, { cx: 1300, cy: 700, s: 1.0 + 0.04 * ramp(t, T.s2[0], 14) }, 1, { cx: 1300, cy: 700 });
+  const bc = { cx: 1300, cy: 700, s: 1.0 + 0.04 * ramp(t, T.s2[0], 14) };
+  place(s2.back, R ? fill(bc, 1600, 1600) : bc, 1, { cx: 1300, cy: 700 });
   const k = place(s2.cup, cam);
   place(s2.refl, cam, 1, undefined, ' translate(0px, 3096px) scale(1, -1)');
   s2.sweep.style.transform = s2.cup.box.style.transform;
@@ -166,7 +181,7 @@ function renderS2(t) {
     const out = prog(t, 12.2, 12.65);
     const pd = ease.outBack(ramp(t, c.tIn, c.tIn + 0.45));
     const pl = ease.outExpo(ramp(t, c.tIn + 0.15, c.tIn + 0.95));
-    const len = ax - 372; // all lines end on one edge (x 372) so the labels align
+    const len = ax - (R ? 400 : 372); // all lines end on one edge so the labels align
     const on = t >= c.tIn && t < 12.7;
     show(c.dot, on); show(c.bar, on);
     c.dot.style.transform = `translate(${(ax - 9).toFixed(1)}px, ${(ay - 9).toFixed(1)}px) scale(${(pd * (1 - out)).toFixed(4)})`;
@@ -181,28 +196,37 @@ function renderS2(t) {
 }
 
 function initS3() {
-  const root = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', background: '#0b0806' } }, stage);
+  const root = sceneRoot('#0b0806');
   const hero = heroGroup(root);
-  const shade = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', background: 'linear-gradient(200deg, rgba(6,5,4,0.62) 0%, rgba(6,5,4,0.15) 38%, rgba(6,5,4,0) 55%)' } }, root);
-  const l1 = line(root, 'جوز الهند × الماتشا', FONT.display, 74, C.cream, { top: '205px', right: '44px', justifyContent: 'flex-start' });
-  l1.words[2].style.color = C.matchaLight; l1.words[2].style.fontFamily = 'Montserrat'; l1.words[2].style.fontWeight = 400; l1.words[2].style.fontSize = '82px';
-  const l2 = line(root, 'ثنائي على مزاجك', FONT.ruqaa, 88, C.matchaLight, { top: '314px', right: '44px', justifyContent: 'flex-start' });
+  const shade = el('div', { class: 'abs', style: { ...bleed(), background: 'linear-gradient(200deg, rgba(6,5,4,0.62) 0%, rgba(6,5,4,0.15) 38%, rgba(6,5,4,0) 55%)' } }, root);
+  const l1 = line(root, 'جوز الهند × الماتشا', FONT.display, R ? 66 : 74, C.cream, { top: '205px', right: (R ? 72 : 44) + 'px', justifyContent: 'flex-start' });
+  l1.words[2].style.color = C.matchaLight; l1.words[2].style.fontFamily = 'Montserrat'; l1.words[2].style.fontWeight = 400; l1.words[2].style.fontSize = (R ? 72 : 82) + 'px';
+  const l2 = line(root, 'ثنائي على مزاجك', FONT.ruqaa, R ? 80 : 88, C.matchaLight, { top: (R ? 306 : 314) + 'px', right: (R ? 72 : 44) + 'px', justifyContent: 'flex-start' });
   const frame = svgLayer(stage);
   const stroke = el('path', { fill: 'none', stroke: C.cream, 'stroke-width': 3.5, 'stroke-linecap': 'round', style: 'filter: drop-shadow(0 0 10px rgba(255,236,200,0.65))' }, frame);
   S.s3 = { root, hero, shade, l1, l2, frame, stroke };
 }
 const camS3 = (t) => {
-  // Starts pixel-matched to scene 2's cup (screen 715,770 at s 1.04), then pulls out to the duo.
+  // Starts pixel-matched to scene 2's cup (screen 715,S2_END_Y at s 1.04), then pulls out to the duo.
+  const cy0 = CUP_C[1] - (S2_END_Y() - H / 2) / 1.04;
+  if (R) {
+    // Reels: the frame is taller than the photo allows at s 1.04, so push in through the window
+    // while it opens (reaching full cover as the arch fills the frame), then drift.
+    const a = ease.inOutCubic(ramp(t, 13.45, 14.5)), b = ease.inOutSine(ramp(t, 14.5, T.s3[1] + 0.9));
+    const c1 = { cx: lerp(836.7, 870, a), cy: lerp(cy0, 800, a), s: lerp(1.04, 1.26, a) };
+    const c = { cx: lerp(c1.cx, 885, b), cy: c1.cy, s: lerp(c1.s, 1.22, b) };
+    return t >= 14.5 ? fill(c, 1600, 1600) : c;
+  }
   const p = ease.inOutCubic(ramp(t, 13.5, T.s3[1] + 0.9));
-  return { cx: lerp(836.7, 885, p), cy: lerp(1058.7, 815, p), s: lerp(1.04, 0.88, p) };
+  return { cx: lerp(836.7, 885, p), cy: lerp(cy0, 815, p), s: lerp(1.04, 0.88, p) };
 };
 function renderS3(t) {
   const s3 = S.s3;
   const vis = t >= 12.7 && t < 21.7;
   show(s3.root, vis); show(s3.frame, vis); if (!vis) return;
-  s3.hero.set(camS3(t), { ref: { cx: 836.7, cy: 1058.7 }, pBg: 0.9, pCarton: 0.98, sweepP: ramp(t, 16.2, 17.9) });
+  s3.hero.set(camS3(t), { ref: { cx: 836.7, cy: CUP_C[1] - (S2_END_Y() - H / 2) / 1.04 }, pBg: R ? 1 : 0.9, pCarton: 0.98, sweepP: ramp(t, 16.2, 17.9) });
   // Portal: the balcony arch draws itself, then opens to fill the frame.
-  const cx = 715, cy0 = 770;
+  const cx = 715, cy0 = S2_END_Y();
   const grow = ease.inOutCubic(ramp(t, 13.45, 14.5));
   const w = lerp(370, 3000, grow), h = lerp(480, 4200, grow), cy = lerp(cy0, cy0 + 600, grow);
   const d = archAt(cx, cy, w, h);
@@ -234,7 +258,7 @@ function leafSVG(parent, color1, color2, seed) {
   return s;
 }
 function initS4() {
-  const root = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', background: '#F1CFAF' } }, stage);
+  const root = sceneRoot('#F1CFAF');
   const world = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', transformOrigin: '0 0' } }, root);
   const plate = photo(world, P('swing-plate.png'), 1080, 1350);
   const ghost = el('img', { src: P('logo-teal.png'), class: 'abs', style: { width: '820px', opacity: 0.07, transformOrigin: '0 0', clipPath: 'inset(0 0 21% 0)' } }, world);
@@ -267,8 +291,8 @@ function renderS4(t) {
   const wv = t >= 20.85 && t < 22.45;
   show(s4.wave, wv);
   if (wv) {
-    const yTop = lerp(H + 80, -140, ease.inCubic(ramp(t, 20.9, 21.45)) * 0.35 + ease.outCubic(ramp(t, 20.9, 21.45)) * 0.65);
-    const yBot = lerp(H + 160, -200, ease.inOutCubic(ramp(t, 21.36, 22.2)));
+    const yTop = lerp(Y1 + 80, Y0 - 140, ease.inCubic(ramp(t, 20.9, 21.45)) * 0.35 + ease.outCubic(ramp(t, 20.9, 21.45)) * 0.65);
+    const yBot = lerp(Y1 + 160, Y0 - 200, ease.inOutCubic(ramp(t, 21.36, 22.2)));
     const top = surface(W, yTop, t, 0.7), bot = surface(W, yBot, t, 2.1).reverse();
     const pathOf = (pts) => pts.map((p, i) => `${i ? 'L' : 'M'} ${p[0]} ${p[1].toFixed(1)}`).join(' ');
     s4.body.setAttribute('d', pathOf(top) + ' ' + pathOf(bot).replace(/^M/, 'L') + ' Z');
@@ -313,7 +337,7 @@ function renderS4(t) {
 // Where the swing cup's printed logo is on screen at time t (rotation about the pivot, then the
 // scene-4 camera), and the hero-cup scale that makes the two logos the same size (88 px vs 145 px).
 const SWING_LOGO = [551, 695];
-function swingCam(t) { return { cx: 540, cy: 660, s: lerp(1.035, 1.09, ease.inOutSine(ramp(t, 21.6, 27.3))) }; }
+function swingCam(t) { const k = ease.inOutSine(ramp(t, 21.6, 27.3)); return R ? { cx: 540, cy: 660, s: lerp(1.46, 1.5, k) } : { cx: 540, cy: 660, s: lerp(1.035, 1.09, k) }; }
 function swingTheta(t) { return 1.25 * Math.sin((2 * Math.PI * (t - 21.6)) / 3.9 + 0.5) * (Math.PI / 180); }
 function swingLogoAt(t) {
   const th = swingTheta(t), px = 540, py = -900;
@@ -326,8 +350,8 @@ function swingLogoAt(t) {
 // with slow floating pearls; the "every sip" line sits on clean space above the product.
 const T4B = [8 * BAR + 2 * BAR - 0.3, 12 * BAR + 0.6];
 function initS4b() {
-  const root = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', background: `radial-gradient(ellipse 75% 60% at 50% 58%, #24493F, ${C.ink} 75%)` } }, stage);
-  el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', background: 'radial-gradient(ellipse 38% 34% at 50% 58%, rgba(255,196,120,0.20), rgba(255,196,120,0) 70%)' } }, root);
+  const root = sceneRoot(`radial-gradient(ellipse 75% 60% at 50% 52%, #24493F, ${C.ink} 75%)`);
+  el('div', { class: 'abs', style: { ...bleed(), background: 'radial-gradient(ellipse 38% 34% at 50% 58%, rgba(255,196,120,0.20), rgba(255,196,120,0) 70%)' } }, root);
   const back = el('svg', { width: W, height: H, viewBox: `0 0 ${W} ${H}`, class: 'abs', style: { overflow: 'visible' } }, root);
   pearl(back, 'pgb');
   const refl = photo(root, P('hero-cup.png'), 1600, 1600, { opacity: 0.15, WebkitMaskImage: 'linear-gradient(180deg, rgba(0,0,0,0) 1240px, rgba(0,0,0,1) 1540px)' });
@@ -341,11 +365,11 @@ function initS4b() {
     el('circle', { r: rad, fill: `url(#${id})` }, g);
     el('ellipse', { cx: -rad * 0.32, cy: -rad * 0.38, rx: rad * 0.28, ry: rad * 0.18, fill: `url(#${id}h)`, transform: 'rotate(-30)' }, g);
     let x = r() * W; if (x > 290 && x < 790) x = x < 540 ? x - 270 : x + 270;
-    return { g, x, y: 380 + r() * 900, ph: r() * 6.28, sp: 0.25 + r() * 0.3, blur: near ? 6 + r() * 6 : 1.5 + r() * 2 };
+    return { g, x, y: (R ? 120 : 380) + r() * (R ? 1250 : 900), ph: r() * 6.28, sp: 0.25 + r() * 0.3, blur: near ? 6 + r() * 6 : 1.5 + r() * 2 };
   });
   const far = mk(back, 'pgb', 9, false), near = mk(front, 'pgf', 4, true);
-  const l1 = line(root, 'كل رشفة…', FONT.display, 92, C.cream, centered(70));
-  const l2 = line(root, 'فيها حكاية.', FONT.ruqaa, 100, C.matchaLight, centered(186));
+  const l1 = line(root, 'كل رشفة…', FONT.display, 92, C.cream, centered(R ? -10 : 70));
+  const l2 = line(root, 'فيها حكاية.', FONT.ruqaa, 100, C.matchaLight, centered(R ? 106 : 186));
   S.s4b = { root, refl, cup, sweep, far, near, l1, l2 };
 }
 function renderS4b(t) {
@@ -356,7 +380,8 @@ function renderS4b(t) {
   // Start where the swing cup is (match), then settle into the hero framing.
   const g = ease.inOutCubic(ramp(t, T4B[0] + 0.55, T4B[0] + 2.1));
   const [sx, sy, ss] = swingLogoAt(t);
-  const X = lerp(sx, 540, g), Y = lerp(sy, 790, g), sc = lerp(ss, 0.9, g) + 0.04 * ramp(t, T4B[0] + 2.1, T4B[1]);
+  const [Yt, St, Sd] = R ? [620, 0.8, 0.02] : [790, 0.9, 0.04];
+  const X = lerp(sx, 540, g), Y = lerp(sy, Yt, g), sc = lerp(ss, St, g) + Sd * ramp(t, T4B[0] + 2.1, T4B[1]);
   const cam = { cx: CUP_C[0] - (X - W / 2) / sc, cy: CUP_C[1] - (Y - H / 2) / sc, s: sc };
   place(s.cup, cam);
   place(s.refl, cam, 1, undefined, ' translate(0px, 3096px) scale(1, -1)');
@@ -393,7 +418,7 @@ function pearl(svg, id) {
   el('stop', { offset: '0', 'stop-color': 'rgba(255,250,240,0.55)' }, hg); el('stop', { offset: '1', 'stop-color': 'rgba(255,250,240,0)' }, hg);
 }
 function initS5() {
-  const root = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', background: '#0b0806' } }, stage);
+  const root = sceneRoot('#0b0806');
   const hero = photo(root, SRC('hero-duo.jpg'), 1600, 1600);
   const swing = photo(root, P('swing-clean.png'), 1080, 1350);
   const pearls = svgLayer(stage);
@@ -415,7 +440,7 @@ function renderS5(t) {
   show(s5.pearls, pv);
   if (pv) for (const d of s5.drops) {
     const u = (t - 31.3 - d.delay) * d.speed;
-    const y = -120 + u * (700 + 380 * u) * (0.7 + d.depth * 0.6);
+    const y = (R ? -420 : -120) + u * (700 + 380 * u) * (R ? 1.35 : 1) * (0.7 + d.depth * 0.6);
     const x = d.x + 30 * Math.sin(u * 2 + d.spin);
     d.g.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${(0.7 + d.depth * 0.6).toFixed(3)})`);
     d.g.style.filter = `blur(${(d.depth < 0.35 ? 4 + (0.35 - d.depth) * 14 : 0).toFixed(2)}px)`;
@@ -428,36 +453,40 @@ function renderS5(t) {
   const sh = SHOTS[i];
   const u = ramp(t, T.s5[0] + i * 2 * beat, T.s5[0] + (i + 1) * 2 * beat + (i === SHOTS.length - 1 ? 0.45 : 0));
   const raw = { cx: lerp(sh.a.cx, sh.b.cx, u), cy: lerp(sh.a.cy, sh.b.cy, u), s: lerp(sh.a.s, sh.b.s, u) };
+  if (R) raw.s = 1.23 + (raw.s - 0.9) * 0.75; // keep every shot's push alive above the 9:16 cover minimum
   const cam = sh.img === 'hero' ? fill(raw, 1600, 1600) : fill(raw, 1080, 1350);
   show(s5.hero.box, sh.img === 'hero'); show(s5.swing.box, sh.img === 'swing');
   place(sh.img === 'hero' ? s5.hero : s5.swing, cam, 1, sh.img === 'hero' ? undefined : { cx: 540, cy: 675 });
 }
 
 function initS6() {
-  const root = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', background: '#0b0806' } }, stage);
+  const root = sceneRoot('#0b0806');
   const back = photo(root, P('hero-bg.png'), 1600, 1600, { filter: 'blur(22px) brightness(0.40)' });
-  const ink = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', background: `radial-gradient(ellipse 70% 55% at 50% 42%, #1B3A34, ${C.ink})`, opacity: 0 } }, root);
-  const glow = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', background: 'radial-gradient(ellipse 34% 30% at 50% 47%, rgba(255,196,120,0.28), rgba(255,196,120,0) 70%)' } }, root);
-  const inside = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px' } }, root);
+  const ink = el('div', { class: 'abs', style: { ...bleed(), background: `radial-gradient(ellipse 70% 55% at 50% 42%, #1B3A34, ${C.ink})`, opacity: 0 } }, root);
+  const glow = el('div', { class: 'abs', style: { ...bleed(), background: 'radial-gradient(ellipse 34% 30% at 50% 47%, rgba(255,196,120,0.28), rgba(255,196,120,0) 70%)' } }, root);
+  // Reels: the window/end-card composition (logo top 24 → pill bottom 1310) is scaled 0.755 into the
+  // band clear of Reels UI (design y −16 … 963 = stage 269 … 1248).
+  const content = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', transformOrigin: '540px 0', transform: R ? 'translate(0px, -34px) scale(0.755)' : 'none' } }, root);
+  const inside = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px' } }, content);
   const duo = heroGroup(inside);
-  const art = svgLayer(root);
+  const art = svgLayer(content);
   const mk = (w = 3.5, g = art) => el('path', { fill: 'none', stroke: C.cream, 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', style: 'filter: drop-shadow(0 0 9px rgba(255,236,200,0.55))' }, g);
   const outline = mk(3.5);
   const mull = mk(2.5);
-  const cup = photo(root, P('hero-cup.png'), 1600, 1600);
-  const front = svgLayer(root);
+  const cup = photo(content, P('hero-cup.png'), 1600, 1600);
+  const front = svgLayer(content);
   const rail = mk(7, front);
   const balusters = mk(4, front);
-  const l1 = line(root, 'قعدتك الحلوة…', FONT.display, 86, C.cream, centered(1078));
-  const l2 = line(root, 'مستنياك.', FONT.ruqaa, 100, C.matchaLight, centered(1190));
-  const logo = el('img', { src: P('logo-white.png'), class: 'abs', style: { width: '186px', left: (W / 2 - 93) + 'px', top: '24px', filter: 'drop-shadow(0 2px 14px rgba(0,0,0,0.35))' } }, root);
-  const sub = el('div', { class: 'abs', text: 'CHOCOLATE CAFE', style: { top: '192px', left: '0', width: W + 'px', textAlign: 'center', fontFamily: 'Montserrat', fontWeight: 600, fontSize: '25px', letterSpacing: '0.3em', color: C.cream, opacity: 0 } }, root);
-  const name = line(root, 'ماتشا جوز الهند بالبوبا', FONT.display, 62, C.cream, centered(1100));
-  const pill = el('div', { class: 'abs', style: { left: '0', top: '1212px', width: W + 'px', display: 'flex', justifyContent: 'center' } }, root);
+  const l1 = line(content, 'قعدتك الحلوة…', FONT.display, 86, C.cream, centered(1078));
+  const l2 = line(content, 'مستنياك.', FONT.ruqaa, 100, C.matchaLight, centered(1190));
+  const logo = el('img', { src: P('logo-white.png'), class: 'abs', style: { width: '186px', left: (W / 2 - 93) + 'px', top: '24px', filter: 'drop-shadow(0 2px 14px rgba(0,0,0,0.35))' } }, content);
+  const sub = el('div', { class: 'abs', text: 'CHOCOLATE CAFE', style: { top: '192px', left: '0', width: W + 'px', textAlign: 'center', fontFamily: 'Montserrat', fontWeight: 600, fontSize: '25px', letterSpacing: '0.3em', color: C.cream, opacity: 0 } }, content);
+  const name = line(content, 'ماتشا جوز الهند بالبوبا', FONT.display, 62, C.cream, centered(1100));
+  const pill = el('div', { class: 'abs', style: { left: '0', top: '1212px', width: W + 'px', display: 'flex', justifyContent: 'center' } }, content);
   const pillIn = el('div', { style: { background: C.matcha, color: C.ink, fontFamily: 'El Messiri', fontWeight: 700, fontSize: '50px', lineHeight: 1, padding: '20px 54px 26px', borderRadius: '999px', boxShadow: '0 10px 30px rgba(0,0,0,0.35)', direction: 'rtl' } }, pill);
   const cta = textLine(pillIn, 'جرّبها النهارده', {});
   cta.line.style.position = 'relative';
-  const fade = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', background: '#000', opacity: 0 } }, stage);
+  const fade = el('div', { class: 'abs', style: { ...bleed(), background: '#000', opacity: 0 } }, stage);
   S.s6 = { root, back, ink, glow, inside, duo, cup, art, outline, mull, rail, balusters, l1, l2, logo, sub, name, pill, pillIn, cta, fade };
 }
 function renderS6(t) {
@@ -467,7 +496,8 @@ function renderS6(t) {
   if (!vis) return;
   const t0 = T.s6[0], t7 = T.s7[0];
   s6.root.style.opacity = prog(t, t0 - 0.3, t0 + 0.2);
-  place(s6.back, { cx: 800, cy: 640, s: lerp(0.92, 0.98, ramp(t, t0, t7)) }, 1, { cx: 800, cy: 640 });
+  const bc = R ? { cx: 800, cy: 640, s: lerp(1.22, 1.36, ramp(t, t0 - 0.3, 60)) } : { cx: 800, cy: 640, s: lerp(0.92, 0.98, ramp(t, t0, t7)) };
+  place(s6.back, R ? fill(bc, 1600, 1600) : bc, 1, { cx: 800, cy: 640 });
   // Arch: S6 balcony window → S7 end-card frame.
   const m = ease.inOutCubic(ramp(t, t7, t7 + 1.2));
   const aw = lerp(600, 730, m), ah = lerp(820, 830, m), acy = lerp(610, 665, m);
@@ -514,10 +544,11 @@ function renderS6(t) {
   if (duoIn > 0) {
     // Begin pixel-matched to the cut-out cup (screen 540,694 at s 0.77), then settle on the duo.
     const mm = ease.inOutCubic(ramp(t, t7 + 0.95, t7 + 2.2));
-    const dc = { cx: lerp(1005, 840, mm), cy: lerp(1125.3, 1000, mm), s: lerp(0.77, 0.7, mm) + 0.045 * ease.inOutSine(ramp(t, t7 + 2.2, 59.5)) };
+    const dc = { cx: lerp(1005, 840, mm), cy: lerp(1125.3, 1000, mm), s: lerp(0.77, 0.7, mm) + (R ? 0.08 : 0.045) * ease.inOutSine(ramp(t, t7 + 2.2, 59.5)) };
     s6.duo.set(dc, { ref: { cx: 1005, cy: 1125.3 }, sweepP: ramp(t, 54.4, 56.0) });
   }
   s6.ink.style.opacity = prog(t, t7 + 0.1, t7 + 1.1).toFixed(3);
+  if (R) { s6.ink.style.transform = `scale(${(1 + 0.12 * ease.inOutSine(ramp(t, t7, 60))).toFixed(4)}) rotate(${(4 * ramp(t, t7, 60)).toFixed(3)}deg)`; s6.glow.style.transform = `translateY(${(-60 * ramp(t, t0, 60)).toFixed(1)}px)`; }
   playLine(s6.l1, t, t0 + 2.35, t7 - 0.25);
   playLine(s6.l2, t, t0 + 3.95, t7 - 0.15);
   // End card.
@@ -538,11 +569,13 @@ function renderS6(t) {
 export default {
   duration: 60, fps: 30,
   init(stageEl, opts) {
-    stage = stageEl; W = opts.W; H = opts.H;
+    W = opts.W; R = opts.H / opts.W > 1.5;
+    H = R ? 1350 : opts.H; OFF = R ? (opts.H - 1350) / 2 : 0; Y0 = -OFF; Y1 = H + OFF; VH = opts.H;
+    stage = R ? el('div', { class: 'abs', style: { top: OFF + 'px', width: W + 'px', height: H + 'px' } }, stageEl) : stageEl;
     initS2(); initS1(); initS3(); initS4(); initS4b(); initS5(); initS6();
     // Re-order: S6 above S5 above S4 ... the portal/wave/pearl SVGs stay above their scenes.
-    el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', pointerEvents: 'none', background: 'radial-gradient(ellipse 80% 75% at 50% 48%, rgba(0,0,0,0) 58%, rgba(0,0,0,0.38))' } }, stage);
-    grainAt = grain(stage, { opacity: 0.085 });
+    el('div', { class: 'abs', style: { width: W + 'px', height: VH + 'px', pointerEvents: 'none', background: 'radial-gradient(ellipse 80% 75% at 50% 48%, rgba(0,0,0,0) 58%, rgba(0,0,0,0.38))' } }, stageEl);
+    grainAt = grain(stageEl, { opacity: 0.085 });
   },
   render(t, frame) {
     renderS1(t); renderS2(t); renderS3(t); renderS4(t); renderS4b(t); renderS5(t); renderS6(t);

@@ -61,7 +61,8 @@ export async function stills({ film, times, outDir, w = 1080, h = 1350, variant,
 
 // Sample the composition's text every `step` seconds: caption timeline + layout checks, read back
 // from the DOM (what is really on screen, not what the script intended).
-export async function textTimeline({ film, w = 1080, h = 1350, variant, segments, step = 0.1, safe = 24 }) {
+export async function textTimeline({ film, w = 1080, h = 1350, variant, segments, step = 0.1, safe = 24, safeRect }) {
+  const [sx0, sy0, sx1, sy1] = safeRect || [safe, safe, w - safe, h - safe];
   const srv = await serve(STUDIO);
   const { client, info } = await openFilm(srv.port, film, { w, h, variant, segments });
   const spans = new Map(); const issues = [];
@@ -74,7 +75,7 @@ export async function textTimeline({ film, w = 1080, h = 1350, variant, segments
         const s = spans.get(key) || []; const last = s[s.length - 1];
         if (last && Math.abs(last.end - (t - step)) < step / 2) last.end = t; else s.push({ start: t, end: t });
         spans.set(key, s);
-        if (b.x0 < safe || b.x1 > w - safe || b.y0 < safe || b.y1 > h - safe) issues.push({ t: +t.toFixed(2), kind: 'outside-safe', text: key, box: [b.x0, b.y0, b.x1, b.y1].map(Math.round) });
+        if (b.x0 < sx0 || b.x1 > sx1 || b.y0 < sy0 || b.y1 > sy1) issues.push({ t: +t.toFixed(2), kind: 'outside-safe', text: key, box: [b.x0, b.y0, b.x1, b.y1].map(Math.round) });
       }
       for (let i = 0; i < boxes.length; i++) for (let j = i + 1; j < boxes.length; j++) {
         const a = boxes[i], b = boxes[j];
