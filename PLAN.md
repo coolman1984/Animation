@@ -1,6 +1,8 @@
 # Motion Studio — Architecture Plan
 
-> Status: **PROPOSAL — awaiting approval. Nothing below is installed yet.**
+> Status: **SUPERSEDED (2026-10-01)** by `studio/PROMPT_STUDIO.md` — the studio is now code-driven
+> (own CDP + `renderAt(t)` composer, zero packages). Kept for its research: HyperFrames/Remotion remain
+> optional accelerators for specific shots.
 > Researched: 2026-09-27, from the official sources (npm registry + the official GitHub repos
 > `heygen-com/hyperframes`, `remotion-dev/skills`, `remotion-dev/remotion`, `@21st-dev/cli`).
 > The docs websites (hyperframes.heygen.com, remotion.dev, 21st.dev) are blocked by this
