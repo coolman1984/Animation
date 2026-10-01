@@ -1,0 +1,92 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>imagelab</title>
+<script>
+// Helpers for plate jobs. Images arrive as data URLs (no file:// canvas tainting).
+const lab = {
+  canvas(w, h) { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; },
+  async load(dataUrl) {
+    const img = new Image(); img.src = dataUrl; await img.decode();
+    const c = lab.canvas(img.naturalWidth, img.naturalHeight);
+    c.getContext('2d').drawImage(img, 0, 0);
+    return c;
+  },
+  clone(src) { const c = lab.canvas(src.width, src.height); c.getContext('2d').drawImage(src, 0, 0); return c; },
+  data(c) { return c.getContext('2d', { willReadFrequently: true }).getImageData(0, 0, c.width, c.height); },
+  put(c, d) { c.getContext('2d').putImageData(d, 0, 0); return c; },
+  url(c) { return c.toDataURL('image/png'); },
+  // Apply an alpha mask (white = keep) to a copy of src.
+  applyMask(src, mask) {
+    const out = lab.clone(src); const g = out.getContext('2d');
+    g.globalCompositeOperation = 'destination-in'; g.drawImage(mask, 0, 0);
+    return out;
+  },
+  // Fill transparent holes with colour pulled in from the surroundings (normalized convolution,
+  // several radii from small to large; each pass only fills what is still empty).
+  fillHoles(srcWithHoles, radii = [6, 16, 40, 100, 220]) {
+    const w = srcWithHoles.width, h = srcWithHoles.height;
+    const acc = lab.clone(srcWithHoles);
+    for (const r of radii) {
+      const blurred = lab.canvas(w, h); const bg = blurred.getContext('2d');
+      bg.filter = `blur(${r}px)`; bg.drawImage(acc, 0, 0);
+      const A = lab.data(acc), B = lab.data(blurred);
+      for (let i = 0; i < A.data.length; i += 4) {
+        const a = A.data[i + 3] / 255, b = B.data[i + 3] / 255;
+        if (a < 0.999 && b > 0.02) {
+          // B is un-premultiplied colour of the blurred known pixels → exactly a normalized fill.
+          const t = 1 - a;
+          for (let k = 0; k < 3; k++) A.data[i + k] = A.data[i + k] * a + B.data[i + k] * t;
+          A.data[i + 3] = 255 * Math.min(1, a + t * Math.min(1, b * 3));
+        }
+      }
+      lab.put(acc, A);
+    }
+    // Make fully opaque.
+    const D = lab.data(acc); for (let i = 3; i < D.data.length; i += 4) D.data[i] = 255;
+    return lab.put(acc, D);
+  },
+  blur(src, r) { const c = lab.canvas(src.width, src.height); const g = c.getContext('2d'); g.filter = `blur(${r}px)`; g.drawImage(src, 0, 0); return c; },
+  // Grow (r>0) or shrink (r<0) a mask by blurring and re-thresholding.
+  morph(mask, r, soft = 1) {
+    const b = lab.blur(mask, Math.abs(r)); const D = lab.data(b);
+    const th = r > 0 ? 0.08 : 0.92;
+    for (let i = 3; i < D.data.length; i += 4) {
+      const a = D.data[i] / 255; const v = Math.max(0, Math.min(1, (a - th) / (0.08 * soft) + 0.5));
+      D.data[i - 3] = D.data[i - 2] = D.data[i - 1] = 255; D.data[i] = 255 * v;
+    }
+    return lab.put(b, D);
+  },
+  invert(mask) {
+    const c = lab.clone(mask); const D = lab.data(c);
+    for (let i = 3; i < D.data.length; i += 4) { D.data[i - 3] = D.data[i - 2] = D.data[i - 1] = 255; D.data[i] = 255 - D.data[i]; }
+    return lab.put(c, D);
+  },
+  // Path mask from a list of commands: ['M',x,y] ['L',x,y] ['Q',cx,cy,x,y] ['C',...] ['Z']
+  pathMask(w, h, cmds, feather = 1) {
+    const c = lab.canvas(w, h); const g = c.getContext('2d');
+    g.filter = feather ? `blur(${feather}px)` : 'none';
+    g.fillStyle = '#fff'; g.beginPath();
+    for (const [op, ...a] of cmds) {
+      if (op === 'M') g.moveTo(...a); else if (op === 'L') g.lineTo(...a);
+      else if (op === 'Q') g.quadraticCurveTo(...a); else if (op === 'C') g.bezierCurveTo(...a);
+      else if (op === 'E') g.ellipse(a[0], a[1], a[2], a[3], 0, 0, Math.PI * 2);
+      else if (op === 'Z') g.closePath();
+    }
+    g.fill();
+    return c;
+  },
+  union(...masks) { const c = lab.canvas(masks[0].width, masks[0].height); const g = c.getContext('2d'); for (const m of masks) g.drawImage(m, 0, 0); return c; },
+  intersect(a, b) { const c = lab.clone(a); const g = c.getContext('2d'); g.globalCompositeOperation = 'destination-in'; g.drawImage(b, 0, 0); return c; },
+  subtract(a, b) { const c = lab.clone(a); const g = c.getContext('2d'); g.globalCompositeOperation = 'destination-out'; g.drawImage(b, 0, 0); return c; },
+  // Overlay a mask outline on an image for inspection.
+  overlay(src, mask, color = 'rgba(255,0,80,0.45)') {
+    const c = lab.clone(src); const g = c.getContext('2d');
+    const tint = lab.canvas(src.width, src.height); const tg = tint.getContext('2d');
+    tg.fillStyle = color; tg.fillRect(0, 0, src.width, src.height);
+    tg.globalCompositeOperation = 'destination-out'; tg.drawImage(mask, 0, 0);
+    g.drawImage(tint, 0, 0);
+    return c;
+  },
+  crop(src, x, y, w, h, scale = 1) { const c = lab.canvas(Math.round(w * scale), Math.round(h * scale)); const g = c.getContext('2d'); g.imageSmoothingQuality = 'high'; g.drawImage(src, x, y, w, h, 0, 0, c.width, c.height); return c; },
+};
+</script>
