@@ -5,7 +5,7 @@
   "audience": "REPLACE: specific viewer and situation",
   "promise": "REPLACE: one supported benefit",
   "cta": "REPLACE: one clear action",
-  "direction": "REPLACE: palette, light, two font roles, framing and transition language",
+  "direction": "REPLACE: one motif, palette/light, two font roles, camera behaviour, transition language and sound character",
   "assets": [
     {
       "id": "hero",
@@ -25,9 +25,16 @@
       "start": 0,
       "end": 3,
       "purpose": "hook",
-      "assetIds": [
-        "hero"
-      ],
+      "assetIds": ["hero"],
+      "craft": {
+        "scale": "macro",
+        "camera": "controlled pull-back",
+        "focal": "product detail",
+        "transition": "cut",
+        "depthLayers": 3,
+        "primaryMotions": ["camera"],
+        "audioCue": "opening texture"
+      },
       "copy": {
         "text": "على مهلك…",
         "start": 0.3,
@@ -39,36 +46,64 @@
       "start": 3,
       "end": 8,
       "purpose": "product evidence",
-      "assetIds": [
-        "hero"
-      ]
+      "assetIds": ["hero"],
+      "craft": {
+        "scale": "hero",
+        "camera": "lateral settle",
+        "focal": "product",
+        "transition": "matched cut",
+        "depthLayers": 4,
+        "primaryMotions": ["camera", "foreground"],
+        "audioCue": "light accent"
+      }
     },
     {
       "id": "s3",
       "start": 8,
       "end": 13,
       "purpose": "detail",
-      "assetIds": [
-        "hero"
-      ]
+      "assetIds": ["hero"],
+      "craft": {
+        "scale": "detail",
+        "camera": "short rack-focus move",
+        "focal": "evidence detail",
+        "transition": "occlusion",
+        "depthLayers": 3,
+        "primaryMotions": ["focus"],
+        "audioCue": "soft transition"
+      }
     },
     {
       "id": "s4",
       "start": 13,
       "end": 18,
       "purpose": "sensory hold",
-      "assetIds": [
-        "hero"
-      ]
+      "assetIds": ["hero"],
+      "craft": {
+        "scale": "medium",
+        "camera": "slow push then hold",
+        "focal": "product",
+        "transition": "cut",
+        "depthLayers": 4,
+        "primaryMotions": ["camera"],
+        "audioCue": "music lift"
+      }
     },
     {
       "id": "s5",
       "start": 18,
       "end": 21,
       "purpose": "payoff",
-      "assetIds": [
-        "hero"
-      ],
+      "assetIds": ["hero"],
+      "craft": {
+        "scale": "hero",
+        "camera": "settled",
+        "focal": "product",
+        "transition": "motivated reveal",
+        "depthLayers": 3,
+        "primaryMotions": ["light"],
+        "audioCue": "payoff accent"
+      },
       "copy": {
         "text": "دي لحظتك",
         "start": 18.3,
@@ -80,9 +115,16 @@
       "start": 21,
       "end": 25,
       "purpose": "brand and CTA",
-      "assetIds": [
-        "hero"
-      ],
+      "assetIds": ["hero"],
+      "craft": {
+        "scale": "brand resolve",
+        "camera": "locked hold",
+        "focal": "logo and CTA",
+        "transition": "cut",
+        "depthLayers": 2,
+        "primaryMotions": ["type"],
+        "audioCue": "musical landing"
+      },
       "copy": {
         "text": "جرّبها النهارده",
         "start": 21.3,
