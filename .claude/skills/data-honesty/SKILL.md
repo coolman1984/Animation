@@ -3,6 +3,8 @@ name: data-honesty
 description: Truth rules for anything shown in a film — read-back of numbers and UI, refuse-to-build on mismatch, never-claim lists, staged labels. Use whenever a film shows numbers, claims, product details or third-party marks.
 ---
 # data-honesty
+Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `studio/SKILLS.md`.
+
 
 ## Rules
 1. Every number, UI screen and claim comes from a read-back (API, DOM, file, the owner's own photo) or carries a

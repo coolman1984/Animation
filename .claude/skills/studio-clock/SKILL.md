@@ -3,6 +3,8 @@ name: studio-clock
 description: Shared fake clock for filming real apps — one offset file read by backend, browser and mock services so time can be skipped coherently. Use when a capture needs time to pass (deliveries, schedules, "2 hours later").
 ---
 # studio-clock
+Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `studio/SKILLS.md`.
+
 
 **When:** a real-app shoot where the story spans more time than the take (film 1 plan: order → delivered).
 **Not needed** for composed films from stills (film 2).

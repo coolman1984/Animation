@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "duration": 25,
+  "fps": 30,
+  "audience": "REPLACE: specific viewer and situation",
+  "promise": "REPLACE: one supported benefit",
+  "cta": "REPLACE: one clear action",
+  "direction": "REPLACE: palette, light, two font roles, framing and transition language",
+  "assets": [
+    {
+      "id": "hero",
+      "path": "REPLACE/source/hero.png",
+      "role": "product",
+      "rights": ""
+    }
+  ],
+  "sound": {
+    "mode": "original",
+    "bpm": 96,
+    "note": "Replace with a deliberate recording/composition choice and source/rights record."
+  },
+  "shots": [
+    {
+      "id": "s1",
+      "start": 0,
+      "end": 3,
+      "purpose": "hook",
+      "assetIds": [
+        "hero"
+      ],
+      "copy": {
+        "text": "على مهلك…",
+        "start": 0.3,
+        "end": 2.8
+      }
+    },
+    {
+      "id": "s2",
+      "start": 3,
+      "end": 8,
+      "purpose": "product evidence",
+      "assetIds": [
+        "hero"
+      ]
+    },
+    {
+      "id": "s3",
+      "start": 8,
+      "end": 13,
+      "purpose": "detail",
+      "assetIds": [
+        "hero"
+      ]
+    },
+    {
+      "id": "s4",
+      "start": 13,
+      "end": 18,
+      "purpose": "sensory hold",
+      "assetIds": [
+        "hero"
+      ]
+    },
+    {
+      "id": "s5",
+      "start": 18,
+      "end": 21,
+      "purpose": "payoff",
+      "assetIds": [
+        "hero"
+      ],
+      "copy": {
+        "text": "دي لحظتك",
+        "start": 18.3,
+        "end": 20.8
+      }
+    },
+    {
+      "id": "s6",
+      "start": 21,
+      "end": 25,
+      "purpose": "brand and CTA",
+      "assetIds": [
+        "hero"
+      ],
+      "copy": {
+        "text": "جرّبها النهارده",
+        "start": 21.3,
+        "end": 24.8
+      }
+    }
+  ]
+}

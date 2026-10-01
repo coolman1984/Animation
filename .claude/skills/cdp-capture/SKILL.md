@@ -3,6 +3,8 @@ name: cdp-capture
 description: Drive headless Chromium over the DevTools Protocol with zero packages — launch flags, device-scale gate, screenshots/screencast, one browser per device. Use for rendering composer pages or filming a real app.
 ---
 # cdp-capture
+Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `studio/SKILLS.md`.
+
 
 **When:** rendering frames (`lib/render.mjs`), image lab jobs (`lib/imagelab.mjs`), or filming a real product UI.
 **Code:** `studio/lib/cdp.mjs` (`launch`, `connect`, `client.eval`, `client.png`, `imageWidth`), `studio/lib/serve.mjs`.
