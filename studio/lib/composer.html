@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<title>composer</title>
+<style>
+  @font-face { font-family: 'El Messiri'; src: url('../assets/fonts/ElMessiri.ttf'); font-weight: 400 700; }
+  @font-face { font-family: 'Aref Ruqaa'; src: url('../assets/fonts/ArefRuqaa-Regular.ttf'); font-weight: 400; }
+  @font-face { font-family: 'Aref Ruqaa'; src: url('../assets/fonts/ArefRuqaa-Bold.ttf'); font-weight: 700; }
+  @font-face { font-family: 'Plex Arabic'; src: url('../assets/fonts/IBMPlexSansArabic-Regular.ttf'); font-weight: 400; }
+  @font-face { font-family: 'Plex Arabic'; src: url('../assets/fonts/IBMPlexSansArabic-Medium.ttf'); font-weight: 500; }
+  @font-face { font-family: 'Montserrat'; src: url('../assets/fonts/Montserrat.ttf'); font-weight: 100 900; }
+  html, body { margin: 0; padding: 0; background: #000; overflow: hidden; }
+  #stage { position: relative; overflow: hidden; background: #000; }
+  #stage * { box-sizing: border-box; }
+  .abs { position: absolute; left: 0; top: 0; }
+  img { display: block; user-select: none; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script type="module">
+  // Generic composer: ?film=<module path>&w=&h=&variant=
+  // Exposes window.ready (fonts + images decoded) and window.renderAt(t, frame) — pure in t.
+  const q = new URLSearchParams(location.search);
+  const W = +(q.get('w') || 1080), H = +(q.get('h') || 1350);
+  const stage = document.getElementById('stage');
+  stage.style.width = W + 'px'; stage.style.height = H + 'px';
+  const mod = await import(q.get('film'));
+  const film = mod.default;
+  film.init(stage, { W, H, variant: q.get('variant') || 'hero' });
+  // Optional cut-down: ?segments=a-b,c-d (film seconds) &fadeOut=sec — output time u maps onto the
+  // film's own timeline, so a cut-down is the same deterministic picture, re-edited.
+  const segs = (q.get('segments') || '').split(',').filter(Boolean).map((s) => s.split('-').map(Number));
+  const total = segs.length ? segs.reduce((a, [x, y]) => a + (y - x), 0) : film.duration;
+  const fadeOut = +(q.get('fadeOut') || 0);
+  const veil = document.createElement('div');
+  Object.assign(veil.style, { position: 'absolute', inset: '0', background: '#000', opacity: '0', pointerEvents: 'none' });
+  const mapT = (u) => {
+    if (!segs.length) return u;
+    let off = 0;
+    for (const [a, b] of segs) { if (u < off + (b - a) || b === segs[segs.length - 1][1]) return a + Math.min(u - off, b - a - 1e-6); off += b - a; }
+    return u;
+  };
+  window.renderAt = (u, frame = Math.round(u * (film.fps || 30))) => {
+    film.render(mapT(u), frame);
+    if (fadeOut) { if (!veil.parentNode) stage.appendChild(veil); veil.style.opacity = Math.min(1, Math.max(0, (u - (total - fadeOut)) / fadeOut)).toFixed(4); }
+    return true;
+  };
+  window.duration = total;
+  window.fps = film.fps || 30;
+  window.textBoxes = () => [...stage.querySelectorAll('.line')]
+    .filter((l) => l.offsetParent !== null && getComputedStyle(l).display !== 'none')
+    .map((l) => {
+      const words = [...l.querySelectorAll('.word')].filter((w) => +getComputedStyle(w).opacity > 0.5);
+      if (!words.length) return null;
+      const rs = words.map((w) => w.getBoundingClientRect());
+      return { text: [...l.querySelectorAll('.word')].map((w) => w.textContent).join(' '), x0: Math.min(...rs.map((r) => r.left)), y0: Math.min(...rs.map((r) => r.top)), x1: Math.max(...rs.map((r) => r.right)), y1: Math.max(...rs.map((r) => r.bottom)) };
+    }).filter(Boolean);
+  window.ready = (async () => {
+    await document.fonts.ready;
+    await Promise.all([...document.fonts].map((f) => f.load().catch(() => null)));
+    await Promise.all([...stage.querySelectorAll('img')].map((i) => i.decode().catch(() => { throw new Error('image failed: ' + i.src); })));
+    window.renderAt(0);
+    return { W, H, duration: total, fps: film.fps || 30, fonts: [...document.fonts].filter((f) => f.status === 'loaded').map((f) => f.family) };
+  })();
+</script>
+</body>
+</html>

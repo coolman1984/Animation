@@ -4,3 +4,7 @@ node_modules/
 *.mp4
 *.mov
 *.wav
+film2/plates/check-*.png
+# Client material stays out of this PUBLIC repo (owner decision pending): photos + plates derived from them.
+film2/source/
+film2/plates/
