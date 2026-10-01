@@ -12,7 +12,8 @@ export async function launch({ width = 1280, height = 720, scale = 1, headless =
   const profile = mkdtempSync(join(tmpdir(), 'studio-chrome-'));
   const args = [
     headless ? '--headless=new' : '',
-    '--no-sandbox', '--disable-gpu', '--hide-scrollbars', '--mute-audio',
+    '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage', '--hide-scrollbars', '--mute-audio',
+    '--no-first-run', '--no-default-browser-check', '--disable-background-networking',
     '--font-render-hinting=none', '--disable-lcd-text', '--force-color-profile=srgb',
     '--disable-background-timer-throttling', '--disable-renderer-backgrounding',
     '--allow-file-access-from-files', '--remote-debugging-port=0',
