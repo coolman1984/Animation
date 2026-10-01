@@ -6,12 +6,12 @@ Start a film with film-director + its brief/production.json. Read CRAFT_GUIDE.md
 | Stage / problem | Skill | Reusable tool / evidence |
 |---|---|---|
 | Route a film | film-director | make.mjs, production.json |
-| No concept yet | idea-lab | up to 3 concepts, choose 1 |
+| No concept / direction yet | creative-director, idea-lab | style frames + craft metadata + creative preflight |
 | Brand / source truth | brand-kit, data-honesty | asset roles, source/rights records |
 | Message, script, dialect | storyboard-writer, subtitles-rtl | copyIssues, textTimeline |
 | Cut-outs / clean plates | animation-lab | imagelab, matteSheet |
-| Layered scene / focus | motion-composer, camera-director | depthScene, projectLayer, coverCamera |
-| Cuts / pacing | edit-rhythm | shot times, reviewTimes |
+| Layered scene / focus | motion-composer, camera-director | depthScene + cinema.js cameraPath/rackFocus/microDrift |
+| Cuts / pacing | edit-rhythm | rhythm.mjs beat/phrase evidence + shot times + reviewTimes |
 | Music / accents | sound-designer | prepareMusic, assembleAudio, masterAudio |
 | Runtime trouble | studio-doctor, cdp-capture | doctor, CDP diagnostics |
 | Real app capture only | screen-actor, studio-clock | recorded actions + verified read-back |
