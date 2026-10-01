@@ -19,7 +19,7 @@ Read this file plus the current film brief first; load only the skills needed fo
 2. Choose ONE visual direction: palette, two font roles, light, framing, transition language and sound character.
 3. Compose three hero frames: hook, proof/product and payoff. Check phone-size readability and full-resolution crops.
    Reject a generic sequence of centred headlines, the same photo crop in every shot, covered logos and decorative effects without purpose.
-4. Build a **10–15 s proof segment** with a real transition and sound before expanding the film.
+4. Build a **8–12 s proof segment** with a real transition and sound before expanding the film.
    Establish visual hierarchy and coherent camera movement here. Intentional quiet holds are allowed when logged.
 5. Expand the approved direction; every shot must add information or emotion. Alternate wide/close/detail shots when the assets support them.
    Flat input photos limit lighting/camera realism: request better assets or choose a suitable graphic treatment; never invent product evidence.
@@ -72,3 +72,14 @@ Run one independent final critique on extracted frames and motion playback. Reco
 
 Use LEDGER.md: time → issue → severity → fix → result. No unresolved blocker or major defect at delivery.
 If assets or actual playback are unavailable, explicitly say what remains unverified; never call it premium based only on passing metrics.
+
+## Reusable craft system
+Use SKILLS.md to load one department; CRAFT_GUIDE.md explains source truth, Egyptian copy, layered staging and music audition.
+New films add config.production and production.json using templates/production.json. make validates it BEFORE doctor/render,
+checks local assets/timeline/evidence, reports copy warnings and saves review-plan.json in source-film seconds. Legacy films
+remain compatible but show “content preflight unavailable”; migrate when revising them, never silently certify them.
+Production assets automatically enter the relevant audio/picture dependency hashes. Add other external imports to cacheInputs.
+lib/depth.js supplies deterministic shared cameras, parallax, per-layer focus, cover clamping and contact shadows.
+lib/music.mjs prepares recordings at exact length; score.mjs still owns music/SFX mixing. Missing rights records block final plans.
+make records total/delivery seconds and score/text/audio/picture reuse. These measure runtime, not model-token savings.
+At most two music candidates, one creative direction and one independent final critique; stop optional polish after acceptance.

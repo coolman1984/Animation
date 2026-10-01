@@ -15,6 +15,20 @@ const lab = {
   data(c) { return c.getContext('2d', { willReadFrequently: true }).getImageData(0, 0, c.width, c.height); },
   put(c, d) { c.getContext('2d').putImageData(d, 0, 0); return c; },
   url(c) { return c.toDataURL('image/png'); },
+  // Inspect cut-out edges against three backgrounds at original resolution; no asset retouching.
+  matteSheet(src) {
+    const out = lab.canvas(src.width * 3, src.height), g = out.getContext('2d');
+    ['#f5f0e6', '#101820', '#d626b8'].forEach((color, i) => {
+      g.fillStyle = color; g.fillRect(i * src.width, 0, src.width, src.height);
+      g.drawImage(src, i * src.width, 0);
+    });
+    const d = lab.data(src).data;
+    let clear = 0, partial = 0, solid = 0;
+    for (let i = 3; i < d.length; i += 4) {
+      if (d[i] === 0) clear++; else if (d[i] === 255) solid++; else partial++;
+    }
+    return { sheet: out, alpha: { clear, partial, solid, total: src.width * src.height } };
+  },
   // Apply an alpha mask (white = keep) to a copy of src.
   applyMask(src, mask) {
     const out = lab.clone(src); const g = out.getContext('2d');

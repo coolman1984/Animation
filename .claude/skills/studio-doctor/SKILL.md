@@ -3,6 +3,8 @@ name: studio-doctor
 description: Probe the machine — Node, Chromium + device-scale gate, ffmpeg encoders/filters, GPU, Arabic fonts, cores/RAM/disk — and give install guidance. Use at the start of every session before rendering.
 ---
 # studio-doctor
+Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `studio/SKILLS.md`.
+
 
 Run: `node studio/lib/doctor.mjs` (writes `studio/takes/doctor.json`, exit 1 if a required row fails). make.mjs runs it quietly.
 

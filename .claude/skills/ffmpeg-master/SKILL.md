@@ -3,6 +3,8 @@ name: ffmpeg-master
 description: ffmpeg cookbook for the studio — pipe PNG frames to x264, concat slices, mux, two-pass share copies, loudness, freeze/black detection, contact sheets, crops, WebP/GIF previews. Use for any encode/measure step.
 ---
 # ffmpeg-master
+Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `studio/SKILLS.md`.
+
 
 All wrapped in `studio/lib/render.mjs`, `lib/finish.mjs`, `lib/measure.mjs`. Raw recipes:
 

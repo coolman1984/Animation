@@ -3,6 +3,8 @@ name: thumbnail-poster
 description: Pick and check thumbnails and the poster frame — 3 candidates, ≤ 4 words, contrast, safe areas. Use at delivery time for any film.
 ---
 # thumbnail-poster
+Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `studio/SKILLS.md`.
+
 
 ## Recipe
 - 3 candidates taken from the master at moments where ≤ 4 words are on screen and the product is sharp

@@ -3,6 +3,8 @@ name: subtitles-rtl
 description: Arabic RTL captions — SRT/VTT from the composition's real text timeline, English translations, burn-in rules, line breaking, reading speed. Use when a film has on-screen text or needs captions.
 ---
 # subtitles-rtl
+Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `studio/SKILLS.md`.
+
 
 ## Source of truth
 Captions are **read back** from the composer: `textTimeline()` (`studio/lib/render.mjs`) renders every 0.1 s and
@@ -14,7 +16,7 @@ records which text lines are visible (opacity > 0.5) → start/end per line. No 
 - Burned-in Arabic: real fonts (El Messiri, Aref Ruqaa, Plex Arabic), `direction: rtl`, one span per **word** (never per letter — breaks shaping).
 - Digits: pick Arabic-Indic or Latin per film and keep it everywhere.
 - Ellipsis "…" (U+2026) attaches to the word; no space before Arabic punctuation "؟" "،".
-- Feed placement: keep inside safe area (24 px inset in 4:5; Reels: top 14 %, bottom 35 %, sides 6 %).
+- Feed placement: keep inside safe area (24 px inset in 4:5; Reels: configured safeRect, checked against the intended placement UI).
 - Facebook: upload SRT named `<name>.ar_EG.srt` / `.en_US.srt` if captions should be selectable; burned text already carries the message.
 
 ## Checklist
