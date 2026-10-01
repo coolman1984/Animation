@@ -32,6 +32,8 @@ function heroImg(ds, id, m, src, w, h, { res = 1, off = [0, 0], depth = 1, z = 0
 }
 // Camera pan that puts a zoom-1 screen point at screen (sx,sy) for zoom z (depth-1 plane).
 const aim = ([x1, y1], sx, sy, z) => ({ x: x1 - W / 2 - (sx - W / 2) / z, y: y1 - H / 2 - (sy - H / 2) / z, zoom: z });
+// Path smoothed by a short moving average: no dead stop at interior keys, same value for every scene that shares it.
+const smoothPath = (keys, t, r = 0.45) => { const n = 9, acc = { x: 0, y: 0, zoom: 0, focus: 0, aperture: 0 }; for (let i = 0; i < n; i++) { const c = cameraPath(keys, t + r * (i / (n - 1) * 2 - 1)); for (const k in acc) acc[k] += c[k] / n; } return acc; };
 const div = (parent, style) => el('div', { class: 'abs', style }, parent);
 function sceneRoot() { return div(stage, { width: W + 'px', height: H + 'px', overflow: 'hidden', background: C.ink }); }
 function line(parent, text, font, size, color, style, extra = {}) {
@@ -71,7 +73,7 @@ const cam1Keys = () => {
   const m = m1();
   return [
     { t: 0, ...aim(m.at(1000, 880), W / 2, H * F(0.5, 0.47), F(2.3, 2.6)), focus: 1, aperture: 18 },
-    { t: 2.3, ...aim(m.at(1005, 1130), W / 2, H * F(0.55, 0.53), F(0.98, 1.08)), focus: 1, aperture: 18 },
+    { t: 2.75, ...aim(m.at(1005, 1130), W / 2, H * F(0.55, 0.53), F(0.98, 1.08)), focus: 1, aperture: 18 },
   ];
 };
 function initS1() {
@@ -106,8 +108,7 @@ const k2 = () => F(1.12, 1.32);
 const seatScreen = () => [W / 2 - 20 * k2(), F(1010, 1430)];
 const cam2Keys = () => [
   { t: T1 - 0.3, x: -170, y: 0, zoom: 1.075, focus: 1, aperture: 12 },
-  { t: 4.9, x: 0, y: 0, zoom: 1.0, focus: 1, aperture: 12 },
-  { t: T2 + 0.3, x: 8, y: -4, zoom: 1.012, focus: 1, aperture: 12 },
+  { t: T2 + 0.3, x: 6, y: -4, zoom: 1.0, focus: 1, aperture: 12 },
 ];
 const swingTheta = (t) => 0.5 * Math.exp(-(t - T1) * 0.18) * Math.sin((2 * Math.PI * (t - T1)) / 3.6 + 0.4);
 function initS2() {
@@ -121,8 +122,10 @@ function initS2() {
   const rig = ds.add('rig', { src: P('swing-rig.png'), width: RIG.w, height: RIG.h, x: sx + (540 - RIG.seat[0]) * k, y: sy - RIG.seat[1] * k, anchor: [0.5, 0], scale: k, z: 3 });
   rig.firstChild.style.filter = 'brightness(0.86) saturate(0.92) contrast(1.05)';
   // Contact shadow + the real cup (hero-cup 1600², scale 0.62 → base centre on the seat at rig (544,1866)).
-  const sh = div(rig, { left: (544 - 150) + 'px', top: (1866 - 22) + 'px', width: '300px', height: '44px' }); ellipseShadow(sh, 0.62);
-  const cupS = 0.62;
+  // Contact shadow (tight core + soft spread) where the real cup's foot meets the wood.
+  const sh2 = div(rig, { left: (544 - 200) + 'px', top: (1862 - 30) + 'px', width: '400px', height: '60px' }); ellipseShadow(sh2, 0.4);
+  const sh = div(rig, { left: (544 - 128) + 'px', top: (1864 - 13) + 'px', width: '256px', height: '26px' }); ellipseShadow(sh, 0.85);
+  const cupS = 0.645; // covers the poster cup's foot exactly (base 230 vs 224 px)
   el('img', { src: P('hero-cup.png'), class: 'abs', style: { width: 1600 * cupS + 'px', height: 1600 * cupS + 'px', left: (544 - 1006 * cupS).toFixed(1) + 'px', top: (1866 - 1558 * cupS).toFixed(1) + 'px' } }, rig);
   const rim = div(rig, { left: (544 - 300) + 'px', top: (1866 - 560) + 'px', width: '600px', height: '560px', background: 'radial-gradient(ellipse 50% 50% at 50% 30%, rgba(255,236,190,0.10), rgba(0,0,0,0))', mixBlendMode: 'screen' });
   const lf = ds.add('leaf', { width: 260, height: 260, x: F(-60, -70), y: H - F(60, 120), depth: 1.9, scale: F(2.4, 2.8), rotation: -58, z: 5, opacity: 0.85 });
@@ -189,7 +192,7 @@ function initS3() {
 }
 function renderS3(t) {
   const s = S.s3; const vis = t >= T2 - 0.2 && t < T3; show(s.root, vis); if (!vis) return;
-  let cam = composeCamera(cameraPath(cam3Keys(), t), microDrift(t, { seed: 9, x: 1, y: 1, zoom: 0.001 }));
+  let cam = composeCamera(smoothPath(cam3Keys(), t), microDrift(t, { seed: 9, x: 1, y: 1, zoom: 0.001 }));
   // Resolve from the handoff blur onto the carton, hold, then rack back to the cup.
   const f = t < 8.2 ? rackFocus(t, { start: T2 - 0.2, end: 7.0, from: 1.6, to: 0.8, aperture: lerp(26, 22, ramp(t, T2 - 0.2, 7.0)) })
     : rackFocus(t, { start: 8.2, end: 8.85, from: 0.8, to: 1, aperture: 22 });
@@ -222,7 +225,7 @@ function initS4() {
 }
 function renderS4(t) {
   const s = S.s4; const vis = t >= T3 && t < T4 + 0.02; show(s.root, vis); if (!vis) return;
-  const cam = composeCamera(cameraPath(cam3Keys(), t), microDrift(t, { seed: 13, x: 0.8, y: 0.8, zoom: 0.0008 }));
+  const cam = composeCamera(smoothPath(cam3Keys(), t), microDrift(t, { seed: 13, x: 0.8, y: 0.8, zoom: 0.0008 }));
   s.ds.render(cam);
   // Focus band follows the frame centre (in cup-2x pixels: screen centre back-projected through the camera).
   const m = m3(); const cy = (H * 0.5 - H / 2) / cam.zoom + H / 2 + cam.y; // zoom-1 screen y at frame centre
@@ -240,8 +243,8 @@ const m5 = () => mapper(1005, 1130, W / 2, F(700, 1060), F(0.86, 0.98));
 const cam5Keys = () => {
   const m = m5(), c = m.at(1005, 1130);
   return [
-    { t: T4 - 0.25, ...aim(c, W / 2 + 40, F(700, 1060), 1.0), focus: 1, aperture: 10 },
-    { t: 16.85, ...aim(c, W / 2, F(700, 1060), 1.09), focus: 1, aperture: 10 },
+    { t: T4 - 0.25, ...aim(c, W / 2 + 90, F(712, 1076), 0.95), focus: 1, aperture: 10 },
+    { t: 16.85, ...aim(c, W / 2 - 10, F(696, 1056), 1.12), focus: 1, aperture: 10 },
     { t: 18.25, ...aim(c, W / 2, F(880, 1200), F(1.0, 1.04)), focus: 1, aperture: 16 },
   ];
 };
@@ -265,6 +268,10 @@ function initS5() {
   bokeh(ds, 'gold', 9, 57, { depth: 0.5, z: 1, colors: ['rgba(240,196,118,0.30)', 'rgba(255,224,170,0.20)'], size: [70, 170], area: [0, 0.04, 1, F(0.5, 0.45)] });
   const green = ds.add('green', { width: W * 3, height: H * 3, depth: 0, z: 2 });
   green.style.background = `radial-gradient(ellipse 48% 38% at 50% ${F(62, 58)}%, ${C.deep2}, ${C.ink} 78%)`;
+  // A dark stone ledge under the cup (the window sill): top face, a thin warm edge, front face falling into shadow.
+  const baseY = m.at(1006, 1556)[1];
+  const ledge = ds.add('ledge', { width: 3200, height: 1000, x: W / 2, y: baseY - 52 + 500, depth: 1, z: 3 });
+  ledge.style.background = 'linear-gradient(180deg, rgba(40,30,20,0) 0px, #3B2C1C 8px, #261B11 78px, rgba(227,198,136,0.5) 96px, #17100A 101px, #0A0704 60%)';
   const [ux, uy] = m.at(1006, 1556);
   const ush = ds.add('cupSh', { width: 700, height: 90, x: ux, y: uy, depth: 1, scale: m.sc, z: 3 }); ellipseShadow(ush, 0.72);
   const refl = heroImg(ds, 'refl', m, P('hero-cup.png'), 1600, 1600, { z: 3 });
@@ -280,11 +287,11 @@ function initS5() {
   arch.style.filter = 'blur(5px)';
   archSvg(arch, AW, AH, F(700, 740), F(1180, 1560), AW / 2, AH / 2);
   // Brand payoff (outside the depth scene: focus never blurs type).
-  const logoW = F(200, 290), logoTop = F(52, 286);
+  const logoW = F(230, 290), logoTop = F(48, 286);
   const logo = el('img', { src: P('logo-white.png'), class: 'abs', style: { width: logoW + 'px', left: (W / 2 - logoW / 2) + 'px', top: logoTop + 'px', zIndex: 8 } }, root);
   const yAr = logoTop + logoW * 0.86 + F(22, 34);
   const ar = line(root, 'لحظتك مع الماتشا', AR, F(62, 80), C.cream, centered(yAr), { zIndex: 8 });
-  const en = line(root, 'YOUR MATCHA MOMENT', EN, F(21, 24), C.goldLt, centered(yAr + F(84, 112)), { zIndex: 8, direction: 'ltr', letterSpacing: '0.34em', textShadow: 'none' });
+  const en = line(root, 'YOUR MATCHA MOMENT', { ...EN, fontWeight: 600 }, F(26, 30), '#EBD39E', centered(yAr + F(84, 112)), { zIndex: 8, direction: 'ltr', letterSpacing: '0.34em', textShadow: 'none' });
   S.s5 = { root, ds, green, glow, sweep, arch, logo, ar, en, bg };
 }
 function renderS5(t) {
@@ -294,7 +301,7 @@ function renderS5(t) {
   const drift = microDrift(t, { seed: 17, x: 1.4 * (1 - settle), y: 1 * (1 - settle), zoom: 0.0012 * (1 - settle) });
   s.ds.render(composeCamera(cameraPath(keys, Math.min(t, 18.25)), drift), {
     green: { opacity: ease.inOutSine(ramp(t, 16.7, 17.9)) },
-    arch: { opacity: 1 - ease.inOutSine(ramp(t, 16.6, 17.25)), scale: Math.pow(cameraPath(keys, Math.min(t, 18.25)).zoom, 2.6), x: W / 2 - 40 * (1 - ease.inOutSine(ramp(t, T4 - 0.25, 16.85))) * 1.6 },
+    arch: { opacity: 1 - ease.inOutSine(ramp(t, 16.6, 17.25)), scale: Math.pow(cameraPath(keys, Math.min(t, 18.25)).zoom, 2.6), x: W / 2 + 150 * (1 - ease.inOutSine(ramp(t, T4 - 0.25, 16.85))) - 20 },
     glow: { opacity: 1 - 0.6 * ease.inOutSine(ramp(t, 16.8, 17.9)) },
   });
   const sp = ramp(t, 14.7, 16.0); show(s.sweep, sp > 0 && sp < 1);
