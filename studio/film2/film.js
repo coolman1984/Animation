@@ -134,8 +134,15 @@ const CUP_C = [1005, 1150];
 const S2_END_Y = () => (R ? 580 : 770);
 function camS2(t) {
   // Reels: settle within 2.6 s so every callout lands above the bottom UI zone.
-  const p = ease.inOutSine(R ? ramp(t, T.s2[0], T.s2[0] + 2.6) : ramp(t, T.s2[0], T.s2[1] + 1));
-  const [X0, Yb, s0] = R ? [667.05, 1098.5, 1.21] : [642.9, 920, 0.98];
+  if (R) {
+    // Reels: settle near the end framing within 2.6 s (callouts above the UI zone), then keep a slow
+    // push into the exact hand-off framing for the portal (715, 580, 1.04).
+    const a = ease.inOutSine(ramp(t, T.s2[0], T.s2[0] + 2.6)), b = ease.inOutSine(ramp(t, T.s2[0] + 2.6, 13.45));
+    const X = lerp(lerp(667.05, 700, a), 715, b), Y = lerp(lerp(1098.5, 592, a), S2_END_Y(), b), s = lerp(lerp(1.21, 0.99, a), 1.04, b);
+    return { cx: CUP_C[0] - (X - W / 2) / s, cy: CUP_C[1] - (Y - H / 2) / s, s };
+  }
+  const p = ease.inOutSine(ramp(t, T.s2[0], T.s2[1] + 1));
+  const [X0, Yb, s0] = [642.9, 920, 0.98];
   const X = lerp(X0, 715, p), Y = lerp(Yb, S2_END_Y(), p), s = lerp(s0, 1.04, p);
   return { cx: CUP_C[0] - (X - W / 2) / s, cy: CUP_C[1] - (Y - H / 2) / s, s };
 }
@@ -166,7 +173,7 @@ function renderS2(t) {
   show(s2.root, vis); if (!vis) return;
   s2.root.style.opacity = prog(t, T.s2[0] - 0.45, T.s2[0]);
   const cam = camS2(t);
-  const bc = { cx: 1300, cy: 700, s: 1.0 + 0.04 * ramp(t, T.s2[0], 14) };
+  const bc = R ? { cx: lerp(1100, 980, ramp(t, T.s2[0], 14)), cy: 700, s: lerp(1.22, 1.36, ramp(t, T.s2[0], 14)) } : { cx: 1300, cy: 700, s: 1.0 + 0.04 * ramp(t, T.s2[0], 14) };
   place(s2.back, R ? fill(bc, 1600, 1600) : bc, 1, { cx: 1300, cy: 700 });
   const k = place(s2.cup, cam);
   place(s2.refl, cam, 1, undefined, ' translate(0px, 3096px) scale(1, -1)');
@@ -208,7 +215,7 @@ function initS3() {
 }
 const camS3 = (t) => {
   // Starts pixel-matched to scene 2's cup (screen 715,S2_END_Y at s 1.04), then pulls out to the duo.
-  const cy0 = CUP_C[1] - (S2_END_Y() - H / 2) / 1.04;
+  const cy0 = R ? CUP_C[1] - (S2_END_Y() - H / 2) / 1.04 : 1058.7;
   if (R) {
     // Reels: the frame is taller than the photo allows at s 1.04, so push in through the window
     // while it opens (reaching full cover as the arch fills the frame), then drift.
@@ -224,7 +231,7 @@ function renderS3(t) {
   const s3 = S.s3;
   const vis = t >= 12.7 && t < 21.7;
   show(s3.root, vis); show(s3.frame, vis); if (!vis) return;
-  s3.hero.set(camS3(t), { ref: { cx: 836.7, cy: CUP_C[1] - (S2_END_Y() - H / 2) / 1.04 }, pBg: R ? 1 : 0.9, pCarton: 0.98, sweepP: ramp(t, 16.2, 17.9) });
+  s3.hero.set(camS3(t), { ref: { cx: 836.7, cy: R ? CUP_C[1] - (S2_END_Y() - H / 2) / 1.04 : 1058.7 }, pBg: R ? 1 : 0.9, pCarton: 0.98, sweepP: ramp(t, 16.2, 17.9) });
   // Portal: the balcony arch draws itself, then opens to fill the frame.
   const cx = 715, cy0 = S2_END_Y();
   const grow = ease.inOutCubic(ramp(t, 13.45, 14.5));
@@ -350,7 +357,7 @@ function swingLogoAt(t) {
 // with slow floating pearls; the "every sip" line sits on clean space above the product.
 const T4B = [8 * BAR + 2 * BAR - 0.3, 12 * BAR + 0.6];
 function initS4b() {
-  const root = sceneRoot(`radial-gradient(ellipse 75% 60% at 50% 52%, #24493F, ${C.ink} 75%)`);
+  const root = sceneRoot(`radial-gradient(ellipse 75% 60% at 50% ${R ? 52 : 58}%, #24493F, ${C.ink} 75%)`);
   el('div', { class: 'abs', style: { ...bleed(), background: 'radial-gradient(ellipse 38% 34% at 50% 58%, rgba(255,196,120,0.20), rgba(255,196,120,0) 70%)' } }, root);
   const back = el('svg', { width: W, height: H, viewBox: `0 0 ${W} ${H}`, class: 'abs', style: { overflow: 'visible' } }, root);
   pearl(back, 'pgb');
@@ -477,8 +484,8 @@ function initS6() {
   const front = svgLayer(content);
   const rail = mk(7, front);
   const balusters = mk(4, front);
-  const l1 = line(content, 'قعدتك الحلوة…', FONT.display, 86, C.cream, centered(1078));
-  const l2 = line(content, 'مستنياك.', FONT.ruqaa, 100, C.matchaLight, centered(1190));
+  const l1 = line(content, 'قعدتك الحلوة…', FONT.display, 86, C.cream, centered(R ? 1068 : 1078));
+  const l2 = line(content, 'مستنياك.', FONT.ruqaa, 100, C.matchaLight, centered(R ? 1180 : 1190));
   const logo = el('img', { src: P('logo-white.png'), class: 'abs', style: { width: '186px', left: (W / 2 - 93) + 'px', top: '24px', filter: 'drop-shadow(0 2px 14px rgba(0,0,0,0.35))' } }, content);
   const sub = el('div', { class: 'abs', text: 'CHOCOLATE CAFE', style: { top: '192px', left: '0', width: W + 'px', textAlign: 'center', fontFamily: 'Montserrat', fontWeight: 600, fontSize: '25px', letterSpacing: '0.3em', color: C.cream, opacity: 0 } }, content);
   const name = line(content, 'ماتشا جوز الهند بالبوبا', FONT.display, 62, C.cream, centered(1100));
@@ -496,7 +503,7 @@ function renderS6(t) {
   if (!vis) return;
   const t0 = T.s6[0], t7 = T.s7[0];
   s6.root.style.opacity = prog(t, t0 - 0.3, t0 + 0.2);
-  const bc = R ? { cx: 800, cy: 640, s: lerp(1.22, 1.36, ramp(t, t0 - 0.3, 60)) } : { cx: 800, cy: 640, s: lerp(0.92, 0.98, ramp(t, t0, t7)) };
+  const bc = R ? { cx: lerp(700, 960, ramp(t, t0 - 0.3, 60)), cy: 640, s: lerp(1.22, 1.5, ramp(t, t0 - 0.3, 60)) } : { cx: 800, cy: 640, s: lerp(0.92, 0.98, ramp(t, t0, t7)) };
   place(s6.back, R ? fill(bc, 1600, 1600) : bc, 1, { cx: 800, cy: 640 });
   // Arch: S6 balcony window → S7 end-card frame.
   const m = ease.inOutCubic(ramp(t, t7, t7 + 1.2));
