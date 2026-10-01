@@ -16,3 +16,4 @@
 | Judge | 0–2.4 | hook energy fades into the cut | minor | pull-back still moving at the rope wipe; pad swell + riser into 2.5 s | — |
 | Judge | 17.5–20 | English line small | minor | 26/30 px, weight 600, brighter gold; 4:5 logo 230 px | — |
 | Judge | 17.5–20 (4:5) | "English line touches lid" | — | not reproduced: ≈170 px gap measured | no change |
+| Final take05 | — | reels20 + feed20: all technical gates pass; 21 timestamps per format checked on the exported files; judge blocker/majors verified fixed. Remaining minor: the poster's empty rope hole on the seat's left end (4–6 s) | — | — | delivered |
