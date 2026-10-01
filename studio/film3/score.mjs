@@ -60,9 +60,9 @@ bell(lead, bt(9) + 0.05, 81, 0.28, { p: 0.15, decay: 1.6 }); bell(lead, bt(9) + 
 // Sound design, only where it serves the picture (times from film.js).
 ice(fx, 0.08, 0.7, 1); ice(fx, 0.62, 0.42, 2);
 noiseHit(fx, 3.0, { dur: 0.03, vel: 0.08, bp: 2600, q: 2, p: 0, seed: 91 });          // matched cut 3 s
-whoosh(fx, 6.7, 0.65, 0.16, { f0: 260, f1: 2400, p0: 0.7, p1: -0.7, seed: 7 });          // leaf pass 7 s
+whoosh(fx, 6.76, 0.48, 0.16, { f0: 260, f1: 2400, p0: 0.7, p1: -0.7, seed: 7 });          // leaf pass 7 s
 noiseHit(fx, 11.0, { dur: 0.03, vel: 0.08, bp: 2600, q: 2, p: 0, seed: 92 });         // matched cut 11 s
-whoosh(fx, 14.7, 0.65, 0.16, { f0: 260, f1: 2400, p0: 0.7, p1: -0.7, seed: 8 });         // leaf pass 15 s
+whoosh(fx, 14.76, 0.48, 0.16, { f0: 260, f1: 2400, p0: 0.7, p1: -0.7, seed: 8 });         // leaf pass 15 s
 [83, 86, 90].forEach((m, i) => bell(fx, 19.65 + i * 0.09, m, 0.14, { p: -0.3 + i * 0.3, decay: 1.2 })); // arch reveal
 
 const hp = (bus, f) => { for (const ch of ['L', 'R']) { const a = biquad('hp', f, 0.7), b = biquad('hp', f, 0.7); const x = bus[ch]; for (let i = 0; i < bus.n; i++) x[i] = b(a(x[i])); } };

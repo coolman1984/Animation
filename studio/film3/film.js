@@ -66,6 +66,9 @@ function leaf(parent, id, c1 = '#2E6B35', c2 = '#7FA84A') {
   const g = el('linearGradient', { id, x1: 0, y1: 0, x2: 1, y2: 1 }, el('defs', {}, s));
   el('stop', { offset: 0, 'stop-color': c2 }, g); el('stop', { offset: 1, 'stop-color': c1 }, g);
   el('path', { d: 'M -112 10 C -60 -80 60 -95 116 -10 C 60 60 -50 75 -112 10 Z', fill: `url(#${id})` }, s);
+  el('path', { d: 'M -104 9 C -40 -6 40 -14 110 -9', fill: 'none', stroke: 'rgba(214,232,170,0.55)', 'stroke-width': 3.2 }, s);
+  const veins = [-70, -40, -10, 20, 50, 80].map((x) => `M ${x} ${(-2 - x * 0.04).toFixed(1)} Q ${x + 14} ${-30 - Math.abs(x) * 0.1} ${x + 30} ${-52 + Math.abs(x) * 0.25} M ${x} ${(-2 - x * 0.04).toFixed(1)} Q ${x + 12} ${22} ${x + 26} ${44 - Math.abs(x) * 0.22}`).join(' ');
+  el('path', { d: veins, fill: 'none', stroke: 'rgba(190,215,140,0.32)', 'stroke-width': 1.6 }, s);
   return s;
 }
 function placeLeaf(L, x, y, rot, sc, blur, op = 1) {
@@ -78,15 +81,15 @@ const T1 = 3.0, T2 = 7.0, T3 = 11.0, T4 = 15.0, T5 = 20.0, END = 25.0;
 
 // S1 — cold detail: lid and ice in the real bar, short pull-back; focus travels from the ice to the logo.
 const camS1 = (t) => {
-  const [cx, cy, s] = kf([[0, [1005, F(820, 860), F(1.6, 1.75)]], [T1, [1005, F(1080, 1240), F(0.98, 0.86)], ease.outCubic]], t);
+  const [cx, cy, s] = kf([[0, [1060, F(820, 860), F(1.6, 1.75)]], [T1, V ? [985, 1159, 1.05] : [1005, 1080, 0.98], ease.outCubic]], t);
   return { cx, cy, s };
 };
 // S3 — the real counter: truck from the cup to the carton (focus pulls to it), back, then push into the cup.
 const camS3 = (t) => {
   const [cx, cy, s] = kf([
-    [T2, [930, F(1000, 1207), F(1.0, 0.85)]],
-    [8.3, [700, F(1000, 1207), F(1.0, 0.85)], ease.inOutSine],
-    [9.4, [705, F(1000, 1207), F(1.0, 0.85)], ease.linear],
+    [T2, [960, F(1000, 1160), 1.0]],
+    [8.3, [F(815, 840), F(1000, 1160), 1.0], ease.inOutSine],
+    [9.4, [F(820, 845), F(1000, 1160), 1.0], ease.linear],
     [T3, [1005, F(1235, 1420), 1.35], ease.inOutCubic],
   ], t);
   return { cx, cy, s };
@@ -95,10 +98,10 @@ const camS3 = (t) => {
 const S1_END = () => { const c = camS1(T1); const [X, Y] = screenOf(c, ...CUP); return [X, Y, c.s]; };
 const S3_END = () => { const c = camS3(T3); const [X, Y] = screenOf(c, ...CUP); return [X, Y, c.s]; };
 const poseS2 = (t) => { const [X, Y, s] = S1_END(); return kf([[T1, [X, Y, s]], [T2, [X - F(60, 50), Y + F(14, 8), s * 1.05], ease.inOutSine]], t); };
-const poseS4 = (t) => { const [X, Y, s] = S3_END(); return kf([[T3, [X, Y, s]], [12.3, [F(760, 740), F(420, 520), 1.45], ease.inOutCubic], [T4, [F(752, 732), F(412, 512), 1.47], ease.linear]], t); };
-const poseS5 = (t) => kf([[T4, [F(575, 570), F(780, 900), F(1.0, 0.98)]], [20.6, [F(560, 556), F(758, 880), F(1.07, 1.04)], ease.inOutSine]], t);
+const poseS4 = (t) => { const [X, Y, s] = S3_END(); return kf([[T3, [X, Y, s]], [12.3, [F(760, 720), F(430, 600), F(1.22, 1.4)], ease.inOutCubic], [T4, [F(754, 714), F(424, 594), F(1.24, 1.42)], ease.linear]], t); };
+const poseS5 = (t) => kf([[T4, [F(575, 570), F(780, 975), F(1.0, 1.06)]], [20.6, [F(560, 556), F(758, 950), F(1.07, 1.12)], ease.inOutSine]], t);
 const poseS6 = (t) => {
-  const a = poseS5(Math.min(t, 20.6)), b = [540, F(720, 830), F(0.8, 0.72)];
+  const a = poseS5(Math.min(t, 20.6)), b = [540, F(690, 785), F(0.74, 0.64)];
   const m = ease.inOutCubic(ramp(t, 20.6, 21.7));
   const breath = 1 + 0.012 * ease.inOutSine(ramp(t, 21.7, END));
   return [lerp(a[0], b[0], m), lerp(a[1], b[1], m), lerp(a[2], b[2], m) * breath];
@@ -109,10 +112,10 @@ function sceneRoot(bg) { return el('div', { class: 'abs', style: { width: W + 'p
 
 function barRig(root) {
   const bg = img(root, P('bar-tall.png'), 1600, 2400);
-  const cartonSh = el('div', { class: 'abs', style: { width: '520px', height: '70px', borderRadius: '50%', transformOrigin: '0 0', background: 'radial-gradient(closest-side, rgba(0,0,0,0.5), rgba(0,0,0,0))' } }, root);
+  const cartonSh = el('div', { class: 'abs', style: { width: '520px', height: '70px', borderRadius: '50%', transformOrigin: '0 0', background: 'radial-gradient(closest-side, rgba(0,0,0,0.78), rgba(0,0,0,0))' } }, root);
   const carton = img(root, P('hero-carton.png'), 1600, 1600);
   const rig = cupRig(root, { reflect: 0.1, shadow: 0.6 });
-  const cupSoft = img(root, P('hero-cup.png'), 1600, 1600, { filter: 'blur(4px)' });
+  const cupSoft = img(root, P('hero-cup.png'), 1600, 1600, { filter: 'blur(3px)' });
   root.appendChild(rig.cup); // sharp cup above its blurred twin (rack focus)
   return {
     bg, carton, cartonSh, rig, cupSoft,
@@ -128,7 +131,7 @@ function barRig(root) {
       cupSoft.style.transform = T(cam.cx, cam.cy, cam.s);
       if (focus) {
         // sharp only around the focus point (cup-space px), the twin underneath carries the defocus
-        rig.cup.style.webkitMaskImage = `radial-gradient(circle 300px at ${focus[0].toFixed(0)}px ${focus[1].toFixed(0)}px, #000 55%, transparent 100%)`;
+        rig.cup.style.webkitMaskImage = `radial-gradient(circle 430px at ${focus[0].toFixed(0)}px ${focus[1].toFixed(0)}px, #000 62%, transparent 100%)`;
         show(cupSoft, true);
       } else { rig.cup.style.webkitMaskImage = 'none'; show(cupSoft, cupBlur > 0.05); cupSoft.style.filter = `blur(${cupBlur.toFixed(2)}px)`; }
       if (!focus) rig.cup.style.opacity = (1 - clamp(cupBlur / 2.5)).toFixed(3);
@@ -137,9 +140,10 @@ function barRig(root) {
   };
 }
 
+function counterFade(root) { if (V) el('div', { class: 'abs', style: { top: '1180px', width: W + 'px', height: '740px', background: 'linear-gradient(180deg, rgba(5,4,3,0), rgba(5,4,3,0.82) 55%, rgba(5,4,3,0.95))' } }, root); }
 function initS1() {
   const root = sceneRoot('#0b0806');
-  const rig = barRig(root);
+  const rig = barRig(root); counterFade(root);
   const scrim = el('div', { class: 'abs', style: { width: W + 'px', height: F(460, 760) + 'px', background: 'linear-gradient(180deg, rgba(6,5,4,0.6), rgba(6,5,4,0))' } }, root);
   const l1 = line(root, 'مش أي ماتشا…', TITLE, F(88, 88), C.cream, V ? { top: '330px', right: '72px', justifyContent: 'flex-start' } : centered(118));
   S.s1 = { root, rig, scrim, l1 };
@@ -147,8 +151,8 @@ function initS1() {
 function renderS1(t) {
   const s = S.s1; show(s.root, t < T1); if (t >= T1) return;
   const f = ease.inOutCubic(ramp(t, 0.2, 2.2));
-  s.rig.set(camS1(t), { cartonBlur: 3, focus: [lerp(1000, 1003, f), lerp(815, 1150, f)] });
-  playLine(s.l1, t, 0.45, 2.6);
+  s.rig.set(camS1(t), { cartonBlur: lerp(9, 3, ease.inOutSine(ramp(t, 0, T1))), focus: [lerp(1000, 1003, f), lerp(815, 1150, f)] });
+  playLine(s.l1, t, 0.08, 2.6);
 }
 
 function initS2() {
@@ -177,24 +181,24 @@ function renderS2(t) {
 
 function initS3() {
   const root = sceneRoot('#0b0806');
-  const rig = barRig(root);
+  const rig = barRig(root); counterFade(root);
   const scrim = el('div', { class: 'abs', style: { width: W + 'px', height: F(420, 720) + 'px', background: 'linear-gradient(180deg, rgba(6,5,4,0.55), rgba(6,5,4,0))' } }, root);
-  const l1 = line(root, 'مع جوز الهند', TITLE, F(72, 66), C.cream, { top: F(138, 330) + 'px', right: F(60, 72) + 'px', justifyContent: 'flex-start' });
+  const l1 = line(root, 'مع جوز الهند', TITLE, F(76, 72), C.cream, { top: F(138, 330) + 'px', right: F(60, 72) + 'px', justifyContent: 'flex-start' });
   S.s3 = { root, rig, scrim, l1 };
 }
 function renderS3(t) {
   const s = S.s3; const vis = t >= T2 - 0.05 && t < T3; show(s.root, vis); if (!vis) return;
   const toCarton = ease.inOutSine(ramp(t, 7.2, 8.2)), back = ease.inOutSine(ramp(t, 9.4, 10.2));
   const k = toCarton * (1 - back);
-  s.rig.set(camS3(t), { cartonBlur: 4 * (1 - k), cupBlur: 2.6 * k });
+  s.rig.set(camS3(t), { cartonBlur: 1.2 + 3.5 * (1 - k), cupBlur: 1.6 * k });
   playLine(s.l1, t, 7.75, 10.35);
 }
 
 function initS4() {
   const root = sceneRoot(`radial-gradient(ellipse 80% 70% at 62% 45%, ${C.cream}, ${C.creamDk} 85%)`);
   const rig = cupRig(root, { reflect: 0.1, shadow: 0.32 });
-  const l1 = line(root, 'وبوبا', TITLE, F(84, 80), C.deep, { top: F(700, 690) + 'px', left: F(60, 70) + 'px', width: F(370, 330) + 'px', justifyContent: 'flex-start' });
-  const l2 = line(root, 'تكمل اللحظة', TITLE, F(66, 60), C.deep, { top: F(808, 790) + 'px', left: F(60, 70) + 'px', width: F(370, 330) + 'px', justifyContent: 'flex-start' });
+  const l1 = line(root, 'وبوبا', TITLE, F(88, 82), C.deep, { top: F(640, 760) + 'px', left: F(60, 70) + 'px', width: F(400, 330) + 'px', justifyContent: 'flex-start' });
+  const l2 = line(root, 'تكمل اللحظة', TITLE, F(68, 54), C.deep, { top: F(752, 868) + 'px', left: F(60, 70) + 'px', width: F(400, 330) + 'px', justifyContent: 'flex-start' });
   S.s4 = { root, rig, l1, l2 };
 }
 function renderS4(t) {
@@ -206,18 +210,18 @@ function renderS4(t) {
 }
 
 function initS5() {
-  const root = sceneRoot('#120b05');
-  const bg = img(root, P('bar-tall.png'), 1600, 2400, { filter: 'blur(9px) sepia(0.25) saturate(1.2) brightness(0.62)' });
-  const glow = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', background: `radial-gradient(ellipse 42% 34% at 50% ${F(50, 46)}%, rgba(214,170,90,0.34), rgba(214,170,90,0) 72%)` } }, root);
+  const root = sceneRoot(`radial-gradient(ellipse 80% 62% at 50% ${F(46, 44)}%, #6B4A22, #2A1A0C 62%, #120a05)`);
+  const bg = img(root, P('bar-tall.png'), 1600, 2400, { filter: 'blur(16px) sepia(0.45) saturate(1.3) brightness(0.7)', opacity: 0.38, mixBlendMode: 'screen' });
+  const glow = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', background: `radial-gradient(ellipse 42% 34% at 50% ${F(50, 46)}%, rgba(236,190,105,0.42), rgba(236,190,105,0) 72%)` } }, root);
   const cartonSh = el('div', { class: 'abs', style: { width: '520px', height: '70px', borderRadius: '50%', transformOrigin: '0 0', background: 'radial-gradient(closest-side, rgba(0,0,0,0.45), rgba(0,0,0,0))' } }, root);
-  const carton = img(root, P('hero-carton.png'), 1600, 1600, { filter: 'blur(7px) brightness(0.5) saturate(0.8) sepia(0.2)' });
+  const carton = img(root, P('hero-carton.png'), 1600, 1600, { display: 'none' });
   const r5 = rng(55);
-  const gold = Array.from({ length: 7 }, () => { const d = 70 + r5() * 150; return { e: el('div', { class: 'abs', style: { width: d + 'px', height: d + 'px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(236,196,120,0.30), rgba(236,196,120,0) 70%)', filter: 'blur(6px)' } }, root), x: r5() * W, y: H * (0.08 + r5() * 0.5), d }; });
-  const rig = cupRig(root, { reflect: 0.12, shadow: 0.6 });
-  const sweep = el('div', { class: 'abs', style: { width: '1600px', height: '1600px', transformOrigin: '0 0', mixBlendMode: 'screen', WebkitMaskImage: `url(${P('hero-cup.png')})`, WebkitMaskSize: '1600px 1600px', backgroundImage: 'linear-gradient(100deg, rgba(255,240,210,0) 44%, rgba(255,232,190,0.42) 50%, rgba(255,240,210,0) 56%)', backgroundSize: '300% 100%', backgroundRepeat: 'no-repeat' } }, root);
+  const gold = Array.from({ length: 11 }, () => { const d = 70 + r5() * 150; return { e: el('div', { class: 'abs', style: { width: d + 'px', height: d + 'px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(236,196,120,0.30), rgba(236,196,120,0) 70%)', filter: 'blur(6px)' } }, root), x: r5() * W, y: H * (0.08 + r5() * 0.5), d }; });
+  const rig = cupRig(root, { reflect: 0.18, shadow: 0.62 });
+  const sweep = el('div', { class: 'abs', style: { width: '1600px', height: '1600px', transformOrigin: '0 0', mixBlendMode: 'screen', WebkitMaskImage: `url(${P('hero-cup.png')})`, WebkitMaskSize: '1600px 1600px', backgroundImage: 'linear-gradient(100deg, rgba(255,240,210,0) 44%, rgba(255,236,196,0.62) 50%, rgba(255,240,210,0) 56%)', backgroundSize: '300% 100%', backgroundRepeat: 'no-repeat' } }, root);
   const fg = leaf(root, 'lf5', '#24552C', '#6E9A3E');
   const scrim = el('div', { class: 'abs', style: { width: W + 'px', height: F(400, 700) + 'px', background: 'linear-gradient(180deg, rgba(10,6,3,0.5), rgba(10,6,3,0))' } }, root);
-  const l1 = line(root, 'خُد لحظتك', TITLE, F(104, 108), C.cream, centered(F(110, 300)));
+  const l1 = line(root, 'خُد لحظتك', TITLE, F(104, 108), C.cream, centered(F(110, 320)));
   S.s5 = { root, bg, glow, carton, cartonSh, rig, sweep, fg, scrim, l1, gold };
 }
 const u5 = (t) => ease.inOutSine(ramp(t, T4, 20.6));
@@ -228,6 +232,7 @@ function renderS5(t) {
   s.rig.set(cam);
   s.sweep.style.transform = T(cam.cx, cam.cy, cam.s);
   const sp = ramp(t, 16.6, 18.1); show(s.sweep, sp > 0 && sp < 1); s.sweep.style.backgroundPosition = `${lerp(100, -10, sp)}% 0`;
+  show(s.cartonSh, false);
   const b = bgCam(cam, 0.35, 1.05, 1600, 2400); s.bg.style.transform = T(b.cx, b.cy, b.s);
   // Carton set back and to the left: smaller, softer, its base higher than the cup's (depth).
   const cs = sc * 0.58, cxScreen = X - F(380, 360) * sc, baseY = screenOf(cam, 1005, 1552)[1] - 150 * sc;
@@ -247,14 +252,15 @@ function initS6() {
   const logoW = F(190, 220);
   const logo = el('img', { src: P('logo-white.png'), class: 'abs', style: { width: logoW + 'px', left: (W / 2 - logoW / 2) + 'px', top: F(64, 290) + 'px' } }, root);
   const ruleY = F(64, 290) + logoW * 0.86 * 0.42;
-  const rules = [-1, 1].map((d) => el('div', { class: 'abs', style: { top: ruleY + 'px', height: '1.5px', width: F(110, 120) + 'px', left: (W / 2 + d * (logoW / 2 + 30) - (d < 0 ? F(110, 120) : 0)) + 'px', background: `linear-gradient(${d < 0 ? 90 : 270}deg, rgba(201,165,92,0), ${C.gold})`, transformOrigin: d < 0 ? '100% 50%' : '0 50%' } }, root));
-  const pill = el('div', { class: 'abs', style: { left: '0', top: F(1100, 1128) + 'px', width: W + 'px', display: 'flex', justifyContent: 'center' } }, root);
-  const pillIn = el('div', { style: { background: C.cream, color: C.deep, borderRadius: '999px', padding: '18px 60px 22px', boxShadow: '0 10px 30px rgba(0,0,0,0.35)', direction: 'rtl' } }, pill);
-  const cta = textLine(pillIn, 'جرّبها النهارده', { ...BODY, fontSize: F(54, 56) + 'px', lineHeight: 1.2, color: C.deep });
+  const rules = [-1, 1].map((d) => el('div', { class: 'abs', style: { top: ruleY + 'px', height: '3px', width: F(120, 130) + 'px', left: (W / 2 + d * (logoW / 2 + 30) - (d < 0 ? F(110, 120) : 0)) + 'px', background: `linear-gradient(${d < 0 ? 90 : 270}deg, rgba(201,165,92,0), ${C.gold})`, transformOrigin: d < 0 ? '100% 50%' : '0 50%' } }, root));
+  const name = line(root, 'ماتشا جوز الهند بالبوبا', TITLE, F(46, 44), C.cream, centered(F(1028, 1066)));
+  const pill = el('div', { class: 'abs', style: { left: '0', top: F(1112, 1140) + 'px', width: W + 'px', display: 'flex', justifyContent: 'center' } }, root);
+  const pillIn = el('div', { style: { background: C.cream, color: C.deep, borderRadius: '999px', padding: '16px 60px 20px', boxShadow: '0 10px 30px rgba(0,0,0,0.35)', direction: 'rtl' } }, pill);
+  const cta = textLine(pillIn, 'جرّبها النهارده', { ...BODY, fontSize: F(54, 52) + 'px', lineHeight: 1.2, color: C.deep });
   cta.line.style.position = 'relative';
   const edge = el('svg', { width: W, height: H, viewBox: `0 0 ${W} ${H}`, class: 'abs', style: { pointerEvents: 'none', overflow: 'visible' } }, stage);
   const stroke = el('path', { fill: 'none', stroke: C.gold, 'stroke-width': 2.5 }, edge);
-  S.s6 = { root, glow, rig, logo, rules, pill, pillIn, cta, edge, stroke };
+  S.s6 = { root, glow, rig, logo, rules, name, pill, pillIn, cta, edge, stroke };
 }
 function archAt(cx, cy, w, h) {
   const r = w / 2, top = cy - h / 2, bot = cy + h / 2;
@@ -278,6 +284,7 @@ function renderS6(t) {
   s.logo.style.filter = lp < 0.999 ? `blur(${(6 * (1 - lp)).toFixed(2)}px)` : 'none';
   const rp = ease.outExpo(ramp(t, 21.0, 21.9));
   s.rules.forEach((r) => { r.style.transform = `scaleX(${rp.toFixed(4)})`; r.style.opacity = rp.toFixed(3); });
+  playLine(s.name, t, 21.05, 99, { rise: 10 });
   const pp = ease.outBack(ramp(t, 21.4, 21.95), 1.4);
   show(s.pill, t >= 21.4);
   s.pillIn.style.transform = `scale(${pp.toFixed(4)})`;
@@ -291,10 +298,10 @@ function initPass(id) {
   return { layer, lf: leaf(layer, id, '#16351D', '#4F7A32') };
 }
 function renderPass(p, t, mid) {
-  const on = t > mid - 0.36 && t < mid + 0.36; show(p.layer, on); if (!on) return;
-  const u = (t - mid) / 0.36; // -1 … 1
+  const on = t > mid - 0.24 && t < mid + 0.24; show(p.layer, on); if (!on) return;
+  const u = (t - mid) / 0.24; // -1 … 1 — full cover only for ~3 frames around the cut
   const x = W / 2 - u * (W * 1.25);
-  placeLeaf(p.lf, x, H / 2 + u * 60, 80 + u * 8, F(13, 14.5), 26, 1);
+  placeLeaf(p.lf, x, H / 2 + u * 60, 80 + u * 8, F(13, 14.5), 14, 1);
 }
 
 export default {

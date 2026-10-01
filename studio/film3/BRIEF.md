@@ -1,6 +1,6 @@
 # BRIEF — Film 3 "خُد لحظتك" · BALACONBAR · 25 s (feed 4:5 + vertical 9:16)
 
-**Status:** in production (see LEDGER.md). Owner brief of 2026-10-01 is the spec; this file records decisions only.
+**Status:** delivered — feed25 = out/film3/take03, reels25 = out/film3/take04 (see LEDGER.md). Owner brief of 2026-10-01 is the spec; this file records decisions only.
 
 ## Truth
 - Product evidence: owner photo `IMG-20261001-WA0017.jpg` (cup + coconut-milk carton). Cup, logo, label, boba and ice
