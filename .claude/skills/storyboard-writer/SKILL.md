@@ -15,7 +15,8 @@ the music and the cut-downs line up.
 ## Rules with numbers
 - First 3 s: hook + finished frame 1. Brand ≤ 5 s. One CTA at the end.
 - Each text line visible ≥ 1.8 s; reading speed ≤ 17 characters/s.
-- No shot > 8 s without a new move or framing (film 2 scene 4 is 10.7 s → beat-cut to a close-up at 28.0 s).
+- No shot > 8 s without a new move or framing.
+- The product you sell leads every scene: a mood visual of a *different* drink gets ≤ 2 bars (film 2 judge).
 - Text never covers the product.
 - Cut-downs = whole-bar segments of the hero (see `studio/film2/config.mjs`).
 

@@ -16,7 +16,7 @@ Per-layer depth `p`: `s_l = s^p`, centre moves `p×` as far → parallax without
 - Every shot moves: slow push/pull 5–15 % over the shot, ease-in-out-sine; pans ≤ 6 % of frame width per second.
 - Pull-back hook: start close (1.5×) on texture, settle wide (0.98×) by the first bar line (film 2 0–5.3 s).
 - Match cut: end one shot and start the next with the product at the same screen position & scale.
-- Beat-cut reframes inside a long scene (film 2 swing: wide → close at 28.0 s, the downbeat).
+- Beat-cut reframes inside a long scene — but a punch-in on the *same still* reads cheap (judge, film 2 take01); prefer a new angle or a new scene.
 - Follow a moving subject with a lagged path (swing close-up follows the cup 0.35 s behind).
 - Breathing ≤ 0.4 % so no frame is frozen; smoothing σ ≈ 0.5 s for event-driven tracks; fill gaps < 1.2 s
   between actions so the camera never pumps.

@@ -96,7 +96,7 @@ ice(fx, 16.3, 0.35, 4); // light sweep sparkle
 // liquid wave
 whoosh(fx, 20.75, 1.7, 0.2, { f0: 140, f1: 900, p0: 0, p1: 0, seed: 10, q: 0.7 });
 { const r = rng(77); for (let i = 0; i < 18; i++) bloop(fx, 21.0 + r() * 1.3, 0.12 + r() * 0.12, { f0: 500 + r() * 900, f1: 1200 + r() * 600, p: r() * 1.6 - 0.8 }); }
-ice(fx, 28.05, 0.55, 5); ice(fx, 29.7, 0.35, 6); ice(fx, 31.0, 0.3, 7);
+ice(fx, 26.45, 0.55, 5); ice(fx, 29.7, 0.35, 6); ice(fx, 31.0, 0.3, 7);
 // pearls falling + montage cuts
 { const r = rng(31); for (let i = 0; i < 10; i++) bloop(fx, 31.45 + i * 0.13 + r() * 0.05, 0.25 + r() * 0.15, { f0: 700 + r() * 300, f1: 250 + r() * 80, p: r() * 1.4 - 0.7 }); }
 for (let i = 0; i < 8; i++) bloop(fx, bt(12) + i * 2 * BEAT, 0.32, { f0: 820, f1: 300, p: i % 2 ? 0.3 : -0.3 });

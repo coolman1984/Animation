@@ -1,7 +1,7 @@
 # BRIEF — Film 2 "خُد لحظتك" · BALACONBAR matcha × coconut (60 s Facebook ad)
 
-**Status:** owner asked for the film directly (subject, goal, tone, music given) → brief written and
-production started without a separate storyboard stop. Film 1 (demo ordering app) is parked.
+**Status:** take 2 in build after the independent judge's round 1 (see LEDGER.md). Owner asked for the film
+directly (subject, goal, tone, music given) → production started without a separate storyboard stop. Film 1 (demo ordering app) is parked.
 
 ## 1. Inputs
 | Field | Value | Source |
@@ -28,8 +28,9 @@ production started without a separate storyboard stop. Film 1 (demo ordering app
 | 1 | 0–2 · 0.0–5.3 | **Hook** + brand by 2.5 s | Macro on the matcha layer & ice, slow pull-back until the cup's logo is readable | "مش أي ماتشا…" | ice clink at 0.1 s, straw, Rhodes pick-up | none — frame 1 is finished |
 | 2 | 2–5 · 5.3–13.3 | Show what's inside (anatomy) | Cup cut-out on a soft studio backdrop; camera tilts top→bottom; three callout lines draw to each layer | "ماتشا" · "لبن جوز الهند" · "بوبا" | soft pluck per callout, pearl pop | cut on the beat, backdrop wipes in |
 | 3 | 5–8 · 13.3–21.3 | **The duo** — the hero shot | The balcony window draws itself and opens as a portal onto the cup + carton; parallax layers; rim-light sweep | "جوز الهند × الماتشا" / "ثنائي… على مزاجك" | groove enters, shimmer on the sweep | logo-window mask |
-| 4 | 8–12 · 21.3–32.0 | Emotion: your moment | The swing poster, gentle sway, blurred leaves drifting in the foreground | "خُد لحظتك…" / "والدنيا تستنى." | pad opens, brushed groove | matcha liquid wipe |
-| 5 | 12–16 · 32.0–42.7 | Appetite: rhythm montage | Beat-cut macros (pearls, lid, logo, carton palms, matcha top), slow-motion pearls drifting through | "كل رشفة…" / "فيها حكاية." | fuller drums, pearl pops on cuts | pearls carry the cut |
+| 4 | 8–10 · 21.3–26.7 | Emotion: your moment | The swing poster, gentle sway, blurred leaves drifting in the foreground | "خُد لحظتك…" / "والدنيا تستنى." | pad opens, brushed groove | matcha liquid wipe |
+| 4b | 10–12 · 26.7–32.0 | Back to *this* drink | The swing cup dissolves into the real cup on a deep-teal backdrop; slow pearls float around it | "كل رشفة…" / "فيها حكاية." (above the cup, never on it) | ice clink on the dissolve | cup-matched dissolve |
+| 5 | 12–16 · 32.0–42.7 | Appetite: rhythm montage | Beat-cut macros of the real cup (pearls, lid, logo, cup-led duo) — no text | — | fuller drums, pearl pops on cuts | falling pearls carry the cut |
 | 6 | 16–19 · 42.7–50.7 | The place | Window outline frames the drink "through the balcony"; warm bar bokeh | "قعدتك الحلوة…" / "مستنياك." | breakdown, Rhodes alone | window line draw |
 | 7 | 19–22.5 · 50.7–60.0 | **CTA** + brand | Hero duo wide; logo lock-up "BALACONBAR · CHOCOLATE CAFE"; drink name; CTA | "ماتشا جوز الهند بالبوبا" / "جرّبها النهارده" | final chord, soft hit, ring-out | cream wipe; one fade at the very end |
 

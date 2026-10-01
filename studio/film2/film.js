@@ -98,7 +98,7 @@ function initS1() {
   const root = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px' } }, stage);
   const hero = heroGroup(root);
   const top = el('div', { class: 'abs', style: { width: W + 'px', height: '420px', background: 'linear-gradient(180deg, rgba(8,6,4,0.55), rgba(8,6,4,0))' } }, root);
-  const l1 = line(root, 'مش أي ماتشا…', FONT.display, 96, C.cream, centered(118));
+  const l1 = line(root, 'مش أي ماتشا…', FONT.display, 96, C.cream, { top: '112px', right: '48px', justifyContent: 'flex-start' });
   S.s1 = { root, hero, top, l1 };
 }
 const camS1 = (t) => {
@@ -112,7 +112,10 @@ function renderS1(t) {
   hero.set(camS1(t), { sweepP: ramp(t, 2.0, 3.5) });
   // Isolation hand-off: the world fades away around the cup into the studio (scene 2 underneath).
   const iso = prog(t, T.s1[1] - 0.45, T.s1[1]);
-  hero.bg.box.style.opacity = 1 - iso; hero.carton.box.style.opacity = 1 - iso; top.style.opacity = 1 - iso;
+  hero.bg.box.style.opacity = 1 - iso; top.style.opacity = 1 - iso;
+  const cIso = prog(t, T.s1[1] - 0.55, T.s1[1] - 0.1);
+  hero.carton.box.style.opacity = (1 - cIso).toFixed(3);
+  hero.carton.box.style.filter = cIso > 0 ? `blur(${(18 * cIso).toFixed(2)}px)` : 'none';
   playLine(l1, t, 0.45, 4.45);
 }
 
@@ -138,7 +141,7 @@ function initS2() {
   ].map((c) => {
     const dot = el('div', { class: 'abs', style: { width: '18px', height: '18px', borderRadius: '50%', background: C.cream, boxShadow: '0 0 0 6px rgba(246,238,223,0.18), 0 0 18px rgba(255,240,210,0.7)' } }, root);
     const bar = el('div', { class: 'abs', style: { height: '2.5px', background: `linear-gradient(270deg, ${C.cream}, rgba(246,238,223,0.6))`, transformOrigin: '100% 50%', boxShadow: '0 0 8px rgba(0,0,0,0.4)' } }, root);
-    const L = line(root, c.label, FONT.display, 52, C.cream, { top: '0', left: '0' });
+    const L = line(root, c.label, FONT.display, 56, C.cream, { top: '0', left: '0' });
     return { ...c, dot, bar, L };
   });
   S.s2 = { root, back, shadow, refl, cup, sweep, head, callouts };
@@ -157,21 +160,21 @@ function renderS2(t) {
   const [bx, by] = proj(k, 1005, 1556);
   s2.shadow.style.transform = `translate(${(bx - 260 * k.s).toFixed(1)}px, ${(by - 30 * k.s).toFixed(1)}px) scale(${k.s.toFixed(4)}, ${k.s.toFixed(4)})`;
   s2.shadow.style.transformOrigin = '0 0';
-  playLine(s2.head, t, T.s2[0] + 0.45, 12.55);
+  playLine(s2.head, t, T.s2[0] + 0.45, 12.2);
   for (const c of s2.callouts) {
     const [ax, ay] = proj(k, c.a[0], c.a[1]);
-    const out = prog(t, 12.6, 13.1);
+    const out = prog(t, 12.2, 12.65);
     const pd = ease.outBack(ramp(t, c.tIn, c.tIn + 0.45));
     const pl = ease.outExpo(ramp(t, c.tIn + 0.15, c.tIn + 0.95));
-    const len = 140;
-    const on = t >= c.tIn && t < 13.2;
+    const len = ax - 372; // all lines end on one edge (x 372) so the labels align
+    const on = t >= c.tIn && t < 12.7;
     show(c.dot, on); show(c.bar, on);
     c.dot.style.transform = `translate(${(ax - 9).toFixed(1)}px, ${(ay - 9).toFixed(1)}px) scale(${(pd * (1 - out)).toFixed(4)})`;
     c.bar.style.width = len + 'px';
     c.bar.style.transform = `translate(${(ax - len - 4).toFixed(1)}px, ${(ay - 1.25).toFixed(1)}px) scaleX(${(pl * (1 - out)).toFixed(4)})`;
-    c.L.line.style.top = (ay - 38).toFixed(1) + 'px';
+    c.L.line.style.top = (ay - 41).toFixed(1) + 'px';
     c.L.line.style.left = '0'; c.L.line.style.width = (ax - len - 26).toFixed(1) + 'px'; c.L.line.style.justifyContent = 'flex-start';
-    playLine(c.L, t, c.tIn + 0.35, 12.6, { rise: 0, blur: 8 });
+    playLine(c.L, t, c.tIn + 0.35, 12.15, { rise: 0, blur: 8 });
     // slide-in from the line end
     c.L.words.forEach((w) => { w.style.transform += ` translateX(${(-24 * (1 - pl)).toFixed(2)}px)`; });
   }
@@ -183,24 +186,25 @@ function initS3() {
   const shade = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', background: 'linear-gradient(200deg, rgba(6,5,4,0.62) 0%, rgba(6,5,4,0.15) 38%, rgba(6,5,4,0) 55%)' } }, root);
   const l1 = line(root, 'جوز الهند × الماتشا', FONT.display, 74, C.cream, { top: '205px', right: '44px', justifyContent: 'flex-start' });
   l1.words[2].style.color = C.matchaLight; l1.words[2].style.fontFamily = 'Montserrat'; l1.words[2].style.fontWeight = 400; l1.words[2].style.fontSize = '82px';
-  const l2 = line(root, 'ثنائي… على مزاجك', FONT.ruqaa, 88, C.matchaLight, { top: '314px', right: '44px', justifyContent: 'flex-start' });
+  const l2 = line(root, 'ثنائي على مزاجك', FONT.ruqaa, 88, C.matchaLight, { top: '314px', right: '44px', justifyContent: 'flex-start' });
   const frame = svgLayer(stage);
   const stroke = el('path', { fill: 'none', stroke: C.cream, 'stroke-width': 3.5, 'stroke-linecap': 'round', style: 'filter: drop-shadow(0 0 10px rgba(255,236,200,0.65))' }, frame);
   S.s3 = { root, hero, shade, l1, l2, frame, stroke };
 }
 const camS3 = (t) => {
-  const p = ease.outCubic(ramp(t, 12.95, T.s3[1] + 0.9));
-  return { cx: lerp(900, 885, p), cy: lerp(860, 815, p), s: lerp(1.08, 0.88, p) };
+  // Starts pixel-matched to scene 2's cup (screen 715,770 at s 1.04), then pulls out to the duo.
+  const p = ease.inOutCubic(ramp(t, 13.5, T.s3[1] + 0.9));
+  return { cx: lerp(836.7, 885, p), cy: lerp(1058.7, 815, p), s: lerp(1.04, 0.88, p) };
 };
 function renderS3(t) {
   const s3 = S.s3;
   const vis = t >= 12.7 && t < 21.7;
   show(s3.root, vis); show(s3.frame, vis); if (!vis) return;
-  s3.hero.set(camS3(t), { ref: { cx: 885, cy: 815 }, sweepP: ramp(t, 16.2, 17.9) });
+  s3.hero.set(camS3(t), { ref: { cx: 836.7, cy: 1058.7 }, pBg: 0.9, pCarton: 0.98, sweepP: ramp(t, 16.2, 17.9) });
   // Portal: the balcony arch draws itself, then opens to fill the frame.
-  const cx = 540, cy0 = 650;
+  const cx = 715, cy0 = 735;
   const grow = ease.inOutCubic(ramp(t, 13.45, 14.5));
-  const w = lerp(190, 2900, grow), h = lerp(270, 4100, grow), cy = lerp(cy0, cy0 + 600, grow);
+  const w = lerp(230, 3000, grow), h = lerp(320, 4200, grow), cy = lerp(cy0, cy0 + 600, grow);
   const d = archAt(cx, cy, w, h);
   const peek = prog(t, 13.15, 13.5);
   s3.root.style.clipPath = grow >= 1 ? 'none' : `path('${d}')`;
@@ -264,7 +268,7 @@ function renderS4(t) {
   show(s4.wave, wv);
   if (wv) {
     const yTop = lerp(H + 80, -140, ease.inCubic(ramp(t, 20.9, 21.55)) * 0.35 + ease.outCubic(ramp(t, 20.9, 21.55)) * 0.65);
-    const yBot = lerp(H + 160, -200, ease.inOutCubic(ramp(t, 21.6, 22.4)));
+    const yBot = lerp(H + 160, -200, ease.inOutCubic(ramp(t, 21.47, 22.3)));
     const top = surface(W, yTop, t, 0.7), bot = surface(W, yBot, t, 2.1).reverse();
     const pathOf = (pts) => pts.map((p, i) => `${i ? 'L' : 'M'} ${p[0]} ${p[1].toFixed(1)}`).join(' ');
     s4.body.setAttribute('d', pathOf(top) + ' ' + pathOf(bot).replace(/^M/, 'L') + ' Z');
@@ -276,14 +280,14 @@ function renderS4(t) {
       b.setAttribute('cx', bx.toFixed(1)); b.setAttribute('cy', by.toFixed(1)); b.setAttribute('r', rad.toFixed(1));
     });
   }
-  const vis = t >= 21.5 && t < 32.6;
+  const vis = t >= 21.5 && t < 27.3;
   show(s4.root, vis); if (!vis) return;
-  // Camera: slow push, then a beat-cut to a close-up that follows the swinging cup.
-  const close = t >= 28.0;
+  // Camera: one slow push; the swing cup then dissolves into the real cup (scene 4b).
+  const close = false;
   const theta = 1.25 * Math.sin((2 * Math.PI * (t - 21.6)) / 3.9 + 0.5) * (Math.PI / 180);
   const pivot = [540, -900];
   let cam;
-  if (!close) cam = { cx: 540, cy: 660, s: lerp(1.035, 1.1, ease.inOutSine(ramp(t, 21.6, 28.0))) };
+  if (!close) cam = { cx: 540, cy: 660, s: lerp(1.035, 1.09, ease.inOutSine(ramp(t, 21.6, 27.3))) };
   else {
     // follow the cup centre (rotating with the swing) with a lagged, smoothed path
     const lag = 1.25 * Math.sin((2 * Math.PI * (t - 0.35 - 21.6)) / 3.9 + 0.5) * (Math.PI / 180);
@@ -302,8 +306,59 @@ function renderS4(t) {
     L.svg.style.transform = `translate(${L.x + dx}px, ${L.y + dy}px) rotate(${rr}deg) scale(${s})`;
     L.svg.style.filter = `blur(${L.blur * (close ? 1.4 : 1)}px)`;
   });
-  if (!close) { playLine(s4.l1, t, 22.55, 27.25); playLine(s4.l2, t, 24.15, 27.35); }
-  s4.logo.style.opacity = (prog(t, 22.0, 22.9) * (1 - prog(t, 27.2, 27.8))).toFixed(3);
+  playLine(s4.l1, t, 22.45, 25.75); playLine(s4.l2, t, 23.45, 25.85);
+  s4.logo.style.opacity = (prog(t, 22.0, 22.9) * (1 - prog(t, 25.7, 26.3))).toFixed(3);
+}
+
+// Scene 4b: the swing cup dissolves into the real cup — the drink this ad sells — on a brand backdrop
+// with slow floating pearls; the "every sip" line sits on clean space above the product.
+const T4B = [8 * BAR + 2 * BAR - 0.3, 12 * BAR + 0.6];
+function initS4b() {
+  const root = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', background: `radial-gradient(ellipse 75% 60% at 50% 58%, #24493F, ${C.ink} 75%)` } }, stage);
+  el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', background: 'radial-gradient(ellipse 38% 34% at 50% 58%, rgba(255,196,120,0.20), rgba(255,196,120,0) 70%)' } }, root);
+  const back = el('svg', { width: W, height: H, viewBox: `0 0 ${W} ${H}`, class: 'abs', style: { overflow: 'visible' } }, root);
+  pearl(back, 'pgb');
+  const refl = photo(root, P('hero-cup.png'), 1600, 1600, { opacity: 0.15, WebkitMaskImage: 'linear-gradient(180deg, rgba(0,0,0,0) 1240px, rgba(0,0,0,1) 1540px)' });
+  const cup = photo(root, P('hero-cup.png'), 1600, 1600);
+  const sweep = el('div', { class: 'abs', style: { width: '1600px', height: '1600px', transformOrigin: '0 0', mixBlendMode: 'screen', WebkitMaskImage: `url(${P('hero-cup.png')})`, WebkitMaskSize: '1600px 1600px', backgroundImage: 'linear-gradient(100deg, rgba(255,255,255,0) 44%, rgba(255,246,228,0.45) 50%, rgba(255,255,255,0) 56%)', backgroundSize: '300% 100%', backgroundRepeat: 'no-repeat' } }, root);
+  const front = el('svg', { width: W, height: H, viewBox: `0 0 ${W} ${H}`, class: 'abs', style: { overflow: 'visible' } }, root);
+  pearl(front, 'pgf');
+  const r = rng(21);
+  const mk = (svg, id, n, near) => Array.from({ length: n }, () => {
+    const g = el('g', {}, svg); const rad = near ? 30 + r() * 28 : 10 + r() * 16;
+    el('circle', { r: rad, fill: `url(#${id})` }, g);
+    el('ellipse', { cx: -rad * 0.32, cy: -rad * 0.38, rx: rad * 0.28, ry: rad * 0.18, fill: `url(#${id}h)`, transform: 'rotate(-30)' }, g);
+    let x = r() * W; if (!near && x > 300 && x < 780) x = x < 540 ? x - 260 : x + 260;
+    return { g, x, y: 380 + r() * 900, ph: r() * 6.28, sp: 0.25 + r() * 0.3, blur: near ? 6 + r() * 6 : 1.5 + r() * 2 };
+  });
+  const far = mk(back, 'pgb', 9, false), near = mk(front, 'pgf', 4, true);
+  const l1 = line(root, 'كل رشفة…', FONT.display, 92, C.cream, centered(70));
+  const l2 = line(root, 'فيها حكاية.', FONT.ruqaa, 100, C.matchaLight, centered(186));
+  S.s4b = { root, refl, cup, sweep, far, near, l1, l2 };
+}
+function renderS4b(t) {
+  const s = S.s4b;
+  const vis = t >= T4B[0] && t < T4B[1];
+  show(s.root, vis); if (!vis) return;
+  s.root.style.opacity = prog(t, T4B[0], T4B[0] + 0.6).toFixed(3);
+  // Start where the swing cup is (match), then settle into the hero framing.
+  const g = ease.inOutCubic(ramp(t, T4B[0], T4B[0] + 1.6));
+  const X = lerp(549, 540, g), Y = lerp(719, 790, g) , sc = lerp(0.64, 0.9, g) + 0.04 * ramp(t, T4B[0] + 1.6, T4B[1]);
+  const cam = { cx: CUP_C[0] - (X - W / 2) / sc, cy: CUP_C[1] - (Y - H / 2) / sc, s: sc };
+  place(s.cup, cam);
+  place(s.refl, cam, 1, undefined, ' translate(0px, 3096px) scale(1, -1)');
+  s.sweep.style.transform = s.cup.box.style.transform;
+  const sp = ramp(t, 29.2, 30.6); show(s.sweep, sp > 0 && sp < 1); s.sweep.style.backgroundPosition = `${lerp(100, -10, sp)}% 0`;
+  const drift = (p, k) => {
+    const y = p.y - (t - T4B[0]) * 26 * p.sp * k + 14 * Math.sin(t * 0.8 + p.ph);
+    const x = p.x + 18 * Math.sin(t * 0.5 + p.ph);
+    p.g.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
+    p.g.style.filter = `blur(${p.blur}px)`;
+    p.g.style.opacity = (prog(t, T4B[0] + 0.4, T4B[0] + 1.4) * (1 - prog(t, 31.2, 31.7))).toFixed(3);
+  };
+  s.far.forEach((p) => drift(p, 1)); s.near.forEach((p) => drift(p, 2.2));
+  playLine(s.l1, t, 27.35, 30.95);
+  playLine(s.l2, t, 28.75, 31.05);
 }
 
 // Montage: 8 beat-cut macro shots (2 beats each) from the owner's photos.
@@ -311,10 +366,10 @@ const SHOTS = [
   { img: 'hero', a: { cx: 1005, cy: 1478, s: 1.42 }, b: { cx: 950, cy: 1474, s: 1.5 } },
   { img: 'hero', a: { cx: 1010, cy: 850, s: 1.32 }, b: { cx: 1010, cy: 875, s: 1.46 } },
   { img: 'hero', a: { cx: 1003, cy: 1160, s: 1.55 }, b: { cx: 1003, cy: 1150, s: 1.42 } },
-  { img: 'hero', a: { cx: 585, cy: 1330, s: 1.28 }, b: { cx: 585, cy: 1255, s: 1.3 } },
-  { img: 'swing', a: { cx: 548, cy: 560, s: 1.38 }, b: { cx: 548, cy: 590, s: 1.5 } },
+  { img: 'hero', a: { cx: 1000, cy: 1000, s: 1.05 }, b: { cx: 1060, cy: 990, s: 1.08 } },
+  { img: 'hero', a: { cx: 1150, cy: 1450, s: 1.4 }, b: { cx: 1090, cy: 1400, s: 1.45 } },
   { img: 'hero', a: { cx: 1060, cy: 1500, s: 1.5 }, b: { cx: 1130, cy: 1500, s: 1.5 } },
-  { img: 'hero', a: { cx: 590, cy: 880, s: 1.32 }, b: { cx: 590, cy: 930, s: 1.36 } },
+  { img: 'hero', a: { cx: 1000, cy: 770, s: 1.5 }, b: { cx: 1060, cy: 790, s: 1.5 } },
   { img: 'hero', a: { cx: 880, cy: 880, s: 0.95 }, b: { cx: 880, cy: 870, s: 1.03 } },
 ];
 function pearl(svg, id) {
@@ -328,9 +383,6 @@ function initS5() {
   const root = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', background: '#0b0806' } }, stage);
   const hero = photo(root, SRC('hero-duo.jpg'), 1600, 1600);
   const swing = photo(root, P('swing-clean.png'), 1080, 1350);
-  const band = el('div', { class: 'abs', style: { top: (H - 520) + 'px', width: W + 'px', height: '520px', background: 'linear-gradient(0deg, rgba(8,6,4,0.72), rgba(8,6,4,0))' } }, root);
-  const l1 = line(root, 'كل رشفة…', FONT.display, 92, C.cream, centered(1040));
-  const l2 = line(root, 'فيها حكاية.', FONT.ruqaa, 100, C.matchaLight, centered(1164));
   const pearls = svgLayer(stage);
   pearl(pearls, 'pg');
   const r = rng(9);
@@ -341,7 +393,7 @@ function initS5() {
     el('ellipse', { cx: -rad * 0.32, cy: -rad * 0.38, rx: rad * 0.28, ry: rad * 0.18, fill: 'url(#pgh)', transform: 'rotate(-30)' }, g);
     return { g, rad, x: 60 + r() * (W - 120), delay: r() * 0.55, speed: 0.75 + r() * 0.5, spin: r() * 6.28, depth: r() };
   });
-  S.s5 = { root, hero, swing, band, l1, l2, pearls, drops };
+  S.s5 = { root, hero, swing, pearls, drops };
 }
 function renderS5(t) {
   const s5 = S.s5;
@@ -366,9 +418,6 @@ function renderS5(t) {
   const cam = sh.img === 'hero' ? fill(raw, 1600, 1600) : fill(raw, 1080, 1350);
   show(s5.hero.box, sh.img === 'hero'); show(s5.swing.box, sh.img === 'swing');
   place(sh.img === 'hero' ? s5.hero : s5.swing, cam, 1, sh.img === 'hero' ? undefined : { cx: 540, cy: 675 });
-  s5.band.style.opacity = 1 - prog(t, 37.0, 37.8);
-  playLine(s5.l1, t, 32.45, 36.85);
-  playLine(s5.l2, t, 34.0, 36.95);
   s5.root.style.opacity = 1 - prog(t, T.s6[0], T.s6[0] + 0.45);
 }
 
@@ -389,14 +438,15 @@ function initS6() {
   const balusters = mk(4, front);
   const l1 = line(root, 'قعدتك الحلوة…', FONT.display, 86, C.cream, centered(1078));
   const l2 = line(root, 'مستنياك.', FONT.ruqaa, 100, C.matchaLight, centered(1190));
-  const logo = el('img', { src: P('logo-white.png'), class: 'abs', style: { width: '205px', left: (W / 2 - 102.5) + 'px', top: '36px', filter: 'drop-shadow(0 2px 14px rgba(0,0,0,0.35))' } }, root);
+  const logo = el('img', { src: P('logo-white.png'), class: 'abs', style: { width: '186px', left: (W / 2 - 93) + 'px', top: '24px', filter: 'drop-shadow(0 2px 14px rgba(0,0,0,0.35))' } }, root);
+  const sub = el('div', { class: 'abs', text: 'CHOCOLATE CAFE', style: { top: '192px', left: '0', width: W + 'px', textAlign: 'center', fontFamily: 'Montserrat', fontWeight: 500, fontSize: '19px', letterSpacing: '0.42em', color: C.cream, opacity: 0 } }, root);
   const name = line(root, 'ماتشا جوز الهند بالبوبا', FONT.display, 62, C.cream, centered(1100));
   const pill = el('div', { class: 'abs', style: { left: '0', top: '1212px', width: W + 'px', display: 'flex', justifyContent: 'center' } }, root);
   const pillIn = el('div', { style: { background: C.matcha, color: C.ink, fontFamily: 'El Messiri', fontWeight: 700, fontSize: '50px', lineHeight: 1, padding: '20px 54px 26px', borderRadius: '999px', boxShadow: '0 10px 30px rgba(0,0,0,0.35)', direction: 'rtl' } }, pill);
   const cta = textLine(pillIn, 'جرّبها النهارده', {});
   cta.line.style.position = 'relative';
   const fade = el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', background: '#000', opacity: 0 } }, stage);
-  S.s6 = { root, back, ink, glow, inside, duo, cup, art, outline, mull, rail, balusters, l1, l2, logo, name, pill, pillIn, cta, fade };
+  S.s6 = { root, back, ink, glow, inside, duo, cup, art, outline, mull, rail, balusters, l1, l2, logo, sub, name, pill, pillIn, cta, fade };
 }
 function renderS6(t) {
   const s6 = S.s6;
@@ -449,7 +499,12 @@ function renderS6(t) {
   const duoIn = prog(t, t7 + 0.1, t7 + 1.0);
   s6.inside.style.opacity = duoIn.toFixed(3);
   show(s6.inside, duoIn > 0);
-  if (duoIn > 0) s6.duo.set({ cx: 840, cy: 1000, s: lerp(0.7, 0.745, ease.inOutSine(ramp(t, t7, 59))) }, { ref: { cx: 840, cy: 1000 }, sweepP: ramp(t, 54.4, 56.0) });
+  if (duoIn > 0) {
+    // Begin pixel-matched to the cut-out cup (screen 540,694 at s 0.77), then settle on the duo.
+    const mm = ease.inOutCubic(ramp(t, t7 + 0.1, t7 + 1.5));
+    const dc = { cx: lerp(1005, 840, mm), cy: lerp(1125.3, 1000, mm), s: lerp(0.77, 0.7, mm) + 0.045 * ease.inOutSine(ramp(t, t7 + 1.5, 59.5)) };
+    s6.duo.set(dc, { ref: { cx: 1005, cy: 1125.3 }, sweepP: ramp(t, 54.4, 56.0) });
+  }
   s6.ink.style.opacity = prog(t, t7 + 0.1, t7 + 1.1).toFixed(3);
   playLine(s6.l1, t, t0 + 2.35, t7 - 0.25);
   playLine(s6.l2, t, t0 + 3.95, t7 - 0.15);
@@ -458,26 +513,27 @@ function renderS6(t) {
   s6.logo.style.opacity = lp.toFixed(3);
   s6.logo.style.transform = `translateY(${lerp(16, 0, lp).toFixed(2)}px) scale(${lerp(0.94, 1, lp).toFixed(4)})`;
   s6.logo.style.filter = `blur(${(8 * (1 - lp)).toFixed(2)}px) drop-shadow(0 2px 14px rgba(0,0,0,0.35))`;
+  s6.sub.style.opacity = (0.85 * ease.outExpo(ramp(t, t7 + 1.3, t7 + 2.2))).toFixed(3);
   playLine(s6.name, t, t7 + 1.6, 99);
   const pp = ease.outBack(ramp(t, t7 + 2.6, t7 + 3.25), 1.6);
   show(s6.pill, t >= t7 + 2.6);
   s6.pillIn.style.transform = `scale(${pp.toFixed(4)})`;
   s6.pillIn.style.opacity = clamp(pp * 1.5).toFixed(3);
   playLine(s6.cta, t, t7 + 2.75, 99, { rise: 10, blur: 4 });
-  s6.fade.style.opacity = prog(t, 58.75, 60.0).toFixed(3);
+  s6.fade.style.opacity = prog(t, 59.25, 60.0).toFixed(3);
 }
 
 export default {
   duration: 60, fps: 30,
   init(stageEl, opts) {
     stage = stageEl; W = opts.W; H = opts.H;
-    initS2(); initS1(); initS3(); initS4(); initS5(); initS6();
+    initS2(); initS1(); initS3(); initS4(); initS4b(); initS5(); initS6();
     // Re-order: S6 above S5 above S4 ... the portal/wave/pearl SVGs stay above their scenes.
     el('div', { class: 'abs', style: { width: W + 'px', height: H + 'px', pointerEvents: 'none', background: 'radial-gradient(ellipse 80% 75% at 50% 48%, rgba(0,0,0,0) 58%, rgba(0,0,0,0.38))' } }, stage);
     grainAt = grain(stage, { opacity: 0.085 });
   },
   render(t, frame) {
-    renderS1(t); renderS2(t); renderS3(t); renderS4(t); renderS5(t); renderS6(t);
+    renderS1(t); renderS2(t); renderS3(t); renderS4(t); renderS4b(t); renderS5(t); renderS6(t);
     grainAt(frame);
   },
 };
