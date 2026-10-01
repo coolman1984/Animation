@@ -12,7 +12,7 @@ lib/music.mjs prepareMusic trims/fades/measures recorded tracks. Example: node s
 Record creator, source, rights and paid-social scope in production.assets/sound. No silent padding or automatic looping of short tracks.
 score.mjs writes takes/<film>/{music,sfx,mix}.wav. Declare all external recordings as production assets/cacheInputs.
 Use lib/audio.mjs when original synthesis serves the treatment. Original work still needs an ownership/source record.
-Shared cues synchronize picture and selected accents. No compulsory SFX at every visual event; no fixed SFX ×2.6 rule.
+Shot craft.audioCue records the intended sonic event in the same shot plan used by picture. Shared cues synchronize picture and selected accents. No compulsory SFX at every visual event; no fixed SFX ×2.6 rule.
 Use measured mastering: default −14 LUFS / −1.5dBTP / LRA<8 are project targets. Empty/unmeasurable audio must fail early.
 Check ending, transient clicks, voice masking, phone/mono translation and exported AAC. Waveforms cannot judge musical taste.
 If playback/listening isn't available, label music selection unverified instead of saying it sounds excellent.
