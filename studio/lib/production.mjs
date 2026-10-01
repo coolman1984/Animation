@@ -1,6 +1,7 @@
 // Cheap content checks before Chromium starts. Findings are evidence, not an aesthetic score.
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { creativeIssues, validateCraft } from './creative.mjs';
 const filled = value => typeof value === 'string' && value.trim().length > 0;
 
 export function copyIssues(text, duration, { minDwell = 1.8, maxCps = 17, maxWords = 7 } = {}) {
@@ -50,6 +51,7 @@ export function validateProduction(plan, { root, final = false } = {}) {
     if (shot.start > covered + epsilon) add(`${id}: uncovered timeline before ${shot.start}s`);
     covered = Math.max(covered, shot.end); lastStart = shot.start;
     if (!filled(shot.purpose)) add(`${id}: state why this shot exists`);
+    for (const issue of validateCraft(shot.craft, id)) add(issue);
     if (!Array.isArray(shot.assetIds)) add(`${id}: assetIds must be an array`);
     for (const aid of Array.isArray(shot.assetIds) ? shot.assetIds : []) {
       if (!assets.has(aid)) add(`${id}: unknown asset ${aid}`);
@@ -69,6 +71,7 @@ export function validateProduction(plan, { root, final = false } = {}) {
   if (sound?.mode === 'licensed' && (!assets.has(sound.assetId) || assets.get(sound.assetId).role !== 'music')) add('licensed soundtrack must reference a music asset');
   if (sound?.mode === 'licensed' && !filled(sound.licenseScope)) add('record music license scope including paid social use', final);
   if (sound?.bpm !== undefined && !(Number.isFinite(sound.bpm) && sound.bpm > 0)) add('sound.bpm must be positive');
+  for (const issue of creativeIssues(plan)) add(`craft: ${issue}`, false);
   return { errors, warnings };
 }
 

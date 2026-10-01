@@ -40,6 +40,11 @@ Never commit `takes/` or `out/`.
 New output names receive normal video/gates; automatic music-only/captions/thumb extras are still tied to legacy `hero60`
 and WebP to `bumper6`. Use `finish.mjs` helpers for additional requested outputs until those branches are generalized.
 
+## Creative + cinematic toolkit
+`lib/creative.mjs` checks production plans for accidental repetition, missing shot craft and overloaded primary motion without pretending to score taste. New `production.json` plans describe shot scale, camera, focal point, transition, depth and audio cue.
+
+`lib/cinema.js` provides deterministic `cameraPath`, `rackFocus`, `microDrift`, `composeCamera`, subtle `lensBreathing` and `cameraKinematics`. `lib/rhythm.mjs` exposes beat/bar/phrase timing and cut offsets; it never forces an edit onto the grid.
+
 ## Layer toolkit
 `lib/depth.js` exports `depthScene`, `projectLayer`, `coverCamera`, `contactShadow`.
 See `examples/depth-study/film.js`: a four-second unbranded geometric study, with no customer photos.
