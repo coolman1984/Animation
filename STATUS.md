@@ -2,7 +2,15 @@
 
 Updated: 2026-10-02. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE — Showreel integration snapshot and conflict resolution.**
+**Latest scope: DONE — Showreel 2, reference recreation (15 s, 16:9, 60 fps), owner request 2026-10-02.**
+- Source: `studio/showreel2/` (BRIEF, production.json, film.js, score.mjs, measured music map, LEDGER). Reference pack is private (git-ignored).
+- Final take: `studio/out/showreel2/take04/` (local, not in git): master 1920×1080 + 11 MB share copy.
+- Technical gates: all PASS (15.00 s, 60 fps, −14.1 LUFS, TP −3.2 dBTP, LRA 3.5). New tested gate option `darkSpans`.
+- Artistic: one independent critique → one of two correction rounds → fixes checked on take04 frames. Fidelity is structural, not pixel-exact.
+- Not verified: audio listening; human real-speed viewing; loop seam; share copy by the critic. Owner decisions: wordmark/burst look and the "AVAILABLE FOR NEW PROJECTS" line.
+- Studio additions: variable Archivo / Instrument Serif / Space Mono (OFL), SVG text tags in `motion.js`, `darkSpans`.
+
+**Previous scope: DONE — Showreel integration snapshot and conflict resolution.**
 
 - Fixed source snapshot: `7d5f966`; merge preserves both reference-lab and showreel history.
 - Only conflict: this handoff file; keep both completed scopes and their evidence.
