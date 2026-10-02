@@ -44,7 +44,7 @@ export function rng(seed) {
 }
 
 export function el(tag, attrs = {}, parent) {
-  const svg = ['svg', 'path', 'circle', 'g', 'defs', 'radialGradient', 'linearGradient', 'stop', 'clipPath', 'mask', 'rect', 'ellipse', 'line', 'filter', 'feGaussianBlur'].includes(tag);
+  const svg = ['svg', 'path', 'circle', 'g', 'defs', 'radialGradient', 'linearGradient', 'stop', 'clipPath', 'mask', 'rect', 'ellipse', 'line', 'filter', 'feGaussianBlur', 'text', 'textPath', 'polyline', 'polygon'].includes(tag);
   const e = svg ? document.createElementNS('http://www.w3.org/2000/svg', tag) : document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) {
     if (k === 'style' && typeof v === 'object') Object.assign(e.style, v);

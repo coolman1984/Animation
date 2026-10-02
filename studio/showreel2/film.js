@@ -133,8 +133,9 @@ function render0(T) {
   S0.ringG.style.opacity = String(sm(0.55, 0.95, T) * (1 - sm(1.5, 1.72, T)));
   // burst: rays spring out one after another, whole glyph slowly rotating; collapses back into the dot.
   const spin = T * 0.2;
-  S0.burst.setAttribute('d', burstPath(12, S0.R, 5, i => clamp(spr(T, 0.42 + i * 0.045, 0.5, 0.32)) * (1 - inOut3(collapse)), spin));
-  S0.burst.style.opacity = collapse >= 1 ? '0' : '1';
+  const grown = i => clamp(spr(T, 0.42 + i * 0.045, 0.5, 0.32)) * (1 - inOut3(collapse)), maxG = Math.max(...Array.from({ length: 12 }, (_, i) => grown(i)));
+  S0.burst.setAttribute('d', burstPath(12, S0.R, 5, grown, spin, 0.0));
+  S0.burst.style.opacity = maxG < 0.12 ? '0' : '1'; // below this the round caps would only draw a scalloped blob around the dot
   const dotR = k(28) * (T < 0.42 ? 1 : lerp(1, 0.55, sm(0.42, 0.7, T))) * (1 - 0.7 * sm(1.62, 1.86, T));
   S0.dot.setAttribute('r', Math.max(0, dotR));
   S0.glow.style.opacity = String(sm(1.7, 1.86, T) * (T < 1.9 ? 1 : 0));
@@ -170,7 +171,8 @@ function render1(T) {
   S1.word.letters.forEach((L, i) => {
     const p = clamp(spr(T, 1.95 + i * 0.045, 0.5, 0.28));
     const wd = lerp(62, 125, Math.max(0, outBack(clamp((T - (1.95 + i * 0.045)) / 0.42), 1.5)));
-    setWidth(L, glitch > 0 ? (i === 0 ? 62 : lerp(125, 125 + (i % 2 ? 0 : -63), glitch)) : Math.min(125, Math.max(62, wd)));
+    const wave = 1 - 0.55 * Math.pow(Math.sin(Math.PI * clamp((T - (2.5 + i * 0.07)) / 0.3)), 2) * (T > 2.5 ? 1 : 0);
+    setWidth(L, glitch > 0 ? (i === 0 ? 62 : lerp(125, 125 + (i % 2 ? 0 : -63), glitch)) : Math.min(125, Math.max(62, Math.min(wd, 125 * wave))));
     const slide = (1 - p) * k(160) * (1 + 0.2 * i) * (i < 3 ? -1 : 1);
     const gx = glitch * (i === 0 ? -k(260) : k(14) * i);
     L.node.style.transform = `translateX(${(slide + gx).toFixed(2)}px)`;
@@ -290,7 +292,7 @@ function polyR(th, n, off) { const a = ((th - off) % (2 * Math.PI / n) + 2 * Mat
 function starR(th, n, inner, off) { const seg = Math.PI / n, a = ((th - off) % (2 * seg) + 2 * seg) % (2 * seg); const u = a / seg; return u <= 1 ? lerp(1, inner, u) : lerp(inner, 1, u - 1); }
 function morphState(T) {
   let from = 'circle', to = 'circle', p = 0;
-  for (const [a, b, f, g] of MORPH) { if (T >= a) { from = f; to = g; p = clamp(spr(T, a, b - a + 0.12, 0.3)); } }
+  for (const [a, b, f, g] of MORPH) { if (T >= a) { from = f; to = g; p = clamp(spr(T, a, 0.34, 0.2)); } }
   return { from, to, p };
 }
 function shapePath(T, R, rot) {
@@ -298,7 +300,7 @@ function shapePath(T, R, rot) {
   for (let i = 0; i < n; i++) { const th = (i / n) * Math.PI * 2, r = R * lerp(RAD[from](th), RAD[to](th), p), a = th + rot; d += `${i ? 'L' : 'M'}${(Math.cos(a) * r).toFixed(1)} ${(Math.sin(a) * r).toFixed(1)}`; }
   return d + 'Z';
 }
-const rotAt = T => { const s = (T - 5.625); return 0.25 * s + 1.4 * (spr(T, 5.95, 0.6, 0.25) + spr(T, 6.5, 0.6, 0.25) + spr(T, 6.95, 0.6, 0.25)); };
+const rotAt = T => { const s = (T - 5.625); return 0.25 * s + 1.0 * (spr(T, 5.95, 0.6, 0.25) + spr(T, 6.5, 0.6, 0.25) + spr(T, 6.95, 0.6, 0.25)); };
 function init3(root) {
   const cx = W / 2, cy = H / 2;
   S3.svg = el('svg', { width: W, height: H, viewBox: `0 0 ${W} ${H}`, style: { position: 'absolute', left: '0', top: '0', overflow: 'visible' } }, root);
@@ -324,7 +326,7 @@ function render3(T) {
   S3.shape.setAttribute('transform', `translate(${cx} ${cy}) rotate(${spin.toFixed(2)})`);
   // blur at peak angular speed
   const w = Math.abs(rotAt(T + 0.01) - rotAt(T - 0.01)) / 0.02;
-  S3.shape.style.filter = w > 2.5 ? `blur(${Math.min(6, (w - 2.5) * 1.4).toFixed(2)}px)` : 'none';
+  S3.shape.style.filter = w > 3.2 ? `blur(${Math.min(2.5, (w - 3.2) * 0.9).toFixed(2)}px)` : 'none';
   S3.echoes.forEach((e, i) => {
     const tt = T - (i + 1) * 0.022;
     const active = T > 5.95 && T < 7.55;
@@ -408,18 +410,17 @@ const NU = 30, NV = 19;
 function init5(root) {
   S5.cv = mk(root, { left: '0', top: '0' }, 'canvas'); S5.cv.width = W; S5.cv.height = H; S5.cv.style.width = px(W); S5.cv.style.height = px(H);
   S5.ctx = S5.cv.getContext('2d');
-  S5.cap = mk(root, { left: '0', width: px(W), top: px(H - k(150)), textAlign: 'center', fontFamily: '"Space Mono"', fontSize: px(k(14)), letterSpacing: '0.18em', color: 'rgba(243,237,227,0.8)', lineHeight: '1', textTransform: 'uppercase' });
+  S5.cap = mk(root, { left: '0', width: px(W), top: px(H - k(118)), textAlign: 'center', fontFamily: '"Space Mono"', fontSize: px(k(14)), letterSpacing: '0.18em', color: 'rgba(243,237,227,0.8)', lineHeight: '1', textTransform: 'uppercase' });
 }
 function vertex(shape, u, v, T) {
   const U = u / (NU - 1), V = v / (NV - 1);
-  if (shape === 'plane') { const x = (U - 0.5) * k(2300), z = (V - 0.5) * k(1500), y = Math.sin(U * 9 + T * 3) * k(60) * Math.sin(V * 3.1 + 0.4) + Math.cos(V * 7 - T * 2) * k(26); return [x, y, z]; }
-  if (shape === 'sphere') { const th = (u / NU) * Math.PI * 2, ph = (V - 0.5) * Math.PI * 0.94, r = k(560); return [Math.cos(ph) * Math.cos(th) * r, Math.sin(ph) * r, Math.cos(ph) * Math.sin(th) * r]; }
-  const th = (u / NU) * Math.PI * 2, ph = (v / NV) * Math.PI * 2, R = k(470), r = k(190);
+  if (shape === 'plane') { const x = (U - 0.5) * k(2300), z = (V - 0.5) * k(1500), y = Math.sin(U * 9 + T * 3) * k(120) * Math.sin(V * 3.1 + 0.4) + Math.cos(V * 7 - T * 2) * k(48) - Math.pow(U - 0.5, 2) * k(420); return [x, y, z]; }
+  if (shape === 'sphere') { const th = (u / NU) * Math.PI * 2, ph = (V - 0.5) * Math.PI * 0.94, r = k(500); return [Math.cos(ph) * Math.cos(th) * r, Math.sin(ph) * r, Math.cos(ph) * Math.sin(th) * r]; }
+  const th = (u / NU) * Math.PI * 2, ph = (v / NV) * Math.PI * 2, R = k(430), r = k(175);
   return [(R + r * Math.cos(ph)) * Math.cos(th), r * Math.sin(ph), (R + r * Math.cos(ph)) * Math.sin(th)];
 }
-function render5(T) {
-  const ctx = S5.ctx, t = T - 9.375, cx = W / 2, cy = H * 0.5;
-  ctx.clearRect(0, 0, W, H);
+function project5(T) {
+  const cx = W / 2, cy = H * 0.46;
   const toSphere = inOut3(ramp(T, 10.02, 10.46)), toTorus = inOut3(ramp(T, 10.5, 10.92));
   const rotY = (T - 9.375) * 1.1 + 0.3, tilt = lerp(1.05, 0.5, sm(9.375, 10.1, T)) + 0.55 * toTorus;
   const pts = [];
@@ -434,16 +435,26 @@ function render5(T) {
     const f = k(1400), sc = f / (f + z + k(520));
     pts.push([cx + x * sc, cy + y * sc, sc, z, (hash(u, v, 9) < 0.14)]);
   }
-  const at = (u, v) => pts[v * NV * 0 + v * NU + u];
+  return { pts, toSphere, toTorus, rotY };
+}
+function render5(T) {
+  const ctx = S5.ctx;
+  ctx.clearRect(0, 0, W, H);
+  const { pts, toSphere, toTorus, rotY } = project5(T), prev = project5(T - 0.04).pts;
+  const at = (u, v) => pts[v * NU + u];
   ctx.lineWidth = Math.max(1, k(1.3)); ctx.strokeStyle = 'rgba(243,237,227,0.16)';
   for (let v = 0; v < NV; v++) { ctx.beginPath(); for (let u = 0; u < NU; u++) { const p = at(u, v); u ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]); } if (toSphere > 0.5) { const p = at(0, v); ctx.lineTo(p[0], p[1]); } ctx.stroke(); }
   for (let u = 0; u < NU; u++) { ctx.beginPath(); for (let v = 0; v < NV; v++) { const p = at(u, v); v ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]); } if (toTorus > 0.5) { const p = at(u, 0); ctx.lineTo(p[0], p[1]); } ctx.stroke(); }
   const appear = sm(9.375, 9.55, T);
-  for (const p of pts) {
-    const near = clamp(1.2 - (p[3] / k(700) + 0.6) * 0.5 + 0.2);
-    ctx.fillStyle = p[4] ? C.orange : C.cream; ctx.globalAlpha = clamp(0.25 + 0.6 * near) * appear;
-    const r = Math.max(1, k(3.4) * p[2]); ctx.beginPath(); ctx.arc(p[0], p[1], r, 0, Math.PI * 2); ctx.fill();
-  }
+  ctx.lineCap = 'round';
+  pts.forEach((p, i) => {
+    const near = clamp(1.2 - (p[3] / k(700) + 0.6) * 0.5 + 0.2), a = clamp(0.25 + 0.6 * near) * appear, r = Math.max(1, k(3.4) * p[2]);
+    ctx.strokeStyle = ctx.fillStyle = p[4] ? C.orange : C.cream;
+    // motion trail: the dot's screen path over the last 0.04 s (rotation blur, longer where the mesh sweeps fast)
+    const q = prev[i], d = Math.hypot(p[0] - q[0], p[1] - q[1]);
+    if (d > r * 1.2 && d < k(400)) { ctx.globalAlpha = a * 0.55; ctx.lineWidth = r * 1.6; ctx.beginPath(); ctx.moveTo(q[0], q[1]); ctx.lineTo(p[0], p[1]); ctx.stroke(); }
+    ctx.globalAlpha = a; ctx.beginPath(); ctx.arc(p[0], p[1], r, 0, Math.PI * 2); ctx.fill();
+  });
   ctx.globalAlpha = 1;
   S5.cap.textContent = `VERTICES ${NU * NV}   ·   FOCAL 1400   ·   ROT.Y ${(((rotY * 180 / Math.PI) % 360)).toFixed(1)}°`;
   S5.cap.style.opacity = String(sm(9.5, 9.7, T));
@@ -454,12 +465,12 @@ function render5(T) {
 const S6 = {};
 const CARDS = [
   { id: 'ease1', text: 'EASE', bg: C.orange, fg: C.ink, wdth: 125, frac: 0.86, dot: false },
-  { id: 'in', text: 'IN', bg: C.ink, fg: C.cream, wdth: 112, frac: 0.40, dot: true },
-  { id: 'ease2', text: 'EASE', bg: C.cream, fg: C.blue, wdth: 125, frac: 0.86, dot: false },
-  { id: 'out', text: 'OUT', bg: C.blue, fg: C.cream, wdth: 118, frac: 0.50, dot: true },
-  { id: 'never', text: 'NEVER', bg: C.lime, fg: C.ink, wdth: 125, frac: 0.74, dot: false },
+  { id: 'in', text: 'IN', bg: C.ink, fg: C.cream, wdth: 78, frac: 0.44, dot: true },
+  { id: 'ease2', text: 'EASE', bg: C.cream, fg: C.blue, wdth: 62, frac: 0.94, dot: false },
+  { id: 'out', text: 'OUT', bg: C.blue, fg: C.cream, wdth: 92, frac: 0.60, dot: true },
+  { id: 'never', text: 'NEVER', bg: C.lime, fg: C.ink, wdth: 125, frac: 0.80, dot: false },
   { id: 'rows', text: 'NEVER', bg: C.lime, fg: C.ink, wdth: 125, frac: 0.74, dot: false },
-  { id: 'linear', text: 'LINEAR', bg: C.ink, fg: C.cream, wdth: 110, frac: 0.66, dot: true },
+  { id: 'linear', text: 'LINEAR', bg: C.ink, fg: C.cream, wdth: 100, frac: 0.68, dot: true },
 ];
 const CARD_T = [11.25, 11.484, 11.719, 11.953, 12.187, 12.42, 12.65, 13.35];
 function init6(root) {
@@ -525,21 +536,21 @@ function render6(T) {
     o.main.row.style.left = px(k(-260) - t * k(380)); o.main.row.style.top = px(H * 0.04 + 4 * H * 0.115);
     o.rows.forEach(r => { r.row.style.webkitTextStroke = `${Math.max(1, k(2))}px rgba(14,14,16,0.5)`; });
   } else if (c.id === 'linear') {
-    const lp = clamp(t / 0.34), reveal = 0.3 + 0.7 * lp; // linear: constant-speed left→right wipe (the first letters are already in on the cut)
+    const lp = clamp(t / 0.07), reveal = 0.3 + 0.7 * lp; // linear: constant-speed left→right wipe (the first letters are already in on the cut)
     o.w.row.style.clipPath = `inset(0 ${(100 - reveal * 100).toFixed(2)}% 0 0)`;
-    const sm_ = k(26) * (1 - lp); dblur(o.w.row, 'lin', sm_, 0);
+    const drift = -t * k(46); o.w.row.style.transform = `translateX(${drift.toFixed(2)}px)`; dblur(o.w.row, 'lin', k(26) * (1 - clamp(t / 0.1)), 0);
     const tt = clamp(t / 0.45), x2 = k(385) + tt * k(520), y2 = k(900) - tt * k(300);
     o.diag.setAttribute('x2', x2); o.diag.setAttribute('y2', y2);
     o.ft.style.opacity = String(sm(0.1, 0.3, t));
-    const dp = clamp(spr(T, CARD_T[idx] + 0.14, 0.35, 0.3));
-    o.dotEl.style.left = px(W / 2 - k(36) + o.w.fullWidth / 2 + k(4)); o.dotEl.style.top = px(cy + o.w.size * 0.16); o.dotEl.style.transform = `scale(${dp})`;
+    const dp = clamp(spr(T, CARD_T[idx] + 0.05, 0.3, 0.3));
+    o.dotEl.style.left = px(W / 2 - k(36) + o.w.fullWidth / 2 + k(4) + drift); o.dotEl.style.top = px(cy + o.w.size * 0.16); o.dotEl.style.transform = `scale(${dp})`;
   }
   // the full stop of LINEAR grows into the orange field
-  const grow = ramp(T, 12.98, 13.35), bx = W / 2 - k(36) + S6.cards[6].w.fullWidth / 2 + k(34), by = cy + S6.cards[6].w.size * 0.16 + k(30);
+  const grow = ramp(T, 13.05, 13.35), bx = W / 2 - k(36) + S6.cards[6].w.fullWidth / 2 + k(34) - Math.max(0, T - CARD_T[6]) * k(46), by = cy + S6.cards[6].w.size * 0.16 + k(30);
   S6.flood.style.display = grow > 0 ? 'block' : 'none';
   const rr = k(30) + (Math.hypot(W, H) * 1.05) * Math.pow(grow, 2.4);
   S6.flood.style.left = px(bx - rr); S6.flood.style.top = px(by - rr); S6.flood.style.width = px(2 * rr); S6.flood.style.height = px(2 * rr);
-  dblur(S6.cards[6].w.row, 'lin', Math.max(0, k(26) * (1 - clamp((T - 12.65) / 0.34))) + grow * k(30), 0);
+  dblur(S6.cards[6].w.row, 'lin', Math.max(0, k(26) * (1 - clamp((T - 12.65) / 0.1))) + grow * k(30), 0);
 }
 
 // =====================================================================================================
@@ -553,7 +564,7 @@ function init7(root) {
   S7.word = word(root, 'CLAUDE', { wdth: 125, wght: 900, size: k(220), track: -0.015, color: C.ink });
   S7.sub = word(root, 'motion designer', { font: 'Instrument Serif', style: 'italic', wght: 400, wdth: 100, size: k(100), track: 0, color: C.ink, css: { overflow: 'hidden' } });
   S7.rule = mk(root, { left: px(k(517)), top: px(k(729)), width: px(k(1149)), height: px(Math.max(1.5, k(2.2))), background: C.ink, transformOrigin: '0 50%' });
-  S7.credit = mk(root, { left: px(k(517)), top: px(k(748)), fontFamily: '"Space Mono"', fontSize: px(k(15)), letterSpacing: '0.1em', color: C.ink, lineHeight: '1', whiteSpace: 'pre', textTransform: 'uppercase' });
+  S7.credit = mk(root, { left: px(k(517)), top: px(k(748)), fontFamily: '"Space Mono"', fontSize: px(k(17)), letterSpacing: '0.1em', color: C.ink, lineHeight: '1', whiteSpace: 'pre', textTransform: 'uppercase' });
   S7.credit.textContent = 'SHOWREEL 2026   ·   15 SECONDS   ·   EVERY FRAME WRITTEN IN CODE        ◉        AVAILABLE FOR NEW PROJECTS';
   S7.top = mk(root, { left: px(k(288)), top: px(k(142)), width: px(k(1344)), height: px(Math.max(1.5, k(2.2))), background: C.ink, opacity: '0.0' });
 }
@@ -583,7 +594,7 @@ function render7(T) {
     const sz = k(3 + hash(i, 4, 7) * 6), vis = tt > 0 ? 1 : 0;
     if (c.kind === 'tri') { const g = hash(i, 5, 7) * 6 + T; c.node.setAttribute('d', [0, 1, 2].map(j => `${j ? 'L' : 'M'}${(x + Math.cos(g + j * 2.094) * sz * 1.5).toFixed(1)} ${(y + Math.sin(g + j * 2.094) * sz * 1.5).toFixed(1)}`).join('') + 'Z'); }
     else { c.node.setAttribute('cx', x); c.node.setAttribute('cy', y); c.node.setAttribute('r', c.kind === 'ring' ? sz * 1.3 : sz); }
-    c.node.style.opacity = String(vis * 0.95 * (1 - 0.0 * tt));
+    c.node.style.opacity = String(vis * 0.95 * (1 - 0.9 * sm(14.25, 14.7, T)));
   });
   // wordmark: letters sweep in from behind the glyph with width + blur, subtitle rises, rule draws, credit fades
   S7.word.letters.forEach((L, i) => {
@@ -595,12 +606,12 @@ function render7(T) {
   const sp = outExpo(ramp(T, 14.3, 14.65));
   S7.sub.row.style.top = px(k(643) - S7.sub.size * 0.36 + (1 - sp) * S7.sub.size * 0.9); S7.sub.row.style.height = px(S7.sub.size * 1.18); S7.sub.row.style.clipPath = `inset(0 0 ${(1 - sp) * 55}% 0)`; S7.sub.row.style.opacity = sp > 0 ? '1' : '0';
   S7.rule.style.transform = `scaleX(${curves.decelerate(ramp(T, 14.4, 14.85)).toFixed(4)})`;
-  S7.credit.style.opacity = String(sm(14.6, 14.9, T));
+  S7.credit.style.opacity = String(sm(14.35, 14.6, T));
 }
 
 // =====================================================================================================
 const SCENES = [
-  { id: 'intro', a: 0, b: 2.0, bg: C.ink, init: init0, render: render0 },
+  { id: 'intro', a: 0, b: 2.1, bg: C.ink, init: init0, render: render0 },
   { id: 'ident', a: 1.875, b: 3.5, bg: C.orange, init: init1, render: render1 },
   { id: 'ease', a: 3.5, b: 5.625, bg: C.cream, init: init2, render: render2 },
   { id: 'morph', a: 5.625, b: 7.5, bg: C.blue, init: init3, render: render3 },
@@ -626,12 +637,12 @@ export default {
       if (s.id === 'ident' && T >= 3.5) on = false;
       s.root.style.display = on ? 'block' : 'none';
     }
-    const ident = SCENES[1].root, iris = ramp(T, 1.875, 1.995);
-    if (T >= 1.875 && T < 2.0) {
+    const ident = SCENES[1].root, iris = ramp(T, 1.875, 2.08);
+    if (T >= 1.875 && T < 2.1) {
       const R = outExpo(iris) * Math.hypot(W, H) * 0.56 + k(4);
       ident.style.clipPath = `circle(${R.toFixed(1)}px at 50% 50%)`;
       irisRim.style.display = 'block'; irisRim.style.width = irisRim.style.height = px(2 * R); irisRim.style.left = px(W / 2 - R); irisRim.style.top = px(H / 2 - R);
-      irisRim.style.opacity = String(1 - sm(0.8, 1, iris));
+      irisRim.style.opacity = String(1 - sm(0.85, 1, iris));
     } else { ident.style.clipPath = 'none'; irisRim.style.display = 'none'; }
     for (const s of SCENES) if (s.root.style.display === 'block') s.render(T);
     renderHud(T);
