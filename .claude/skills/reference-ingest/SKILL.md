@@ -11,3 +11,5 @@ Use `studio/reference.mjs analyze`. FFmpeg is primary for local/direct decodable
 - Compare FFmpeg boundary candidates to strips: lighting/motion can false-trigger. `--scene-engine=python` uses optional PySceneDetect AdaptiveDetector; missing dependencies are explicit failures when requested, automatic motion has a labelled native fallback.
 - Read evidence-pack.json first, contact sheets second, individual frames only where useful. Deduplication reuses visually redundant images in compact vision packs while retaining requested/decoded timestamps.
 - Refine one <=2s region with `--reason` and 2–12 samples. Preserve prior evidence; never overwrite a reference pack.
+
+**VFR screen recordings:** if the audio is longer than the picture, sampling must stay inside the video stream (probe uses the video duration; `frame()` steps back once). A pack that crashes on a missing last frame is a tool bug, not a bad reference.

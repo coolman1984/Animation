@@ -18,3 +18,5 @@ Ledger: time → observed defect → blocker/major/minor → smallest fix → ev
 Fix blocker/major issues, then verify only affected evidence. Two failed attempts require diagnosis. Mark unviewed/unheard evidence explicitly.
 
 **Reference-matched work:** build matched boards (reference above, ours below, offset-corrected timestamps), check fixes on frames extracted from the exported mp4, and give the critic a list of deliberate non-defects. Say what fidelity means (structure, timing, palette, type roles) and what is unverified (audio heard? real-speed? loop seam? share copy?). Examples: studio/showreel2/LEDGER.md.
+
+**Our own exports can be measured too:** `node reference.mjs timeline <our.mp4>` shows dead spans and cut rhythm; `audio` checks that hits land on the grid.

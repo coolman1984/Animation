@@ -100,9 +100,10 @@ export async function analyzeNode(src, { bpmHint, beatsPerBar = 4 } = {}) {
   const fluxN = normalize(flux);
   // Onsets: local maxima above an adaptive threshold, ≥ 50 ms apart.
   const onsets = [];
-  for (let i = 3; i < fluxN.length - 3; i++) {
+  // Starts at frame 0 (not 3): a hit on the very first frame (an opening impact) is a real onset.
+  for (let i = 0; i < fluxN.length - 3; i++) {
     const w0 = Math.max(0, i - 40), w1 = Math.min(fluxN.length, i + 40), local = fluxN.slice(w0, w1), mean = local.reduce((a, b) => a + b, 0) / local.length;
-    if (fluxN[i] > mean + 0.15 && fluxN[i] >= Math.max(...fluxN.slice(i - 3, i + 4)) && (!onsets.length || i * hopS - onsets.at(-1) > 0.05)) onsets.push(r3(i * hopS));
+    if (fluxN[i] > mean + 0.15 && fluxN[i] >= Math.max(...fluxN.slice(Math.max(0, i - 3), i + 4)) && (!onsets.length || i * hopS - onsets.at(-1) > 0.05)) onsets.push(r3(i * hopS));
   }
   // Tempo: autocorrelation of the onset envelope (60–180 BPM) with a gentle prior around the hint/120.
   const centre = bpmHint || 120; let best = { score: -Infinity, lag: 0 };

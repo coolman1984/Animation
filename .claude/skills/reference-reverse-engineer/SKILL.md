@@ -22,3 +22,5 @@ Read `studio/ARTISTIC_FORENSICS.md`. Fill artisticDNA in the review template: fi
 **Minimise paperwork:** analyze writes review-draft.json; existing packs use prepare. Inspect suggestedEvidence, then write each decision once with topics and autoSections=true. It fills applicable headings automatically; keep unsupported topics unknown. Do not manually repeat twenty summaries or run extra sampling without a concrete question.
 
 **Owner production policy:** read `studio/AUTONOMOUS_FILM.md` first for new films. The owner requests subject + placement/size; the Claude Code agent does ALL analysis, direction, internal JSON, review, corrections and export. No ordinary approval pauses or manual owner tasks. Deliver one finished video link. Use config.ownerRequest to enforce the single requested canvas/duration/fps.
+
+**Precise pass:** after the visual review, run `timeline` (cuts, holds), `audio` (beat grid) and `track` on the 2–3 moves that matter; replace estimates with measured timing and easing before reconstruction.

@@ -11,3 +11,5 @@ FFmpeg extracts mono analysis audio. Default Node musicmap analyzer measures ene
 - Add visually observed type hits, scale settles, reveals and camera starts as `visualEvents` in the review; the relationship map is updated from those events.
 - For a browser-only source, audio is unavailable unless an authorized local file is supplied. Do not secretly record/decrypt audio. Report unheard evidence.
 - Do not reuse a reference track for reconstruction without permission. Neutral studies can be silent; compare rhythm using event timing and report this limitation.
+
+**Measured music:** `node reference.mjs audio <pack|video>` → tempo/grid/downbeats, 16-step drum patterns, key + mode hint (Hijaz/Kurd), chords per beat, melody, sections, SFX candidates, one chart. No transcript offline.

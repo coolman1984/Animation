@@ -65,3 +65,48 @@ Low-effort forensics: analyze → prepared private draft with <=12 real interval
 Owner-facing workflow: AUTONOMOUS_FILM.md — one natural-language request, agent completes every internal step, one finished video. lib/build-options.mjs ownerRequest enforces exact single-delivery width/height/duration/fps.
 
 Capture startup reliability: create the server, launch inside cleanup protection, close the server even on startup/client-close failure. cdp.mjs permits one bounded retry only for transient Chromium startup failures, never for failed product verification.
+
+## Tooling speed without quality loss
+- **Bounded pool for independent extractions** (`pool()` in `lib/review.mjs`): N separate ffmpeg processes, each writing its own file, results kept in input order. Same bytes, less wall time (evidence 104 s → 71 s). Seeking a CRF 14 master is the cost, not the decode of one frame.
+- **Onsets from frame 0:** an opening impact is a real onset; local-max windows clamp at the start instead of skipping frames.
+
+## Product-UI promo grammar (learned from a 15 s SaaS promo, 2026-10-02; kit: `lib/uimotion.js`)
+Reference facts (observed on stills + numbers; motion/audio not played): dark navy radial field with sparse twinkling specks; 15.5 s; a beat every ~1.1–2.2 s; one idea per beat.
+| Observed move | Native recipe |
+|---|---|
+| UI cards live in 3-D (input bar, app window): tilted ~7–20°, slow resting drift, never flat | `planeTransform` + `tiltSettle` (spring from a stronger tilt/offset/negative z) + `planeDrift` (±0.6–0.9° sine drift) |
+| Typewriter in the input bar with a caret, then the Send button pulses | `typeOn` (Latin by grapheme, Arabic by whole word), `caretVisible` (solid while typing, blinks after), `typeEnd` to cue the press/transition |
+| "Whoosh" into the next scene: the card zooms/blurs away, the next scene resolves from blur | `applyTransition('zoomContinuation', …, { factor: 2.4, maxBlur: 14 })` (already in the transition vocabulary) |
+| Provider logos orbit the window at different depths, then scatter outward blurred | `orbitPoint` (depth drives scale/opacity/blur, z-order flips at the front/back of the orbit) + `scatterOut` (stagger 0.03 s) |
+| Left copy / right UI card layout; tiny tracked eyebrow, then a white line and a blue line rising out of a mask | `stackLines` (clip/rise/blur per line) + one eyebrow line; the card slides in from the right with a tilt that flattens |
+| Rows inside a UI card appear one by one (API keys, list items) | `stagger` from `kinetics.js` per row, 0.1–0.2 s apart |
+| UI wall: dozens of dim windows on a steeply tilted plane, 2–3 lit like spotlights that travel, slow push-in, centred headline over it | `wallCells` + `litCells` (epoch cross-fade, seeded) on `perspective(1000px) rotateX(42deg) rotateZ(-12deg)`, `scale 1 → 1.08` |
+| Centred statement stack: each new line dims the older ones to ~50 %; the last line (blue) is biggest/brightest; badges and a trust line fade in last | `stackLines(..., { dimTo: 0.5 })` |
+| Logo outro: one thin ring expands from the icon, the icon springs in, the wordmark reveals left to right, tagline and URL pill follow, then the end loops back to the opening bar | `pulseRing`, spring on the icon, `clipInset` wipe for the wordmark; end the film on the opening frame for a loop |
+Taste notes: the reference never uses more than two type families, no frame borders and no confetti; colour = navy + one blue + white, with a single warm icon as accent.
+Counter-case: a calm luxury product should not use the whoosh/orbit energy; the kit is for tech/UI explainers.
+
+## Precise forensics: measure timing, easing and music instead of guessing (2026-10-02)
+Commands (optional Python: numpy, scipy, OpenCV, librosa — `pip install -r reference/requirements-optional.txt`; the doctor lists them):
+```bash
+node reference.mjs timeline <pack|video> [--crop=x,y,w,h]                     # moving/still spans, hard cuts, energy chart
+node reference.mjs strip <pack|video> --range=a:b [--crop=...]                 # every decoded frame, real timestamps
+node reference.mjs track <pack|video> --roi=x,y,w,h [--ref=t] [--range=a:b]    # per-frame position/scale + fitted easing per move
+node reference.mjs audio <pack|video> [--range=a:b]                            # tempo, grid, drums, key/mode, chords, melody, sections, SFX
+```
+- **Every frame, real timestamps:** variable-frame-rate recordings are timed by decoded PTS, not by an assumed fps.
+- **Easing fit with its own keyframes:** each model is fitted together with its start t0 and duration D (an ease-out reaches 99 % long before its last key). Candidates: linear, power in/out/in-out 2–5, expo, sine, back-out, spring (→ `springStep {duration, bounce}`), free cubic-bezier (→ `cubicBezier`). A visible overshoot ranks the spring first.
+- **Proven on clips with known answers** (`test/forensics-tools.test.mjs`): keyframes within one frame (0.508–1.284 s for a true 0.5–1.3 s quint ease-out, recognised as `out5`), spring 0.58 s / bounce 0.27 for a true 0.6 / 0.3; audio: 119.9 BPM for 120, key A minor, chords Am→F→G→Em, four-on-the-floor kick after the drop, the drop section at 8.29 s for 8.25 s.
+- **Audio extras for our region:** a mode hint from the flat 2nd and the 3rds (film 5's score reads "Hijaz / Phrygian dominant"), 16-step drum patterns per bar (kick / snare-clap / hats from the percussive layer).
+- **Limits:** a speech transcript needs a speech model; the model hosts (huggingface.co, openaipublic.azureedge.net) are blocked by this environment's network policy. Taste and mood still need a human ear and eye.
+
+### Measured on the SaaS UI promo (replaces the earlier estimates)
+| What | Measured |
+|---|---|
+| Music | 127.97 BPM (beat 0.469 s, bar 1.875 s), A major; typing clicks on 1/8 notes in the intro, groove from 1.28 s, rising sweeps before ~3.0 s and before ~13.1 s, breakdown 13.17 s, silence from 14.95 s |
+| Edit | hard cuts at 3.95, 5.83, 9.58, 11.44, 13.19 s; inside the card section a change lands every 0.46–0.50 s = **one card per beat** |
+| Headline lines | each line rises out of its mask in ≈ 0.10 s (6 frames at 60 fps); the second line starts 0.233 s after the first = **half a beat** |
+| UI card entry | 0.20 s, 23 px slide + 1.2 % scale, ease-out close to `outExpo` (fit `cubic-bezier(0.33, 0.61, 0.03, 0.82)`), no overshoot |
+| Dropdown expand | 0.10 s, `out5`-type, 64 px |
+| UI wall | continuous slow drift 9.58–11.44 s (the only long moving span), exit at 11.44 s |
+Rule taken: in a beat-driven UI promo, put every content change on the beat and every secondary element on the half beat; keep entries ≤ 0.2 s with an expo/quint ease-out.

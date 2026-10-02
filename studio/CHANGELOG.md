@@ -5,6 +5,35 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-02 — Precise forensics tools: exact motion timing, easing curves and measured music (scope DONE)
+Owner request: tools to see motion timing and easing precisely and to understand audio; overcome capability gaps.
+- **Installed** (optional, per `reference/requirements-optional.txt`): OpenCV 4.10 headless, PySceneDetect 0.7 (numpy/scipy/librosa already present). The doctor now lists the importable forensics modules.
+- **`tools/motion_curves.py`** + `node reference.mjs track|timeline|strip`: every decoded frame with its real timestamp; drift-free multi-scale template tracking forwards and backwards from a reference time; moves segmented to one frame; easing fitted together with keyframe start/duration (linear, power, expo, sine, back-out, spring, free cubic-bezier); charts drawn with OpenCV for visual inspection.
+- **`tools/audio_deep.py`** + `node reference.mjs audio`: tempo by line fit through the beats + grid phase locked to percussive transients, downbeats, 16-step kick/snare/hat patterns, key with a mode hint (Hijaz/Kurd/major/minor), chord per beat, melody (pYIN, only when a lead exists), sections/builds/drops, silences, SFX candidates, voice likelihood; one-axis spectrogram/chroma/drums/loudness chart.
+- **Validated on known answers** (`test/forensics-tools.test.mjs`, 2 tests; CI's Python job installs the same modules): keyframes within one frame, ease-out quint and spring 0.6/0.3 recovered; tempo, key, chord order, kick pattern and drop recovered. Three tool bugs found during validation and fixed before shipping (move target = resting position, not the first zero-velocity point; centred step bins; tempo from a line fit instead of a quantised estimate).
+- **Applied to the SaaS UI promo:** measured music/edit/easing facts replace the estimates (`TECHNIQUES.md`).
+- **Still not possible here:** speech transcription (speech-model hosts blocked by the network policy); listening for taste.
+- `npm test`: 92 tests, 78 passed, 14 skipped, 0 failed.
+
+## 2026-10-02 — Reverse-engineered a SaaS UI promo and added the product-UI motion kit (scope DONE)
+Owner request: reverse engineer the new screen recording, learn all its moves, add them to the studio.
+- **Analysis:** `reference.mjs analyze` (machine pack, private, git-ignored) + dense 0.25 s grids of the content area; stills inspected (no playback/listening). Result written as the move table in `TECHNIQUES.md` → "Product-UI promo grammar".
+- **Studio bug found and fixed:** recordings whose audio runs longer than the picture made the probe use the container duration, the sampler asked for a frame past the last video frame and the whole `analyze` crashed ("Error opening input … f007.png"). `mediaProbe` now uses the video-stream duration and `frame()` steps back 0.2 s once. Regression test `test/reference-media.test.mjs` fails on the old code.
+- `npm test`: 90 tests, 76 passed, 14 skipped, 0 failed; `STUDIO_RENDER_TEST=1 examples.test.mjs` 4/4 (includes the new study).
+- **New module `lib/uimotion.js`** (pure in t, seeded): `planeTransform`, `tiltSettle`, `planeDrift`, `typeOn`, `caretVisible`, `typeEnd`, `stackLines`, `orbitPoint`, `scatterOut`, `litCells`, `wallCells`, `pulseRing`. 8 unit tests (`test/uimotion.test.mjs`).
+- **New study `examples/ui-motion-study`** (7 s, any aspect): exercises every primitive plus `zoomContinuation`; covered automatically by the real-browser determinism test (forward/reverse seek identical).
+- Already in the studio and reused, not duplicated: `zoomContinuation`, `cameraPass`, springs, `stagger`, `clipInset`.
+- Not claimed: no film was made; motion and audio of the reference were not played; `reference/lessons.json` stays empty (its `learn` command needs inspected playback).
+
+## 2026-10-02 — Project optimisation and taste guard (scope DONE)
+Owner request: review the whole project to optimise without lowering quality, and add the two taste rules.
+- **Faster review evidence:** `lib/review.mjs` runs its independent ffmpeg extractions through a bounded pool (4): 103.6 s → 71.1 s on film 5's 141 MB master; all 96 evidence files and review.json byte-identical to the sequential version. Runs after every review and final export.
+- **Fewer tokens every session:** STATUS.md (read first by every session) 12.6 KB → 3.5 KB; full evidence moved verbatim to `STATUS_HISTORY.md`.
+- **One false alarm removed:** onsets are measured from analysis frame 0 (`lib/musicmap.mjs`); a cue at t = 0 no longer reports "1033 ms off". New test fails on the old code.
+- **Taste guard** in `WORKFLOW.md`: two type families; no default decorations without a reason. Guidance only (no new step, check or loop).
+- Considered and rejected (cost > benefit): a 1–10 scoring loop until 8+ (unbounded rebuilds), Playwright/Remotion installs (own CDP renderer already covers them), JPEG capture for finals (would lower quality), shorter keyframe interval for faster seeking (bigger masters).
+- `npm test`: 81 tests, 67 passed, 14 skipped, 0 failed.
+
 ## 2026-10-02 — Film 5: BALACONBAR Beni Suef, 25 s Reels ad (one 9:16 delivery)
 Owner request: a dynamic 25 s ad for the café in Beni Suef using the owner's four images (real photo, swing poster, AI storyboard, vintage board), everything the studio learned,
 retro/80s nostalgia mixed with 2026 motion, exciting original music, ONE video in Reels shape. Source: `film5/` (BRIEF, production.json, film.js, score.mjs, plates.mjs, crops.sh, LEDGER).

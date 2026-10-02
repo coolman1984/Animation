@@ -39,6 +39,13 @@
 30. **Decorative words hidden behind the product vanish:** swap stacked words one at a time above the product, and keep labels above any flying card (menu scene).
 31. **Use marquee bands for the unsafe 35 % of a Reel:** the safe band stays clean while the top/bottom zones still carry motion; the owner's mixed image sets (misspelt "BALAKON BAR") are cropped to avoid every baked word.
 
+## Studio upkeep (2026-10-02)
+32. **Fix a tool that cries wolf:** one false sync note ("1033 ms off" for a hit that was exactly at 0) cost a manual investigation; the onset detector now starts at frame 0 and a test guards it.
+
+33. **Make UI feel alive by never leaving it flat:** cards tilted 7–20° with a ±1° drift, a typewriter with a caret, and one idea per 1–2 s beat read as a modern product promo; stacked lines that dim as the next arrives guide the eye (`lib/uimotion.js`).
+
+34. **Measure before you copy a rhythm:** the SaaS promo's "fast cards" were exactly one per beat at 128 BPM and the second headline line came half a beat later; eyeballing stills had guessed 1–2 s. Use `reference.mjs timeline/track/audio` first.
+
 ## Principles learned from reference studies
 Consult `reference/lessons.json` only when its evidence-backed principle is relevant to the current
 craft decision. Learn the timing/composition principle and its counter-case, not reference appearance.
