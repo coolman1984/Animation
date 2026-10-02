@@ -12,3 +12,5 @@ Start with scientific-summary.json. Read only a justified time window of motion.
 - Classify transitions visually among the atlas families. Inspect before/during/after. A match cut requires correspondence in shape/framing/action; similar pixels alone do not establish intention.
 - Study type roles/relative sizes/weight/alignment/RTL-LTR/line lengths/tracking/word-line-character staggering/reveal/exit timing and relationship to camera settling. No OCR/font identity claim from raw motion stats.
 Map to cinema.js, kinetics.js, depth.js, transitions.js and typography.js first. Use a true 3D external engine only when an observed requirement makes native reproduction inefficient.
+
+For new artistic reference studies, follow ARTISTIC_FORENSICS.md: connect shot scale, distance, velocity, settling, focus, depth, occlusion, reveal, motivated cuts/transitions, sound/image and light progression to plausible storytelling purpose. Separate visible behavior from inferred intent and name an alternative. Stills cannot certify camera timing or subjective energy; use inspected playback.

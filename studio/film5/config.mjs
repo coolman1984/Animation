@@ -5,6 +5,7 @@ export default {
   film: 'film5/film.js',
   score: 'film5/score.mjs',
   production: 'film5/production.json',
+  ownerRequest: { delivery: 'reels25', w: 1080, h: 1920, duration: 25, fps: 30 }, // AUTONOMOUS_FILM.md: exactly one requested delivery
   w: 1080, h: 1920, fps: 30, lufs: -14, tp: -1.5, shareMB: 12,
   preview: { delivery: 'reels25', range: [0, 12] },
   cacheInputs: ['film5/plates'],

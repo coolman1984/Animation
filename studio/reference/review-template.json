@@ -27,5 +27,155 @@
   "shots": [],
   "hypotheses": [],
   "transitions": [],
-  "visualEvents": []
+  "visualEvents": [],
+  "artisticDNA": {
+    "version": 1,
+    "context": {
+      "viewer": "",
+      "purpose": "",
+      "viewingSituation": ""
+    },
+    "sections": {
+      "STYLE LANGUAGE": {
+        "summary": "",
+        "observationIds": [],
+        "status": "not-assessed"
+      },
+      "EMOTIONAL ARC": {
+        "summary": "",
+        "observationIds": [],
+        "status": "not-assessed"
+      },
+      "ATTENTION CURVE": {
+        "summary": "",
+        "observationIds": [],
+        "status": "not-assessed"
+      },
+      "PACING CURVE": {
+        "summary": "",
+        "observationIds": [],
+        "status": "not-assessed"
+      },
+      "VISUAL HIERARCHY": {
+        "summary": "",
+        "observationIds": [],
+        "status": "not-assessed"
+      },
+      "COLOUR PSYCHOLOGY IN CONTEXT": {
+        "summary": "",
+        "observationIds": [],
+        "status": "not-assessed"
+      },
+      "LIGHT AND SHADOW LANGUAGE": {
+        "summary": "",
+        "observationIds": [],
+        "status": "not-assessed"
+      },
+      "CAMERA PSYCHOLOGY": {
+        "summary": "",
+        "observationIds": [],
+        "status": "not-assessed"
+      },
+      "MOTION CHARACTER": {
+        "summary": "",
+        "observationIds": [],
+        "status": "not-assessed"
+      },
+      "SURPRISE AND NOVELTY": {
+        "summary": "",
+        "observationIds": [],
+        "status": "not-assessed"
+      },
+      "TENSION AND RELEASE": {
+        "summary": "",
+        "observationIds": [],
+        "status": "not-assessed"
+      },
+      "INFORMATION DENSITY": {
+        "summary": "",
+        "observationIds": [],
+        "status": "not-assessed"
+      },
+      "HOOK MECHANICS": {
+        "summary": "",
+        "observationIds": [],
+        "status": "not-assessed"
+      },
+      "BOREDOM RISKS": {
+        "summary": "",
+        "observationIds": [],
+        "status": "not-assessed"
+      },
+      "PAYOFF STRUCTURE": {
+        "summary": "",
+        "observationIds": [],
+        "status": "not-assessed"
+      },
+      "WHAT MAKES THE WORK MEMORABLE": {
+        "summary": "",
+        "observationIds": [],
+        "status": "not-assessed"
+      },
+      "WHAT MAKES IT FEEL PREMIUM": {
+        "summary": "",
+        "observationIds": [],
+        "status": "not-assessed"
+      },
+      "WHAT IS PURE DECORATION": {
+        "summary": "",
+        "observationIds": [],
+        "status": "not-assessed"
+      },
+      "WHAT SHOULD BE LEARNED": {
+        "summary": "",
+        "observationIds": [],
+        "status": "not-assessed"
+      },
+      "WHAT SHOULD NOT BE COPIED": {
+        "summary": "",
+        "observationIds": [],
+        "status": "not-assessed"
+      }
+    },
+    "observations": [],
+    "timeline": [
+      {
+        "start": 0,
+        "end": null,
+        "basis": "unknown",
+        "confidence": 0,
+        "observationIds": [],
+        "narrativeRole": "unknown",
+        "why": "Not inspected yet; temporal ratings remain unknown.",
+        "attention": {
+          "hookStrength": null,
+          "novelty": null,
+          "informationDensity": null,
+          "visualChange": null,
+          "motionIntensity": null,
+          "soundIntensity": null
+        },
+        "pacing": {
+          "visualEnergy": null,
+          "informationDensity": null,
+          "cameraEnergy": null,
+          "editFrequency": null,
+          "motionDensity": null,
+          "audioEnergy": null,
+          "emotionalIntensity": null
+        },
+        "firstNotice": "unknown",
+        "expectation": "unknown",
+        "delayedAnswer": "unknown",
+        "microPayoff": "unknown",
+        "majorPayoff": "unknown",
+        "quietMoment": "unknown",
+        "patternBreak": "unknown",
+        "repetition": "unknown",
+        "boredomRisk": "unknown",
+        "overloadRisk": "unknown",
+        "slowingOpportunity": "unknown"
+      }
+    ]
+  }
 }

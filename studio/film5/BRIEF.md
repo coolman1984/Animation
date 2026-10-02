@@ -8,11 +8,11 @@ fast transitions, modern 2026 motion mixed with the old/80s nostalgic look of th
 - Product evidence: the owner's real photo (`source/hero-duo.jpg`, cup + LAMAR coconut-milk carton). Cup, carton, logo and boba are cut out and recomposed, never redrawn.
   Brand spelling = the cup: BALACONBAR. The vintage board's spelling "BALAKON BAR" / "BOALCON BAR" is never shown (crops avoid every baked word).
 - Storyboard (AI scene art, owner-supplied): text-free crops used only as café atmosphere (swing, awnings, man + car). Never as product proof.
-- Vintage board: drink illustrations (iced coffee, latte, lemon, milkshake, bakery), the man with his car, the statue. **Owner to confirm those items are on the real menu.**
+- Vintage board: drink illustrations (iced coffee, latte, lemon, milkshake, bakery), the man with his car, the statue. The agent recorded this assumption; the owner can correct it later.
   No dates or claims from the board are used ("1930", "من قلب الثلاثينيات" are not shown).
 - Copy: «طعم زمان..» · «بمذاق النهارده» · «ماتشا بلبن جوز الهند» (the carton is in the real photo) · menu words from the board · «كافيه في بني سويف» ·
   «بارد. كريمي. منعش.» · «تعالى جرّب» · «لحظتك مع الماتشا» (the owner's own tagline) · YOUR MATCHA MOMENT. No prices, health claims, hours or address.
-- **Missing, owner to supply:** address / phone / social handle / opening hours. The film only says «كافيه في بني سويف».
+- **Not in the film (no source supplied):** address / phone / social handle / opening hours. The film only says «كافيه في بني سويف». Optional extras, not blockers (AUTONOMOUS_FILM.md: one request → one finished video).
 - Third-party mark: the carton shows its maker's logo (LAMAR); the film makes no partnership claim (same owner decision as film 2).
 
 ## Direction

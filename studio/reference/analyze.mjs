@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { ingest } from './ingest.mjs';
 import { REFS, STUDIO, slugify, save, round, work, sheet, grayOf, diff, json } from './common.mjs';
 import { decodeMetrics, cutTimes, seriesMetrics, findEvents } from './metrics.mjs';
+import { prepareReview } from './artistic.mjs';
 import { blueprint, writeAnalysis } from './report.mjs';
 import { TECHNIQUE_ATLAS } from './atlas.mjs';
 const PY = join(STUDIO,'tools/reference_motion.py');
@@ -87,7 +88,7 @@ export async function analyze(source, opts={}) {
     save(join(dir,'frames.json'),evidence);save(join(dir,'shots.json'),shots);save(join(dir,'transitions.json'),transitions);save(join(dir,'motion.json'),motion);save(join(dir,'audio.json'),audio);save(join(dir,'audio-visual-map.json'),relationship(audio,events));
     save(join(dir,'scientific-summary.json'),scientificSummary(meta,shots,motion,audio,relationship(audio,events)));
     save(join(dir,'technique-map.json'),{atlas:TECHNIQUE_ATLAS,hypotheses:[],status:'Await visual review; no software certainty from pixels'});save(join(dir,'recreation-plan.json'),blueprint(meta,shots,transitions,motion));
-    save(join(dir,'evidence-pack.json'),{status:'MACHINE_COMPLETE_VISUAL_REVIEW_PENDING',slug:name,passes:['coarse overview','shot candidates and triads','targeted transition/motion/audio neighborhoods','near-frame requests only when justified'],maxFrames,extracted:evidence.length,uniqueForVision:unique.length,doNotSendEveryFrame:true,contactSheets:sheets,firstLook:'contact-sheets/overview-1.png',machineSummary:'scientific-summary.json',rawMetricsPolicy:'Read only justified temporal windows, never all raw arrays by default',omittedDetailedBoundaries:allCuts.length-cuts.length,nearFrameCommand:`node reference.mjs refine ${name} --range=start:end --reason="observed unresolved issue"`,sourceDurationSeconds:D,analysisSeconds:(Date.now()-started)/1000,limits:meta.limitations||[]});writeAnalysis(dir);
+    save(join(dir,'evidence-pack.json'),{status:'MACHINE_COMPLETE_VISUAL_REVIEW_PENDING',slug:name,passes:['coarse overview','shot candidates and triads','targeted transition/motion/audio neighborhoods','near-frame requests only when justified'],maxFrames,extracted:evidence.length,uniqueForVision:unique.length,doNotSendEveryFrame:true,contactSheets:sheets,firstLook:'contact-sheets/overview-1.png',machineSummary:'scientific-summary.json',rawMetricsPolicy:'Read only justified temporal windows, never all raw arrays by default',omittedDetailedBoundaries:allCuts.length-cuts.length,nearFrameCommand:`node reference.mjs refine ${name} --range=start:end --reason="observed unresolved issue"`,sourceDurationSeconds:D,analysisSeconds:(Date.now()-started)/1000,limits:meta.limitations||[]});writeAnalysis(dir);prepareReview(dir);
     save(join(dir,'job.json'),{status:'DONE_MACHINE_PACK',visualReview:'PENDING',at:new Date().toISOString(),seconds:(Date.now()-started)/1000});return dir;
   }catch(e){save(join(dir,'job.json'),{status:'BLOCKED',error:e.message,at:new Date().toISOString()});throw e;}finally{await handle?.close();}
 }

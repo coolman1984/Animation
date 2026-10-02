@@ -8,6 +8,16 @@ Updated: 2026-10-02. This is the current handoff; historical plans are not a tas
 - Technical gates: all PASS (−14 LUFS, TP −2.4, LRA 6.2, text inside the safe area). One separate critique pass (builder, no fresh reviewer) → one of two correction rounds → fixes checked on exported frames.
 - Not verified: audio listening; human real-speed viewing; platform overlays. Owner items: confirm the vintage-board menu items, supply address/phone/handle/hours.
 - Recipes in `studio/TECHNIQUES.md`, lessons 29–31 in `studio/CRAFT.md`, entry in `studio/CHANGELOG.md`.
+- Main (PR #12) merged into the branch: 12 stills byte-identical before/after, 80 tests / 66 passed / 0 failed, `ownerRequest` added to the film 5 config. Next film 5 build re-renders (cache keyed on shared lib).
+
+**Previous scope: DONE — Deep artistic, directorial and viewer-experience reference forensics.**
+- Base: main at 8e6f09b, including the owner's showreel2 and documentation consolidation.
+- Implemented: five-layer review protocol, 20-section ARTISTIC DNA, contextual evidence records, whole-film attention/pacing maps, playback/listening/unknown gates and original-subject direction transfer.
+- Compatibility: old reviews remain valid, explicitly pending artistic interpretation. No reference artwork/media imported and no new film rendered.
+- Owner goal: the Claude Code host performs every production step; one requested placement → one finished video. AUTONOMOUS_FILM.md and build-options ownerRequest enforce this without routine approval stops. Host model selection remains outside repository code.
+- Owner-requested simplification: automatic private draft with real timing/candidate evidence; one observation routes into multiple report topics. No manual twenty-summary workload or invented judgments.
+- Integration correction: CI run 37013165448 failed Chromium startup and timed out due to an existing app-capture server leak. Fixed startup/close cleanup, added failure regression and one bounded startup retry; final corrected-head CI required.
+- Validation: final full suite passed: 80 tests, 65 passed, 15 optional/browser skips, zero failures; artistic/delivery/docs checks passed; final-head CI is required before publication. Final-head CI is the publication acceptance record. The artistic protocol structures reviewer judgment, not automatic psychology or retention measurement.
 
 **Previous scope: DONE — Documentation and skills consolidation (owner request 2026-10-02).**
 - New: `studio/CHANGELOG.md` (evolution log + skill changes), `studio/TECHNIQUES.md` (recipes with numbers), `studio/test/docs.test.mjs` (docs gate).

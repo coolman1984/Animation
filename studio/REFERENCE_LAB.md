@@ -73,6 +73,16 @@ explicit neutral defaults until reviewed. A prose review does not approve a blue
 and explicitly set approvedForReconstruction=true, or use --study for a provisional experiment.
 Structured transition reviews update transitions.json; evidence-pack and job review states advance together. The technique atlas always includes alternative renderers.
 
+## Artistic DNA and original direction
+
+Every report now includes the 20-part ARTISTIC DNA section plus explicit pending status until artistic
+review. Read `ARTISTIC_FORENSICS.md`: five artistic layers, evidence-linked contextual hypotheses,
+whole-film attention/pacing curves, unknown coverage and original-subject transfer. Fill artisticDNA
+in the review template. `direct <pack> --brief=file` writes an original direction from reviewed
+principles; it does not automatically invent psychological conclusions or copy reference assets.
+Outputs: artistic-dna.json, optional original-direction.json / original-direction.md. Legacy technical
+reviews stay compatible and explicitly artistically pending.
+
 ## Short reconstruction and comparison
 ```sh
 node reference.mjs reconstruct launch-reference --range=3:8
@@ -119,3 +129,5 @@ The lab was used beyond 3–8 s studies: a 15 s screen recording → a 15 s orig
 - Match boards (reference above, ours below) + one independent critique found the real gaps (type scale, width motion, point-cloud look) that numbers did not.
 - Fidelity statement used: structure, order, timing ±~0.1 s, palette, type roles. Not claimed: pixel equality, source code, audio.
 Recipes: `TECHNIQUES.md`. Result and limits: `showreel2/LEDGER.md`. A recording uploaded into git is the owner's reference only; its artwork and audio are not reused.
+
+Low-effort path: analyze automatically prepares review-draft.json with real intervals and suggested evidence. Existing packs: `prepare <pack>`. One observation with topics can populate multiple ARTISTIC DNA headings; uninspected areas remain unknown. See ARTISTIC_FORENSICS.md.
