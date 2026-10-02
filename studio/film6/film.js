@@ -147,7 +147,7 @@ export default {
     S.serv = scene();
     S.servLabel = label(S.serv, '// خدماتنا', { top: 400, color: 'rgba(255,255,255,0.75)' });
     S.servTitle = rich(S.serv, [['كل', 'h'], ['اللي', 'h'], ['محتاجه', 'h']], { top: '445px', right: W - SAFE_R + 'px', color: C.white }, 92);
-    const CW = 292, CH = 500, CY = 640;
+    const CW = 292, CH = 470, CY = 610;
     S.cards = [
       { t: 'إعلانات', tag: 'ريلز · فيسبوك · يوتيوب', obj: 1 },
       { t: 'موشن جرافيك', tag: 'شخصيات · حركة · خط', obj: 2 },
@@ -156,10 +156,10 @@ export default {
       const x = SAFE_R - CW - i * (CW + 37);
       const c = card(S.serv, { x, y: CY, w: CW, h: CH, radius: 28, border: false });
       el('div', { text: `// ${ARD(i + 1).padStart(2, '٠')}`, style: abs({ top: '22px', right: '24px', fontFamily: F.label, fontSize: '24px', color: C.grey, direction: 'rtl' }) }, c);
-      const objBox = el('div', { style: abs({ left: '16px', top: '66px', width: '260px', height: '260px' }) }, c);
+      const objBox = el('div', { style: abs({ left: '16px', top: '56px', width: '260px', height: '260px' }) }, c);
       const m = mascotLayer(objBox, { w: 260, h: 260, cell: 4, z: 1 });
-      const title = wline(c, d.t, abs({ right: '24px', top: '348px', direction: 'rtl', fontFamily: F.head, fontWeight: 700, color: C.ink, fontSize: '50px' }));
-      const tag = wline(c, d.tag, abs({ right: '24px', top: '430px', direction: 'rtl', fontFamily: F.label, fontWeight: 500, color: C.grey, fontSize: '24px' }));
+      const title = wline(c, d.t, abs({ right: '24px', top: '326px', direction: 'rtl', fontFamily: F.head, fontWeight: 700, color: C.ink, fontSize: '50px' }));
+      const tag = wline(c, d.tag, abs({ right: '24px', top: '402px', direction: 'rtl', fontFamily: F.label, fontWeight: 500, color: C.grey, fontSize: '24px' }));
       return { ...d, c, m, title, tag };
     });
 
@@ -320,7 +320,7 @@ export default {
       const dr = planeDrift(t, { rx: 1, ry: 1.5, rz: 0.4, period: 6 });
       S.phone.style.transform = planeTransform({ ...pl, rx: pl.rx + dr.rx, ry: pl.ry + dr.ry, rz: pl.rz + dr.rz, perspective: 1600 });
       const pt = t - 6.3;
-      S.phoneM.render(t, { x: 0.5, y: 0.30, size: 0.135, smile: 0.8 + 0.2 * Math.sin(pt * 3), yaw: 0.25 * Math.sin(pt * 2.2), roll: 0.05 * Math.sin(pt * 2.2 + 1), blink: t > 7.6 && t < 7.72 ? 1 : 0, open: t > 8.0 && t < 8.5 ? 0.5 : 0 }, { visible: t > 6.25 });
+      S.phoneM.render(t, { x: 0.5, y: 0.44, size: 0.116, smile: 0.85 + 0.15 * Math.sin(pt * 3), yaw: 0.2 * Math.sin(pt * 2.2), roll: 0.04 * Math.sin(pt * 2.2 + 1), blink: t > 7.6 && t < 7.72 ? 1 : 0, open: t > 8.0 && t < 8.5 ? 0.5 : 0, bounce: Math.max(0, 0.4 * Math.sin(Math.PI * ramp(t, 8.0, 8.4))), armL: [0.3, 0.2], armR: [2.5, 2.5 + 0.35 * Math.sin(pt * 9)], shadow: 1 }, { visible: t > 6.25 });
       S.phoneText.style.opacity = ramp(t, 6.7, 6.9).toFixed(3);
       S.barFill.style.width = (100 * ramp(t, 6.6, 9.4)).toFixed(2) + '%';
       const hp = sp(t, 8.0, { dur: 0.45, bounce: 0.5 });
@@ -380,7 +380,7 @@ export default {
       });
       S.script.forEach((s, i) => { const a = 10.2 + i * 0.13; s.style.opacity = ramp(t, a, a + 0.12).toFixed(3); s.style.transform = `translateX(${(-(1 - ein(ramp(t, a, a + 0.35))) * 30).toFixed(1)}px)`; });
       checkAt(S.chA, t, 10.55);
-      S.boardM.render(t, { x: 0.5, y: -0.12, size: 0.40, smile: 0.9, yaw: 0.18 * Math.sin((t - 10) * Math.PI), pitch: 0.06 * Math.sin((t - 10) * 2 * Math.PI), wink: t > 11.6 && t < 11.95 ? 1 : 0 }, { visible: true });
+      S.boardM.render(t, { x: 0.5, y: 0.04, size: 0.40, smile: 0.95, yaw: 0.18 * Math.sin((t - 10) * Math.PI), pitch: 0.06 * Math.sin((t - 10) * 2 * Math.PI), wink: t > 11.6 && t < 11.95 ? 1 : 0, shadow: 0, armR: [2.5, 2.4 + 0.35 * Math.sin((t - 10) * 9)] }, { visible: true });
       S.liveDot.style.opacity = (0.35 + 0.65 * (Math.floor(t * 2) % 2 ? 0.4 : 1)).toFixed(3);
       S.beats.forEach((b, i) => { const lit = t >= 10.25 + i * 0.25; b.style.transform = `scale(${lit ? sp(t, 10.25 + i * 0.25, { dur: 0.3, bounce: 0.5, from: 0.3 }).toFixed(3) : 0.3})`; b.style.opacity = lit ? '1' : '0.25'; });
       S.wave.forEach((b, i) => { const a = 0.25 + 0.75 * Math.abs(noise1(i * 0.7 + t * 6, 4)) * (0.6 + 0.4 * Math.sin(i * 0.5 + t * 9)); const hgt = 14 + 120 * clamp(a) * ramp(t, 10.2, 10.6); b.style.height = hgt.toFixed(1) + 'px'; b.style.top = (160 - hgt / 2).toFixed(1) + 'px'; });
@@ -471,38 +471,48 @@ export default {
   },
 
   // Mascot staging per scene. Pose y is canvas uv (0 bottom, 1 top); size = head radius / H.
+  // Character staging per scene. stand(): neck-origin pose for a figure whose soles are at feetPx (1 unit = rPx pixels).
   mascotAt(t, push) {
-    const at = (xPx, headYPx, rPx) => ({ x: xPx / W, y: 1 - (headYPx + 1.03 * rPx) / H, size: rPx / H });
-    let pose = null, z = 8, clip = 'none';
+    const stand = (xPx, feetPx, rPx) => ({ x: xPx / W, y: 1 - (feetPx - 3.04 * rPx) / H, size: rPx / H });
+    const hop = (a, b, h = 0.6) => h * Math.sin(Math.PI * ramp(t, a, b));
+    const wave = (ph = 0) => 2.5 + 0.6 * Math.sin(t * 11 + ph);
     const blink = (...times) => (times.some(b => t > b && t < b + 0.12) ? 1 : 0);
-    if (t < 2.75) { // hook: pops up bottom-left, looks up at the headline, delighted when the accent lands
-      const rise = sp(t, 0, { dur: 0.6, bounce: 0.4, from: 0.82 });
-      const delight = ein(ramp(t, 1.45, 1.75));
-      pose = { ...at(330, lerp(2400, 1250, rise), 225), yaw: lerp(0.05, 0.32, ein(ramp(t, 0.5, 0.9))) - 0.1 * delight, pitch: lerp(-0.1, 0.16, ein(ramp(t, 0.5, 0.9))) - 0.12 * delight,
-        roll: 0.06 * Math.sin(t * 2.4) + 0.08 * (1 - rise), look: [lerp(0, 0.7, ein(ramp(t, 0.5, 0.9))) * (1 - delight), 0.5 * (1 - delight)],
-        smile: lerp(0.55, 1, delight), open: 0.55 * delight * (1 - ramp(t, 2.2, 2.5)), brow: 0.8 * delight * (1 - ramp(t, 2.3, 2.6)), blink: blink(0.95, 2.45) };
-    } else if (t >= 3.05 && t < 5.92) { // services: peeks in from the left corner, watches the cards arrive
-      const inn = sp(t, 3.15, { dur: 0.7, bounce: 0.3 });
-      const ox = push * W;
-      const look = t < 3.6 ? 0.8 : t < 3.85 ? 0.45 : t < 4.6 ? 0.1 : -0.2;
-      pose = { ...at(lerp(-260, 215, inn) + ox, 1380, 205), yaw: lerp(0.5, 0.4, ein(ramp(t, 3.5, 4.4))) - (t > 4.7 ? 0.35 * ein(ramp(t, 4.7, 5.1)) : 0), pitch: 0.2 - 0.18 * ein(ramp(t, 4.7, 5.1)),
-        roll: -0.1 + 0.08 * inn, look: [look, 0.6 * (1 - ein(ramp(t, 4.7, 5.1)))], smile: t > 4.7 ? 1 : 0.7, open: t > 4.75 && t < 5.4 ? 0.45 : 0, wink: t > 5.15 && t < 5.5 ? 1 : 0,
-        blink: blink(4.05) };
-    } else if (t >= 5.92 && t < 9.0) { // result: bottom-right, arrives with the push, looks at the phone, then at us
-      const ox = -(1 - push) * W;
+    const IDLE = [0.3, 0.2];
+    let pose = null, z = 8, clip = 'none';
+    if (t < 2.75) { // hook: rises into frame already waving hello, cheers when the accent word lands
+      const rise = sp(t, 0, { dur: 0.6, bounce: 0.4, from: 0.86 });
+      const cheer = ein(ramp(t, 1.5, 1.8)) * (1 - ein(ramp(t, 2.3, 2.6)));
+      const hello = 1 - ein(ramp(t, 1.35, 1.6));
+      pose = { ...stand(310, lerp(2150, 1570, rise), 140), yaw: 0.18 + 0.1 * Math.sin(t * 2), pitch: lerp(0.02, 0.1, cheer), roll: 0.05 * Math.sin(t * 2.4),
+        look: [0.5 * (1 - cheer), 0.45], smile: lerp(0.8, 1, cheer), open: 0.6 * cheer, brow: 0.7 * cheer, blink: blink(0.95, 2.5), bounce: hop(1.55, 1.95, 0.55),
+        armL: [lerp(IDLE[0], 2.6, cheer), lerp(IDLE[1], 2.7, cheer)], armR: [lerp(2.5 * hello + 0.3 * (1 - hello), 2.6, cheer), lerp(wave() * hello + 0.2 * (1 - hello), 2.7, cheer)] };
+    } else if (t >= 3.05 && t < 5.92) { // services: walks in from the left, looks up at the cards and points at them
+      const inn = sp(t, 3.1, { dur: 0.75, bounce: 0.15 });
+      const walking = 1 - ein(ramp(t, 3.6, 3.85));
+      const point = ein(ramp(t, 3.9, 4.2)) * (1 - ein(ramp(t, 5.1, 5.4)));
+      const cheer = ein(ramp(t, 5.15, 5.4));
+      pose = { ...stand(lerp(-250, 235, inn) + push * W, 1745, 118), yaw: 0.25, pitch: 0.08 + 0.06 * point, roll: 0.03 * Math.sin(t * 2.1),
+        look: [0.55 * point, 0.55 * point], smile: 0.85 + 0.15 * cheer, open: 0.5 * cheer, blink: blink(4.4), stride: 0.65 * walking * Math.sin(t * 13),
+        bounce: Math.max(hop(3.55, 3.8, 0.28), hop(3.8, 4.05, 0.28), hop(4.05, 4.3, 0.28)) + 0.07 * walking * Math.abs(Math.sin(t * 13)) + hop(5.15, 5.55, 0.4),
+        armL: [IDLE[0] + 0.5 * walking * Math.sin(t * 13), IDLE[1]], armR: [lerp(0.3, 1.95, point), lerp(0.2, 1.7, point)] };
+      if (cheer > 0) { pose.armL = [lerp(pose.armL[0], 2.6, cheer), lerp(0.2, 2.7, cheer)]; pose.armR = [lerp(pose.armR[0], 2.6, cheer), lerp(pose.armR[1], 2.7, cheer)]; }
+    } else if (t >= 5.92 && t < 9.0) { // result: stands right of the phone, shows it off, then turns and waves at us
       const turn = ein(ramp(t, 8.05, 8.4));
-      pose = { ...at(840 + ox, 1440, 135), yaw: lerp(-0.42, 0, turn), pitch: lerp(-0.05, 0.05, turn), roll: 0.05 * Math.sin(t * 2), look: [lerp(-0.8, 0, turn), lerp(-0.3, 0, turn)],
-        smile: lerp(0.7, 1, turn), wink: t > 8.45 && t < 8.85 ? 1 : 0, blink: blink(7.1) };
-    } else if (t >= 12.95 && t < 16.05) { // dark: bottom-left, white on black, winks when «الباقي.» lands
-      const rise = sp(t, 13.15, { dur: 0.7, bounce: 0.3 });
-      const turn = ein(ramp(t, 14.45, 14.8));
-      pose = { ...at(300, lerp(2300, 1345, rise), 215), yaw: lerp(0.34, 0.04, turn), pitch: lerp(0.15, 0.02, turn), roll: 0.04 * Math.sin(t * 2.2),
-        look: [lerp(0.7, 0, turn), lerp(0.5, 0, turn)], smile: lerp(0.6, 1, turn), wink: t > 14.75 && t < 15.25 ? 1 : 0, blink: blink(13.9) };
-    } else if (t >= 16.05) { // brand: rises behind the wordmark (clipped at the logo) and greets
-      const rise = sp(t, 16.45, { dur: 0.8, bounce: 0.28 });
-      pose = { ...at(540, lerp(1100, 545, rise), 185), yaw: 0.22 * Math.sin((t - 16.5) * 1.6) * (1 - ramp(t, 18.0, 18.4)), pitch: 0.05, roll: 0.05 * Math.sin((t - 16.5) * 2.1) * (1 - ramp(t, 18.0, 18.4)),
-        smile: 0.85 + 0.15 * ramp(t, 18.1, 18.3), wink: t > 18.15 && t < 18.6 ? 1 : 0, open: t > 17.0 && t < 17.4 ? 0.35 : 0, blink: blink(17.7, 19.3), look: [0, 0] };
-      clip = 'inset(0 0 1130px 0)'; z = 9;
+      pose = { ...stand(765 - (1 - push) * W, 1660, 122), yaw: lerp(-0.42, 0.1, turn), pitch: lerp(0.0, 0.06, turn), roll: 0.04 * Math.sin(t * 2),
+        look: [lerp(-0.8, 0, turn), lerp(0.1, 0, turn)], smile: lerp(0.8, 1, turn), wink: t > 8.55 && t < 8.95 ? 1 : 0, blink: blink(7.1), bounce: hop(8.0, 8.4, 0.5),
+        bodyYaw: lerp(-0.25, 0.05, turn), armL: [lerp(1.8, 0.3, turn), lerp(1.5, 0.2, turn)], armR: [lerp(0.3, 2.5, turn), lerp(0.2, wave(1), turn)] };
+    } else if (t >= 12.95 && t < 16.05) { // dark: stands bottom-left, looks up at the line, arms up when «الباقي.» lands, then winks
+      const rise = sp(t, 13.1, { dur: 0.7, bounce: 0.3, from: 0 });
+      const ta = ein(ramp(t, 14.3, 14.6)) * (1 - ein(ramp(t, 15.2, 15.5)));
+      pose = { ...stand(300, lerp(2150, 1700, rise), 135), yaw: 0.25 - 0.2 * ta, pitch: 0.1 - 0.06 * ta, roll: 0.04 * Math.sin(t * 2.2),
+        look: [0.5 * (1 - ta), 0.55 * (1 - ta)], smile: 0.8 + 0.2 * ta, open: 0.55 * ta, wink: t > 14.75 && t < 15.25 ? 1 : 0, blink: blink(13.9), bounce: hop(14.35, 14.8, 0.55),
+        armL: [lerp(0.3, 2.6, ta), lerp(0.2, 2.7, ta)], armR: [lerp(0.3, 2.6, ta), lerp(0.2, 2.7, ta)] };
+    } else if (t >= 16.05) { // brand: pops up on top of the wordmark, waves, winks at the CTA
+      const grow = sp(t, 16.3, { dur: 0.6, bounce: 0.4, from: 0.02 });
+      pose = { ...stand(420, 846, 100 * grow), yaw: 0.2 * Math.sin((t - 16.5) * 1.6) * (1 - ramp(t, 18.0, 18.4)), pitch: 0.04, roll: 0.05 * Math.sin((t - 16.5) * 2.1),
+        smile: 0.9 + 0.1 * ramp(t, 18.1, 18.3), open: t > 17.0 && t < 17.45 ? 0.45 : 0, wink: t > 18.2 && t < 18.65 ? 1 : 0, blink: blink(17.7, 19.3), look: [0.2, 0],
+        bounce: hop(16.9, 17.3, 0.35) + hop(18.1, 18.5, 0.3), shadow: 0, armL: IDLE, armR: [wave() * ramp(t, 16.8, 17.0) + 0.3 * (1 - ramp(t, 16.8, 17.0)), (wave(2) - 0.1) * ramp(t, 16.8, 17.0) + 0.2 * (1 - ramp(t, 16.8, 17.0))] };
+      z = 9;
     }
     mascot.canvas.style.zIndex = String(z);
     mascot.canvas.style.clipPath = clip;

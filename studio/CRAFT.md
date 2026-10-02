@@ -50,7 +50,7 @@
 36. **Measure layout, not the animated frame.** Any value computed lazily on "the first render" must not depend on which frame that is: parallel workers start at different times. Forward/reverse seek tests catch it.
 37. **Copy the reference's sentence shape, translate the voice.** "Got something to sell? → turns it into a store in minutes → Handled. → You create. We handle the flow." became «عندك فكرة حلوة عايزها تتشاف؟ → بيكسل بلس بتحوّلها لفيلم يتشاف ويتفتكر → اتظبط. → إنت عليك الفكرة… وإحنا علينا الباقي.» — same rhythm of question, promise, proof, stamp, payoff; natural Egyptian words, one accent word per scene.
 
-38. **Same style, different character.** Matching a reference's grammar invites copying its mascot's silhouette; the fresh reviewer flagged the first design (hair, sweater, chest patch, staging). Change identity markers that read in silhouette (headwear, facial hair, garment) and root them in the audience's culture — the tarboosh + moustache made the agency's character unmistakably Egyptian and original.
+38. **Same style, different character.** Matching a reference's grammar invites copying its mascot's silhouette; the fresh reviewer flagged the first design (hair, sweater, chest patch, staging). Change identity markers that read in silhouette (headwear, facial hair, garment). A cultural marker alone (tarboosh + moustache) was original but read older and stayed a bust; the owner preferred a complete, cute figure — friendliness comes from chibi proportions (head ≈ 40 % of the height), big eyes with two highlights, rosy cheeks, a small smile and a body that acts (waves, hops, points).
 
 ## Principles learned from reference studies
 Consult `reference/lessons.json` only when its evidence-backed principle is relevant to the current

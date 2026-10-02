@@ -5,13 +5,13 @@
  "audience": "Egyptian business owners and marketers scrolling Facebook/Instagram Reels who need ads, motion graphics or product films",
  "promise": "PIXEL Plus turns your idea into a short video ad people actually watch and remember — script, motion, music and delivery handled for you",
  "cta": "ابدأ مشروعك — ابعتلنا رسالة (send PIXEL Plus a message; no phone/URL invented)",
- "direction": "Reference-matched (owner-supplied SaaS promo): white / ink / electric-blue graphic film, a ray-marched 3-D mascot dithered into square screen pixels, bold Alexandria headlines with ONE blue Aref Ruqaa accent word per scene, HUD labels + timecode, dot / push / whip / pixel-iris transitions, 120 BPM groove, natural Egyptian Arabic on-screen copy (no voiceover), Egyptian-flavoured 120 BPM music.",
+ "direction": "Reference-matched (owner-supplied SaaS promo): white / ink / electric-blue graphic film, a ray-marched full-body 3-D character dithered into square screen pixels, bold Alexandria headlines with ONE blue Aref Ruqaa accent word per scene, HUD labels + timecode, dot / push / whip / pixel-iris transitions, 120 BPM groove, natural Egyptian Arabic on-screen copy (no voiceover), Egyptian-flavoured 120 BPM music.",
  "assets": [
   {
    "id": "mascot",
    "path": "film6/mascot.js",
    "role": "product",
-   "rights": "Original PIXEL Plus mascot «ابن البلد» (tarboosh, moustache, galabeya, + pin) modelled in code (2026-10-02); replaces a first curly-haired design the reviewer and owner found too close to the reference character"
+   "rights": "Original PIXEL Plus character — a cute full-body young person (yellow hoodie with a + pin, jeans, white trainers) modelled in code (2026-10-02); replaces two earlier busts (a curly-haired one too close to the reference character, then a tarboosh-and-moustache one the owner replaced)"
   },
   {
    "id": "fonts",
@@ -31,9 +31,9 @@
   "promise": "one agency does the whole film — idea to delivery — and it is made to be seen",
   "evidence": "the ad itself: a 20 s Reels video made end-to-end by the studio (character, motion, type, music, formats); the board scene lists only steps the studio really performs",
   "emotion": "confident, friendly, quick, warmly Egyptian — a smile, not a lecture",
-  "motif": "the square screen pixel: the Egyptian mascot, the transitions and the logo resolve on one dithered pixel grid; the red tarboosh is the only warm accent",
-  "palette": ["#FFFFFF", "#0B0B0C", "#2348FF", "#D7262E", "#E8B184"],
-  "light": "one key light from the upper left on the mascot and objects, ordered 8×8 dither to two inks; flat graphic fields elsewhere",
+  "motif": "the square screen pixel: the character, the transitions and the logo resolve on one dithered pixel grid; the character's yellow hoodie is the only warm accent",
+  "palette": ["#FFFFFF", "#0B0B0C", "#2348FF", "#FFC63A", "#F0B88A"],
+  "light": "one key light from the upper left on the character and objects, ordered 8×8 dither to two inks; flat graphic fields elsewhere",
   "typography": {
    "display": "Alexandria 800 (headlines), Alexandria 500 (support)",
    "text": "Aref Ruqaa Bold in blue for one accent word per scene; Space Mono + IBM Plex Sans Arabic for HUD labels"

@@ -8,15 +8,17 @@ lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 ## 2026-10-02 — Film 6: PIXEL Plus 20 s Reels video ad, reference-matched (scope DONE)
 Owner request: reverse-engineer a supplied SaaS promo and make our agency's ad (PIXEL Plus) in its style and rhythm, with a
 character, refined Egyptian Arabic and beautiful Arabic type. Revised the same day: Arabic on-screen writing + music, no
-voiceover; «إعلان/فيديو», never «فيلم»; a new character with an Egyptian character.
+voiceover; «إعلان/فيديو», never «فيلم»; a new character with an Egyptian character. Then, still the same day, the owner asked for
+another change: a complete, cute, friendly human figure — final take09 (see the last bullet).
 - **Reference study:** `reference.mjs analyze/timeline/audio` (123 BPM, A Phrygian, transition motion peaks); grammar only, nothing reused.
 - **New reusable pieces:** `film6/mascot.js` — a ray-marched signed-distance character with expression uniforms, ordered-dithered
-  into 4 px screen pixels with a colour pair per material (tarboosh, skin, hair/moustache, galabeya) plus three service objects;
+  into 4 px screen pixels with a colour pair per material (skin, hair, hoodie, jeans, trainers) plus three service objects;
   `lib/gpu.js` now accepts flat vec3-array uniforms (palettes); pixel-circle transitions and a Bayer logo resolve in `film6/film.js`.
 - **Fonts:** Alexandria (variable, Arabic + Latin, OFL) added to `assets/fonts` and `lib/composer.html`.
 - **Tests:** film-6 forward/reverse determinism test (`test/examples.test.mjs`) — it caught a real bug (underline measured on
   the first rendered frame); the docs gate now covers `.woff2` fonts.
 - **Review:** one fresh independent critique (5 majors, 5 minors) + the owner's revision fixed in one correction round; final take07 passes every gate.
+- **Owner revision 2:** the Egyptian bust (tarboosh + moustache + galabeya) was replaced by a COMPLETE, cute, friendly full-body character: arms (shoulder/forearm angles), legs with a walk stride, trainers, hop, dithered ground shadow, blush cheeks, hoodie with a «+» pin; scenes re-staged (cards moved up, character walks in, points, cheers, stands on the wordmark). Final take09, all gates pass.
 - **Removed before shipping:** the optional Edge-TTS voice pipeline (the voice host was denied by the network policy and the owner chose music instead).
 - **Not verified:** listening to the music; real-time playback on a phone.
 - `npm test`: 93 tests, 78 passed, 15 skipped, 0 failed; real-browser render tests 3/3 passed.

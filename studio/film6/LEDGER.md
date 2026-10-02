@@ -1,5 +1,5 @@
 # LEDGER — Film 6 PIXEL Plus video ad «عندك فكرة حلوة عايزها تتشاف؟» (20 s, 9:16 Reels, one delivery)
-time → issue → severity → fix → result. Takes live in `studio/out/film6/` (not in git). Final: take07.
+time → issue → severity → fix → result. Takes live in `studio/out/film6/` (not in git). Final: take09.
 
 ## Reference study (owner-supplied screen recording, pack `references/pixelplus-ref/`, private)
 `reference.mjs analyze` + `timeline` + `audio` (OpenCV/librosa installed for this session). Visually inspected: overview,
@@ -46,8 +46,18 @@ voiceover; «إعلان/فيديو» instead of «فيلم»; a new character wi
 Also in round 1: HUD timecode and «BPM» made Arabic (timecode in its own LTR isolate); voice pipeline removed; score rewritten
 with darbuka maqsum, riq and an oud-like melody in A Hijaz.
 
-## Final (take07, `make film6 --profile=final`)
+## Owner revision 2 — «change the character: a complete human, cute, friendly» → correction round 2 (owner-requested) → take08–09
+| time | issue | sev | fix | result on the exported take08/09 |
+|---|---|---|---|---|
+| whole | the tarboosh-and-moustache bust looked older and was only a head and shoulders | owner | new full-body chibi character (arms, legs, trainers, hoodie), big eyes with two highlights, dithered blush, small smile, swept hair; arm/forearm angles, hop, stride, ground shadow as uniforms; palette: tan skin, yellow hoodie, jeans, white trainers | complete, readable, friendly in every scene |
+| 3–6 | cards (y 640–1140) would hide a full-height figure | layout | cards moved to y 610–1080 (470 px high) so the figure stands below them | figure fully visible, points at the cards |
+| 16–20 | no room for a full figure above the wordmark | layout | the character stands ON the wordmark (feet 846, hidden 12 px behind the letter tops), pops up with a spring about its feet | readable, no overlap with the tagline |
+| 6–9 | big figure vs phone | layout | figure stands to the right of the phone, x 765, 122 px unit | phone still the largest object |
+Gates after the change: all PASS (31 text lines checked, no overlaps). Not verified: listening; phone playback.
+
+## Final (take09, `make film6 --profile=final`)
 All technical gates PASS: 1080×1920, 30 fps, 20.00 s, −13.9 LUFS, TP −3.0 dBTP, LRA 5 LU, holds/dark span declared, 31 text
-lines inside the safe area with no overlaps, share copy 11.32 MB. The master (6.0 MB, CRF 14) is smaller than the share copy
+lines inside the safe area with no overlaps, share copy 11.18 MB. The master (5.6 MB, CRF 14) is smaller than the share copy
 because flat graphics compress well, so the master is the delivered file. Not verified: listening (music measured only) and
-real-time playback on a phone. The second correction round was not needed.
+real-time playback on a phone. The independent critique covered take04 (the earlier busts); the new character was checked on
+stills, strips and the exported frames by the builder only — no second fresh review was run for this owner-requested swap.

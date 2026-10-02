@@ -3,8 +3,8 @@
 Updated: 2026-10-02. This is the current handoff; historical plans are not a task queue.
 
 **Latest scope: DONE — Film 6: PIXEL Plus 20 s Reels video ad, reference-matched (owner request 2026-10-02).**
-- Final: `studio/out/film6/take07/film6-reels20-1080x1920.mp4` (local, not in git; delivered to the owner). All technical gates PASS; one fresh independent critique + the owner's same-day revision fixed in one correction round (`studio/film6/LEDGER.md`).
-- New: dithered signed-distance Egyptian character «ابن البلد» (`studio/film6/mascot.js`), pixel transitions, Alexandria font, film-6 determinism test.
+- Final: `studio/out/film6/take09/film6-reels20-1080x1920.mp4` (local, not in git; delivered to the owner). All technical gates PASS; one fresh independent critique + the owner's same-day revision fixed in one correction round (`studio/film6/LEDGER.md`).
+- New: dithered signed-distance full-body character (cute young person: hoodie, jeans, trainers; `studio/film6/mascot.js`), pixel transitions, Alexandria font, film-6 determinism test. Owner changed the character twice the same day (final = complete, cute, friendly human).
 - Not verified: listening to the music; real-time phone playback. No voiceover by owner decision.
 - `npm test`: 93 tests, 78 passed, 15 skipped, 0 failed; real-browser tests (film-6 determinism, example studies, legacy films 2–4): 3/3 passed.
 
@@ -31,7 +31,7 @@ Updated: 2026-10-02. This is the current handoff; historical plans are not a tas
 ## Closed scopes (newest first; evidence in `studio/STATUS_HISTORY.md` and `studio/CHANGELOG.md`)
 | Scope | Result |
 |---|---|
-| Film 6 — PIXEL Plus 20 s Reels video ad | DONE, branch ccr-00c9e8df-uzjxun; final take07, 1 of 2 correction rounds |
+| Film 6 — PIXEL Plus 20 s Reels video ad | DONE, branch ccr-00c9e8df-uzjxun; final take09, 2 correction rounds (one reviewer-driven, one owner-requested character swap) |
 | SaaS UI promo reverse-engineered, `lib/uimotion.js` | DONE, branch |
 | Project optimisation and taste guard | DONE, branch commit 68bf150 |
 | Film 5 — BALACONBAR Beni Suef 25 s Reels ad | DONE, PR #13; take04 local, 1 of 2 correction rounds |
