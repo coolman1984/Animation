@@ -15,6 +15,9 @@
 | Showreel 1 + 2 artwork, burst glyph (`burstPath`), meshes, Truchet tiles | `showreel/film.js`, `showreel2/film.js` | Drawn in code, original geometry (no reference artwork reused) |
 | Showreel scores | `showreel/score.mjs`, `showreel2/score.mjs` | Synthesised in code — original, no samples |
 | Owner's reference recording | `../Screen_Recording_20261002_143800_X.mp4` (repo root) | Uploaded by the owner as a study reference. Its artwork/audio are NOT reused. Owner decides whether it stays in git. Derived evidence pack stays private/ignored. |
+| Film 5 owner images | `film5/source/` (hero-duo.jpg, swing.jpg, storyboard.jpg, vintage-board.jpg), git-ignored | Supplied by the owner on 2026-10-02 for the Beni Suef ad. Storyboard and vintage board are AI-made concept art: text-free crops are atmosphere only, never product proof. |
+| Film 5 plates and crops | `film5/plates/` (cut-outs by `film5/plates.mjs`, ffmpeg crops by `film5/crops.sh`) | Derived in code from the owner images; not in git. |
+| Film 5 score | `film5/score.mjs` | Synthesised in code — original, no samples. |
 | Grain, light sweeps, pearls, leaves, window line-art | `lib/motion.js`, `film2/film.js` | Drawn in code |
 
 Third-party marks visible in owner photos: the coconut-milk carton carries its maker's brand. The film

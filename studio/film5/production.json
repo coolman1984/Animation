@@ -1,0 +1,445 @@
+{
+ "version": 1,
+ "duration": 25,
+ "fps": 30,
+ "audience": "Young people in Beni Suef scrolling Facebook/Instagram Reels who love iced drinks and nostalgic cafés",
+ "promise": "BALACONBAR in Beni Suef mixes old-time charm with a modern iced matcha you want to try today",
+ "cta": "Come try it — BALACONBAR, Beni Suef (address, hours, phone to be supplied by the owner)",
+ "direction": "Retro-modern: sepia/paper/Ruqaa «old world» versus saturated matcha green with variable-width Archivo type and directional blur. 120 BPM original jeel-synth score in Hijaz with a maqsum drum pattern. One 9:16 delivery.",
+ "assets": [
+  {
+   "id": "hero",
+   "path": "film5/source/hero-duo.jpg",
+   "role": "product",
+   "rights": "Owner photo of the real cup and carton (2026-10-02); client material, not in git"
+  },
+  {
+   "id": "swing",
+   "path": "film5/source/swing.jpg",
+   "role": "background",
+   "rights": "Owner poster; only the rope, wooden seat and logo are reused, its AI cup is replaced by the real cup"
+  },
+  {
+   "id": "storyboard",
+   "path": "film5/source/storyboard.jpg",
+   "role": "background",
+   "rights": "Owner storyboard; text-free crops of its AI scene frames used as café atmosphere, never as product proof"
+  },
+  {
+   "id": "vintage",
+   "path": "film5/source/vintage-board.jpg",
+   "role": "background",
+   "rights": "Owner vintage board; drink illustrations, man/car and statue crops used as old-world decoration; its spelling BALAKON BAR is never shown"
+  },
+  {
+   "id": "plates",
+   "path": "film5/plates",
+   "role": "product",
+   "rights": "Derived in code from the owner photos (film5/plates.mjs + ffmpeg crops)"
+  }
+ ],
+ "sound": {
+  "mode": "original",
+  "bpm": 120,
+  "note": "Synthesised in film5/score.mjs with lib/audio.mjs and lib/sfx.mjs; no samples, no licence needed"
+ },
+ "creative": {
+  "viewer": "a Beni Suef local scrolling Reels who should want to visit and try the matcha",
+  "problem": "a heavy nostalgic brand image must feel alive, quick and 2026, not like a vintage slideshow",
+  "promise": "old-time taste, today's flavour: a café with soul and a drink worth trying",
+  "evidence": "the real cup, carton and logo from the owner's photos; the café, car and awnings from the owner's own scene art",
+  "emotion": "playful nostalgia with energy",
+  "motif": "the balcony-window arch, which opens as a portal and returns as the logo",
+  "palette": [
+   "#0C1F18",
+   "#14463A",
+   "#B7D36B",
+   "#F4E9D2",
+   "#D8A53C"
+  ],
+  "light": "sepia paper and film grain for the old world, saturated green fields and crisp cut-outs for the new",
+  "typography": {
+   "display": "Archivo",
+   "text": "Aref Ruqaa"
+  },
+  "camera": "flat graphic compositions plus one real depth scene (the swing) and macro punch-ins",
+  "transitions": [
+   "occlusion",
+   "paperSlam",
+   "cut",
+   "archPortal"
+  ],
+  "motion": "springs with overshoot, variable-width type, directional blur, dotted-eighth card slams, 1/8-note cuts",
+  "sound": "120 BPM jeel-synth in Hijaz, maqsum darbuka, tape-rewind into the old world, filter-open drop, stabs on the menu, percussion on the montage, bell chord on the logo",
+  "pacing": "hook 2 s, old world 2 s, drop at 4 s, one idea per bar, montage 14–16 s, portal 16 s, brand from 20 s",
+  "payoff": "the old and the new merge into one lock-up: logo, «لحظتك مع الماتشا», Beni Suef",
+  "cta": "come try it",
+  "styleFrames": {
+   "hook": 0.6,
+   "proof": 7.0,
+   "payoff": 21.4
+  },
+  "proof": {
+   "start": 2,
+   "end": 10
+  }
+ },
+ "shots": [
+  {
+   "id": "hook",
+   "start": 0,
+   "end": 2,
+   "purpose": "hook: the real cup lands in frame 1 with the logo; stretchy MATCHA behind it",
+   "assetIds": [
+    "hero",
+    "plates"
+   ],
+   "craft": {
+    "scale": "hero product",
+    "camera": "spring bounce, no camera",
+    "focal": "cup and logo",
+    "transition": "VHS tracking glitch (rewind)",
+    "depthLayers": 3,
+    "primaryMotions": [
+     "cup spring",
+     "type width"
+    ],
+    "audioCue": "impact on frame 1, rewind sweep at 1.6"
+   }
+  },
+  {
+   "id": "zaman",
+   "start": 2,
+   "end": 4,
+   "purpose": "the old world: sepia café film frame and a vintage poster, Ruqaa «طعم زمان..»",
+   "assetIds": [
+    "storyboard",
+    "vintage",
+    "plates"
+   ],
+   "craft": {
+    "scale": "wide frame",
+    "camera": "slow push, film-gate weave",
+    "focal": "old café + man",
+    "transition": "rope occlusion (3.75–4.3)",
+    "depthLayers": 3,
+    "primaryMotions": [
+     "line reveal",
+     "colour bloom"
+    ],
+    "audioCue": "low-passed radio + crackle, filter opens into 4.0"
+   },
+   "copy": {
+    "text": "طعم زمان..",
+    "start": 2.4,
+    "end": 3.9
+   }
+  },
+  {
+   "id": "naharda",
+   "start": 4,
+   "end": 6,
+   "purpose": "the new world: real cup on the swing, «بمذاق النهارده» + stretchy YOUR MATCHA MOMENT",
+   "assetIds": [
+    "hero",
+    "swing",
+    "plates"
+   ],
+   "craft": {
+    "scale": "full product",
+    "camera": "truck behind rope, settle",
+    "focal": "cup on swing",
+    "transition": "paper slam wipe",
+    "depthLayers": 5,
+    "primaryMotions": [
+     "camera",
+     "type width"
+    ],
+    "audioCue": "full groove drop at 4.0"
+   },
+   "copy": {
+    "text": "بمذاق النهارده",
+    "start": 4.35,
+    "end": 5.9
+   }
+  },
+  {
+   "id": "ingredients",
+   "start": 6,
+   "end": 8,
+   "purpose": "proof: real coconut-milk carton and cup, MATCHA + COCONUT type, matcha dust",
+   "assetIds": [
+    "hero",
+    "plates"
+   ],
+   "craft": {
+    "scale": "two-shot",
+    "camera": "lateral push, rack focus carton → cup",
+    "focal": "carton then cup",
+    "transition": "rising paper slam",
+    "depthLayers": 4,
+    "primaryMotions": [
+     "focus",
+     "type slide"
+    ],
+    "audioCue": "stab on each word"
+   },
+   "copy": {
+    "text": "ماتشا بلبن جوز الهند",
+    "start": 6.5,
+    "end": 7.9
+   }
+  },
+  {
+   "id": "menu",
+   "start": 8,
+   "end": 10,
+   "purpose": "the menu from the owner's vintage board, five cards on a dotted-eighth rhythm",
+   "assetIds": [
+    "vintage",
+    "plates"
+   ],
+   "craft": {
+    "scale": "graphic cards",
+    "camera": "cards slam in the centre then fly to a row",
+    "focal": "drink illustration + word",
+    "transition": "none (cuts on the groove)",
+    "depthLayers": 3,
+    "primaryMotions": [
+     "card slam",
+     "word stretch"
+    ],
+    "audioCue": "dotted-eighth stabs"
+   }
+  },
+  {
+   "id": "place",
+   "start": 10,
+   "end": 12,
+   "purpose": "the place: BALACONBAR café in Beni Suef, three film-strip bands",
+   "assetIds": [
+    "storyboard",
+    "vintage",
+    "plates"
+   ],
+   "craft": {
+    "scale": "wide bands",
+    "camera": "bands slide in alternating, slow counter-drift",
+    "focal": "café sign and awnings",
+    "transition": "band wipe",
+    "depthLayers": 3,
+    "primaryMotions": [
+     "band slide",
+     "pin bounce"
+    ],
+    "audioCue": "half-time groove, oud melody"
+   },
+   "copy": {
+    "text": "كافيه في بني سويف",
+    "start": 10.25,
+    "end": 11.9
+   }
+  },
+  {
+   "id": "sensory",
+   "start": 12,
+   "end": 14,
+   "purpose": "sensory: cold, creamy, fresh on three beats around the real cup",
+   "assetIds": [
+    "hero",
+    "plates"
+   ],
+   "craft": {
+    "scale": "hero product close",
+    "camera": "cup wobble, light zoom",
+    "focal": "cup",
+    "transition": "zoom whip",
+    "depthLayers": 3,
+    "primaryMotions": [
+     "cup spring",
+     "word hits"
+    ],
+    "audioCue": "kick returns at 13.0, snare roll"
+   },
+   "copy": {
+    "text": "بارد كريمي منعش",
+    "start": 12.0,
+    "end": 13.8
+   }
+  },
+  {
+   "id": "montage",
+   "start": 14,
+   "end": 16,
+   "purpose": "mix of new and old: eight 1/4-beat macro cuts from the real photo and the vintage board",
+   "assetIds": [
+    "hero",
+    "vintage",
+    "storyboard",
+    "plates"
+   ],
+   "craft": {
+    "scale": "macro",
+    "camera": "punch-in on every cut",
+    "focal": "logo, boba, ice, carton",
+    "transition": "hard cuts on 1/8 notes",
+    "depthLayers": 2,
+    "primaryMotions": [
+     "cuts",
+     "word flash"
+    ],
+    "audioCue": "percussion on every cut"
+   }
+  },
+  {
+   "id": "arch",
+   "start": 16,
+   "end": 18,
+   "purpose": "the brand window opens: arch portal onto the café, «تعالى جرّب»",
+   "assetIds": [
+    "hero",
+    "plates"
+   ],
+   "craft": {
+    "scale": "medium",
+    "camera": "slow push inside the arch",
+    "focal": "cup in the arch",
+    "transition": "arch portal",
+    "depthLayers": 4,
+    "primaryMotions": [
+     "portal",
+     "type"
+    ],
+    "audioCue": "big impact + wide chord"
+   },
+   "copy": {
+    "text": "تعالى جرّب",
+    "start": 16.5,
+    "end": 17.9
+   }
+  },
+  {
+   "id": "collide",
+   "start": 18,
+   "end": 20,
+   "purpose": "old vs new: split screen زمان / النهارده swaps on the beat and merges",
+   "assetIds": [
+    "vintage",
+    "plates"
+   ],
+   "craft": {
+    "scale": "graphic split",
+    "camera": "none",
+    "focal": "two words",
+    "transition": "diagonal split swaps",
+    "depthLayers": 3,
+    "primaryMotions": [
+     "split swap",
+     "tile pattern"
+    ],
+    "audioCue": "left/right stabs"
+   }
+  },
+  {
+   "id": "brand",
+   "start": 20,
+   "end": 22.5,
+   "purpose": "brand lock-up: logo, tagline, location",
+   "assetIds": [
+    "hero",
+    "swing",
+    "plates"
+   ],
+   "craft": {
+    "scale": "brand resolve",
+    "camera": "settle and breathe",
+    "focal": "logo",
+    "transition": "light falls to green",
+    "depthLayers": 3,
+    "primaryMotions": [
+     "logo spring",
+     "type"
+    ],
+    "audioCue": "bell chord"
+   },
+   "copy": {
+    "text": "لحظتك مع الماتشا",
+    "start": 20.5,
+    "end": 22.4
+   }
+  },
+  {
+   "id": "hold",
+   "start": 22.5,
+   "end": 25,
+   "purpose": "held end card: logo, tagline, Beni Suef; gentle sparkle",
+   "assetIds": [
+    "hero",
+    "swing",
+    "plates"
+   ],
+   "craft": {
+    "scale": "brand resolve",
+    "camera": "locked",
+    "focal": "logo",
+    "transition": "none",
+    "depthLayers": 2,
+    "primaryMotions": [
+     "sparkle"
+    ],
+    "audioCue": "fade to silence"
+   },
+   "copy": {
+    "text": "لحظتك مع الماتشا",
+    "start": 22.5,
+    "end": 25
+   }
+  }
+ ],
+ "cues": [
+  {
+   "id": "open",
+   "t": 0,
+   "kind": "impact",
+   "shot": "hook",
+   "sound": {
+    "type": "impact",
+    "vel": 0.8,
+    "weight": 0.8
+   }
+  },
+  {
+   "id": "drop",
+   "t": 4,
+   "kind": "impact",
+   "shot": "naharda",
+   "sound": {
+    "type": "impact",
+    "vel": 0.85,
+    "weight": 0.9
+   }
+  },
+  {
+   "id": "arch",
+   "t": 16,
+   "kind": "impact",
+   "shot": "arch",
+   "sound": {
+    "type": "impact",
+    "vel": 0.9,
+    "weight": 0.9
+   }
+  },
+  {
+   "id": "brand",
+   "t": 20,
+   "kind": "reveal",
+   "shot": "brand",
+   "sound": {
+    "type": "softHit",
+    "vel": 0.4,
+    "tone": 220
+   }
+  }
+ ]
+}

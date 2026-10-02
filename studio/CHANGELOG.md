@@ -5,6 +5,16 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-02 — Film 5: BALACONBAR Beni Suef, 25 s Reels ad (one 9:16 delivery)
+Owner request: a dynamic 25 s ad for the café in Beni Suef using the owner's four images (real photo, swing poster, AI storyboard, vintage board), everything the studio learned,
+retro/80s nostalgia mixed with 2026 motion, exciting original music, ONE video in Reels shape. Source: `film5/` (BRIEF, production.json, film.js, score.mjs, plates.mjs, crops.sh, LEDGER).
+- **Film:** 12 scenes on a 120 BPM grid (bars of 2 s): hook, zaman (old), naharda (new, swing), ingredients, menu (dotted-eighth cards), place, sensory, montage (1/8 cuts), arch portal, collide (old vs new split), brand, hold.
+- **Score:** original jeel-synth in D hijaz with darbuka maqsum; radio low-pass for the old world; drop at 4.0; hits on the menu, montage and logo.
+- **New recipes** (see `TECHNIQUES.md` → Film 5): tape-rewind exit, FLIP card fly, marquee bands, arch portal clip-path, diagonal split swap, blurred-cover portrait macros, `lpSweep` in the score.
+- **Process:** builder stills loop (3 layout rounds before any render), draft 16 s, review build (1 gate fail: arch title 4 px outside the safe area; fixed), final build take03, one separate critique pass of the exported frames, one correction round → take04 (all gates PASS, −14 LUFS, share copy 11.45 MB).
+- **Main merged in (PR #12: artistic forensics, autonomous delivery, Chromium startup retry):** film 5's render path is untouched — 12 stills rendered before and after the merge are byte-identical; `npm test` 80 tests, 66 passed, 14 skipped, 0 failed; `film5/config.mjs` now declares `ownerRequest` (one delivery, exact size/duration/fps) and `buildOptions` accepts it and refuses a mismatch. The shared-lib change invalidates the cache, so the next film 5 build re-renders (take04 stays valid).
+- **Honesty:** the critique pass was done by the builder in a separate pass (no fresh reviewer was spawned); audio never listened to; the vintage-board menu items need the owner's confirmation; address/phone/hours are missing.
+
 ## 2026-10-02 — Deep artistic reference forensics
 - Adds `reference/artistic.mjs`, 20-section ARTISTIC DNA in every report, contextual evidence-linked observations, full-duration attention/pacing maps with explicit unknowns and playback/listening gates.
 - Owner goal enforced: AUTONOMOUS_FILM.md makes all production/inspection/paperwork agent-owned; ownerRequest selects and validates one exact delivery. Owner receives one finished video, no internal approval flow.
@@ -71,6 +81,7 @@ Studio foundation: own CDP renderer (`renderAt(t)` pure in t), zero npm packages
 | cdp-capture | `settleCapture` |
 | ffmpeg-master | verification frame/crop recipes used in showreels |
 | post-mortem | append to CHANGELOG/TECHNIQUES, not only CRAFT |
+| motion-composer / sound-designer / platform-delivery | Film 5 recipes: marquee, FLIP, arch portal, split swap, maqsum + lpSweep, Reels safe zones and file sizes |
 
 ## Note on `reference/lessons.json`
 Still empty on purpose: `reference.mjs learn` requires an inspected-motion review, and no motion playback was available in the

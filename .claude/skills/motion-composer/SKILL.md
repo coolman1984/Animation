@@ -16,3 +16,5 @@ Readability takes priority: establish the frame, move attention, settle. Text ou
 Check backward seeking and worker-independent frames. QA changed intervals plus transitions; full artistic review only at delivery.
 
 **Showreel-proven recipes (see studio/TECHNIQUES.md):** the SVG helper `el()` only draws tags in its list (text/textPath/polyline/polygon added) — test a new tag on a frame. Directional blur = per-id `feGaussianBlur stdDeviation="x y"` driven by velocity, zero when settled. Variable-width type via `fontVariationSettings 'wdth'`; letters as spans, never Arabic letter-splitting. Measure text only while visible (hidden = 0 px). Declare intentional dark openings with `darkSpans`, stillness with `holds`.
+
+**Film 5 additions (studio/TECHNIQUES.md → Film 5 recipes):** marquee bands for the unsafe zones of a Reel, FLIP card fly (labels above moving cards), arch portal via clip-path path(), diagonal split swap, blurred-cover + faded window for portrait macros from a square photo, decorative words above (not behind) the product, exit animations must not cross the safe edge.

@@ -18,3 +18,5 @@ Check ending, transient clicks, voice masking, phone/mono translation and export
 If playback/listening isn't available, label music selection unverified instead of saying it sounds excellent.
 
 **Code-scored reels:** derive hit times from the same beat grid as picture (beat 60/BPM, bar = 4 beats, 1/8 = beat/2) and place them with `placeCues`; riser into the first impact, breakdown before the drop, linear-frequency sweep for a 'linear' word, fade to silence on the last frame. Leave headroom: mastered result was −14.1 LUFS / −3.2 dBTP. Without playback, report the music as unverified by ear (studio/showreel2/score.mjs).
+
+**Film 5 additions:** darbuka maqsum on an eighth grid, D-hijaz arps/pads, `lpSweep()` time-varying low-pass (radio opening into the drop, tape spinning down), dotted-eighth stabs for cards, ping-pong stabs, accelerating snare roll; never duplicate a cue-sheet impact in the score (identical seeds double the level).

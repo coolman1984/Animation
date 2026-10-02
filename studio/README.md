@@ -86,6 +86,14 @@ node make.mjs showreel2 --range=7.5:11.25 --profile=review   # re-export one int
 Each has `BRIEF.md`, `production.json`, `score.mjs` and a `LEDGER.md` (critique → fix → result on the exported file).
 Showreel 2 declares `darkSpans` for its deliberate dark opening; see `TECHNIQUES.md` before copying it.
 
+## Film 5 — BALACONBAR Beni Suef (25 s, 9:16 Reels only)
+```bash
+node film5/plates.mjs && sh film5/crops.sh      # needs the four owner images in film5/source (git-ignored)
+node make.mjs film5 --range=0:25                 # silent draft, ~16 s
+node make.mjs film5 --profile=final              # 1080×1920 @ 30 fps master + share copy + gates
+```
+Old/new worlds, 120 BPM grid, original maqsum score. Recipes: `TECHNIQUES.md`; decisions and open owner items: `film5/BRIEF.md`; evidence: `film5/LEDGER.md`.
+
 ## Documentation duty
 Closing a scope means updating, in the same commit: `../STATUS.md` (scope, evidence, unverified), `CHANGELOG.md` (entry + skill changes),
 `CRAFT.md` (0–3 new lessons), `TECHNIQUES.md` (new recipes), `GEN2.md`/`README.md` (new modules/commands), `ASSETS.md` (every new outside file),

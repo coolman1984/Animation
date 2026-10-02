@@ -2,7 +2,15 @@
 
 Updated: 2026-10-02. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE — Deep artistic, directorial and viewer-experience reference forensics.**
+**Latest scope: DONE — Film 5, BALACONBAR Beni Suef, 25 s Reels ad (owner request 2026-10-02).**
+- Source: `studio/film5/` (BRIEF, production.json, film.js, score.mjs, plates.mjs, crops.sh, LEDGER). ONE delivery: 9:16, 1080×1920, 30 fps, 25 s.
+- Final take: `studio/out/film5/take04/` (local, not in git): master 141 MB + 11.45 MB share copy + poster.
+- Technical gates: all PASS (−14 LUFS, TP −2.4, LRA 6.2, text inside the safe area). One separate critique pass (builder, no fresh reviewer) → one of two correction rounds → fixes checked on exported frames.
+- Not verified: audio listening; human real-speed viewing; platform overlays. Owner items: confirm the vintage-board menu items, supply address/phone/handle/hours.
+- Recipes in `studio/TECHNIQUES.md`, lessons 29–31 in `studio/CRAFT.md`, entry in `studio/CHANGELOG.md`.
+- Main (PR #12) merged into the branch: 12 stills byte-identical before/after, 80 tests / 66 passed / 0 failed, `ownerRequest` added to the film 5 config. Next film 5 build re-renders (cache keyed on shared lib).
+
+**Previous scope: DONE — Deep artistic, directorial and viewer-experience reference forensics.**
 - Base: main at 8e6f09b, including the owner's showreel2 and documentation consolidation.
 - Implemented: five-layer review protocol, 20-section ARTISTIC DNA, contextual evidence records, whole-film attention/pacing maps, playback/listening/unknown gates and original-subject direction transfer.
 - Compatibility: old reviews remain valid, explicitly pending artistic interpretation. No reference artwork/media imported and no new film rendered.

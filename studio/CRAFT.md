@@ -34,6 +34,11 @@
 27. **Check fixes on the exported mp4,** not the preview path; use a "deliberate non-defects" list so the critic does not re-report the iris rim or a mid-hit blur.
 28. **Be honest about "exactly":** structural fidelity (order, timing, palette, type roles) is deliverable; pixel equality, source code and audio are not.
 
+## Film 5 — BALACONBAR Beni Suef 25 s Reels ad (2026-10-02)
+29. **A square photo cannot fill a 9:16 frame at 1.5×:** a 1600² photo gives only a 1280 px window for 1920 px. Cover the rest with a blurred 3.4× copy and fade the sharp window (macro cuts, `film5/film.js` montage).
+30. **Decorative words hidden behind the product vanish:** swap stacked words one at a time above the product, and keep labels above any flying card (menu scene).
+31. **Use marquee bands for the unsafe 35 % of a Reel:** the safe band stays clean while the top/bottom zones still carry motion; the owner's mixed image sets (misspelt "BALAKON BAR") are cropped to avoid every baked word.
+
 ## Principles learned from reference studies
 Consult `reference/lessons.json` only when its evidence-backed principle is relevant to the current
 craft decision. Learn the timing/composition principle and its counter-case, not reference appearance.
