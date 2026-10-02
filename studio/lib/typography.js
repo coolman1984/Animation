@@ -133,6 +133,7 @@ export function counter(parent, style = {}, { digits = 'arab', locale = 'ar-EG',
     render(t, { start, end, from = 0, to, curve = curves.decelerate, visible = true }) {
       show(line, visible);
       word.textContent = formatNumber(countValue(t, { start, end, from, to, decimals, ease: curve }), { digits, locale, decimals, prefix, suffix });
+      line.dataset.text = formatNumber(to, { digits, locale, decimals, prefix, suffix }); // captions/read-back: the value it lands on
     },
   };
 }

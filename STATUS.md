@@ -2,7 +2,25 @@
 
 Updated: 2026-10-02. This is the current handoff; historical plans are not a task queue.
 
-**Scope: DONE — Reference Reverse Engineering Lab implementation and local integration.**
+**Latest scope: DONE — Showreel integration snapshot and conflict resolution.**
+
+- Fixed source snapshot: `7d5f966`; merge preserves both reference-lab and showreel history.
+- Only conflict: this handoff file; keep both completed scopes and their evidence.
+- Local unit verification: 66 tests, 51 passed, 15 skipped, 0 failures.
+- Publication acceptance: [PR #10](https://github.com/coolman1984/Animation/pull/10) and both final-head Studio checks jobs are the source of truth. Merge only after both jobs pass; do not reopen this completed implementation scope.
+- Showreel exports remain local to its production session; this merge includes source, not delivered videos.
+
+**Completed scope: DONE — Studio showreel (15 s, 16:9 + 9:16), owner request 2026-10-02.**
+- Source: `studio/showreel/` (BRIEF, production.json with creative block + cue sheet, film.js, score.mjs, measured music map, LEDGER).
+- Final take: `studio/out/showreel/take07/` (local, not in git): masters 1920×1080 and 1080×1920 + 10 MB share copies.
+- Technical gates: all PASS on both deliveries (15.00 s, 30 fps, −14 LUFS, TP −3 dBTP, LRA 4.9, text read-back clean).
+- Artistic: one independent critique (SHIP WITH FIXES, 0 blockers, 5 majors) → one correction round → majors verified on
+  take07 frames; the "Latin comma" finding was not reproduced (U+066B in both app and counter; typeface glyph). See LEDGER.
+- Not verified: listening on headphones/phone; human real-speed viewing; live platform overlays on 9:16.
+- Studio fixes made during this scope: read-back ignores hidden and mask-clipped text; counters caption their final value;
+  calibrated contrast estimate; camera-whip blur profile.
+
+**Completed scope: DONE — Reference Reverse Engineering Lab implementation and local integration.**
 
 - Implemented: bounded local/direct/browser ingest, smart evidence sampling, full shot/transition
   records with coverage limits, optional optical flow/adaptive shots/music, compact numerical summaries,

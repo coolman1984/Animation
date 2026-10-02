@@ -57,11 +57,17 @@
   window.duration = total;
   window.fps = film.fps || 30;
   window.textBoxes = () => [...stage.querySelectorAll('.line')]
-    .filter((l) => l.offsetParent !== null && getComputedStyle(l).display !== 'none')
+    .filter((l) => l.offsetParent !== null && getComputedStyle(l).display !== 'none' && getComputedStyle(l).visibility !== 'hidden')
     .map((l) => {
-      const words = [...l.querySelectorAll('.word')].filter((w) => +getComputedStyle(w).opacity > 0.5);
-      if (!words.length) return null;
-      const rs = words.map((w) => w.getBoundingClientRect());
+      // A word inside a clipping box (mask reveals) is only visible where the two rects intersect.
+      const visibleRect = (w) => {
+        const r = w.getBoundingClientRect(), c = w.parentElement;
+        if (!c || !c.classList.contains('word-clip') || getComputedStyle(c).overflow !== 'hidden') return r;
+        const k = c.getBoundingClientRect(), left = Math.max(r.left, k.left), top = Math.max(r.top, k.top), right = Math.min(r.right, k.right), bottom = Math.min(r.bottom, k.bottom);
+        return right - left > 1 && bottom - top > 1 ? { left, top, right, bottom } : null;
+      };
+      const rs = [...l.querySelectorAll('.word')].filter((w) => +getComputedStyle(w).opacity > 0.5).map(visibleRect).filter(Boolean);
+      if (!rs.length) return null;
       return { text: l.dataset.text || [...l.querySelectorAll('.word')].map((w) => w.textContent).join(' '), x0: Math.min(...rs.map((r) => r.left)), y0: Math.min(...rs.map((r) => r.top)), x1: Math.max(...rs.map((r) => r.right)), y1: Math.max(...rs.map((r) => r.bottom)) };
     }).filter(Boolean);
   window.ready = (async () => {

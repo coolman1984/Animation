@@ -45,7 +45,8 @@ const lum = (r, g, b) => { const f = v => { v /= 255; return v <= 0.03928 ? v / 
 export function boxContrast(buf) {
   const L = []; for (let i = 0; i + 2 < buf.length; i += 3) L.push(lum(buf[i], buf[i + 1], buf[i + 2]));
   L.sort((a, b) => a - b);
-  const lo = L[Math.floor(L.length * 0.08)], hi = L[Math.floor(L.length * 0.92)];
+  // 2nd/98th percentiles: small, thin glyphs cover few pixels (8/92 underestimated 15:1 text as 2:1).
+  const lo = L[Math.floor(L.length * 0.02)], hi = L[Math.floor(L.length * 0.98)];
   return +((hi + 0.05) / (lo + 0.05)).toFixed(2);
 }
 
@@ -130,7 +131,8 @@ export async function reviewEvidence({ video, outDir, fps, plan, text, music, ho
   for (const [i, l] of (text?.lines || []).entries()) {
     const dur = l.end - l.start, need = readingTime(l.text), row = { text: l.text, start: l.start, end: l.end, seconds: r2(dur), needs: r2(need), readable: dur >= need };
     if (l.box) {
-      const t = l.start + Math.min(0.6, dur / 2), pad = 12, box = [l.box[0] - pad, l.box[1] - pad, l.box[2] + pad, l.box[3] + pad];
+      // mid-span: entrance animations have finished
+      const t = (l.start + l.end) / 2, pad = 12, box = [l.box[0] - pad, l.box[1] - pad, l.box[2] + pad, l.box[3] + pad];
       const crop = rawCrop(video, t, box, vw, vh);
       if (!crop) { row.offscreen = true; notes.push(`copy "${l.text}" lies outside the frame at ${r2(t)}s`); copy.push(row); continue; }
       row.contrast = boxContrast(crop.buf); row.lowContrast = row.contrast < 3;
