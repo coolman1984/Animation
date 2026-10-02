@@ -1,5 +1,5 @@
-# LEDGER — Film 6 PIXEL Plus «عندك فكرة حلوة عايزها تتشاف؟» (20 s, 9:16 Reels, one delivery)
-time → issue → severity → fix → result. Takes live in `studio/out/film6/` (not in git).
+# LEDGER — Film 6 PIXEL Plus video ad «عندك فكرة حلوة عايزها تتشاف؟» (20 s, 9:16 Reels, one delivery)
+time → issue → severity → fix → result. Takes live in `studio/out/film6/` (not in git). Final: take07.
 
 ## Reference study (owner-supplied screen recording, pack `references/pixelplus-ref/`, private)
 `reference.mjs analyze` + `timeline` + `audio` (OpenCV/librosa installed for this session). Visually inspected: overview,
@@ -28,5 +28,26 @@ numerically, not heard; no voice in the reference.
 Notes, deliberate: «اتظبط.» stamp is a 0.85 s one-word punch (preflight's 1.8 s reading note); the palette overlaps the
 showreels because the owner asked for the reference's white/ink/blue; cue "stamp −42 ms" is the detector's transient estimate.
 
-## Independent critique
-Pending at the time of this commit.
+## Independent critique of take04 (fresh reviewer agent; frames, strips and 100 % crops of the export; audio measured, not heard)
+Verdict: not ready — 0 blockers, 5 majors, 5 minors. Same day the owner revised the brief (Arabic on-screen copy + music, no
+voiceover; «إعلان/فيديو» instead of «فيلم»; a new character with an Egyptian character). Correction round 1 covered both → take05–07.
+| time | issue | sev | fix | result on the exported take06/07 |
+|---|---|---|---|---|
+| whole | mascot too close to the reference character (hair, sweater, chest patch, staging) | major | new character «ابن البلد»: tarboosh + side tassel, moustache, cheeks, tan skin, galabeya placket, + pin; colour pair per material | clearly a different, Egyptian character; owner request met |
+| 17–20 | CTA pill covered the dots of «بتخلّي» | major | footer removed, CTA row 1094 → 1128 | dots visible, clear gap at 18.9 |
+| 14.9–15.55 | «الباقي.» readable ≈ 0.5 s, 3.2:1 on black | major | lands by 14.6, bloom from 15.62; #8197FF on black | readable 14.6–15.65 |
+| all mascot shots | blown white patch on the lit face; outline lost on white | major | tan skin paper colour; shirt lum ≤ 0.9 keeps dots | continuous outline |
+| 9.93–10.07 | black barrel → grey flash at the click | major | one light circle in the board's colour, cut under full cover | frames 9.80–10.07 only grow, one colour |
+| 18.9 | torso edge touching the wordmark | minor | character raised, clipped 25 px above the letters | clear paper above the letters |
+| 4.8 | megaphone read as a lollipop; «01» and «٠١» both shown | minor | spins settle on a ¾ view by t0+1 s; Latin numbers removed | megaphone and camera read |
+| 7.8 | big mascot competed with the phone; under the Reels buttons | minor | corner peek, head 200 → 135 px | phone leads |
+| 0.0 | weak first frame | minor | character in frame from frame 0, first word solid | frame 0 shows face + «عندك فكرة» |
+| 11.5 | tiny board mascot broke into noise | minor | tighter crop (size 0.40) | face and tarboosh read |
+Also in round 1: HUD timecode and «BPM» made Arabic (timecode in its own LTR isolate); voice pipeline removed; score rewritten
+with darbuka maqsum, riq and an oud-like melody in A Hijaz.
+
+## Final (take07, `make film6 --profile=final`)
+All technical gates PASS: 1080×1920, 30 fps, 20.00 s, −13.9 LUFS, TP −3.0 dBTP, LRA 5 LU, holds/dark span declared, 31 text
+lines inside the safe area with no overlaps, share copy 11.32 MB. The master (6.0 MB, CRF 14) is smaller than the share copy
+because flat graphics compress well, so the master is the delivered file. Not verified: listening (music measured only) and
+real-time playback on a phone. The second correction round was not needed.

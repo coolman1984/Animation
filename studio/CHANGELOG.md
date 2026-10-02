@@ -5,6 +5,22 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-02 — Film 6: PIXEL Plus 20 s Reels video ad, reference-matched (scope DONE)
+Owner request: reverse-engineer a supplied SaaS promo and make our agency's ad (PIXEL Plus) in its style and rhythm, with a
+character, refined Egyptian Arabic and beautiful Arabic type. Revised the same day: Arabic on-screen writing + music, no
+voiceover; «إعلان/فيديو», never «فيلم»; a new character with an Egyptian character.
+- **Reference study:** `reference.mjs analyze/timeline/audio` (123 BPM, A Phrygian, transition motion peaks); grammar only, nothing reused.
+- **New reusable pieces:** `film6/mascot.js` — a ray-marched signed-distance character with expression uniforms, ordered-dithered
+  into 4 px screen pixels with a colour pair per material (tarboosh, skin, hair/moustache, galabeya) plus three service objects;
+  `lib/gpu.js` now accepts flat vec3-array uniforms (palettes); pixel-circle transitions and a Bayer logo resolve in `film6/film.js`.
+- **Fonts:** Alexandria (variable, Arabic + Latin, OFL) added to `assets/fonts` and `lib/composer.html`.
+- **Tests:** film-6 forward/reverse determinism test (`test/examples.test.mjs`) — it caught a real bug (underline measured on
+  the first rendered frame); the docs gate now covers `.woff2` fonts.
+- **Review:** one fresh independent critique (5 majors, 5 minors) + the owner's revision fixed in one correction round; final take07 passes every gate.
+- **Removed before shipping:** the optional Edge-TTS voice pipeline (the voice host was denied by the network policy and the owner chose music instead).
+- **Not verified:** listening to the music; real-time playback on a phone.
+- `npm test`: 93 tests, 78 passed, 15 skipped, 0 failed; real-browser render tests 3/3 passed.
+
 ## 2026-10-02 — Precise forensics tools: exact motion timing, easing curves and measured music (scope DONE)
 Owner request: tools to see motion timing and easing precisely and to understand audio; overcome capability gaps.
 - **Installed** (optional, per `reference/requirements-optional.txt`): OpenCV 4.10 headless, PySceneDetect 0.7 (numpy/scipy/librosa already present). The doctor now lists the importable forensics modules.

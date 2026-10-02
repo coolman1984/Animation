@@ -19,9 +19,8 @@
 | Film 5 plates and crops | `film5/plates/` (cut-outs by `film5/plates.mjs`, ffmpeg crops by `film5/crops.sh`) | Derived in code from the owner images; not in git. |
 | Film 5 score | `film5/score.mjs` | Synthesised in code — original, no samples. |
 | Alexandria (variable, Arabic + Latin subsets) | `assets/fonts/Alexandria-Arabic.woff2`, `assets/fonts/Alexandria-Latin.woff2` | SIL OFL 1.1 — `assets/fonts/OFL-Alexandria.txt` (Alexandria Project Authors / Mohamed Gaber, via the @fontsource-variable/alexandria npm package) |
-| Film 6 PIXEL Plus mascot and service objects | `film6/mascot.js` | Original: signed-distance model + ordered dither written in code (2026-10-02); not derived from the reference character's mesh, texture or likeness |
+| Film 6 PIXEL Plus mascot «ابن البلد» and service objects | `film6/mascot.js` | Original: signed-distance model + ordered dither written in code (2026-10-02). A first curly-haired design was replaced because it resembled the reference character |
 | Film 6 score | `film6/score.mjs` | Synthesised in code — original, no samples |
-| Film 6 voiceover (optional) | `film6/voice/l1…l6.mp3` from `film6/voice/script.json` via `tools/tts_edge.py` | Microsoft Edge neural voice `ar-EG-ShakirNeural`; not generated in the 2026-10-02 session (host denied by the network policy). Check Microsoft's terms before paid commercial use or replace with a recorded human voice |
 | Owner's PIXEL Plus reference recording | uploaded file `Screen_Recording_20261002_220226_X.mp4` (not in git); pack `references/pixelplus-ref/` (git-ignored) | Study reference only: its brand, copy, mascot design and music are NOT reused |
 | Grain, light sweeps, pearls, leaves, window line-art | `lib/motion.js`, `film2/film.js` | Drawn in code |
 

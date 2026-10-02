@@ -97,6 +97,7 @@ export function shaderLayer(parent, { w, h, fragment, textures = {}, scale = 1, 
     const l = gl.getUniformLocation(prog, name); if (l === null) return;
     if (typeof v === 'number') gl.uniform1f(l, v);
     else if (v.length === 2) gl.uniform2fv(l, v); else if (v.length === 3) gl.uniform3fv(l, v); else if (v.length === 4) gl.uniform4fv(l, v);
+    else if (v.length % 3 === 0) gl.uniform3fv(l, v); // vec3 array uniform (flat list), e.g. a palette
   };
   return {
     canvas, ready,

@@ -10,7 +10,7 @@ import { fitFontSize } from '../lib/typography.js';
 import { mascotLayer } from './mascot.js';
 
 const W = 1080, H = 1920, FPS = 30;
-const C = { white: '#FFFFFF', ink: '#0B0B0C', blue: '#2348FF', grey: '#74757B', dim: '#6E6F75', light: '#F2F3F6', line: '#E2E3E8' };
+const C = { white: '#FFFFFF', ink: '#0B0B0C', blue: '#2348FF', grey: '#74757B', dim: '#6E6F75', light: '#F2F3F6', line: '#E2E3E8', blueOnDark: '#8197FF' };
 const F = { head: "'Alexandria'", accent: "'Aref Ruqaa'", mono: "'Space Mono'", label: "'Plex Arabic'" };
 const SAFE_R = 1015, SAFE_L = 65;
 const ARD = n => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
@@ -151,12 +151,11 @@ export default {
     S.cards = [
       { t: 'إعلانات', tag: 'ريلز · فيسبوك · يوتيوب', obj: 1 },
       { t: 'موشن جرافيك', tag: 'شخصيات · حركة · خط', obj: 2 },
-      { t: 'أفلام منتجات', tag: 'منتجك هو البطل', obj: 3 },
+      { t: 'فيديو منتجك', tag: 'منتجك هو البطل', obj: 3 },
     ].map((d, i) => {
       const x = SAFE_R - CW - i * (CW + 37);
       const c = card(S.serv, { x, y: CY, w: CW, h: CH, radius: 28, border: false });
       el('div', { text: `// ${ARD(i + 1).padStart(2, '٠')}`, style: abs({ top: '22px', right: '24px', fontFamily: F.label, fontSize: '24px', color: C.grey, direction: 'rtl' }) }, c);
-      el('div', { text: `0${i + 1}`, style: abs({ top: '24px', left: '24px', fontFamily: F.mono, fontSize: '22px', color: C.grey }) }, c);
       const objBox = el('div', { style: abs({ left: '16px', top: '66px', width: '260px', height: '260px' }) }, c);
       const m = mascotLayer(objBox, { w: 260, h: 260, cell: 4, z: 1 });
       const title = wline(c, d.t, abs({ right: '24px', top: '348px', direction: 'rtl', fontFamily: F.head, fontWeight: 700, color: C.ink, fontSize: '50px' }));
@@ -167,7 +166,7 @@ export default {
     // ---- 3 RESULT ----
     S.res = scene(); S.res.style.transformOrigin = '1015px 380px';
     S.r0 = rich(S.res, [['بيكسل', 'm'], ['بلس', 'm'], ['بتحوّلها', 'm'], ['لـ', 'm']], { top: '385px', right: W - SAFE_R + 'px', color: C.dim }, 54);
-    S.r1 = rich(S.res, [['فيلم', 'h']], { top: '455px', right: W - SAFE_R + 'px' }, 140);
+    S.r1 = rich(S.res, [['إعلان', 'h']], { top: '455px', right: W - SAFE_R + 'px' }, 140);
     S.r2 = rich(S.res, [['يتشاف', 'h'], ['ويتفتكر.', 'a', { fontSize: '150px' }]], { top: '630px', right: W - SAFE_R + 'px' }, 128);
     S.resU = underline(S.res);
     S.phone = el('div', { style: abs({ left: '92px', top: '905px', width: '372px', height: '760px', borderRadius: '58px', background: C.ink, padding: '14px', transformOrigin: '50% 80%' }) }, S.res);
@@ -186,6 +185,7 @@ export default {
     S.whipBg = el('div', { style: abs({ inset: '0', background: C.ink }) }, S.whip);
     S.whipWords = ['فكرة.', 'صورة.', 'صوت.'].map(w => el('div', { class: 'line', text: w, style: abs({ left: '0', width: W + 'px', top: '600px', textAlign: 'center', direction: 'rtl', fontFamily: F.head, fontWeight: 800, fontSize: '250px', color: C.white, lineHeight: '1.2', willChange: 'transform' }) }, S.whip));
     S.pill = el('div', { style: abs({ left: '50%', top: '760px', width: '360px', height: '150px', marginLeft: '-180px', borderRadius: '75px', background: C.ink, display: 'flex', alignItems: 'center', justifyContent: 'center' }) }, S.whip);
+    S.grow = el('div', { style: abs({ borderRadius: '50%', background: C.light, zIndex: '3', visibility: 'hidden' }) }, S.whip);
     S.pillT = el('div', { class: 'line', text: 'ابدأ', style: { fontFamily: F.head, fontWeight: 700, fontSize: '70px', color: C.white, direction: 'rtl' } }, S.pill);
     S.cursor = el('svg', { width: '90', height: '110', viewBox: '0 0 18 22', style: abs({ zIndex: '40', left: '0', top: '0', overflow: 'visible' }) }, stage);
     el('path', { d: 'M1 1 L1 18 L5.4 13.8 L8.4 20.6 L11.4 19.3 L8.5 12.6 L14.6 12.4 Z', fill: C.ink, stroke: C.white, 'stroke-width': '1.4', 'stroke-linejoin': 'round' }, S.cursor);
@@ -204,7 +204,7 @@ export default {
     S.liveDot = el('div', { style: abs({ left: '28px', top: '28px', width: '18px', height: '18px', borderRadius: '50%', background: C.blue, zIndex: '2' }) }, S.bB);
     S.bC = box(0, 1); head(S.bC, '// الإيقاع');
     S.bpm = el('div', { class: 'line', text: '١٢٠', style: abs({ right: '24px', top: '62px', direction: 'rtl', fontFamily: F.head, fontWeight: 800, fontSize: '118px', color: C.ink, lineHeight: '1.1' }) }, S.bC);
-    el('div', { text: 'BPM', style: abs({ right: '236px', top: '122px', fontFamily: F.mono, fontSize: '30px', color: C.grey }) }, S.bC);
+    el('div', { text: 'نبضة في الدقيقة', style: abs({ right: '228px', top: '118px', direction: 'rtl', fontFamily: F.label, fontWeight: 500, fontSize: '27px', color: C.grey, whiteSpace: 'nowrap' }) }, S.bC);
     S.beatLine = el('div', { style: abs({ left: '36px', right: '36px', top: '222px', height: '3px', background: C.line }) }, S.bC);
     S.beats = Array.from({ length: 8 }, (_, i) => el('div', { style: abs({ top: '212px', left: 36 + i * ((BW - 72 - 22) / 7) + 'px', width: '22px', height: '22px', borderRadius: '50%', background: C.blue }) }, S.bC));
     S.bD = box(1, 1); head(S.bD, '// الحركة والصوت');
@@ -215,7 +215,7 @@ export default {
       const c = el('div', { style: abs({ right: 24 + i * 142 + 'px', top: '100px', width: '128px', height: '74px', borderRadius: '37px', border: `2px solid ${C.ink}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: F.head, fontWeight: 700, fontSize: '32px', direction: 'ltr' }) }, S.bE);
       el('span', { class: 'line', text: s, style: { position: 'relative' } }, c); return c;
     });
-    S.ratioNote = wline(S.bE, 'نفس الفيلم لكل مكان', abs({ right: '24px', top: '200px', direction: 'rtl', fontFamily: F.label, fontWeight: 500, fontSize: '26px', color: C.grey }));
+    S.ratioNote = wline(S.bE, 'نفس الإعلان لكل مكان', abs({ right: '24px', top: '200px', direction: 'rtl', fontFamily: F.label, fontWeight: 500, fontSize: '26px', color: C.grey }));
     S.bF = box(1, 2); head(S.bF, '// التسليم');
     S.ready = wline(S.bF, 'جاهز للنشر', abs({ right: '24px', top: '66px', direction: 'rtl', fontFamily: F.head, fontWeight: 700, fontSize: '50px', color: C.ink }));
     S.pctT = el('div', { class: 'line', text: '٪٠', style: abs({ left: '30px', top: '150px', fontFamily: F.head, fontWeight: 800, fontSize: '58px', color: C.blue, direction: 'rtl', fontVariantNumeric: 'tabular-nums' }) }, S.bF);
@@ -233,29 +233,33 @@ export default {
     // ---- 6 DARK ----
     S.dark = scene();
     S.d1 = rich(S.dark, [['إنت', 'h'], ['عليك', 'h'], ['الفكرة.', 'a', { fontSize: '148px', color: C.white }]], { top: '480px', right: W - SAFE_R + 'px', color: C.white }, 112);
-    S.d2 = rich(S.dark, [['وإحنا', 'h'], ['علينا', 'h'], ['الباقي.', 'a', { fontSize: '148px' }]], { top: '668px', right: W - SAFE_R + 'px', color: '#8E8F95' }, 112);
-    S.darkU = underline(S.dark);
+    S.d2 = rich(S.dark, [['وإحنا', 'h'], ['علينا', 'h'], ['الباقي.', 'a', { fontSize: '148px', color: C.blueOnDark }]], { top: '668px', right: W - SAFE_R + 'px', color: '#8E8F95' }, 112);
+    S.darkU = underline(S.dark, C.blueOnDark);
 
     // ---- 7 BRAND ----
     S.brand = scene();
-    S.mark = el('div', { class: 'line', style: abs({ left: '0', width: W + 'px', top: '800px', textAlign: 'center', direction: 'ltr', whiteSpace: 'nowrap', zIndex: '12', lineHeight: '1' }) }, S.brand);
+    S.mark = el('div', { class: 'line', style: abs({ left: '0', width: W + 'px', top: '790px', textAlign: 'center', direction: 'ltr', whiteSpace: 'nowrap', zIndex: '12', lineHeight: '1' }) }, S.brand);
     S.mark.dataset.text = 'PIXEL Plus';
     const mw = el('span', { class: 'word', style: { display: 'inline-block' } }, S.mark);
     el('span', { text: 'PIXEL', style: { fontFamily: F.head, fontWeight: 800, fontSize: '170px', color: C.ink, letterSpacing: '-0.02em' } }, mw);
     el('span', { text: 'Plus', style: { fontFamily: "'Instrument Serif'", fontStyle: 'italic', fontSize: '188px', color: C.blue, marginLeft: '0.2em' } }, mw);
     S.tag = rich(S.brand, [['وكالة', 'm'], ['إعلانات', 'm'], ['بتخلّي', 'm'], ['فكرتك', 'm'], ['تتشاف.', 'a', { fontSize: '74px' }]], { left: '0', width: W + 'px', top: '1004px', textAlign: 'center', color: C.ink }, 50);
-    S.cta = el('div', { style: abs({ left: '0', width: W + 'px', top: '1094px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '28px', direction: 'rtl' }) }, S.brand);
+    S.cta = el('div', { style: abs({ left: '0', width: W + 'px', top: '1128px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '28px', direction: 'rtl' }) }, S.brand);
     S.ctaPill = el('div', { style: { background: C.blue, borderRadius: '40px', padding: '10px 40px 16px', transformOrigin: '50% 50%' } }, S.cta);
     wline(S.ctaPill, 'ابدأ مشروعك', { position: 'relative', fontFamily: F.head, fontWeight: 600, fontSize: '42px', color: C.white, direction: 'rtl' });
     S.ctaNote = wline(S.cta, 'ابعتلنا رسالة', { position: 'relative', fontFamily: F.label, fontWeight: 500, fontSize: '36px', color: C.dim, direction: 'rtl' });
-    S.foot = wline(S.brand, 'إعلانات · موشن جرافيك · أفلام منتجات', abs({ left: '0', width: W + 'px', top: '1198px', textAlign: 'center', direction: 'rtl', fontFamily: F.label, fontWeight: 500, fontSize: '27px', color: C.grey }));
-    S.resolve = pixelCanvas(S.brand, 13, GW, 22, { top: '778px' });
+    S.resolve = pixelCanvas(S.brand, 13, GW, 22, { top: '768px' });
 
     // ---- mascot, HUD, transitions ----
     mascot = mascotLayer(stage, { w: W, h: H, cell: 4, z: 8 });
     hud = el('div', { style: abs({ left: '0', top: '0', width: W + 'px', zIndex: '45', pointerEvents: 'none' }) }, stage);
     hudR = el('div', { class: 'line', style: abs({ top: '290px', right: W - SAFE_R + 'px', direction: 'rtl', fontFamily: F.label, fontWeight: 500, fontSize: '25px', whiteSpace: 'nowrap' }) }, hud);
-    hudL = el('div', { class: 'line', style: abs({ top: '294px', left: SAFE_L + 'px', direction: 'ltr', fontFamily: F.mono, fontSize: '22px', whiteSpace: 'nowrap', letterSpacing: '0.04em' }) }, hud);
+    hudL = el('div', { class: 'line', style: abs({ top: '290px', left: SAFE_L + 'px', direction: 'ltr', fontFamily: F.label, fontWeight: 500, fontSize: '25px', whiteSpace: 'nowrap', letterSpacing: '0.03em' }) }, hud);
+    hudL.style.display = 'flex'; hudL.style.gap = '14px';
+    el('span', { style: { unicodeBidi: 'isolate', direction: 'ltr', fontVariantNumeric: 'tabular-nums' } }, hudL);
+    el('span', { text: '—' }, hudL);
+    el('span', { text: 'بيكسل بلس', style: { unicodeBidi: 'isolate', direction: 'rtl' } }, hudL);
+    hudL.style.flexDirection = 'row-reverse'; hudL.style.justifyContent = 'flex-end';
     tr = pixelCanvas(stage, 60);
   },
 
@@ -265,13 +269,13 @@ export default {
     const bgCol = t < 3.0 ? C.white : t < 5.92 ? C.blue : t < 9 ? C.white : t < 10.02 ? C.white : t < 13.0 ? C.light : t < 16.0 ? C.ink : C.white;
     bg.style.background = bgCol;
     for (const [k, a, b] of [['hook', 0, 3.05], ['serv', 3.0, 6.2], ['res', 5.7, 9.0], ['board', 9.95, 13.05], ['dark', 12.95, 16.0], ['brand', 16.0, 20.1]]) setVis(S[k], sec(a, b));
-    setVis(S.whip, sec(9, 10.1));
+    setVis(S.whip, sec(9, 10.04));
     hblur.setAttribute('stdDeviation', '0 0');
 
     // ----- 1 HOOK (0–3) -----
     if (sec(0, 3.05)) {
-      S.hookLabel.style.opacity = ramp(t, 0.15, 0.45).toFixed(3);
-      lineIn(S.h1, t, 0.25, 0.12);
+      S.hookLabel.firstChild.style.opacity = '1';
+      lineIn(S.h1, t, -0.45, 0.14);
       wordIn(S.h2.words[0], t, 1.0);
       wordIn(S.h2.words[1], t, 1.32, { dur: 0.5 });
       placeUnder(S.hookU, S.h2.words[1]);
@@ -296,7 +300,7 @@ export default {
         if (!c.fitted) { const s = fitFontSize(c.t, { family: 'Alexandria', weight: 700, maxWidth: 244, max: 50 }); c.title.style.fontSize = s + 'px'; c.fitted = true; }
         const on = t >= t0 - 0.05;
         for (const w of c.c.querySelectorAll('.word')) w.style.opacity = (ramp(t, t0 + 0.25, t0 + 0.4) * (1 - ramp(t, 5.66, 5.76))).toFixed(3);
-        c.m.render(t, { x: 0.5, y: 0.5, size: 0.33, scene: c.obj, spin: 0.5 + (t - t0) * 0.9 + i, gamma: 0.95 }, { visible: on });
+        c.m.render(t, { x: 0.5, y: 0.5, size: 0.33, scene: c.obj, spin: [0.55, 0.35, -0.5][i] + 2.2 * (1 - ein(ramp(t, t0, t0 + 1.0))) + 0.05 * Math.sin(t * 1.3 + i), gamma: 0.95 }, { visible: on });
       });
     } else S.cards.forEach(c => c.m.render(t, {}, { visible: false }));
 
@@ -316,7 +320,7 @@ export default {
       const dr = planeDrift(t, { rx: 1, ry: 1.5, rz: 0.4, period: 6 });
       S.phone.style.transform = planeTransform({ ...pl, rx: pl.rx + dr.rx, ry: pl.ry + dr.ry, rz: pl.rz + dr.rz, perspective: 1600 });
       const pt = t - 6.3;
-      S.phoneM.render(t, { x: 0.5, y: 0.30, size: 0.135, smile: 0.8 + 0.2 * Math.sin(pt * 3), yaw: 0.25 * Math.sin(pt * 2.2), roll: 0.05 * Math.sin(pt * 2.2 + 1), glasses: 1, blink: t > 7.6 && t < 7.72 ? 1 : 0, open: t > 8.0 && t < 8.5 ? 0.5 : 0, paper: C.white }, { visible: t > 6.25 });
+      S.phoneM.render(t, { x: 0.5, y: 0.30, size: 0.135, smile: 0.8 + 0.2 * Math.sin(pt * 3), yaw: 0.25 * Math.sin(pt * 2.2), roll: 0.05 * Math.sin(pt * 2.2 + 1), blink: t > 7.6 && t < 7.72 ? 1 : 0, open: t > 8.0 && t < 8.5 ? 0.5 : 0 }, { visible: t > 6.25 });
       S.phoneText.style.opacity = ramp(t, 6.7, 6.9).toFixed(3);
       S.barFill.style.width = (100 * ramp(t, 6.6, 9.4)).toFixed(2) + '%';
       const hp = sp(t, 8.0, { dur: 0.45, bounce: 0.5 });
@@ -328,7 +332,7 @@ export default {
 
     // ----- 4 WHIP (9–9.75) + CLICK (9.75–10.05) -----
     let cursorOn = false;
-    if (sec(9, 10.1)) {
+    if (sec(9, 10.04)) {
       const wt = [9.0, 9.25, 9.5];
       S.whipBg.style.background = t < 9.75 ? C.ink : C.white;
       S.whipBg.style.opacity = '1';
@@ -349,12 +353,10 @@ export default {
       if (pOn) {
         const pop = sp(t, 9.75, { dur: 0.3, bounce: 0.4, from: 0.6 });
         const press = 1 - 0.08 * Math.sin(Math.PI * ramp(t, 9.84, 9.92));
-        const grow = ease.inCubic(ramp(t, 9.9, 10.06));
-        const sx = lerp(1, W * 1.25 / 360, grow), sy = lerp(1, H * 1.3 / 150, grow);
-        S.pill.style.transform = `scale(${(pop * press * sx).toFixed(4)}, ${(pop * press * sy).toFixed(4)})`;
-        S.pill.style.borderRadius = lerp(75, 10, grow) + 'px';
-        S.pill.style.background = grow > 0.35 ? C.light : C.ink;
-        S.pillT.style.opacity = (1 - ramp(t, 9.9, 9.96)).toFixed(3);
+        S.pill.style.transform = `scale(${(pop * press).toFixed(4)})`;
+        // the click opens ONE light circle (the board's colour) from the button; the cut happens under full cover
+        const gr = ease.inOutCubic(ramp(t, 9.88, 10.03)) * cover(540, 835);
+        Object.assign(S.grow.style, { left: 540 - gr + 'px', top: 835 - gr + 'px', width: 2 * gr + 'px', height: 2 * gr + 'px', visibility: gr > 1 ? 'visible' : 'hidden' });
         cursorOn = t < 9.98;
         const cx = lerp(980, 560, ease.outCubic(ramp(t, 9.75, 9.84))), cy = lerp(1200, 860, ease.outCubic(ramp(t, 9.75, 9.84)));
         const cs = 1 - 0.15 * Math.sin(Math.PI * ramp(t, 9.84, 9.92));
@@ -378,7 +380,7 @@ export default {
       });
       S.script.forEach((s, i) => { const a = 10.2 + i * 0.13; s.style.opacity = ramp(t, a, a + 0.12).toFixed(3); s.style.transform = `translateX(${(-(1 - ein(ramp(t, a, a + 0.35))) * 30).toFixed(1)}px)`; });
       checkAt(S.chA, t, 10.55);
-      S.boardM.render(t, { x: 0.5, y: 0.1, size: 0.30, smile: 0.9, glasses: 1, yaw: 0.18 * Math.sin((t - 10) * Math.PI), pitch: 0.06 * Math.sin((t - 10) * 2 * Math.PI), wink: t > 11.6 && t < 11.95 ? 1 : 0, paper: C.white }, { visible: true });
+      S.boardM.render(t, { x: 0.5, y: -0.12, size: 0.40, smile: 0.9, yaw: 0.18 * Math.sin((t - 10) * Math.PI), pitch: 0.06 * Math.sin((t - 10) * 2 * Math.PI), wink: t > 11.6 && t < 11.95 ? 1 : 0 }, { visible: true });
       S.liveDot.style.opacity = (0.35 + 0.65 * (Math.floor(t * 2) % 2 ? 0.4 : 1)).toFixed(3);
       S.beats.forEach((b, i) => { const lit = t >= 10.25 + i * 0.25; b.style.transform = `scale(${lit ? sp(t, 10.25 + i * 0.25, { dur: 0.3, bounce: 0.5, from: 0.3 }).toFixed(3) : 0.3})`; b.style.opacity = lit ? '1' : '0.25'; });
       S.wave.forEach((b, i) => { const a = 0.25 + 0.75 * Math.abs(noise1(i * 0.7 + t * 6, 4)) * (0.6 + 0.4 * Math.sin(i * 0.5 + t * 9)); const hgt = 14 + 120 * clamp(a) * ramp(t, 10.2, 10.6); b.style.height = hgt.toFixed(1) + 'px'; b.style.top = (160 - hgt / 2).toFixed(1) + 'px'; });
@@ -397,11 +399,11 @@ export default {
 
     // ----- 6 DARK (13–16) -----
     if (sec(12.95, 16.05)) {
-      lineIn(S.d1, t, 13.35, 0.12);
-      wordIn(S.d2.words[0], t, 14.25); wordIn(S.d2.words[1], t, 14.4);
-      wordIn(S.d2.words[2], t, 14.7, { dur: 0.5 });
+      lineIn(S.d1, t, 13.25, 0.1);
+      wordIn(S.d2.words[0], t, 13.9); wordIn(S.d2.words[1], t, 14.02);
+      wordIn(S.d2.words[2], t, 14.18, { dur: 0.42 });
       placeUnder(S.darkU, S.d2.words[2]);
-      lineDraw(S.darkU.path, ein(ramp(t, 15.0, 15.35)));
+      lineDraw(S.darkU.path, ein(ramp(t, 14.5, 14.85)));
     }
 
     // ----- 7 BRAND (16–20) -----
@@ -414,15 +416,14 @@ export default {
       const cp = sp(t, 17.45, { dur: 0.45, bounce: 0.45 }) * (1 - 0.06 * Math.sin(Math.PI * ramp(t, 18.42, 18.55)));
       S.ctaPill.style.transform = `scale(${cp.toFixed(4)})`; S.ctaPill.style.opacity = ramp(t, 17.45, 17.5).toFixed(3);
       S.ctaNote.style.opacity = ramp(t, 17.7, 17.95).toFixed(3);
-      S.foot.style.opacity = ramp(t, 17.95, 18.25).toFixed(3);
       if (t >= 18.05 && t < 18.85) {
         cursorOn = true;
         const u = ease.outCubic(ramp(t, 18.05, 18.4)), fade = 1 - ramp(t, 18.65, 18.85);
-        const cx = lerp(1000, 660, u), cy = lerp(1460, 1140, u), cs = 1 - 0.15 * Math.sin(Math.PI * ramp(t, 18.42, 18.55));
+        const cx = lerp(1000, 660, u), cy = lerp(1480, 1172, u), cs = 1 - 0.15 * Math.sin(Math.PI * ramp(t, 18.42, 18.55));
         S.cursor.style.transform = `translate(${cx.toFixed(1)}px, ${cy.toFixed(1)}px) scale(${cs.toFixed(3)})`;
         S.cursor.style.opacity = fade.toFixed(3);
         const rg = pulseRing(t, { start: 18.45, dur: 0.4, r0: 14, r1: 120 });
-        Object.assign(S.click.style, { left: 662 - rg.r + 'px', top: 1142 - rg.r + 'px', width: 2 * rg.r + 'px', height: 2 * rg.r + 'px', opacity: rg.opacity.toFixed(3) });
+        Object.assign(S.click.style, { left: 662 - rg.r + 'px', top: 1174 - rg.r + 'px', width: 2 * rg.r + 'px', height: 2 * rg.r + 'px', opacity: rg.opacity.toFixed(3) });
       }
     }
     S.cursor.style.visibility = cursorOn ? 'visible' : 'hidden';
@@ -439,10 +440,10 @@ export default {
     if (sceneN) {
       hudR.textContent = `// ${sceneN[0]} — ${sceneN[1]}`;
       const f = frame ?? Math.round(t * FPS), ss = Math.floor(f / FPS), ff = f % FPS;
-      hudL.textContent = `PIXEL PLUS  00:00:${String(ss).padStart(2, '0')}:${String(ff).padStart(2, '0')}`;
+      hudL.firstChild.textContent = ARD(`00:00:${String(ss).padStart(2, '0')}:${String(ff).padStart(2, '0')}`);
       const col = onDark ? 'rgba(255,255,255,0.62)' : 'rgba(11,11,12,0.45)';
       hudR.style.color = col; hudL.style.color = col;
-      hud.style.opacity = ramp(t, 0.05, 0.3).toFixed(3);
+      hud.style.opacity = '1';
     }
 
     // ----- transitions on the pixel canvas -----
@@ -460,10 +461,10 @@ export default {
       tr.c.style.visibility = 'visible';
       pixelCircle(tr, { cx: 540, cy: 820, r: g * cover(540, 820) * 1.15, band: 0.35, hex: C.ink });
     }
-    if (sec(15.5, 16.0)) { // white pixel bloom from «الباقي.»
+    if (sec(15.62, 16.0)) { // white pixel bloom from «الباقي.»
       const r = layoutRect(S.d2.words[2]);
       const cx = (r.left + r.right) / 2, cy = (r.top + r.bottom) / 2;
-      const g = ease.inCubic(ramp(t, 15.5, 15.96));
+      const g = ease.inCubic(ramp(t, 15.62, 15.97));
       tr.c.style.visibility = 'visible';
       pixelCircle(tr, { cx, cy, r: 40 + g * cover(cx, cy) * 1.2, band: 0.45, hex: C.white });
     }
@@ -475,33 +476,33 @@ export default {
     let pose = null, z = 8, clip = 'none';
     const blink = (...times) => (times.some(b => t > b && t < b + 0.12) ? 1 : 0);
     if (t < 2.75) { // hook: pops up bottom-left, looks up at the headline, delighted when the accent lands
-      const rise = sp(t, 0.15, { dur: 0.75, bounce: 0.32 });
+      const rise = sp(t, 0, { dur: 0.6, bounce: 0.4, from: 0.82 });
       const delight = ein(ramp(t, 1.45, 1.75));
-      pose = { ...at(330, lerp(2400, 1250, rise), 235), yaw: lerp(0.05, 0.32, ein(ramp(t, 0.5, 0.9))) - 0.1 * delight, pitch: lerp(-0.1, 0.16, ein(ramp(t, 0.5, 0.9))) - 0.12 * delight,
+      pose = { ...at(330, lerp(2400, 1250, rise), 225), yaw: lerp(0.05, 0.32, ein(ramp(t, 0.5, 0.9))) - 0.1 * delight, pitch: lerp(-0.1, 0.16, ein(ramp(t, 0.5, 0.9))) - 0.12 * delight,
         roll: 0.06 * Math.sin(t * 2.4) + 0.08 * (1 - rise), look: [lerp(0, 0.7, ein(ramp(t, 0.5, 0.9))) * (1 - delight), 0.5 * (1 - delight)],
-        smile: lerp(0.55, 1, delight), open: 0.55 * delight * (1 - ramp(t, 2.2, 2.5)), brow: 0.8 * delight * (1 - ramp(t, 2.3, 2.6)), blink: blink(0.95, 2.45), glasses: 1 };
+        smile: lerp(0.55, 1, delight), open: 0.55 * delight * (1 - ramp(t, 2.2, 2.5)), brow: 0.8 * delight * (1 - ramp(t, 2.3, 2.6)), blink: blink(0.95, 2.45) };
     } else if (t >= 3.05 && t < 5.92) { // services: peeks in from the left corner, watches the cards arrive
       const inn = sp(t, 3.15, { dur: 0.7, bounce: 0.3 });
       const ox = push * W;
       const look = t < 3.6 ? 0.8 : t < 3.85 ? 0.45 : t < 4.6 ? 0.1 : -0.2;
       pose = { ...at(lerp(-260, 215, inn) + ox, 1380, 205), yaw: lerp(0.5, 0.4, ein(ramp(t, 3.5, 4.4))) - (t > 4.7 ? 0.35 * ein(ramp(t, 4.7, 5.1)) : 0), pitch: 0.2 - 0.18 * ein(ramp(t, 4.7, 5.1)),
         roll: -0.1 + 0.08 * inn, look: [look, 0.6 * (1 - ein(ramp(t, 4.7, 5.1)))], smile: t > 4.7 ? 1 : 0.7, open: t > 4.75 && t < 5.4 ? 0.45 : 0, wink: t > 5.15 && t < 5.5 ? 1 : 0,
-        blink: blink(4.05), glasses: 1, paper: C.white };
+        blink: blink(4.05) };
     } else if (t >= 5.92 && t < 9.0) { // result: bottom-right, arrives with the push, looks at the phone, then at us
       const ox = -(1 - push) * W;
       const turn = ein(ramp(t, 8.05, 8.4));
-      pose = { ...at(800 + ox, 1335, 200), yaw: lerp(-0.42, 0, turn), pitch: lerp(-0.05, 0.05, turn), roll: 0.05 * Math.sin(t * 2), look: [lerp(-0.8, 0, turn), lerp(-0.3, 0, turn)],
-        smile: lerp(0.7, 1, turn), wink: t > 8.45 && t < 8.85 ? 1 : 0, blink: blink(7.1), glasses: 1 };
+      pose = { ...at(840 + ox, 1440, 135), yaw: lerp(-0.42, 0, turn), pitch: lerp(-0.05, 0.05, turn), roll: 0.05 * Math.sin(t * 2), look: [lerp(-0.8, 0, turn), lerp(-0.3, 0, turn)],
+        smile: lerp(0.7, 1, turn), wink: t > 8.45 && t < 8.85 ? 1 : 0, blink: blink(7.1) };
     } else if (t >= 12.95 && t < 16.05) { // dark: bottom-left, white on black, winks when «الباقي.» lands
       const rise = sp(t, 13.15, { dur: 0.7, bounce: 0.3 });
-      const turn = ein(ramp(t, 14.75, 15.1));
+      const turn = ein(ramp(t, 14.45, 14.8));
       pose = { ...at(300, lerp(2300, 1345, rise), 215), yaw: lerp(0.34, 0.04, turn), pitch: lerp(0.15, 0.02, turn), roll: 0.04 * Math.sin(t * 2.2),
-        look: [lerp(0.7, 0, turn), lerp(0.5, 0, turn)], smile: lerp(0.6, 1, turn), wink: t > 15.05 && t < 15.5 ? 1 : 0, blink: blink(13.9), glasses: 1, paper: C.white };
+        look: [lerp(0.7, 0, turn), lerp(0.5, 0, turn)], smile: lerp(0.6, 1, turn), wink: t > 14.75 && t < 15.25 ? 1 : 0, blink: blink(13.9) };
     } else if (t >= 16.05) { // brand: rises behind the wordmark (clipped at the logo) and greets
       const rise = sp(t, 16.45, { dur: 0.8, bounce: 0.28 });
-      pose = { ...at(540, lerp(1110, 598, rise), 185), yaw: 0.22 * Math.sin((t - 16.5) * 1.6) * (1 - ramp(t, 18.0, 18.4)), pitch: 0.05, roll: 0.05 * Math.sin((t - 16.5) * 2.1) * (1 - ramp(t, 18.0, 18.4)),
-        smile: 0.85 + 0.15 * ramp(t, 18.1, 18.3), wink: t > 18.15 && t < 18.6 ? 1 : 0, open: t > 17.0 && t < 17.4 ? 0.35 : 0, blink: blink(17.7, 19.3), glasses: 1, look: [0, 0] };
-      clip = 'inset(0 0 1064px 0)'; z = 9;
+      pose = { ...at(540, lerp(1100, 545, rise), 185), yaw: 0.22 * Math.sin((t - 16.5) * 1.6) * (1 - ramp(t, 18.0, 18.4)), pitch: 0.05, roll: 0.05 * Math.sin((t - 16.5) * 2.1) * (1 - ramp(t, 18.0, 18.4)),
+        smile: 0.85 + 0.15 * ramp(t, 18.1, 18.3), wink: t > 18.15 && t < 18.6 ? 1 : 0, open: t > 17.0 && t < 17.4 ? 0.35 : 0, blink: blink(17.7, 19.3), look: [0, 0] };
+      clip = 'inset(0 0 1130px 0)'; z = 9;
     }
     mascot.canvas.style.zIndex = String(z);
     mascot.canvas.style.clipPath = clip;
