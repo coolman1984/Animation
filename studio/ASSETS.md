@@ -13,3 +13,6 @@
 
 Third-party marks visible in owner photos: the coconut-milk carton carries its maker's brand. The film
 makes no claim of partnership; see `film2/BRIEF.md` §5 (owner decision).
+| Archivo (variable wdth/wght) | `assets/fonts/Archivo.ttf` | SIL OFL 1.1 — `assets/fonts/OFL-archivo.txt` (google/fonts) |
+| Instrument Serif Italic | `assets/fonts/InstrumentSerif-Italic.ttf` | SIL OFL 1.1 — `assets/fonts/OFL-instrumentserif.txt` |
+| Space Mono Regular/Bold | `assets/fonts/SpaceMono-*.ttf` | SIL OFL 1.1 — `assets/fonts/OFL-spacemono.txt` |
