@@ -2,11 +2,12 @@
 
 Updated: 2026-10-02. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: IN PROGRESS — Integrate the completed showreel and shared fixes into main.**
+**Latest scope: DONE — Showreel integration snapshot and conflict resolution.**
 
 - Fixed source snapshot: `7d5f966`; merge preserves both reference-lab and showreel history.
 - Only conflict: this handoff file; keep both completed scopes and their evidence.
-- Publication acceptance: the integration pull request must pass both Studio checks jobs before merge.
+- Local unit verification: 66 tests, 51 passed, 15 skipped, 0 failures.
+- Publication acceptance: [PR #10](https://github.com/coolman1984/Animation/pull/10) and both final-head Studio checks jobs are the source of truth. Merge only after both jobs pass; do not reopen this completed implementation scope.
 - Showreel exports remain local to its production session; this merge includes source, not delivered videos.
 
 **Completed scope: DONE — Studio showreel (15 s, 16:9 + 9:16), owner request 2026-10-02.**
