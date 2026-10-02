@@ -7,7 +7,7 @@ const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '
 
 // placeholder: answer missing images with a 1×1 grey PNG. ONLY for compatibility smoke tests of films
 // whose client photos are intentionally not in git — never for real renders.
-const PIXEL = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN4+P/ffwAI2wPdy4M3iQAAAABJRU5ErkJggg==', 'base64');
+const PIXEL = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNoaGj4DwAFhAKAjM1mJgAAAABJRU5ErkJggg==', 'base64');
 export function serve(root, { placeholder = false } = {}) {
   return new Promise((res) => {
     const server = createServer(async (req, rsp) => {
