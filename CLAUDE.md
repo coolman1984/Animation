@@ -1,5 +1,9 @@
 # Animation repo
 
+Read `STATUS.md` first for current scope, verification evidence and the finite completion contract.
+Update it when a requested scope closes. Completed work and deferred ideas are not an automatic task queue.
+At most two correction rounds per requested scope: then record DONE or BLOCKED and stop as specified there.
+
 This repo is a code-driven film studio. Everything lives in `studio/` (start with `studio/WORKFLOW.md` and `studio/SKILLS.md`).
 The skill library is in `.claude/skills/` — read `film-director` first for any video request.
 Never commit `studio/takes/` or `studio/out/`. Owner speaks Egyptian Arabic and is not technical:
