@@ -8,6 +8,8 @@ Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `s
 
 Read studio/WORKFLOW.md first; studio/SKILLS.md routes optional departments. Do not re-read the historical prompt.
 
+If a reference film is supplied, invoke reference-reverse-engineer via SKILLS.md before inferring its techniques. Do not load the reference lab for ordinary films.
+
 1. Record viewer, real evidence, one promise, CTA, duration/placements and asset limitations. Owner-authorized work proceeds without repeated approval.
 2. If concept is open, load creative-director. Compare at most three genuinely different directions; pick one. Three style frames: hook, proof, payoff. Fill shot craft metadata before expensive motion.
 3. New films use production.json (studio/templates/production.json) referenced by config.production. Share shot times with picture and sound.

@@ -1,0 +1,3 @@
+# Private reference media, analysis evidence and comparison exports are runtime artifacts.
+/references/*
+!/references/README.md

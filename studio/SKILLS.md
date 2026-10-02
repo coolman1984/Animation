@@ -23,3 +23,15 @@ Start a film with film-director + its brief/production.json. Read CRAFT_GUIDE.md
 
 One builder by default. A separate final judging pass is required; use a fresh reviewer when available.
 Do not spawn a specialist for each department. Never claim a review happened if it did not.
+
+## Reference film supplied (conditional only)
+If a film brief supplies a reference video, film-director invokes **reference-reverse-engineer** before
+choosing reconstruction techniques. Ordinary films without a reference do not load these departments.
+
+| Specific reference task | Skill | Evidence/tool |
+|---|---|---|
+| Orchestrate the study and visual grammar | reference-reverse-engineer | reference.mjs analyze/review, REFERENCE_LAB.md |
+| Local/URL/page ingest and bounded sampling | reference-ingest | FFmpeg/CDP, evidence-pack.json, transition strips |
+| Camera/object/layers/type/easing inference | motion-forensics | motion.json, optical flow, native primitive blueprint |
+| Music/edit correspondence | audio-forensics | audio.json, audio-visual-map.json |
+| Short original reconstruction and comparison | recreation-director | reconstruct/compare/learn, reference/lessons.json |

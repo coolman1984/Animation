@@ -2,7 +2,18 @@
 
 Updated: 2026-10-02. This is the current handoff; historical plans are not a task queue.
 
-**Scope: DONE — Generation 2 consolidation and bounded session handoff.**
+**Scope: IN PROGRESS — Reference Reverse Engineering Lab.**
+
+- Implemented: bounded local/direct/browser ingest, smart evidence sampling, shot/transition records,
+  optional optical flow/adaptive shots/music, visual-review workflow, native blueprint, neutral short
+  reconstruction, comparison and five conditional project skills. See `studio/REFERENCE_LAB.md`.
+- Local verification: 64 tests, 50 passed, 14 skipped, 0 failed before the optional Python integration
+  test was added. Actual OpenCV/PySceneDetect fixture runs also succeeded.
+- Next acceptance: fixed-head CI browser/render and optional scientific integration. Do not merge
+  until both jobs pass. Machine output explicitly awaits visual interpretation; prose review alone
+  does not approve a reconstruction blueprint.
+
+**Previous scope: DONE — Generation 2 consolidation and bounded session handoff.**
 Integration record: the merged Generation 2 consolidation request in the [repository pull requests](https://github.com/coolman1984/Animation/pulls).
 Its merged state and final-head checks are the source of truth for publication; do not restart this scope.
 

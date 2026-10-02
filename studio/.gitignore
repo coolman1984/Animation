@@ -19,3 +19,5 @@ assets/audio/
 *.ogg
 *.aif
 *.aiff
+# Reference reconstruction source/outputs are per-job runtime experiments.
+recreations/

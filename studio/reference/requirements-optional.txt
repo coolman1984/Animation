@@ -1,0 +1,6 @@
+# Optional scientific forensics only; the native FFmpeg/Node route needs none of these.
+numpy>=1.24,<3
+opencv-python-headless>=4.8,<5
+scenedetect>=0.6,<0.8
+librosa>=0.10,<0.12
+soundfile>=0.12,<0.14
