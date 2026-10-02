@@ -28,4 +28,4 @@ Studies (one subsystem each): `examples/camera-study`, `transition-study`, `dept
 Research decisions: HyperFrames (Apache-2.0) and Remotion (company licence for 4+ people) stay optional adapters;
 GSAP not needed (own pure-in-t primitives); WebGPU unavailable headless; Chromium 147 drops BeginFrame, so the
 renderAt+screenshot path is kept. Depth maps accepted only as supplied files with provenance (e.g. Depth Anything V2 Small, Apache-2.0).
-Not yet done: an automated example-studies render test and a placeholder-image legacy smoke test (Films 2–4 sources are not in git).
+Not yet verified: test/examples.test.mjs (all studies forward/reverse identical, kinetic type safe area at 4 ratios, camera-study diagnostics, Films 2–4 smoke run with placeholder pixels) is written but was stopped before its first run; run `npm run test:render` first next session.
