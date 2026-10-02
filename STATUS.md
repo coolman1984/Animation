@@ -2,7 +2,17 @@
 
 Updated: 2026-10-02. This is the current handoff; historical plans are not a task queue.
 
-**Scope: DONE — Generation 2 consolidation and bounded session handoff.**
+**Latest scope: DONE — Studio showreel (15 s, 16:9 + 9:16), owner request 2026-10-02.**
+- Source: `studio/showreel/` (BRIEF, production.json with creative block + cue sheet, film.js, score.mjs, measured music map, LEDGER).
+- Final take: `studio/out/showreel/take07/` (local, not in git): masters 1920×1080 and 1080×1920 + 10 MB share copies.
+- Technical gates: all PASS on both deliveries (15.00 s, 30 fps, −14 LUFS, TP −3 dBTP, LRA 4.9, text read-back clean).
+- Artistic: one independent critique (SHIP WITH FIXES, 0 blockers, 5 majors) → one correction round → majors verified on
+  take07 frames; the "Latin comma" finding was not reproduced (U+066B in both app and counter; typeface glyph). See LEDGER.
+- Not verified: listening on headphones/phone; human real-speed viewing; live platform overlays on 9:16.
+- Studio fixes made during this scope: read-back ignores hidden and mask-clipped text; counters caption their final value;
+  calibrated contrast estimate; camera-whip blur profile.
+
+**Previous scope: DONE — Generation 2 consolidation and bounded session handoff.**
 Integration record: the merged Generation 2 consolidation request in the [repository pull requests](https://github.com/coolman1984/Animation/pulls).
 Its merged state and final-head checks are the source of truth for publication; do not restart this scope.
 
