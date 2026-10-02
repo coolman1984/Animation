@@ -28,4 +28,7 @@ Studies (one subsystem each): `examples/camera-study`, `transition-study`, `dept
 Research decisions: HyperFrames (Apache-2.0) and Remotion (company licence for 4+ people) stay optional adapters;
 GSAP not needed (own pure-in-t primitives); WebGPU unavailable headless; Chromium 147 drops BeginFrame, so the
 renderAt+screenshot path is kept. Depth maps accepted only as supplied files with provenance (e.g. Depth Anything V2 Small, Apache-2.0).
-Not yet verified: test/examples.test.mjs (all studies forward/reverse identical, kinetic type safe area at 4 ratios, camera-study diagnostics, Films 2–4 smoke run with placeholder pixels) is written but was stopped before its first run; run `npm run test:render` first next session.
+Verification state and next actions live in `../STATUS.md`. `test/examples.test.mjs` covers studies
+forward/reverse determinism, kinetic type safe areas at four ratios, camera diagnostics and Films 2–4
+smoke runs with placeholder pixels. Consult current evidence before rerunning; this historical inventory
+is not an instruction to restart verification every session.

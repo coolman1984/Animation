@@ -3,6 +3,10 @@
 Owner-authorized pipeline update (2026-10-01). This supplements the saved original prompt and
 supersedes its blanket full-build/repeated-preview instructions during iteration. Final gates stay mandatory.
 Read this file plus the current film brief first; load only the skills needed for the current stage.
+Read `../STATUS.md` for the current handoff and finite completion contract. Historical prompts/plans
+do not reopen completed work. The two-correction-round budget is a total per requested scope,
+not a fresh allowance for every defect. If a blocker remains after that budget, record BLOCKED
+with evidence and a concrete next action; stop without delivering an unverified final.
 
 ## Model effort and context budget
 - Start routine implementation, variations and local fixes at **medium** effort.
@@ -11,7 +15,8 @@ Read this file plus the current film brief first; load only the skills needed fo
 - These are operator settings in the host application. Repo code cannot set Claude's effort or guarantee token savings.
 - Keep one concise brief and a decision ledger. Don't repeatedly reread the full repo/research or regenerate an approved concept.
 - Use one builder by default. One separate final judging pass; specialist delegation only for a concrete unresolved task.
-- After two unsuccessful correction rounds, diagnose the cause and change the approach. Blocking defects still prevent delivery.
+- After at most two correction rounds, close as DONE if accepted or BLOCKED with the cause and next action.
+  Further work requires a new owner-authorized scope. Blocking defects still prevent delivery.
 
 ## Design before expensive motion
 1. Define the audience, message, real product evidence and one CTA. Use up to three relevant references;
