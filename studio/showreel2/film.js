@@ -525,7 +525,7 @@ function render6(T) {
     o.main.row.style.left = px(k(-260) - t * k(380)); o.main.row.style.top = px(H * 0.04 + 4 * H * 0.115);
     o.rows.forEach(r => { r.row.style.webkitTextStroke = `${Math.max(1, k(2))}px rgba(14,14,16,0.5)`; });
   } else if (c.id === 'linear') {
-    const lp = clamp(t / 0.34), reveal = lp; // linear: constant-speed left→right wipe
+    const lp = clamp(t / 0.34), reveal = 0.3 + 0.7 * lp; // linear: constant-speed left→right wipe (the first letters are already in on the cut)
     o.w.row.style.clipPath = `inset(0 ${(100 - reveal * 100).toFixed(2)}% 0 0)`;
     const sm_ = k(26) * (1 - lp); dblur(o.w.row, 'lin', sm_, 0);
     const tt = clamp(t / 0.45), x2 = k(385) + tt * k(520), y2 = k(900) - tt * k(300);

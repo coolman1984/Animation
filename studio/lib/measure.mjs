@@ -55,8 +55,12 @@ export function gates(m, brief) {
   const allowedFrozen = (brief.holds || []);
   const badFrozen = m.frozen.filter((f) => !allowedFrozen.some(([a, b]) => f.start >= a - 0.1 && (f.end ?? m.probe.duration) <= b + 0.1));
   add('no frozen span > 1 s', badFrozen.length === 0, badFrozen.length ? JSON.stringify(badFrozen) : `${m.frozen.length} (all logged holds)`);
-  const badBlack = m.black.filter(b => !((b.start <= 0.05 && b.end <= 0.1) || b.start >= m.probe.duration - (brief.fadeOut || 0) - 0.1));
-  add('no black frames mid-film', badBlack.length === 0, badBlack.length ? JSON.stringify(badBlack) : 'ok');
+  // darkSpans: declared, intentional near-black passages (cold open on a dark field, a collapse into a dot).
+  // Like holds they must be listed in the config with their reason; undeclared black still fails.
+  const darkOk = (brief.darkSpans || []);
+  const badBlack = m.black.filter(b => !((b.start <= 0.05 && b.end <= 0.1) || b.start >= m.probe.duration - (brief.fadeOut || 0) - 0.1
+    || darkOk.some(([a, z]) => b.start >= a - 0.1 && b.end <= z + 0.1)));
+  add('no black frames mid-film', badBlack.length === 0, badBlack.length ? JSON.stringify(badBlack) : darkOk.length && m.black.length ? `ok (${m.black.length} declared dark spans)` : 'ok');
   if (m.text?.unavailable) add('text read-back', true, `NOT CHECKED — ${m.text.unavailable}; inspect copy manually`);
   else if (m.text) add('text inside safe area, no overlaps', m.text.issues.length === 0, m.text.issues.length ? `${m.text.issues.length} issues, first: ${JSON.stringify(m.text.issues[0])}` : `${m.text.lines.length} lines checked every 0.1 s`);
   if (m.share) add(`share copy ≤ ${brief.shareMB} MB`, m.share.sizeMB <= brief.shareMB, `${m.share.sizeMB} MB`);
