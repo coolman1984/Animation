@@ -22,6 +22,9 @@
 | Film 6 PIXEL Plus character (cute full-body young person) and service objects | `film6/mascot.js` | Original: signed-distance model + ordered dither written in code (2026-10-02). Two earlier busts were replaced (one resembled the reference character, one was an older Egyptian look) |
 | Film 6 score | `film6/score.mjs` | Synthesised in code — original, no samples |
 | Owner's PIXEL Plus reference recording | uploaded file `Screen_Recording_20261002_220226_X.mp4` (not in git); pack `references/pixelplus-ref/` (git-ignored) | Study reference only: its brand, copy, mascot design and music are NOT reused |
+| Film 7 PIXEL Plus «ريل الموشن» picture | `film7/film.js`, `film7/kit.js`, `film7/timing.js` | Original: every interface state, icon, chart and word is drawn in code. The brand-card character is `film6/mascot.js` (original, ASSETS row above) |
+| Film 7 score | `film7/score.mjs` | Synthesised in code — original 144 BPM electro-shaabi in D Hijaz, no samples, no voiceover |
+| Owner's second reference recording | uploaded file `Screen_Recording_20261002_231706_X.mp4` (not in git); pack `references/showreel3-ref/` (git-ignored) | Study reference only (UI micro-interaction reel): its copy, icons, album-art gradient, numbers and music are NOT reused |
 | Grain, light sweeps, pearls, leaves, window line-art | `lib/motion.js`, `film2/film.js` | Drawn in code |
 
 Third-party marks visible in owner photos: the coconut-milk carton carries its maker's brand. The film

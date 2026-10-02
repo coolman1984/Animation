@@ -52,6 +52,10 @@
 
 38. **Same style, different character.** Matching a reference's grammar invites copying its mascot's silhouette; the fresh reviewer flagged the first design (hair, sweater, chest patch, staging). Change identity markers that read in silhouette (headwear, facial hair, garment). A cultural marker alone (tarboosh + moustache) was original but read older and stayed a bust; the owner preferred a complete, cute figure — friendliness comes from chibi proportions (head ≈ 40 % of the height), big eyes with two highlights, rosy cheeks, a small smile and a body that acts (waves, hops, points).
 
+39. **Study the reference's SYSTEM, not its screens.** The UI reel's magic is one container that morphs, content that blurs around the morph, long holds, a narrating cursor, one state per bar. Rebuilding that system (a keyed spring-driven box + a waypoint cursor) lets any new states drop in; copying its states (player, volume, chart) would have been a pastiche.
+40. **A showreel proves skills by doing them on the beat.** Each scene performs one technique (drag, spring, count, draw, curve, re-compose, type) in one bar, with a one-line Arabic caption; the 20-second whole is a résumé. Fewer, clearer proofs beat a pile of effects.
+41. **Mix for the master, not for the monitor.** A dense percussive mix normalised hot reached +2 dBTP after AAC; scale by RMS, automate sections (breakdown −3 dB, drop +1.5 dB) and soft-clip transients first, then let the loudness master lift it.
+
 ## Principles learned from reference studies
 Consult `reference/lessons.json` only when its evidence-backed principle is relevant to the current
 craft decision. Learn the timing/composition principle and its counter-case, not reference appearance.

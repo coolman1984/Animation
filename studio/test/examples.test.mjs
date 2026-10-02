@@ -97,3 +97,13 @@ test('film 6 (WebGL dithered mascot + pixel transitions) seeks deterministically
     times.forEach((t, i) => sameFrame(fwd[i], rev[i], `film6 t=${t}`));
   } finally { server.close(); }
 });
+
+test('film 7 (morphing-box showreel, GPU character on the brand card) seeks deterministically in any order', { skip: !enabled, timeout: 300000 }, async () => {
+  const server = await serve(ROOT);
+  const times = [0.3, 1.4, 2.9, 4.6, 6.0, 7.5, 9.1, 10.6, 12.3, 13.9, 15.8, 16.3, 17.2, 19.0];
+  try {
+    const fwd = await session(server, '/film7/film.js', { w: 1080, h: 1920, gpu: true }, async c => { const out = []; for (const t of times) out.push(await shot(c, t)); return out; });
+    const rev = await session(server, '/film7/film.js', { w: 1080, h: 1920, gpu: true }, async c => { const out = []; for (const t of [...times].reverse()) out.unshift(await shot(c, t)); return out; });
+    times.forEach((t, i) => sameFrame(fwd[i], rev[i], `film7 t=${t}`));
+  } finally { server.close(); }
+});

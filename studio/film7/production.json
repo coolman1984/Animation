@@ -1,0 +1,335 @@
+{
+ "version": 1,
+ "duration": 20,
+ "fps": 30,
+ "audience": "Egyptian business owners, marketers and creative recruiters scrolling Reels who judge an agency by its motion work",
+ "promise": "PIXEL Plus builds motion that is designed down to the spring, the curve and the beat — shown in one continuous 20-second reel",
+ "cta": "ابدأ مشروعك — ابعتلنا رسالة (no phone/URL invented)",
+ "direction": "Reference-matched to an owner-supplied UI micro-interaction reel: ONE black box morphs through interface states on a warm paper canvas, driven by a cursor; content blurs out and in, long calm holds, quick springy morphs. Original Arabic copy and states, Alexandria + Aref Ruqaa, 144 BPM electro-shaabi score, brand card on pixel-iris blue with the PIXEL Plus character.",
+ "assets": [
+  {
+   "id": "fonts",
+   "path": "assets/fonts",
+   "role": "background",
+   "rights": "Alexandria, Aref Ruqaa, IBM Plex Sans Arabic, Instrument Serif — SIL OFL 1.1 (see ASSETS.md)"
+  },
+  {
+   "id": "character",
+   "path": "film6/mascot.js",
+   "role": "product",
+   "rights": "Original PIXEL Plus character modelled in code (film 6); reused as the brand card cameo"
+  }
+ ],
+ "sound": {
+  "mode": "original",
+  "bpm": 144,
+  "note": "Synthesised in film7/score.mjs (lib/audio.mjs + lib/sfx.mjs + custom reed/808/darbuka voices): 144 BPM electro-shaabi in D Hijaz, tresillo kick, half-time clap, reed lead, darbuka maqsum, UI sounds on every click. No voiceover."
+ },
+ "creative": {
+  "viewer": "a business owner or a creative director who has 20 seconds and is deciding whether this agency can really do motion",
+  "problem": "agency reels are long montages that don't prove craft; ads feel template-made",
+  "promise": "every interaction here is designed: springs, curves, counters, re-composition and type, on one beat",
+  "evidence": "the reel itself — each state demonstrates a technique the studio really performs; the stats card is labelled an illustrative example",
+  "emotion": "confident, precise, delighted — a tiny product demo that keeps surprising",
+  "motif": "one black box that morphs; the cursor as the narrator; the square pixel at the end",
+  "palette": [
+   "#EEEBE5",
+   "#0B0B0C",
+   "#2348FF",
+   "#FFC63A",
+   "#FFFFFF"
+  ],
+  "light": "soft paper canvas with a breathing glow; hard black objects with long soft shadows",
+  "typography": {
+   "display": "Alexandria 800/600",
+   "text": "Aref Ruqaa Bold accent words, IBM Plex Sans Arabic UI labels"
+  },
+  "camera": "flat stage, cursor-driven 3-D tilt of the box, beat pulse; no camera moves",
+  "transitions": [
+   "boxMorph",
+   "fullBleedExpand",
+   "pixelIris",
+   "hardWordCuts"
+  ],
+  "motion": "springs with overshoot, content blur-in/out, count-ups, line draw, live re-wrap, whip / flip / punch words",
+  "sound": "144 BPM electro-shaabi: tresillo kick, half-time clap, reed lead in D Hijaz, darbuka maqsum, 808 slides, UI clicks on every interaction",
+  "pacing": "one bar per scene; calm holds, fast morphs; drop on the type scene (13.3); brand drop 16.7",
+  "payoff": "the check becomes the brand: PIXEL Plus, the character on the wordmark, «بنحرّك فكرتك.»",
+  "cta": "ابدأ مشروعك",
+  "styleFrames": {
+   "hook": 0.3,
+   "proof": 9.0,
+   "payoff": 18.9
+  },
+  "proof": {
+   "start": 0,
+   "end": 10
+  }
+ },
+ "shots": [
+  {
+   "id": "button",
+   "start": 0,
+   "end": 1.6667,
+   "purpose": "opening title + the «ولّد إعلان» button; cursor clicks on beat 3",
+   "assetIds": [
+    "fonts"
+   ],
+   "craft": {
+    "scale": "hero control, centred",
+    "camera": "static + a calm title",
+    "focal": "button and title",
+    "transition": "typographic title exits blurred upward",
+    "depthLayers": 1,
+    "primaryMotions": [
+     "title rise",
+     "shimmer"
+    ],
+    "audioCue": "soft pop on the click"
+   }
+  },
+  {
+   "id": "player",
+   "start": 1.6667,
+   "end": 3.3333,
+   "purpose": "the button morphs into a video player that plays the film's own progress, audio-reactive bars",
+   "assetIds": [
+    "fonts"
+   ],
+   "craft": {
+    "scale": "medium card",
+    "camera": "tilt follows the cursor",
+    "focal": "player card",
+    "transition": "box morph (spring)",
+    "depthLayers": 1,
+    "primaryMotions": [
+     "bars on the beat",
+     "progress"
+    ],
+    "audioCue": "click on pause"
+   }
+  },
+  {
+   "id": "control",
+   "start": 3.3333,
+   "end": 5.0,
+   "purpose": "slider drag (frame rate 24→60) then it shrinks into a switch that flips on",
+   "assetIds": [
+    "fonts"
+   ],
+   "craft": {
+    "scale": "wide pill → small switch",
+    "camera": "tilt",
+    "focal": "slider / switch",
+    "transition": "morph",
+    "depthLayers": 1,
+    "primaryMotions": [
+     "knob drag",
+     "switch flip"
+    ],
+    "audioCue": "drag ticks, switch clack"
+   }
+  },
+  {
+   "id": "segment",
+   "start": 5.0,
+   "end": 6.6667,
+   "purpose": "segmented control: selector slides with a spring to «موشن» then «فيديو»",
+   "assetIds": [
+    "fonts"
+   ],
+   "craft": {
+    "scale": "wide pill",
+    "camera": "tilt",
+    "focal": "three segments",
+    "transition": "slide",
+    "depthLayers": 1,
+    "primaryMotions": [
+     "spring selector"
+    ],
+    "audioCue": "two clicks"
+   }
+  },
+  {
+   "id": "numbers",
+   "start": 6.6667,
+   "end": 8.3333,
+   "purpose": "a stats card: tabs, a counting number and a drawn line (labelled as an illustrative example)",
+   "assetIds": [
+    "fonts"
+   ],
+   "craft": {
+    "scale": "tall card",
+    "camera": "tilt",
+    "focal": "chart + number",
+    "transition": "morph",
+    "depthLayers": 1,
+    "primaryMotions": [
+     "count-up",
+     "line draw"
+    ],
+    "audioCue": "tick roll"
+   }
+  },
+  {
+   "id": "curve",
+   "start": 8.3333,
+   "end": 10.0,
+   "purpose": "an easing-curve editor: handles dragged, a ball runs the curve",
+   "assetIds": [
+    "fonts"
+   ],
+   "craft": {
+    "scale": "tall dark card",
+    "camera": "tilt",
+    "focal": "curve + handles",
+    "transition": "colour flip morph",
+    "depthLayers": 1,
+    "primaryMotions": [
+     "handle drag",
+     "ball run"
+    ],
+    "audioCue": "drag ticks"
+   }
+  },
+  {
+   "id": "ratios",
+   "start": 10.0,
+   "end": 11.6667,
+   "purpose": "one frame re-composes through 9:16, 1:1, 16:9, 4:5 on four beats",
+   "assetIds": [
+    "fonts"
+   ],
+   "craft": {
+    "scale": "changing aspect",
+    "camera": "tilt",
+    "focal": "ratio frame",
+    "transition": "aspect morph",
+    "depthLayers": 1,
+    "primaryMotions": [
+     "re-wrap headline"
+    ],
+    "audioCue": "four hits"
+   }
+  },
+  {
+   "id": "search",
+   "start": 11.6667,
+   "end": 13.3333,
+   "purpose": "a search palette types «كل إطار» and picks «كل إطار هو كود»",
+   "assetIds": [
+    "fonts"
+   ],
+   "craft": {
+    "scale": "wide card",
+    "camera": "tilt",
+    "focal": "palette",
+    "transition": "morph",
+    "depthLayers": 1,
+    "primaryMotions": [
+     "typing",
+     "row select"
+    ],
+    "audioCue": "key ticks, pick click"
+   }
+  },
+  {
+   "id": "type",
+   "start": 13.3333,
+   "end": 15.0,
+   "purpose": "the picked row becomes a full-screen black stage: four words on four hits (حركة / إيقاع / صوت / فكرة.)",
+   "assetIds": [
+    "fonts"
+   ],
+   "craft": {
+    "scale": "full screen",
+    "camera": "none",
+    "focal": "giant type",
+    "transition": "box expands to full bleed",
+    "depthLayers": 1,
+    "primaryMotions": [
+     "whip",
+     "flip"
+    ],
+    "audioCue": "drop with word hits"
+   }
+  },
+  {
+   "id": "close",
+   "start": 15.0,
+   "end": 16.6667,
+   "purpose": "back to the button; click; spinner; check; pixel iris to blue",
+   "assetIds": [
+    "fonts"
+   ],
+   "craft": {
+    "scale": "hero control → circle",
+    "camera": "tilt",
+    "focal": "button → check",
+    "transition": "circle + pixel iris",
+    "depthLayers": 1,
+    "primaryMotions": [
+     "spinner",
+     "check draw"
+    ],
+    "audioCue": "click, confirm, riser"
+   }
+  },
+  {
+   "id": "brand",
+   "start": 16.6667,
+   "end": 20,
+   "purpose": "PIXEL Plus resolves from pixels; the character stands on the wordmark; tagline and CTA",
+   "assetIds": [
+    "fonts",
+    "character"
+   ],
+   "craft": {
+    "scale": "centred lock-up",
+    "camera": "static hold",
+    "focal": "wordmark + character",
+    "transition": "pixel resolve",
+    "depthLayers": 1,
+    "primaryMotions": [
+     "pop",
+     "wave"
+    ],
+    "audioCue": "brand hit, bell"
+   }
+  }
+ ],
+ "cues": [
+  {
+   "id": "click",
+   "t": 1.25,
+   "kind": "accent",
+   "shot": "button",
+   "sound": {
+    "type": "click",
+    "vel": 0.5
+   }
+  },
+  {
+   "id": "drop",
+   "t": 13.3333,
+   "kind": "impact",
+   "shot": "type",
+   "sound": {
+    "type": "impact",
+    "vel": 0.8,
+    "weight": 0.8
+   }
+  },
+  {
+   "id": "brand",
+   "t": 16.6667,
+   "kind": "impact",
+   "shot": "brand",
+   "sound": {
+    "type": "impact",
+    "vel": 0.8,
+    "weight": 0.8
+   }
+  }
+ ]
+}
