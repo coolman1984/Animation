@@ -11,3 +11,5 @@ Append 0–3 genuinely new lessons to CRAFT.md: failure → cause → correction
 No compulsory five lessons, duplicated generic advice or re-research after every build.
 If a lesson changes operating policy, update the relevant department and WORKFLOW.md together to prevent contradictions.
 Keep the ledger's history. Do not claim token savings without usage data; use measured build seconds/cache hits for runtime claims.
+
+**Where lessons go (2026-10-02):** 0–3 lessons in CRAFT.md; reusable recipes with numbers in TECHNIQUES.md; the scope entry and skill changes in CHANGELOG.md; STATUS.md for state. Update them in one commit. Keep honest unverified lists.

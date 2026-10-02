@@ -32,3 +32,20 @@ Verification state and next actions live in `../STATUS.md`. `test/examples.test.
 forward/reverse determinism, kinetic type safe areas at four ratios, camera diagnostics and Films 2–4
 smoke runs with placeholder pixels. Consult current evidence before rerunning; this historical inventory
 is not an instruction to restart verification every session.
+
+## Generation 2.1 — added with Showreel 2 (2026-10-02)
+| Need | Where |
+|---|---|
+| Declared intentional dark passages in the technical gates (`darkSpans`) | `lib/measure.mjs`, `make.mjs`, test in `test/options-cache.test.mjs` |
+| SVG `text`, `textPath`, `polyline`, `polygon` in the element helper | `lib/motion.js` `el()` |
+| Variable fonts with width axis, italic serif, mono | `lib/composer.html`, `assets/fonts/`, `ASSETS.md` |
+| 60 fps films with a persistent HUD overlay and beat-grid scenes | `showreel2/film.js` (reference implementation) |
+| Recipes (directional blur, width-axis type, burst glyph, Truchet, mesh morph) | `TECHNIQUES.md` |
+| Evolution log and skill changes | `CHANGELOG.md` |
+Inventory shows what exists, not what must be used. Showreel films (`showreel/`, `showreel2/`) are reference implementations of the Gen 2 toolkit.
+
+## Core pipeline modules (pre-Gen 2, listed so the docs gate stays complete)
+| Module | Role |
+|---|---|
+| `lib/build-options.mjs` | the draft/review/final `PROFILES` table and `frameRange` (validated frame ranges for `--range`) |
+| `lib/imagelab-page.html` | in-browser page used by `lib/imagelab.mjs` to read pixels, matte edges and plates |

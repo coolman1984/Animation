@@ -14,3 +14,5 @@ Each delivery has w,h,safe, optional segments/variant. Check the actual placemen
 Recompose focal point, type and CTA for each ratio; don't just crop a finished feed render. Check affected ratios after shared layout edits.
 Use --profile=final. Captions/thumbs/share extras currently include legacy name-specific branches; see README, don't assume every new name gets all extras.
 Final report links actual files and any unverified platform behavior. Upload/publishing requires the owner's task authorization.
+
+**60 fps share copies (showreel2):** a 15 s 1080p60 master was 13.6 MB; the 2-pass share copy targeted 12 MB and came out at 10.5–11 MB. Check the share copy's size and a 1:1 crop; it was not reviewed by the critic — say so if true.

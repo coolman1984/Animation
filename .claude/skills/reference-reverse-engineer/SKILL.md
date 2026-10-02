@@ -13,3 +13,5 @@ Read `STATUS.md` and `studio/REFERENCE_LAB.md`. Respect the bounded scope; do no
 7. Load recreation-director for a difficult 3–8s neutral study and matched comparison; improve purpose, hierarchy, rhythm and clarity rather than pixel equality. Do not use brands/music/source assets without rights.
 8. Use `learn` only for a new evidence-backed transferable principle with a counter-case. Store no reference appearance. Stop after acceptance; no optional endless study loop.
 Report ready/blocked and exact unverified limitations. A complete machine pack is not a completed artistic interpretation.
+
+**Screen recordings:** ignore player chrome (bar, speaker, rounded frame, counter); crop the HUD at 1:1; use dense segment grids for fast sections; map times with a measured clock offset; attest the visual review honestly (audio analysed numerically, not heard). Worked example: studio/REFERENCE_LAB.md → Field test.

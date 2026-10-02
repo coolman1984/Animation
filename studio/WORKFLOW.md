@@ -92,3 +92,12 @@ lib/depth.js supplies deterministic shared cameras, parallax, per-layer focus, c
 lib/music.mjs prepares recordings at exact length; score.mjs still owns music/SFX mixing. Missing rights records block final plans.
 make records total/delivery seconds and score/text/audio/picture reuse. These measure runtime, not model-token savings.
 At most two music candidates, one creative direction and one independent final critique; stop optional polish after acceptance.
+
+## Reference-matched reel (added 2026-10-02)
+When the owner supplies a video to match: analyse → visual review → bar/beat table → one grid for picture and sound → short draft →
+review build → matched boards → one independent critique → at most one more correction round → DONE/BLOCKED. Gates stay mandatory;
+intentional dark openings are declared with `darkSpans`, intentional stillness with `holds`. See `TECHNIQUES.md`, `REFERENCE_LAB.md`.
+
+## Documentation is part of done (mandatory)
+A scope closes only after `../STATUS.md`, `CHANGELOG.md`, `CRAFT.md`, `TECHNIQUES.md`, `ASSETS.md`, the film's `LEDGER.md` and any changed skill are updated.
+`npm test` includes `test/docs.test.mjs` for the checkable parts. Record unverified items honestly (audio not heard, no real-speed viewing, etc.).

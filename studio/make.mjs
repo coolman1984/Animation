@@ -171,7 +171,8 @@ for (const d of selected) {
   }
   if (profile === 'final' && d.poster) await stillAt(file, d.poster, join(OUT, `poster-${d.name}.jpg`));
   if (profile === 'final' && d.name === 'bumper6') await webpPreview(file, join(OUT, `${label}-bumper6-preview.webp`));
-  const g = gates(m, { w: dw, h: dh, duration: range ? range[1] - range[0] : d.duration, fps: settings.fps, lufs: cfg.lufs, tp: cfg.tp, fadeOut: range ? Math.max(0, range[1] - (d.duration - (d.fadeOut || 0))) : (d.fadeOut || 0), shareMB: d.shareMB || cfg.shareMB, holds: (d.holds || (d.segments ? [] : cfg.holds) || []).map(([a, b]) => [a - (range?.[0] || 0), b - (range?.[0] || 0)]) });
+  const g = gates(m, { w: dw, h: dh, duration: range ? range[1] - range[0] : d.duration, fps: settings.fps, lufs: cfg.lufs, tp: cfg.tp, fadeOut: range ? Math.max(0, range[1] - (d.duration - (d.fadeOut || 0))) : (d.fadeOut || 0), shareMB: d.shareMB || cfg.shareMB, holds: (d.holds || (d.segments ? [] : cfg.holds) || []).map(([a, b]) => [a - (range?.[0] || 0), b - (range?.[0] || 0)]),
+    darkSpans: (d.segments ? [] : (d.darkSpans || cfg.darkSpans || [])).map(([a, b]) => [a - (range?.[0] || 0), b - (range?.[0] || 0)]) });
   report.deliveries[d.name] = { file, ...m, cached: reused, textCached, audioCached,
     seconds: (performance.now() - deliveryStarted) / 1000, render: renderStats, range, gates: g };
   console.log(`\n  ${d.name}`);

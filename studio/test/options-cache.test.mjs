@@ -59,3 +59,9 @@ test('final gates retain blockers and allow explicitly declared holds/fades', ()
   assert.equal(gates(hold, brief).every(g => g.ok), false);
   assert.equal(gates(hold, { ...brief, holds: [[58, 60]] }).every(g => g.ok), true);
 });
+test('declared dark spans may contain black frames; undeclared black still fails', () => {
+  const black = { ...measured, black: [{ start: 0, end: 0.6 }, { start: 12.65, end: 12.72 }] };
+  assert.equal(gates(black, brief).every(g => g.ok), false, 'undeclared black fails');
+  assert.equal(gates(black, { ...brief, darkSpans: [[0, 0.7], [12.6, 12.75]] }).every(g => g.ok), true);
+  assert.equal(gates(black, { ...brief, darkSpans: [[0, 0.7]] }).every(g => g.ok), false, 'only the declared span is excused');
+});

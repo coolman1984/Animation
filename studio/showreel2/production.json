@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "duration": 15,
+  "fps": 60,
+  "audience": "The owner and prospective clients judging what this code-driven studio can produce",
+  "promise": "A 15-second motion designer showreel: identity, easing, morphing, systems, depth and kinetic type, one idea per bar, all written in code",
+  "cta": "AVAILABLE FOR NEW PROJECTS",
+  "direction": "Reference-grammar recreation (references/user-ref): HUD index + 128 BPM bar counter, coral/cream/blue/ink/lime flat fields, Archivo variable heavy extended + Instrument Serif Italic + Space Mono, spring morphs, Truchet waves, 3D point clouds, 1/8-note type cuts, original score",
+  "musicMap": "showreel2/music.musicmap.json",
+  "assets": [],
+  "sound": { "mode": "original", "bpm": 128, "note": "Synthesised in showreel2/score.mjs (lib/audio.mjs + lib/sfx.mjs); no samples, no licence needed" },
+  "creative": {
+    "viewer": "someone scrolling a feed who should recognise a serious motion designer in two seconds",
+    "problem": "most showreels list skills; this one has to demonstrate them with taste",
+    "promise": "every capability proven on screen in the bar it belongs to",
+    "evidence": "the reel is made of the techniques it names: easing curves, springs, Truchet systems, perspective point clouds, kinetic type",
+    "emotion": "confident, playful precision with one hard drop",
+    "motif": "a coral dot that becomes burst, disc, full stop and flood",
+    "palette": ["#0E0E10", "#FF5A37", "#F3EDE3", "#2B39FC"],
+    "light": "flat saturated fields, one chromatic fringe on the iris, no photographic light",
+    "typography": { "display": "Archivo", "text": "Instrument Serif" },
+    "camera": "no camera: composition transforms, perspective of the point clouds",
+    "transitions": ["maskedReveal", "cut", "colorHandoff"],
+    "motion": "springs with overshoot, literal easing demonstration, directional smear, ripple waves, constant-speed rotation, 1/8-note cuts",
+    "sound": "original 128 BPM bed; hits on the iris, the drop, every type card and the bloom; a linear sine sweep for LINEAR.",
+    "pacing": "slow hook, bar-per-idea middle, one drop at 7.5 s, breakdown for depth, rapid type, held lock-up",
+    "payoff": "the dot floods the frame and returns as the burst beside the wordmark",
+    "cta": "AVAILABLE FOR NEW PROJECTS",
+    "styleFrames": { "hook": 1.0, "proof": 8.7, "payoff": 14.6 },
+    "proof": { "start": 3.5, "end": 13.4 }
+  },
+  "shots": [
+    { "id": "intro", "start": 0, "end": 1.875, "purpose": "hook: ring, dot, burst glyph, collapse", "assetIds": [], "craft": { "scale": "graphic centre", "camera": "locked", "focal": "dot", "transition": "maskedReveal", "depthLayers": 1, "primaryMotions": ["burst spring"], "audioCue": "riser into the iris" } },
+    { "id": "identity", "start": 1.875, "end": 3.5, "purpose": "wordmark with variable-width letters and the italic subtitle", "assetIds": [], "craft": { "scale": "full-frame type", "camera": "locked", "focal": "wordmark", "transition": "cut", "depthLayers": 1, "primaryMotions": ["type width"], "audioCue": "iris impact, letter ticks" } },
+    { "id": "easing", "start": 3.5, "end": 5.625, "purpose": "six dots race A to B with six named easings", "assetIds": [], "craft": { "scale": "dense list", "camera": "locked", "focal": "dots", "transition": "colorHandoff", "depthLayers": 1, "primaryMotions": ["dot race"], "audioCue": "six plucks, sweep" } },
+    { "id": "morphing", "start": 5.625, "end": 7.5, "purpose": "circle to triangle to star to square with echoes", "assetIds": [], "craft": { "scale": "graphic centre", "camera": "locked", "focal": "shape", "transition": "cut", "depthLayers": 2, "primaryMotions": ["shape morph"], "audioCue": "boing per morph" } },
+    { "id": "systems", "start": 7.5, "end": 9.375, "purpose": "Truchet field with three colour waves", "assetIds": [], "craft": { "scale": "full-bleed pattern", "camera": "locked", "focal": "centre", "transition": "cut", "depthLayers": 1, "primaryMotions": ["tile waves"], "audioCue": "drop, wave sweeps" } },
+    { "id": "depth", "start": 9.375, "end": 11.25, "purpose": "570-vertex mesh to sphere to torus in perspective", "assetIds": [], "craft": { "scale": "centred object", "camera": "orbit", "focal": "torus", "transition": "cut", "depthLayers": 6, "primaryMotions": ["point cloud"], "audioCue": "breakdown, whirr" } },
+    { "id": "type", "start": 11.25, "end": 13.35, "purpose": "EASE IN OUT NEVER LINEAR at 1/8-note cuts, the full stop floods", "assetIds": [], "craft": { "scale": "full-frame type", "camera": "locked", "focal": "word", "transition": "colorHandoff", "depthLayers": 1, "primaryMotions": ["kinetic type"], "audioCue": "hit per card, linear sweep" } },
+    { "id": "fin", "start": 13.35, "end": 15, "purpose": "burst glyph, confetti, wordmark lock-up, credit line", "assetIds": [], "craft": { "scale": "lock-up", "camera": "locked", "focal": "wordmark", "transition": "cut", "depthLayers": 1, "primaryMotions": ["burst bloom"], "audioCue": "bloom chord, sparkles" } }
+  ],
+  "cues": [
+    { "id": "pre", "t": 1.0, "kind": "music", "shot": "intro", "sound": { "type": "softHit", "vel": 0.25, "tone": 98 } },
+    { "id": "land", "t": 5.625, "kind": "reveal", "shot": "morphing", "sound": { "type": "softHit", "vel": 0.3, "tone": 150 } },
+    { "id": "ui", "t": 14.62, "kind": "ui", "shot": "fin", "sound": { "type": "ui", "vel": 0.16 } }
+  ]
+}

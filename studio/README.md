@@ -21,6 +21,7 @@ A film is `<film>/film.js` (pure time-based render), `score.mjs` and `config.mjs
 Inputs/results are cached independently by content; declare additional dependencies in config.cacheInputs.
 Client source photos/derived plates are intentionally excluded from git: restore them locally before rendering film2.
 Instructions: `../.claude/skills/*/SKILL.md`; original prompt: `PROMPT_STUDIO.md`; lessons: `CRAFT.md`; rights: `ASSETS.md`.
+Evolution log: `CHANGELOG.md`; reusable recipes with numbers: `TECHNIQUES.md`; toolkit inventory: `GEN2.md`.
 Never commit `takes/` or `out/`.
 
 ## New-film contract
@@ -75,3 +76,18 @@ fadeOut without segments. Silent/unmeasurable masters and audio too short for pi
 Analyze authorized local video, direct media or browser players with `node reference.mjs analyze <source>`.
 Compact evidence, optional motion/audio forensics, visually reviewed grammar, native 3–8 second neutral
 studies and matched comparisons are described in [REFERENCE_LAB.md](REFERENCE_LAB.md).
+
+## Showreels (reference implementations)
+```bash
+node make.mjs showreel --profile=final      # 15 s own-brand reel, 16:9 + 9:16, 30 fps
+node make.mjs showreel2 --profile=final     # 15 s reference recreation, 16:9, 60 fps, 128 BPM
+node make.mjs showreel2 --range=7.5:11.25 --profile=review   # re-export one interval
+```
+Each has `BRIEF.md`, `production.json`, `score.mjs` and a `LEDGER.md` (critique → fix → result on the exported file).
+Showreel 2 declares `darkSpans` for its deliberate dark opening; see `TECHNIQUES.md` before copying it.
+
+## Documentation duty
+Closing a scope means updating, in the same commit: `../STATUS.md` (scope, evidence, unverified), `CHANGELOG.md` (entry + skill changes),
+`CRAFT.md` (0–3 new lessons), `TECHNIQUES.md` (new recipes), `GEN2.md`/`README.md` (new modules/commands), `ASSETS.md` (every new outside file),
+the film's `LEDGER.md`, and any skill whose advice changed. `npm test` runs `test/docs.test.mjs`, which fails when a skill, a lib module
+or a film ledger is undocumented or when STATUS.md is older than the newest changelog entry.

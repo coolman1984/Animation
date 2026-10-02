@@ -25,6 +25,15 @@
 20. **Safe band (Meta unified): x 65–1015, y 269–1248.** Texts moved up/in per scene; the end card was scaled 0.755 as one group instead of re-laying each element. The text gate now takes the safe rectangle per delivery.
 21. **Variant code must not leak:** a regression run (stills vs the delivered master, PSNR) caught two 4:5 changes (an 8 px line move, backdrop clamps). Any shared-code edit → PSNR check ≥ 35 dB against the last master at 8 times.
 
+## Showreels (2026-10-02)
+22. **A showreel proves one skill per bar:** identity, easing, morph, systems, depth, kinetic type, finale — each on a 1.875 s bar at 128 BPM. Viewers read the index label, not a list of claims.
+23. **Type scale is the biggest fidelity lever:** the critic scored ~65 % until cards filled 44–94 % of the frame width and letters changed width in a wave; structure and palette were already ~85 %.
+24. **Measure text only while it is visible:** hidden cards measured 0 px and never appeared (`layout6`). Show → measure → hide.
+25. **A tool can fail silently:** SVG `text` was not in the element helper's tag list, so the rotating ring vanished with no error. Verify new element types on a frame before building around them.
+26. **Declare intent for gates:** an intentionally dark opening failed the black-frame gate; the fix was a tested `darkSpans` option, not loosening the gate.
+27. **Check fixes on the exported mp4,** not the preview path; use a "deliberate non-defects" list so the critic does not re-report the iris rim or a mid-hit blur.
+28. **Be honest about "exactly":** structural fidelity (order, timing, palette, type roles) is deliverable; pixel equality, source code and audio are not.
+
 ## Principles learned from reference studies
 Consult `reference/lessons.json` only when its evidence-backed principle is relevant to the current
 craft decision. Learn the timing/composition principle and its counter-case, not reference appearance.
