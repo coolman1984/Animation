@@ -69,3 +69,9 @@ output is an audition/mastered track; master the final mix again through the nor
 production.assets or config.cacheInputs so changing the audio invalidates its cache.
 `assembleAudio` has duration-preserving click-suppression edge fades, not true overlap crossfades. It now also honors
 fadeOut without segments. Silent/unmeasurable masters and audio too short for picture fail with explicit errors.
+
+## Reference Reverse Engineering Lab
+
+Analyze authorized local video, direct media or browser players with `node reference.mjs analyze <source>`.
+Compact evidence, optional motion/audio forensics, visually reviewed grammar, native 3–8 second neutral
+studies and matched comparisons are described in [REFERENCE_LAB.md](REFERENCE_LAB.md).

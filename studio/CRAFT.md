@@ -24,3 +24,8 @@
 19. **A 1600² photo can't fill 1080×1920 below 1.2×** — wide two-product framings crop on 9:16. Push in through transitions (portal: 1.04 → 1.26 while the arch opens) so coverage is reached by the time the frame is full.
 20. **Safe band (Meta unified): x 65–1015, y 269–1248.** Texts moved up/in per scene; the end card was scaled 0.755 as one group instead of re-laying each element. The text gate now takes the safe rectangle per delivery.
 21. **Variant code must not leak:** a regression run (stills vs the delivered master, PSNR) caught two 4:5 changes (an 8 px line move, backdrop clamps). Any shared-code edit → PSNR check ≥ 35 dB against the last master at 8 times.
+
+## Principles learned from reference studies
+Consult `reference/lessons.json` only when its evidence-backed principle is relevant to the current
+craft decision. Learn the timing/composition principle and its counter-case, not reference appearance.
+No required lesson quota or automatic reuse of a prior visual style.

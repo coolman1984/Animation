@@ -2,7 +2,29 @@
 
 Updated: 2026-10-02. This is the current handoff; historical plans are not a task queue.
 
-**Scope: DONE — Generation 2 consolidation and bounded session handoff.**
+**Scope: DONE — Reference Reverse Engineering Lab implementation and local integration.**
+
+- Implemented: bounded local/direct/browser ingest, smart evidence sampling, full shot/transition
+  records with coverage limits, optional optical flow/adaptive shots/music, compact numerical summaries,
+  visual-review workflow, native blueprint, neutral 3–8s reconstruction, comparison and five conditional
+  project skills. See `studio/REFERENCE_LAB.md`.
+- Local unit verification: 66 tests, 51 passed, 15 skipped, 0 failed. Browser/optional tests are distinct.
+- Actual Chromium reference integration: 1 passed, 0 failed. Decoded browser timestamp at 2.5s,
+  a 150-frame native neutral reconstruction and matched comparison were exercised, not mocked.
+- Scientific CI integration: OpenCV + PySceneDetect + librosa passed together in runs 36983529292
+  and 36983994131; the final-head workflow associated with [PR #9](https://github.com/coolman1984/Animation/pull/9)
+  is the publication acceptance source of truth. Merge only with both final-head jobs green.
+- Two correction rounds resolved test media missing HTTP byte-range support, bounded transient
+  seek waits, deterministic transition visibility, exact hard-cut timing and one-cell static evidence.
+  Earlier failed runs are superseded by final-head verification; do not restart them.
+- Visual skill evaluation opened actual overview/transition/evidence sheets. Still-only observations
+  explicitly disclosed unplayed motion/audio; no artistic reconstruction certification was claimed.
+- Machine reports remain provisional until actual visual review. Prose review alone does not approve
+  a shot blueprint. Neutral studies are silent and original; reference media/brands/audio stay private.
+- No further implementation or optional-polish queue remains in this scope. The merged PR/final-head
+  checks certify publication; subsequent films/references are separate bounded user requests.
+
+**Previous scope: DONE — Generation 2 consolidation and bounded session handoff.**
 Integration record: the merged Generation 2 consolidation request in the [repository pull requests](https://github.com/coolman1984/Animation/pulls).
 Its merged state and final-head checks are the source of truth for publication; do not restart this scope.
 
