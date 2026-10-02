@@ -3,7 +3,7 @@
 import { el, lerp } from '../lib/motion.js';
 
 export const W = 1080, H = 1920;
-export const C = { paper: '#EEEBE5', ink: '#0B0B0C', blue: '#2348FF', grey: '#8C8D93', dim: '#6B6C72', white: '#FFFFFF', line: '#E3E0D9', gold: '#FFC63A', violet: '#8A3DFF', coral: '#FF5A5F', cyan: '#18C8FF' };
+export const C = { paper: '#EEEBE5', ink: '#0B0B0C', blue: '#2348FF', grey: '#8C8D93', dim: '#6B6C72', white: '#FFFFFF', line: '#E3E0D9', gold: '#FFC63A', soft: '#5B7BFF', deep: '#0B1B7A' };
 export const F = { head: "'Alexandria'", label: "'Plex Arabic'", accent: "'Aref Ruqaa'" };
 export const ARD = s => String(s).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
 export const abs = (style = {}) => ({ position: 'absolute', ...style });

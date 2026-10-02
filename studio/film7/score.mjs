@@ -120,14 +120,14 @@ const tick = (t, v = 0.2, b = 0.9, p = 0) => click(fx, t, { vel: v, bright: b, p
 impact(fx, 0.0, { vel: 0.5, weight: 0.6 });
 sweep(fx, 0.55, { dur: 0.7, vel: 0.07, up: true });
 // every state change: a quiet landing whoosh peaking on the bar line (the box spring's overshoot)
-[S.player, S.slider, S.seg, S.stats, S.curve, S.ratio, S.search].forEach((t, i) => whooshBy(fx, t - 0.02, { dur: 0.3, vel: 0.2, direction: i % 2 ? 'lr' : 'rl', low: 240, high: 2400, seed: 20 + i }));
+[S.player, S.dial, S.seg, S.stats, S.curve, S.ratio, S.search].forEach((t, i) => whooshBy(fx, t - 0.02, { dur: 0.3, vel: 0.2, direction: i % 2 ? 'lr' : 'rl', low: 240, high: 2400, seed: 20 + i }));
 tick(E.click1, 0.5, 0.7); softHit(fx, E.click1 + 0.02, { vel: 0.35, tone: 300 });
 tick(E.pause, 0.4, 0.7); softHit(fx, E.pause + 0.02, { vel: 0.3, tone: 260 });
-for (let i = 0; i < 11; i++) tick(E.dragA + i * ((E.dragB - E.dragA) / 10), 0.1, 0.5 + i * 0.04, -0.3 + i * 0.06);    // slider ticks rising
-whooshBy(fx, E.toggleMorph + 0.15, { dur: 0.25, vel: 0.2, direction: 'rl', low: 400, high: 2800, seed: 31 });
-mechanical(fx, E.toggle - 0.01, { dur: 0.12, vel: 0.12, f0: 220, f1: 300 }); uiConfirm(fx, E.toggle + 0.01, { vel: 0.22, notes: [88, 95] });
+for (let i = 0; i < 14; i++) tick(E.dragA + i * ((E.dragB - E.dragA) / 13), 0.1, 0.5 + i * 0.03, -0.3 + i * 0.045);    // dial detents rising
+uiConfirm(fx, E.dragB + 0.02, { vel: 0.22, notes: [88, 95] }); softHit(fx, E.dragB + 0.02, { vel: 0.3, tone: 200 });
 tick(E.segA, 0.4, 0.8); softHit(fx, E.segA + 0.02, { vel: 0.28, tone: 330 }); tick(E.segB, 0.4, 0.85, 0.3); softHit(fx, E.segB + 0.02, { vel: 0.28, tone: 392 });
-for (let i = 0; i < 22; i++) tick(E.countA + 0.05 + i * ((E.countB - E.countA) / 22), 0.06 + 0.002 * i, 0.95, -0.2 + (i % 4) * 0.13);   // number roll
+for (let i = 0; i < 12; i++) softHit(fx, E.countA + 0.05 + i * 0.045, { vel: 0.12 + i * 0.006, tone: 300 + i * 40, p: -0.4 + i * 0.07 });   // bars rising, staggered
+for (let i = 0; i < 20; i++) tick(E.countA + 0.05 + i * ((E.countB - E.countA) / 20), 0.05 + 0.002 * i, 0.95, -0.2 + (i % 4) * 0.13);   // number roll
 bell(fx, E.tip + 0.01, 93, 0.16, { decay: 1.0 }); softHit(fx, E.tip + 0.02, { vel: 0.25, tone: 440 });
 for (let i = 0; i < 5; i++) { tick(E.handleA + i * 0.065, 0.08, 0.5); tick(E.handleB + i * 0.06, 0.08, 0.6, 0.3); }
 whoosh(fx, E.ballA, E.ballB - E.ballA, 0.14, { f0: 500, f1: 2600, p0: -0.5, p1: 0.5, seed: 8 }); bell(fx, E.ballB, 91, 0.2, { decay: 1.2 });
@@ -135,6 +135,7 @@ E.ratio.forEach((t, i) => { softHit(fx, t, { vel: 0.4 + i * 0.04, tone: [220, 26
 tick(E.typeStart + 0.17, 0.2, 0.9); tick(E.typeStart + 0.34, 0.2, 0.95, 0.2);
 whooshBy(fx, E.results, { dur: 0.3, vel: 0.14, direction: 'center', low: 500, high: 3000, seed: 41 });
 tick(E.pick, 0.5, 0.8); softHit(fx, E.pick + 0.02, { vel: 0.3, tone: 300 });
+riser(fx, at(5), { dur: 0.9, vel: 0.22, f0: 300, f1: 7000, tonal: 0.3, seed: 15 });          // short build into the curve editor
 riser(fx, at(8), { dur: 1.7, vel: 0.3, f0: 240, f1: 9000, tonal: 0.3, seed: 12 });
 impact(fx, at(8), { vel: 0.85, weight: 0.85 });
 E.words.forEach((t, i) => { impact(fx, t, { vel: 0.5 + i * 0.08, weight: 0.5, p: [0.5, -0.5, 0.4, 0][i], seed: 90 + i }); whooshBy(fx, t - 0.03, { dur: 0.24, vel: 0.22, direction: i % 2 ? 'rl' : 'lr', low: 300, high: 3200, seed: 50 + i }); });
@@ -148,6 +149,8 @@ impact(fx, S.brand, { vel: 0.85, weight: 0.9 });
 bloop(fx, E.hero, 0.3, { f0: 520, f1: 1180 }); whooshBy(fx, E.tag, { dur: 0.3, vel: 0.2, direction: 'rl', low: 300, high: 2400, seed: 71 }); bloop(fx, E.cta, 0.22, { f0: 900, f1: 520 });
 tick(E.ctaClick, 0.5, 0.7); uiConfirm(fx, E.ctaClick + 0.02, { vel: 0.24, notes: [88, 95] });
 impact(fx, at(11), { vel: 0.5, weight: 0.5 });
+// a clear full stop instead of a fade-out: stinger on the last upbeat, bell ring-out
+impact(fx, at(11, 3), { vel: 0.7, weight: 0.7 }); for (const m of [74, 78, 81, 86]) bell(fx, at(11, 3) + 0.01, m + 12, 0.2, { p: (m % 4) / 4 - 0.4, decay: 1.2 }); sub808(low, at(11, 3), 38, 0.6, 0.9, { dive: 0.9 });
 placeCues(fx, plan.cues);
 
 // ---------- processing ----------
@@ -166,7 +169,7 @@ lpCurve(music, t => t < at(1) ? lerpE(900, 16000, (t - 0.4) / 1.2) : t < at(9) ?
 const sfx = mk(); fx.mixInto(sfx, 1);
 const sendF = mk(); fx.mixInto(sendF, 0.4); reverb(sendF, { room: 0.62, damp: 0.3 }).mixInto(sfx, 0.4);
 for (const b of [music, sfx]) {
-  for (let i = 0; i < b.n; i++) { const t = i / SR, g = t >= DUR ? 0 : t > DUR - 0.5 ? Math.cos(((t - (DUR - 0.5)) / 0.5) * Math.PI / 2) : 1; b.L[i] *= g; b.R[i] *= g; }
+  for (let i = 0; i < b.n; i++) { const t = i / SR, g = t >= DUR ? 0 : t > DUR - 0.2 ? Math.cos(((t - (DUR - 0.2)) / 0.2) * Math.PI / 2) : 1; b.L[i] *= g; b.R[i] *= g; }
   b.n = DUR * SR; b.L = b.L.subarray(0, b.n); b.R = b.R.subarray(0, b.n);
 }
 // Section automation on the music bed: the breakdown and the stripped button bar breathe, the drop and the brand climax push.

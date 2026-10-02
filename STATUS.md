@@ -2,7 +2,12 @@
 
 Updated: 2026-10-02. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE — Film 6: PIXEL Plus 20 s Reels video ad, reference-matched (owner request 2026-10-02).**
+**Latest scope: DONE — Film 7: PIXEL Plus «ريل الموشن» 20 s Reels showreel, reference-matched (owner request 2026-10-02).**
+- Final: `studio/out/film7/take09/film7-reel20-1080x1920.mp4` (local, not in git; delivered to the owner). All technical gates PASS; one fresh independent critique (1 blocker, 6 majors, 3 minors) fixed in one correction round (`studio/film7/LEDGER.md`).
+- New: one-box morph engine with a cursor (`studio/film7/film.js`), shared picture+sound timing (`film7/timing.js`), 144 BPM electro-shaabi score, determinism test; review-evidence `maxBuffer` fix.
+- Not verified: listening to the music; real-time phone playback; no second fresh critique after the correction round.
+
+**Previous scope: DONE — Film 6: PIXEL Plus 20 s Reels video ad, reference-matched (owner request 2026-10-02).**
 - Final: `studio/out/film6/take09/film6-reels20-1080x1920.mp4` (local, not in git; delivered to the owner). All technical gates PASS; one fresh independent critique + the owner's same-day revision fixed in one correction round (`studio/film6/LEDGER.md`).
 - New: dithered signed-distance full-body character (cute young person: hoodie, jeans, trainers; `studio/film6/mascot.js`), pixel transitions, Alexandria font, film-6 determinism test. Owner changed the character twice the same day (final = complete, cute, friendly human).
 - Not verified: listening to the music; real-time phone playback. No voiceover by owner decision.
@@ -31,6 +36,7 @@ Updated: 2026-10-02. This is the current handoff; historical plans are not a tas
 ## Closed scopes (newest first; evidence in `studio/STATUS_HISTORY.md` and `studio/CHANGELOG.md`)
 | Scope | Result |
 |---|---|
+| Film 7 — PIXEL Plus «ريل الموشن» 20 s Reels showreel | DONE, branch ccr-00c9e8df-uzjxun; final take09, 1 correction round |
 | Film 6 — PIXEL Plus 20 s Reels video ad | DONE, branch ccr-00c9e8df-uzjxun; final take09, 2 correction rounds (one reviewer-driven, one owner-requested character swap) |
 | SaaS UI promo reverse-engineered, `lib/uimotion.js` | DONE, branch |
 | Project optimisation and taste guard | DONE, branch commit 68bf150 |

@@ -5,6 +5,16 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-02 — Film 7: PIXEL Plus «ريل الموشن» 20 s Reels showreel, reference-matched (scope DONE)
+Owner request: a second reference (a UI micro-interaction reel) → «do one like this, 20 seconds, Arabic, new music, very attractive new rhythm; a dynamic motion-design showreel that shows an incredible motion designer, go all out».
+- **Reference study:** `reference.mjs analyze/timeline/audio` — one container that morphs, 0.2–0.4 s morphs with 1.5–2 s holds, one state per bar, a narrating cursor, 120 BPM.
+- **New film `film7/`:** one black box morphs through button → player → dial → segmented control → rising bars + counter → easing-curve editor → live aspect-ratio frames → search → full-screen type → button → check → pixel iris → brand card (character on the wordmark). Cursor-driven 3-D tilt, beat pulse, chapter timeline, ghost numerals.
+- **Shared timing:** `film7/timing.js` (bars/beats, scene starts, events) is imported by the picture (browser) and the score (Node).
+- **New score:** 144 BPM electro-shaabi in D Hijaz (tresillo kick, 808 slides, half-time clap, swung hats, darbuka maqsum, mizmar-style reed lead, organ stabs, UI sounds on every click, section automation, a full stop).
+- **Independent critique** (fresh agent): 1 blocker (too close to the reference's strings/art/states) + 6 majors + 3 minors → one correction round, all fixed (ledger in `film7/LEDGER.md`).
+- **Tool fix:** `lib/review.mjs rawCrop` maxBuffer (wide text boxes crashed the review evidence step). **Test:** film-7 forward/reverse determinism.
+- **Not verified:** listening to the music; real-time phone playback; no second fresh critique after the correction round.
+
 ## 2026-10-02 — Film 6: PIXEL Plus 20 s Reels video ad, reference-matched (scope DONE)
 Owner request: reverse-engineer a supplied SaaS promo and make our agency's ad (PIXEL Plus) in its style and rhythm, with a
 character, refined Egyptian Arabic and beautiful Arabic type. Revised the same day: Arabic on-screen writing + music, no

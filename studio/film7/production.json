@@ -71,7 +71,7 @@
    "id": "button",
    "start": 0,
    "end": 1.6667,
-   "purpose": "opening title + the «ولّد إعلان» button; cursor clicks on beat 3",
+   "purpose": "opening title with a slot-machine counter, pixel brand mark, and the «حرّك فكرتك» button; the cursor clicks on beat 2 and loader dots start",
    "assetIds": [
     "fonts"
    ],
@@ -92,7 +92,7 @@
    "id": "player",
    "start": 1.6667,
    "end": 3.3333,
-   "purpose": "the button morphs into a video player that plays the film's own progress, audio-reactive bars",
+   "purpose": "the button morphs into a video player («إعلان المنتج · لقطة ٣») with an animated pixel-mosaic thumbnail, audio-reactive bars, real progress and a pause",
    "assetIds": [
     "fonts"
    ],
@@ -113,7 +113,7 @@
    "id": "control",
    "start": 3.3333,
    "end": 5.0,
-   "purpose": "slider drag (frame rate 24→60) then it shrinks into a switch that flips on",
+   "purpose": "a round dial turned from 24 to 60 fps (the box becomes a circle) and held with a big value",
    "assetIds": [
     "fonts"
    ],
@@ -133,8 +133,8 @@
   {
    "id": "segment",
    "start": 5.0,
-   "end": 6.6667,
-   "purpose": "segmented control: selector slides with a spring to «موشن» then «فيديو»",
+   "end": 6.0417,
+   "purpose": "a segmented control (ريلز / مربّع / عريض): the selector slides with a spring, two quick clicks",
    "assetIds": [
     "fonts"
    ],
@@ -152,9 +152,9 @@
   },
   {
    "id": "numbers",
-   "start": 6.6667,
+   "start": 6.0417,
    "end": 8.3333,
-   "purpose": "a stats card: tabs, a counting number and a drawn line (labelled as an illustrative example)",
+   "purpose": "twelve bars rise on staggered springs while «٢٫٤ مليون» counts, the peak is tagged, then a 1 s hold (labelled an illustrative example)",
    "assetIds": [
     "fonts"
    ],
@@ -216,7 +216,7 @@
    "id": "search",
    "start": 11.6667,
    "end": 13.3333,
-   "purpose": "a search palette types «كل إطار» and picks «كل إطار هو كود»",
+   "purpose": "a search palette types «حركة مرنة» and picks «إيقاع على الدقّة», which becomes the full-screen type stage",
    "assetIds": [
     "fonts"
    ],
@@ -237,7 +237,7 @@
    "id": "type",
    "start": 13.3333,
    "end": 15.0,
-   "purpose": "the picked row becomes a full-screen black stage: four words on four hits (حركة / إيقاع / صوت / فكرة.)",
+   "purpose": "the picked row becomes a full-screen black stage: four words on four hits (حركة / إيقاع / صوت / فكرة.) formed on the drop",
    "assetIds": [
     "fonts"
    ],
@@ -279,7 +279,7 @@
    "id": "brand",
    "start": 16.6667,
    "end": 20,
-   "purpose": "PIXEL Plus resolves from pixels; the character stands on the wordmark; tagline and CTA",
+   "purpose": "PIXEL Plus resolves from pixels; the character stands on the wordmark; tagline «بنحرّك فكرتك.» and a large CTA",
    "assetIds": [
     "fonts",
     "character"
