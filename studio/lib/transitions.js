@@ -140,7 +140,9 @@ export function transitionState(name, p, opts = {}, { w, h } = {}) {
       const [dx, dy] = DIRS[o.direction] || DIRS.left;
       a.transform = `translate(${(dx * w * p).toFixed(2)}px, ${(dy * h * p).toFixed(2)}px)`;
       b.transform = `translate(${(-dx * w * (1 - p)).toFixed(2)}px, ${(-dy * h * (1 - p)).toFixed(2)}px)`;
-      if (name === 'cameraPass') { const bl = (o.maxBlur * Math.sin(Math.PI * p)).toFixed(2); a.filter = b.filter = `blur(${bl}px)`; }
+      // A whip blurs the outgoing picture until it has left and the incoming one until it has landed:
+      // a sine profile left a sharp sliver at both ends (read as a slide wipe, not a camera move).
+      if (name === 'cameraPass') { a.filter = `blur(${(o.maxBlur * smooth(0, 0.25, p)).toFixed(2)}px)`; b.filter = `blur(${(o.maxBlur * (1 - smooth(0.75, 1, p))).toFixed(2)}px)`; }
       break;
     }
     case 'matchCut': {

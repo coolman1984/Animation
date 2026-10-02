@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "duration": 15,
+  "fps": 30,
+  "audience": "Potential clients and the owner judging what this code-driven studio can produce",
+  "promise": "One studio covers kinetic type, physics, camera and depth, light, music sync, every format and real product data",
+  "cta": "Bring your next film to the studio: «فيلمك الجاي يبدأ هنا»",
+  "direction": "Swiss-modern abilities résumé: ink/paper/vermilion/cobalt, Montserrat + El Messiri, a running 01/08 index, shape-continuity hand-offs, one camera whip at the energy peak, 128 BPM original score",
+  "musicMap": "showreel/music.musicmap.json",
+  "assets": [
+    { "id": "app", "path": "examples/app-film-study/capture", "role": "product", "rights": "Studio's own test-fixture app, captured by examples/app-film-study/capture.mjs; no third-party material" }
+  ],
+  "sound": { "mode": "original", "bpm": 128, "note": "Synthesised in showreel/score.mjs with lib/audio.mjs + lib/sfx.mjs; no samples, no licence needed" },
+  "creative": {
+    "viewer": "a client scrolling past studio reels who decides in seconds whether this studio is worth a brief",
+    "problem": "most AI-made reels look like one template with effects pasted on",
+    "promise": "every craft of a motion studio, directed, in fifteen seconds",
+    "evidence": "each bar is a working Generation 2 capability: spring physics, depth camera, WebGL light, a measured music map, aspect recomposition, verified app read-back",
+    "emotion": "confident momentum: tension in the first half, release on the drop, calm authority at the end",
+    "motif": "a vermilion dot that keeps changing shape and carries each section into the next",
+    "palette": ["#0B0B10", "#F2EEE6", "#FF4A2B", "#2F4BFF"],
+    "light": "flat graphic light except one lit 2.5D set and one shader-lit dark section",
+    "typography": { "display": "Montserrat", "text": "El Messiri" },
+    "camera": "one operator: macro pull-back flowing through keys, foreground pass with rack focus, one whip",
+    "transitions": ["maskedReveal", "matchCut", "cameraPass", "lightWipe", "colorHandoff", "shapeMatch"],
+    "motion": "springs with honest overshoot, ripple staggers, inertia falls; one dominant action per bar",
+    "sound": "original 128 BPM electronic bed; accents only on frame 1, the whip, the drop, the UI confirm and the end card",
+    "pacing": "one ability per bar; hook bar, building bars 2–4, drop at bar 5, settle into a held end card",
+    "payoff": "the dot that opened the reel closes it inside a frame with the invitation",
+    "cta": "فيلمك الجاي يبدأ هنا",
+    "styleFrames": { "hook": 1.2, "proof": 8.6, "payoff": 14.4 },
+    "proof": { "start": 3.0, "end": 12.0 }
+  },
+  "shots": [
+    { "id": "type", "start": 0, "end": 1.875, "purpose": "hook: the thesis in kinetic Arabic type, frame one already designed", "assetIds": [],
+      "craft": { "scale": "graphic full", "camera": "locked", "focal": "headline", "transition": "cut", "depthLayers": 1, "primaryMotions": ["type reveal", "dot spring"], "audioCue": "impact on frame 1" },
+      "copy": { "text": "كل حركة محسوبة", "start": 0.45, "end": 1.7 } },
+    { "id": "physics", "start": 1.875, "end": 3.75, "purpose": "springs, ripple stagger, inertia: motion with weight", "assetIds": [],
+      "craft": { "scale": "graphic wide", "camera": "locked", "focal": "centre cell", "transition": "maskedReveal", "depthLayers": 1, "primaryMotions": ["grid ripple", "fall"], "audioCue": "kick enters" } },
+    { "id": "camera", "start": 3.75, "end": 5.625, "purpose": "one operator in a layered set: pull-back, foreground pass, rack focus", "assetIds": [],
+      "craft": { "scale": "macro to wide", "camera": "flowing pull-back", "focal": "sphere", "transition": "matchCut", "depthLayers": 6, "primaryMotions": ["camera", "focus"], "audioCue": "groove" } },
+    { "id": "light", "start": 5.625, "end": 7.5, "purpose": "shader light and analytic particles serving one ring", "assetIds": [],
+      "craft": { "scale": "graphic", "camera": "slow drift", "focal": "ring", "transition": "cameraPass", "depthLayers": 3, "primaryMotions": ["ring draw", "burst"], "audioCue": "whoosh, riser" } },
+    { "id": "sound", "start": 7.5, "end": 9.375, "purpose": "picture driven by the measured music map of this score", "assetIds": [],
+      "craft": { "scale": "graphic full", "camera": "locked", "focal": "bars and BPM", "transition": "lightWipe", "depthLayers": 1, "primaryMotions": ["bars"], "audioCue": "drop impact" } },
+    { "id": "formats", "start": 9.375, "end": 11.25, "purpose": "one composition recomposing for 16:9, 1:1 and 9:16", "assetIds": [],
+      "craft": { "scale": "graphic", "camera": "locked", "focal": "frame", "transition": "colorHandoff", "depthLayers": 1, "primaryMotions": ["frame morph"], "audioCue": "groove" } },
+    { "id": "data", "start": 11.25, "end": 13.125, "purpose": "a real app value, read back and verified, presented by the camera", "assetIds": ["app"],
+      "craft": { "scale": "product", "camera": "push to element", "focal": "total", "transition": "shapeMatch", "depthLayers": 2, "primaryMotions": ["camera", "counter"], "audioCue": "UI confirm" } },
+    { "id": "end", "start": 13.125, "end": 15, "purpose": "payoff and invitation, held still to read", "assetIds": [],
+      "craft": { "scale": "graphic full", "camera": "locked", "focal": "headline", "transition": "maskedReveal", "depthLayers": 1, "primaryMotions": ["type reveal"], "audioCue": "final chord" },
+      "copy": { "text": "فيلمك الجاي يبدأ هنا", "start": 13.36, "end": 15 } }
+  ],
+  "cues": [
+    { "id": "open", "t": 0.02, "kind": "impact", "shot": "type", "sound": { "type": "impact", "vel": 0.55, "weight": 0.55 } },
+    { "id": "whip", "t": 5.625, "kind": "transition", "shot": "light", "sound": { "type": "whoosh", "vel": 0.35, "dur": 0.5, "direction": "rl" } },
+    { "id": "drop", "t": 7.5, "kind": "impact", "shot": "sound", "sound": { "type": "impact", "vel": 0.6, "weight": 0.8 } },
+    { "id": "confirm", "t": 11.95, "kind": "ui", "shot": "data", "sound": { "type": "ui", "vel": 0.3 } },
+    { "id": "payoff", "t": 13.125, "kind": "impact", "shot": "end", "sound": { "type": "softHit", "vel": 0.5, "tone": 110 } }
+  ]
+}
