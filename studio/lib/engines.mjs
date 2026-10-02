@@ -3,7 +3,7 @@
 // when it clearly outperforms the native engine for a job; the studio still owns audio, mastering,
 // measurement, gates and review. Contract: config.engine = { type: 'external', name, command: [...],
 // cwd?, inputs?: [paths hashed for the cache] }. Command args may use {out} {w} {h} {fps} {t0} {t1}
-// {duration} {profile} {root}; the command must write an H.264/any video at exactly that size/fps/length.
+// {duration} {profile} {root} {variant}; the command must write an H.264/any video at exactly that size/fps/length.
 import { resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 import { run } from './render.mjs';
@@ -27,11 +27,13 @@ export function validateEngine(engine) {
   return errors;
 }
 
-export async function externalRender(engine, { out, w, h, fps, t0 = 0, t1, scale = 1, root, profile = 'final' }) {
+export async function externalRender(engine, { out, w, h, fps, t0 = 0, t1, scale = 1, root, profile = 'final', variant, segments, fadeOut }) {
   const errors = validateEngine(engine);
   if (errors.length) throw new Error(errors.join('; '));
+  // Audio is assembled from the delivery's segments/fade; a contiguous external clip would drift from it.
+  if (segments || fadeOut) throw new Error('external engines cannot render cut-down deliveries (segments/fadeOut): render the full delivery or use the native engine');
   const W = Math.ceil(Math.round(w * scale) / 2) * 2, H = Math.ceil(Math.round(h * scale) / 2) * 2;
-  const vars = { out, w: W, h: H, fps, t0, t1, duration: +(t1 - t0).toFixed(6), profile, root };
+  const vars = { out, w: W, h: H, fps, t0, t1, duration: +(t1 - t0).toFixed(6), profile, root, variant: variant || '' };
   const args = engine.command.map(a => a.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m)));
   const started = Date.now();
   await run(args[0], args.slice(1), { cwd: engine.cwd ? resolve(root, engine.cwd) : root });

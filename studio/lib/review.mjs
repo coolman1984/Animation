@@ -27,10 +27,16 @@ async function strip(video, times, out, { h = 240 } = {}) {
   for (const f of tmp) execFileSync('rm', ['-f', f]);
   return out;
 }
-function rawCrop(video, t, [x0, y0, x1, y1], vw, vh) {
-  const x = Math.max(0, Math.floor(x0)), y = Math.max(0, Math.floor(y0));
-  const w = Math.max(2, Math.min(vw - x, Math.ceil(x1 - x0))), h = Math.max(2, Math.min(vh - y, Math.ceil(y1 - y0)));
-  return { buf: execFileSync('ffmpeg', ['-v', 'error', '-ss', t.toFixed(4), '-i', video, '-frames:v', '1', '-vf', `crop=${w}:${h}:${x}:${y},format=rgb24`, '-f', 'rawvideo', '-']), w, h };
+// Intersection of a box with the frame as integer crop geometry (even-sized minimum 2×2), or null when
+// the box lies wholly outside: off-frame copy is a layout finding to report, never an FFmpeg failure.
+export function clampCrop([x0, y0, x1, y1], vw, vh) {
+  const ax = Math.max(0, Math.floor(x0)), ay = Math.max(0, Math.floor(y0)), bx = Math.min(vw, Math.ceil(x1)), by = Math.min(vh, Math.ceil(y1));
+  if (bx - ax < 2 || by - ay < 2) return null;
+  return { x: ax, y: ay, w: bx - ax, h: by - ay };
+}
+function rawCrop(video, t, box, vw, vh) {
+  const c = clampCrop(box, vw, vh); if (!c) return null;
+  return { buf: execFileSync('ffmpeg', ['-v', 'error', '-ss', t.toFixed(4), '-i', video, '-frames:v', '1', '-vf', `crop=${c.w}:${c.h}:${c.x}:${c.y},format=rgb24`, '-f', 'rawvideo', '-']), ...c };
 }
 const lum = (r, g, b) => { const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b); };
 
@@ -125,9 +131,11 @@ export async function reviewEvidence({ video, outDir, fps, plan, text, music, ho
     const dur = l.end - l.start, need = readingTime(l.text), row = { text: l.text, start: l.start, end: l.end, seconds: r2(dur), needs: r2(need), readable: dur >= need };
     if (l.box) {
       const t = l.start + Math.min(0.6, dur / 2), pad = 12, box = [l.box[0] - pad, l.box[1] - pad, l.box[2] + pad, l.box[3] + pad];
-      const { buf } = rawCrop(video, t, box, vw, vh); row.contrast = boxContrast(buf); row.lowContrast = row.contrast < 3;
-      const file = `crops/copy-${i + 1}.png`, [x, y] = [Math.max(0, Math.floor(box[0])), Math.max(0, Math.floor(box[1]))];
-      await run('ffmpeg', ['-v', 'error', '-y', '-ss', t.toFixed(4), '-i', video, '-frames:v', '1', '-vf', `crop=${Math.min(vw - x, Math.ceil(box[2] - box[0]))}:${Math.min(vh - y, Math.ceil(box[3] - box[1]))}:${x}:${y}`, join(outDir, file)]);
+      const crop = rawCrop(video, t, box, vw, vh);
+      if (!crop) { row.offscreen = true; notes.push(`copy "${l.text}" lies outside the frame at ${r2(t)}s`); copy.push(row); continue; }
+      row.contrast = boxContrast(crop.buf); row.lowContrast = row.contrast < 3;
+      const file = `crops/copy-${i + 1}.png`;
+      await run('ffmpeg', ['-v', 'error', '-y', '-ss', t.toFixed(4), '-i', video, '-frames:v', '1', '-vf', `crop=${crop.w}:${crop.h}:${crop.x}:${crop.y}`, join(outDir, file)]);
       row.crop = file;
     }
     copy.push(row);

@@ -19,7 +19,7 @@ export function run(cmd, args, { input, quiet = true, cwd, env } = {}) {
     let out = '', err = '';
     p.stdout.on('data', (d) => (out += d)); p.stderr.on('data', (d) => (err += d));
     p.on('error', rej);
-    p.on('close', (c) => (c === 0 ? res({ out, err }) : rej(new Error(`${cmd} exited ${c}\n${err.slice(-2000)}`))));
+    p.on('close', (c) => (c === 0 ? res({ out, err }) : rej(new Error(`${cmd} exited ${c}\n${err.slice(-2000)}${out ? `\n--- stdout tail ---\n${out.slice(-1500)}` : ""}`))));
     if (input) { p.stdin.end(input); }
   });
 }

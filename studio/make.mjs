@@ -88,14 +88,15 @@ if (production.plan?.musicMap && existsSync(join(ROOT, production.plan.musicMap)
   try { music = loadMusicMap(join(ROOT, production.plan.musicMap)); } catch (error) { log('music map unusable:', error.message); }
 }
 // Review evidence works in exported-video seconds: shift source-time plan/text by the range start.
-const shifted = (offset, plan, text) => {
-  if (!offset) return { plan, text };
-  const sh = (a, b) => ({ start: a - offset, end: b - offset });
+const shifted = (offset, plan, text, end = Infinity) => {
+  if (!offset && end === Infinity) return { plan, text };
+  const sh = (a, b) => ({ start: a - offset, end: Math.min(b, end) - offset });
+  const keep = x => x.end > offset && x.start < end; // intersect with [offset, end): nothing outside the exported clip
   return {
-    plan: plan && { ...plan, shots: plan.shots.filter(x => x.end > offset).map(x => ({ ...x, ...sh(Math.max(x.start, offset), x.end) })),
-      cues: (plan.cues || []).map(c => ({ ...c, t: c.t - offset })), creative: plan.creative && { ...plan.creative, styleFrames: undefined } },
-    text: text && { ...text, lines: text.lines.map(l => ({ ...l, ...sh(l.start, l.end) })),
-      camera: text.camera && { ...text.camera, samples: text.camera.samples.map(([t, ...v]) => [t - offset, ...v]) } },
+    plan: plan && { ...plan, shots: plan.shots.filter(keep).map(x => ({ ...x, ...sh(Math.max(x.start, offset), x.end) })),
+      cues: (plan.cues || []).filter(c => c.t >= offset && c.t < end).map(c => ({ ...c, t: c.t - offset })), creative: plan.creative && { ...plan.creative, styleFrames: undefined } },
+    text: text && { ...text, lines: text.lines.filter(keep).map(l => ({ ...l, ...sh(Math.max(l.start, offset), l.end) })),
+      camera: text.camera && { ...text.camera, samples: text.camera.samples.filter(([t]) => t >= offset && t <= end).map(([t, ...v]) => [t - offset, ...v]) } },
   };
 };
 const reviewed = [];
@@ -177,7 +178,7 @@ for (const d of selected) {
   for (const x of g) { console.log(`   ${x.ok ? 'PASS' : 'FAIL'}  ${x.name.padEnd(36)} ${x.value}`); allOk &&= x.ok; }
   // Evidence for LOOKING at the export: frames at cuts/copy/camera peaks, strips, crops, advisory notes.
   log(`review evidence ${d.name}`);
-  const offset = range?.[0] || 0, sv = shifted(offset, production.plan, text);
+  const offset = range?.[0] || 0, sv = shifted(offset, production.plan, text, range?.[1]);
   const evidenceDir = join(OUT, `review-${d.name}`);
   const ev = await reviewEvidence({ video: file, outDir: evidenceDir, fps: settings.fps, plan: d.segments ? null : sv.plan, text: sv.text,
     music: d.segments || offset ? null : music, sourceTimeline: !d.segments,

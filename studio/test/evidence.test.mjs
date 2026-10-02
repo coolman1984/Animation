@@ -6,7 +6,8 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { run } from '../lib/render.mjs';
 import { validateEngine } from '../lib/engines.mjs';
-import { reviewSamples, boxContrast } from '../lib/review.mjs';
+import { reviewSamples, boxContrast, clampCrop } from '../lib/review.mjs';
+import { externalRender } from '../lib/engines.mjs';
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const enabled = process.env.STUDIO_RENDER_TEST === '1';
 
@@ -17,6 +18,10 @@ test('review sampling covers boundaries, copy, style frames and camera peaks; co
   assert.ok(has(2 - 1 / 30, /frame before cut/) && has(2, /first frame after cut/) && has(1.5, /copy/) && has(2.5, /style frame/) && has(3.1, /peak speed/));
   const black = Buffer.alloc(300), mixed = Buffer.from([...Array(60)].flatMap((_, i) => (i < 30 ? [0, 0, 0] : [255, 255, 255])));
   assert.ok(boxContrast(black) < 1.1); assert.ok(boxContrast(mixed) > 15);
+  assert.deepEqual(clampCrop([10, 10, 50, 40], 100, 100), { x: 10, y: 10, w: 40, h: 30 });
+  assert.deepEqual(clampCrop([-20, 90, 30, 140], 100, 100), { x: 0, y: 90, w: 30, h: 10 }, 'partly off-frame boxes are intersected');
+  assert.equal(clampCrop([120, 10, 200, 50], 100, 100), null, 'wholly off-frame box yields no crop');
+  assert.rejects(externalRender({ type: 'external', command: ['x', '{out}'] }, { out: 'o', w: 10, h: 10, fps: 30, t1: 1, segments: '0-1' }), /cut-down/);
   assert.deepEqual(validateEngine(undefined), []); assert.ok(validateEngine({ type: 'external', command: ['x'] })[0].includes('{out}'));
 });
 
@@ -48,6 +53,10 @@ const mix = new Bus(4); music.mixInto(mix); sfx.mixInto(mix); writeWav(dir + '/m
     await run('node', [join(ROOT, 'make.mjs'), name, '--shot=two', '--workers=1']);
     const draft = JSON.parse(readFileSync(join(ROOT, 'out', name, readdirSync(join(ROOT, 'out', name)).sort().at(-1), 'measure.json'), 'utf8'));
     assert.deepEqual(draft.deliveries.clip4.range, [1.5, 4]);
+    // A review range that ends before the film's last shot must not reference frames beyond the clip.
+    await run('node', [join(ROOT, 'make.mjs'), name, '--profile=review', '--range=1:3', '--workers=1']).catch(e => { throw new Error('range build: ' + e.message); });
+    const early = JSON.parse(readFileSync(join(ROOT, 'out', name, readdirSync(join(ROOT, 'out', name)).sort().at(-1), 'review-clip4', 'review.json'), 'utf8'));
+    assert.ok(early.samples.every(x => x.t < 2) && early.duration === 2, 'samples stay inside the exported range');
     // External engine: ffmpeg stands in for HyperFrames/Remotion and must honour size/fps/range.
     writeFileSync(join(ROOT, ext, 'config.mjs'), `export default { score: '${ext}/score.mjs', production: '${ext}/production.json', w: 400, h: 450, fps: 30, lufs: -14, tp: -1.5, shareMB: 27,
       engine: { type: 'external', name: 'ffmpeg-testsrc', command: ['ffmpeg', '-v', 'error', '-y', '-f', 'lavfi', '-i', 'testsrc2=s={w}x{h}:r={fps}:d={duration}', '-pix_fmt', 'yuv420p', '{out}'] },
