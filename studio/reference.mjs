@@ -7,12 +7,14 @@ import { originalDirection, prepareReview } from './reference/artistic.mjs';
 import { applyReview } from './reference/report.mjs';
 import { reconstruct, compare } from './reference/recreate.mjs';
 import { packPath, json, save, STUDIO } from './reference/common.mjs';
+import { forensics } from './reference/forensics.mjs';
 export async function main(args=process.argv.slice(2)){
   const [cmd,source,other,...rest]=args;const flags=[other,...rest].filter(x=>x?.startsWith('--'));
   const values=Object.fromEntries(flags.map(x=>{const i=x.indexOf('=');return i<0?[x.slice(2),true]:[x.slice(2,i),x.slice(i+1)];}));
   const num=(k,d)=>values[k]===undefined?d:Number(values[k]);
   const range=values.range?String(values.range).split(':').map(Number):undefined;
   if(cmd==='analyze')return analyze(source,{slug:values.slug,out:values.out,browser:values.browser===true,selector:values.selector,frameURL:values.frame,playSelector:values['play-selector'],rights:values.rights,maxFrames:num('max-frames',72),maxDuration:num('max-duration',300),maxMB:num('max-mb',128),width:num('width',1280),motion:values.motion||'auto',sceneEngine:values['scene-engine']||'ffmpeg',audioEngine:values['audio-engine']||'node'});
+  if(['track','timeline','strip','audio'].includes(cmd)){if(!source)throw new Error(`Usage: node reference.mjs ${cmd} <pack|video> [--roi=x,y,w,h] [--range=a:b] [--crop=x,y,w,h]`);let pd=null;try{pd=packPath(source);}catch{}return forensics(cmd,source,pd,{range,roi:values.roi,crop:values.crop,ref:values.ref===undefined?undefined:Number(values.ref),python:values.python});}
   if(!source)throw new Error('Usage: node reference.mjs analyze <media-or-page> | review <pack> --observations=file | refine <pack> --range=a:b --reason=text | reconstruct <pack> [--study] | compare <pack> <our-film> | prepare <pack> | direct <pack> --brief=file | learn <pack> --lesson=file');
   const dir=packPath(source);
   if(cmd==='prepare')return prepareReview(dir);

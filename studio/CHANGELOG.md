@@ -5,6 +5,16 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-02 — Precise forensics tools: exact motion timing, easing curves and measured music (scope DONE)
+Owner request: tools to see motion timing and easing precisely and to understand audio; overcome capability gaps.
+- **Installed** (optional, per `reference/requirements-optional.txt`): OpenCV 4.10 headless, PySceneDetect 0.7 (numpy/scipy/librosa already present). The doctor now lists the importable forensics modules.
+- **`tools/motion_curves.py`** + `node reference.mjs track|timeline|strip`: every decoded frame with its real timestamp; drift-free multi-scale template tracking forwards and backwards from a reference time; moves segmented to one frame; easing fitted together with keyframe start/duration (linear, power, expo, sine, back-out, spring, free cubic-bezier); charts drawn with OpenCV for visual inspection.
+- **`tools/audio_deep.py`** + `node reference.mjs audio`: tempo by line fit through the beats + grid phase locked to percussive transients, downbeats, 16-step kick/snare/hat patterns, key with a mode hint (Hijaz/Kurd/major/minor), chord per beat, melody (pYIN, only when a lead exists), sections/builds/drops, silences, SFX candidates, voice likelihood; one-axis spectrogram/chroma/drums/loudness chart.
+- **Validated on known answers** (`test/forensics-tools.test.mjs`, 2 tests; CI's Python job installs the same modules): keyframes within one frame, ease-out quint and spring 0.6/0.3 recovered; tempo, key, chord order, kick pattern and drop recovered. Three tool bugs found during validation and fixed before shipping (move target = resting position, not the first zero-velocity point; centred step bins; tempo from a line fit instead of a quantised estimate).
+- **Applied to the SaaS UI promo:** measured music/edit/easing facts replace the estimates (`TECHNIQUES.md`).
+- **Still not possible here:** speech transcription (speech-model hosts blocked by the network policy); listening for taste.
+- `npm test`: 92 tests, 78 passed, 14 skipped, 0 failed.
+
 ## 2026-10-02 — Reverse-engineered a SaaS UI promo and added the product-UI motion kit (scope DONE)
 Owner request: reverse engineer the new screen recording, learn all its moves, add them to the studio.
 - **Analysis:** `reference.mjs analyze` (machine pack, private, git-ignored) + dense 0.25 s grids of the content area; stills inspected (no playback/listening). Result written as the move table in `TECHNIQUES.md` → "Product-UI promo grammar".

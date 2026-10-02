@@ -121,6 +121,10 @@ blocked job or optional-polish loop; resolve a concrete cause within the bounded
 - Browser callback mediaTime and best-effort presentation: https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement/requestVideoFrameCallback
 - OpenCV optical flow and affine tracking: https://docs.opencv.org/4.x/dc/d6b/group__video__track.html
 
+## Precise forensics commands (optional Python)
+`node reference.mjs timeline|strip|track|audio <pack|video>` — exact timing per decoded frame, fitted easing with keyframes, measured music.
+See `TECHNIQUES.md` → Precise forensics. Charts in `<pack>/forensics/` are meant to be looked at; numbers are pixel/audio evidence, not the source project's keyframes.
+
 ## Field test: whole-film recreation of a screen recording (2026-10-02)
 The lab was used beyond 3–8 s studies: a 15 s screen recording → a 15 s original showreel (`showreel2/`). What worked:
 - Machine pack first, then **visual inspection of every shot**, HUD crops at 1:1 and six dense segment grids for the fast part. Observations file attested as reviewer attestation; audio analysed numerically only (BPM ≈ 128), never listened to.

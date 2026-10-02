@@ -14,3 +14,5 @@ Start with scientific-summary.json. Read only a justified time window of motion.
 Map to cinema.js, kinetics.js, depth.js, transitions.js and typography.js first. Use a true 3D external engine only when an observed requirement makes native reproduction inefficient.
 
 For new artistic reference studies, follow ARTISTIC_FORENSICS.md: connect shot scale, distance, velocity, settling, focus, depth, occlusion, reveal, motivated cuts/transitions, sound/image and light progression to plausible storytelling purpose. Separate visible behavior from inferred intent and name an alternative. Stills cannot certify camera timing or subjective energy; use inspected playback.
+
+**Measure, don't estimate:** `node reference.mjs timeline|strip|track` give per-frame timestamps, moves to one frame and fitted easing with keyframes (`cubicBezier` / `springStep` params). Proven on known clips (`test/forensics-tools.test.mjs`).

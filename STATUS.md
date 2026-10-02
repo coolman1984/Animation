@@ -2,7 +2,14 @@
 
 Updated: 2026-10-02. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE — Reverse-engineered a SaaS UI promo; product-UI motion kit added (owner request 2026-10-02).**
+**Latest scope: DONE — Precise forensics tools: motion timing, easing curves, measured music (owner request 2026-10-02).**
+- New `studio/tools/motion_curves.py`, `studio/tools/audio_deep.py`, `studio/reference/forensics.mjs`; commands `node reference.mjs timeline|strip|track|audio`.
+- Validated against clips with known answers (`studio/test/forensics-tools.test.mjs`): keyframes within one frame, easing family and spring params, tempo/key/chords/drums recovered.
+- Optional modules installed here (OpenCV, PySceneDetect); the doctor lists them; CI's Python job installs them. Container installs are not persistent.
+- Not possible here: speech transcripts (model hosts blocked by the network policy); listening for taste.
+- `npm test`: 92 tests, 78 passed, 14 skipped, 0 failed.
+
+**Previous scope: DONE — Reverse-engineered a SaaS UI promo; product-UI motion kit added (owner request 2026-10-02).**
 - New `studio/lib/uimotion.js` (12 pure functions, 8 unit tests) + `studio/examples/ui-motion-study` (passes the real-browser forward/reverse determinism test). Observed move table in `studio/TECHNIQUES.md`.
 - Studio bug fixed: audio longer than picture crashed `reference.mjs analyze`; regression test added.
 - Not verified: the reference's motion and audio were not played (stills + numbers only); no film produced.
@@ -18,6 +25,7 @@ Updated: 2026-10-02. This is the current handoff; historical plans are not a tas
 ## Closed scopes (newest first; evidence in `studio/STATUS_HISTORY.md` and `studio/CHANGELOG.md`)
 | Scope | Result |
 |---|---|
+| SaaS UI promo reverse-engineered, `lib/uimotion.js` | DONE, branch |
 | Project optimisation and taste guard | DONE, branch commit 68bf150 |
 | Film 5 — BALACONBAR Beni Suef 25 s Reels ad | DONE, PR #13; take04 local, 1 of 2 correction rounds |
 | Deep artistic reference forensics + autonomous single-video policy | DONE, PR #12 (`AUTONOMOUS_FILM.md`, `ownerRequest`) |

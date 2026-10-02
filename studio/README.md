@@ -94,6 +94,9 @@ node make.mjs film5 --profile=final              # 1080×1920 @ 30 fps master + 
 ```
 Old/new worlds, 120 BPM grid, original maqsum score. Recipes: `TECHNIQUES.md`; decisions and open owner items: `film5/BRIEF.md`; evidence: `film5/LEDGER.md`.
 
+## Precise forensics (optional Python modules)
+`node reference.mjs timeline|strip|track|audio <pack|video>`: motion timing per frame, easing curves with keyframes, tempo/key/chords/drums. Details: `TECHNIQUES.md`.
+
 ## Product-UI motion kit
 `lib/uimotion.js` + `examples/ui-motion-study` (7 s, any aspect): tilted 3-D UI cards, typewriter, headline stack, orbiting icons, UI wall, pulse ring. Recipes and the observed move table: `TECHNIQUES.md` → Product-UI promo grammar.
 
