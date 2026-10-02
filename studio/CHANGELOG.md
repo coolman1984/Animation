@@ -5,6 +5,16 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-02 — Deep artistic reference forensics
+- Adds `reference/artistic.mjs`, 20-section ARTISTIC DNA in every report, contextual evidence-linked observations, full-duration attention/pacing maps with explicit unknowns and playback/listening gates.
+- Owner goal enforced: AUTONOMOUS_FILM.md makes all production/inspection/paperwork agent-owned; ownerRequest selects and validates one exact delivery. Owner receives one finished video, no internal approval flow.
+- Owner-requested simplification: analyze automatically prepares real timing/evidence drafts; prepare supports older packs, and autoSections reuses each decision across relevant headings without duplicate writing. No inspection attestation is prefilled.
+- Reviewed artistic intent enters the recreation blueprint; old technical reviews remain compatible but artistically pending.
+- New `reference.mjs direct --brief=file` and original-direction template map reviewed principles to original subject-specific execution, fit, differences and counter-cases.
+- Guidance: ARTISTIC_FORENSICS.md, REFERENCE_LAB, workflow/index/cookbook/asset policy; skills updated: reference-reverse-engineer, recreation-director, motion-forensics, creative-director and film-director.
+- Validation: schema/provenance/coverage/unknown/audio/playback/original-transfer tests plus existing unit/integration suite. Final CI is the publication acceptance record.
+- Not claimed: automatic artistic understanding, psychological universality, measured audience retention, originality certification or a newly produced reference film. No film ledger changed because no film was rendered.
+
 ## 2026-10-02 — Showreel 2: reference recreation (scope DONE, 1 of 2 correction rounds)
 Owner uploaded a screen recording and asked for a 15 s showreel "like this exactly".
 - **Process proven:** `reference.mjs analyze` → visual review of frames, HUD crops and dense segment grids →
@@ -68,3 +78,6 @@ showreel sessions (stills and numeric analysis only). Lessons were recorded in `
 
 ## Test status at this entry
 `npm test`: 72 tests, 58 passed, 14 optional/browser skipped, 0 failed (includes the new docs gate). Browser tests were not re-run in this scope.
+
+### Integration correction (one round)
+Final-head CI exposed a transient Chromium startup failure and a pre-existing capture server leak that held the render suite open until timeout. app-capture.mjs now closes its server on startup failure and even when client.close rejects; a focused failure test covers no completed-capture claim. cdp.mjs retries startup once only; navigation/render/verification failures are not retried. Publication still requires real browser/encoder success.

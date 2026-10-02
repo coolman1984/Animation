@@ -65,3 +65,13 @@ test('declared dark spans may contain black frames; undeclared black still fails
   assert.equal(gates(black, { ...brief, darkSpans: [[0, 0.7], [12.6, 12.75]] }).every(g => g.ok), true);
   assert.equal(gates(black, { ...brief, darkSpans: [[0, 0.7]] }).every(g => g.ok), false, 'only the declared span is excused');
 });
+
+
+test('autonomous owner request selects one delivery and rejects wrong aspect, length, fps or extra outputs',()=>{
+ const plan={w:1920,h:1080,fps:30,deliveries:[{name:'youtube',duration:20},{name:'reels',w:1080,h:1920,duration:20}],ownerRequest:{delivery:'reels',w:1080,h:1920,duration:20,fps:30}};
+ assert.deepEqual(buildOptions(plan,['--profile=final']).selected.map(d=>d.name),['reels']);
+ assert.deepEqual(buildOptions(plan,[]).selected.map(d=>d.name),['reels']);
+ for(const flags of [['--profile=final','--only=reels,youtube'],['--only=youtube']])assert.throws(()=>buildOptions(plan,flags),/single delivery/);
+ for(const patch of [{w:1920},{duration:15},{fps:60}])assert.throws(()=>buildOptions({...plan,ownerRequest:{...plan.ownerRequest,...patch}},['--profile=final']),/must match/);
+ assert.throws(()=>buildOptions({...plan,ownerRequest:{delivery:'reels'}},[]),/ownerRequest needs/);
+});

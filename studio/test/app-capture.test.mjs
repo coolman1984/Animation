@@ -32,3 +32,12 @@ test('real app capture: drive, read back, verify against app state, capture shot
     await assert.rejects(captureApp({ steps: [steps[0], steps[1], steps[3], { expect: 'total', equals: 999 }], outDir: join(dir, 'bad'), serveDir }), /REFUSING TO FILM/);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
+
+
+test('failed browser startup closes the already-open capture server and never records a completed capture', async()=>{
+ const dir=mkdtempSync(join(tmpdir(),'studio-capture-start-fail-'));let closed=0;
+ try{
+  await assert.rejects(captureApp({steps:[{goto:'index.html'}],outDir:dir,serveDir,runtime:{serve:async()=>({port:1234,close(){closed++;}}),launch:async()=>{throw new Error('startup fixture failure');}}}),/startup fixture failure/);
+  assert.equal(closed,1);assert.equal(existsSync(join(dir,'capture.json')),false);
+ }finally{rmSync(dir,{recursive:true,force:true});}
+});

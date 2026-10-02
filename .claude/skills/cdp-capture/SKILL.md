@@ -38,3 +38,5 @@ Read the first frame's width from the PNG/JPEG header (`imageWidth`) and **refus
 `node studio/lib/render.mjs stills studio/film2/film.js --times=0,3,7 --out=studio/takes/film2/p` → PNGs + `sheet.png` + `boxes.json`.
 
 **settleCapture:** the first screenshot after load can be torn (lower tiles from an older raster) with heavy filter layers; `settleCapture(client)` in lib/cdp.mjs captures until two consecutive shots match. Also round fractional viewports (337.5 → 338) before CDP, and avoid will-change/rest transforms (raster history changes pixels with seek order).
+
+Capture reliability: app-capture closes its server on browser-start failure and client-close errors. cdp launch retries a transient startup failure once; never retry a verification mismatch or invent capture completion. Use the original failure evidence if the second startup fails.

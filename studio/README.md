@@ -91,3 +91,7 @@ Closing a scope means updating, in the same commit: `../STATUS.md` (scope, evide
 `CRAFT.md` (0–3 new lessons), `TECHNIQUES.md` (new recipes), `GEN2.md`/`README.md` (new modules/commands), `ASSETS.md` (every new outside file),
 the film's `LEDGER.md`, and any skill whose advice changed. `npm test` runs `test/docs.test.mjs`, which fails when a skill, a lib module
 or a film ledger is undocumented or when STATUS.md is older than the newest changelog entry.
+
+Artistic reference analysis: `ARTISTIC_FORENSICS.md` documents the five-layer review, 20-part ARTISTIC DNA, attention/pacing curves and `reference.mjs direct` for an original new-subject direction. Technical machine evidence and artistic reviewer judgment remain separate.
+
+Owner-facing workflow: AUTONOMOUS_FILM.md — one natural-language request, agent completes every internal step, one finished video. lib/build-options.mjs ownerRequest enforces exact single-delivery width/height/duration/fps.

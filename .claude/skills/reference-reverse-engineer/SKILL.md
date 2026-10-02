@@ -15,3 +15,10 @@ Read `STATUS.md` and `studio/REFERENCE_LAB.md`. Respect the bounded scope; do no
 Report ready/blocked and exact unverified limitations. A complete machine pack is not a completed artistic interpretation.
 
 **Screen recordings:** ignore player chrome (bar, speaker, rounded frame, counter); crop the HUD at 1:1; use dense segment grids for fast sections; map times with a measured clock offset; attest the visual review honestly (audio analysed numerically, not heard). Worked example: studio/REFERENCE_LAB.md → Field test.
+
+## Artistic forensics (required for new reference studies)
+Read `studio/ARTISTIC_FORENSICS.md`. Fill artisticDNA in the review template: five passes, all 20 sections, evidence-linked observed choice → likely intention → why/context/confidence/alternative. Describe mixtures, never force a style label. Cover the whole film with adjacent attention/pacing intervals; unknown coverage remains unknown. Study hook/questions/reveals/payoffs, quiet contrast, repetition, overload and boredom risks. Colour effects are contextual hypotheses. Temporal judgments need playback; sonic judgments need listening. Existing technical reviews remain compatible but artistically pending. Then author an original subject-specific direction with `direct --brief`; disclose originality as a reviewer judgment. Learn grammar, create a new sentence.
+
+**Minimise paperwork:** analyze writes review-draft.json; existing packs use prepare. Inspect suggestedEvidence, then write each decision once with topics and autoSections=true. It fills applicable headings automatically; keep unsupported topics unknown. Do not manually repeat twenty summaries or run extra sampling without a concrete question.
+
+**Owner production policy:** read `studio/AUTONOMOUS_FILM.md` first for new films. The owner requests subject + placement/size; the Claude Code agent does ALL analysis, direction, internal JSON, review, corrections and export. No ordinary approval pauses or manual owner tasks. Deliver one finished video link. Use config.ownerRequest to enforce the single requested canvas/duration/fps.

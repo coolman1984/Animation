@@ -6,7 +6,17 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { findChromium } from './doctor.mjs';
 
-export async function launch({ width = 1280, height = 720, scale = 1, headless = true, extraArgs = [] } = {}) {
+// One bounded retry for transient startup failures, never for navigation/render/verification errors.
+export async function launch(options = {}) {
+  try { return await launchOnce(options); }
+  catch(error){
+    if(!/Chromium did not start|Chromium exited/.test(error.message))throw error;
+    await new Promise(r=>setTimeout(r,250));
+    return launchOnce(options);
+  }
+}
+
+async function launchOnce({ width = 1280, height = 720, scale = 1, headless = true, extraArgs = [] } = {}) {
   const bin = findChromium();
   if (!bin) throw new Error('Chromium not found (run the doctor)');
   const profile = mkdtempSync(join(tmpdir(), 'studio-chrome-'));
@@ -35,7 +45,7 @@ export async function launch({ width = 1280, height = 720, scale = 1, headless =
       proc.on('exit', (code, signal) => { clearTimeout(t); rej(new Error(`Chromium exited ${code ?? signal}: ${buf.slice(-1500)}`)); });
     });
   } catch (error) {
-    proc.kill('SIGKILL'); rmSync(profile, { recursive: true, force: true }); throw error;
+    proc.kill('SIGKILL'); proc.stderr.destroy(); rmSync(profile, { recursive: true, force: true }); throw error;
   }
   const port = new URL(wsUrl).port;
   const targets = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();

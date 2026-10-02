@@ -21,11 +21,13 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 //  { expect: name, equals | includes | matches | equalsRead }   verified or the capture fails
 //  { verify: name, js }                  read a value from the app's own state (system of record) in-page
 //  { shot: name, boxes?: { label: selector }, clip?: selector }  PNG at device scale + element boxes
-export async function captureApp({ steps, outDir, viewport = { w: 390, h: 844, scale: 2 }, serveDir, timeout = 8000, label = 'capture' }) {
+export async function captureApp({ steps, outDir, viewport = { w: 390, h: 844, scale: 2 }, serveDir, timeout = 8000, label = 'capture', runtime = { launch, serve } }) {
   if (!Array.isArray(steps) || !steps.length) throw new Error('captureApp needs steps');
   mkdirSync(outDir, { recursive: true });
-  const srv = serveDir ? await serve(serveDir) : null;
-  const client = await launch({ width: viewport.w, height: viewport.h, scale: viewport.scale || 1 });
+  const srv = serveDir ? await runtime.serve(serveDir) : null;
+  let client;
+  try { client=await runtime.launch({ width: viewport.w, height: viewport.h, scale: viewport.scale || 1 }); }
+  catch(error){srv?.close();throw error;}
   const state = { label, viewport, chromium: (() => { try { return execFileSync(findChromium(), ['--version'], { encoding: 'utf8' }).trim(); } catch { return null; } })(),
     values: {}, verified: [], shots: {}, log: [] };
   const t0 = Date.now(), log = (event, detail) => state.log.push({ ms: Date.now() - t0, event, ...detail });
@@ -86,7 +88,7 @@ export async function captureApp({ steps, outDir, viewport = { w: 390, h: 844, s
         log('shot', { name: step.shot });
       } else throw new Error(`unknown capture step ${JSON.stringify(step)}`);
     }
-  } finally { await client.close(); srv?.close(); }
+  } finally { try { await client.close(); } finally { srv?.close(); } }
   state.complete = true;
   writeFileSync(join(outDir, 'capture.json'), JSON.stringify(state, null, 1));
   return state;

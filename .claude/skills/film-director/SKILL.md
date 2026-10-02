@@ -25,3 +25,5 @@ Report in concise Egyptian Arabic: ready/not ready, file links, meaningful chang
 Technical gate success alone never means artistically ready. Keep client photos/plates, licensed audio and renders out of public git.
 
 **Documentation duty (2026-10-02):** a film is not closed until STATUS.md, studio/CHANGELOG.md, CRAFT.md (0–3 lessons), TECHNIQUES.md, ASSETS.md and the film's LEDGER.md are updated in the same commit. For an owner-supplied video to match, follow WORKFLOW.md → Reference-matched reel.
+
+**Owner production policy:** read `studio/AUTONOMOUS_FILM.md` first for new films. The owner requests subject + placement/size; the Claude Code agent does ALL analysis, direction, internal JSON, review, corrections and export. No ordinary approval pauses or manual owner tasks. Deliver one finished video link. Use config.ownerRequest to enforce the single requested canvas/duration/fps.

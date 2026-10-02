@@ -21,12 +21,19 @@ export function buildOptions(cfg, flags) {
   }
   const profile = opt.profile ?? 'draft';
   if (!PROFILES[profile]) throw new Error('profile must be draft, review or final');
-  const names = opt.only?.split(',') ?? (profile === 'final' ? cfg.deliveries.map(d => d.name) : [cfg.preview?.delivery ?? cfg.deliveries[0].name]);
+  const request=cfg.ownerRequest;
+  if(request && (typeof request.delivery!=='string'||!request.delivery||!['w','h','duration','fps'].every(k=>Number.isFinite(request[k])&&request[k]>0)||!Number.isInteger(request.w)||!Number.isInteger(request.h)))throw new Error('ownerRequest needs one delivery, positive width/height/duration/fps');
+  const names = opt.only?.split(',') ?? (request ? [request.delivery] : null) ?? (profile === 'final' ? cfg.deliveries.map(d => d.name) : [cfg.preview?.delivery ?? cfg.deliveries[0].name]);
   if (!names.length || new Set(names).size !== names.length || names.some(n => !cfg.deliveries.some(d => d.name === n)))
     throw new Error(`unknown/duplicate delivery: ${opt.only}`);
   if (profile !== 'final' && names.length !== 1) throw new Error('preview one delivery at a time');
   if (profile === 'final' && opt.range !== undefined) throw new Error('final must cover the whole delivery; use review for a range');
   const selected = cfg.deliveries.filter(d => names.includes(d.name));
+  if(request){
+    const d=selected[0];
+    if(selected.length!==1||d.name!==request.delivery)throw new Error('ownerRequest allows exactly the requested single delivery');
+    if((d.w??cfg.w)!==request.w||(d.h??cfg.h)!==request.h||d.duration!==request.duration||cfg.fps!==request.fps)throw new Error('delivery dimensions/duration/fps must match ownerRequest');
+  }
   const duration = selected[0].duration;
   let range;
   if (profile !== 'final') {

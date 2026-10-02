@@ -1,0 +1,23 @@
+{
+  "subject": "",
+  "viewer": "",
+  "objective": "",
+  "concept": "",
+  "visualLanguage": "",
+  "emotionalArc": "",
+  "pacingStrategy": "",
+  "cameraStrategy": "",
+  "soundStrategy": "",
+  "payoff": "",
+  "avoidCopying": "",
+  "transformations": [
+    {
+      "observationIds": [],
+      "principle": "",
+      "originalExecution": "",
+      "whyItFitsSubject": "",
+      "differenceFromReference": "",
+      "counterCase": ""
+    }
+  ]
+}
