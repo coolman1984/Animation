@@ -50,3 +50,5 @@ Use reference/artistic.mjs (ARTISTIC_FORENSICS.md): five passes, 20 sections, 1�
 Low-effort forensics: analyze → prepared private draft with <=12 real interval groups / suggested evidence → inspect → one decision with multiple topics → autoSections report → original direction. prepare refuses overwrites and never claims candidate evidence was viewed.
 
 Owner-facing workflow: AUTONOMOUS_FILM.md — one natural-language request, agent completes every internal step, one finished video. lib/build-options.mjs ownerRequest enforces exact single-delivery width/height/duration/fps.
+
+Capture startup reliability: create the server, launch inside cleanup protection, close the server even on startup/client-close failure. cdp.mjs permits one bounded retry only for transient Chromium startup failures, never for failed product verification.
