@@ -2,7 +2,13 @@
 
 Updated: 2026-10-02. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE — Project optimisation and taste guard (owner request 2026-10-02).**
+**Latest scope: DONE — Reverse-engineered a SaaS UI promo; product-UI motion kit added (owner request 2026-10-02).**
+- New `studio/lib/uimotion.js` (12 pure functions, 8 unit tests) + `studio/examples/ui-motion-study` (passes the real-browser forward/reverse determinism test). Observed move table in `studio/TECHNIQUES.md`.
+- Studio bug fixed: audio longer than picture crashed `reference.mjs analyze`; regression test added.
+- Not verified: the reference's motion and audio were not played (stills + numbers only); no film produced.
+- `npm test`: 90 tests, 76 passed, 14 optional skipped, 0 failed; real-browser examples test 4/4.
+
+**Previous scope: DONE — Project optimisation and taste guard (owner request 2026-10-02).**
 - Review evidence after every review/final export now extracts frames in parallel (bounded pool of 4): 103.6 s → 71.1 s on film 5's master, all 96 evidence files and review.json byte-identical.
 - STATUS.md compacted (this file is read first every session): full scope evidence moved verbatim to `studio/STATUS_HISTORY.md`.
 - Taste guard added to `studio/WORKFLOW.md`: two type families, no default decorations. Guidance only, no new step or check.
@@ -12,6 +18,7 @@ Updated: 2026-10-02. This is the current handoff; historical plans are not a tas
 ## Closed scopes (newest first; evidence in `studio/STATUS_HISTORY.md` and `studio/CHANGELOG.md`)
 | Scope | Result |
 |---|---|
+| Project optimisation and taste guard | DONE, branch commit 68bf150 |
 | Film 5 — BALACONBAR Beni Suef 25 s Reels ad | DONE, PR #13; take04 local, 1 of 2 correction rounds |
 | Deep artistic reference forensics + autonomous single-video policy | DONE, PR #12 (`AUTONOMOUS_FILM.md`, `ownerRequest`) |
 | Documentation and skills consolidation (docs gate) | DONE, PR #11 |

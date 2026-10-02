@@ -20,6 +20,7 @@ New reusable modules (all pure in t, seeded, tested):
 | Declarative layer plates with provenance | `lib/layers.mjs` |
 | Optional external engine (HyperFrames/Remotion) for silent picture | `lib/engines.mjs`, config `engine` |
 | Creative block, style frames, cross-film look overlap warnings | `lib/creative.mjs` |
+| Product-UI motion kit: 3-D tilted cards, typewriter + caret, headline stack with dimming, orbiting/scattering icons, travelling spotlights on a UI wall, pulse ring | `lib/uimotion.js` (study: `examples/ui-motion-study`) |
 
 Studies (one subsystem each): `examples/camera-study`, `transition-study`, `depth-study-2`, `particles-study`,
 `shader-study` (`--gpu=1`), `kinetic-type-study`, `music-sync-study` (full make film), `app-film-study`.

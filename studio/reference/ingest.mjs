@@ -28,7 +28,10 @@ export async function ingest(source, dir, opts = {}) {
   else {
     const metadata = await mediaProbe(local);
     handle = { local, metadata, async frame(t, file, { width = 1280 } = {}) {
-      const r = await work('ffmpeg', ['-hide_banner', '-nostats', '-y', '-ss', String(t), '-copyts', '-i', local, '-an', '-vf', `scale='min(${width},iw)':-2,showinfo`, '-frames:v', '1', file]);
+      const grab = (at) => work('ffmpeg', ['-hide_banner', '-nostats', '-y', '-ss', String(at), '-copyts', '-i', local, '-an', '-vf', `scale='min(${width},iw)':-2,showinfo`, '-frames:v', '1', file]);
+      let r = await grab(t);
+      // A time just past the last decoded frame (variable-rate recordings) yields no image: step back once instead of failing the whole pack.
+      if (!/pts_time/.test(r.stderr) && t > 0.2) r = await grab(Math.max(0, t - 0.2));
       const found = [...r.stderr.matchAll(/pts_time:([-\d.]+)/g)][0];
       return { requested: t, actual: found ? +found[1] : null, timestampSource: found ? 'decoded-frame-pts' : 'unavailable', capture: 'ffmpeg-decoded' };
     }, close: async () => {} };

@@ -30,7 +30,9 @@ export async function mediaProbe(src) {
   const d = JSON.parse(r.stdout), v = d.streams.find(s => s.codec_type === 'video'), a = d.streams.find(s => s.codec_type === 'audio');
   const rate = s => { const [n, den = 1] = String(s || '0/1').split('/').map(Number); return den ? n / den : 0; };
   if (!v || !(+d.format.duration > 0)) throw new Error('A finite decodable video is required (live/protected streams are unsupported)');
-  return { duration: +d.format.duration, width: v.width, height: v.height, fps: rate(v.avg_frame_rate) || rate(v.r_frame_rate), timeBase: v.time_base, videoCodec: v.codec_name, audio: a ? { codec: a.codec_name, sampleRate: +a.sample_rate, channels: a.channels } : null, route: 'ffmpeg', rotation: v.tags?.rotate || v.side_data_list?.find(x => x.rotation)?.rotation || 0 };
+  // Screen recordings often carry audio ~0.1–0.2 s longer than the picture: frame sampling must stay inside the VIDEO stream.
+  const vd = +v.duration, duration = vd > 0 && vd < +d.format.duration ? vd : +d.format.duration;
+  return { duration, width: v.width, height: v.height, fps: rate(v.avg_frame_rate) || rate(v.r_frame_rate), timeBase: v.time_base, videoCodec: v.codec_name, audio: a ? { codec: a.codec_name, sampleRate: +a.sample_rate, channels: a.channels } : null, route: 'ffmpeg', rotation: v.tags?.rotate || v.side_data_list?.find(x => x.rotation)?.rotation || 0 };
 }
 export async function sheet(files, out, labels = []) {
   if (!files.length) return null;

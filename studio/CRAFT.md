@@ -42,6 +42,8 @@
 ## Studio upkeep (2026-10-02)
 32. **Fix a tool that cries wolf:** one false sync note ("1033 ms off" for a hit that was exactly at 0) cost a manual investigation; the onset detector now starts at frame 0 and a test guards it.
 
+33. **Make UI feel alive by never leaving it flat:** cards tilted 7–20° with a ±1° drift, a typewriter with a caret, and one idea per 1–2 s beat read as a modern product promo; stacked lines that dim as the next arrives guide the eye (`lib/uimotion.js`).
+
 ## Principles learned from reference studies
 Consult `reference/lessons.json` only when its evidence-backed principle is relevant to the current
 craft decision. Learn the timing/composition principle and its counter-case, not reference appearance.

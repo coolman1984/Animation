@@ -5,6 +5,16 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-02 — Reverse-engineered a SaaS UI promo and added the product-UI motion kit (scope DONE)
+Owner request: reverse engineer the new screen recording, learn all its moves, add them to the studio.
+- **Analysis:** `reference.mjs analyze` (machine pack, private, git-ignored) + dense 0.25 s grids of the content area; stills inspected (no playback/listening). Result written as the move table in `TECHNIQUES.md` → "Product-UI promo grammar".
+- **Studio bug found and fixed:** recordings whose audio runs longer than the picture made the probe use the container duration, the sampler asked for a frame past the last video frame and the whole `analyze` crashed ("Error opening input … f007.png"). `mediaProbe` now uses the video-stream duration and `frame()` steps back 0.2 s once. Regression test `test/reference-media.test.mjs` fails on the old code.
+- `npm test`: 90 tests, 76 passed, 14 skipped, 0 failed; `STUDIO_RENDER_TEST=1 examples.test.mjs` 4/4 (includes the new study).
+- **New module `lib/uimotion.js`** (pure in t, seeded): `planeTransform`, `tiltSettle`, `planeDrift`, `typeOn`, `caretVisible`, `typeEnd`, `stackLines`, `orbitPoint`, `scatterOut`, `litCells`, `wallCells`, `pulseRing`. 8 unit tests (`test/uimotion.test.mjs`).
+- **New study `examples/ui-motion-study`** (7 s, any aspect): exercises every primitive plus `zoomContinuation`; covered automatically by the real-browser determinism test (forward/reverse seek identical).
+- Already in the studio and reused, not duplicated: `zoomContinuation`, `cameraPass`, springs, `stagger`, `clipInset`.
+- Not claimed: no film was made; motion and audio of the reference were not played; `reference/lessons.json` stays empty (its `learn` command needs inspected playback).
+
 ## 2026-10-02 — Project optimisation and taste guard (scope DONE)
 Owner request: review the whole project to optimise without lowering quality, and add the two taste rules.
 - **Faster review evidence:** `lib/review.mjs` runs its independent ffmpeg extractions through a bounded pool (4): 103.6 s → 71.1 s on film 5's 141 MB master; all 96 evidence files and review.json byte-identical to the sequential version. Runs after every review and final export.

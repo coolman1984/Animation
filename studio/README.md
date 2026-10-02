@@ -94,6 +94,9 @@ node make.mjs film5 --profile=final              # 1080×1920 @ 30 fps master + 
 ```
 Old/new worlds, 120 BPM grid, original maqsum score. Recipes: `TECHNIQUES.md`; decisions and open owner items: `film5/BRIEF.md`; evidence: `film5/LEDGER.md`.
 
+## Product-UI motion kit
+`lib/uimotion.js` + `examples/ui-motion-study` (7 s, any aspect): tilted 3-D UI cards, typewriter, headline stack, orbiting icons, UI wall, pulse ring. Recipes and the observed move table: `TECHNIQUES.md` → Product-UI promo grammar.
+
 ## Documentation duty
 Closing a scope means updating, in the same commit: `../STATUS.md` (scope, evidence, unverified), `CHANGELOG.md` (entry + skill changes),
 `CRAFT.md` (0–3 new lessons), `TECHNIQUES.md` (new recipes), `GEN2.md`/`README.md` (new modules/commands), `ASSETS.md` (every new outside file),
