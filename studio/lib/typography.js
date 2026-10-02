@@ -44,7 +44,7 @@ export function textBlock(parent, text, style = {}, { by = 'word', align = 'cent
   const parts = by === 'grapheme' ? units(text, 'grapheme', lang) : units(text, 'word');
   const words = parts.map((w, i) => {
     const outer = el('span', { class: 'word-clip', style: { display: 'inline-block', verticalAlign: 'top', paddingBlock: '0.12em', marginBlock: '-0.12em' } }, box);
-    const span = el('span', { class: 'word', text: /^\s+$/u.test(w) ? '\u00A0' : w, style: { display: 'inline-block', willChange: 'transform' } }, outer);
+    const span = el('span', { class: 'word', text: /^\s+$/u.test(w) ? '\u00A0' : w, style: { display: 'inline-block' } }, outer);
     if (by !== 'grapheme' && i < parts.length - 1) box.appendChild(document.createTextNode(' '));
     return { outer, span };
   });
@@ -88,7 +88,10 @@ export function reveal(B, t, { tIn, tOut = Infinity, style = 'mask', per = 'word
     if (exit === 'fade') op *= 1 - pout; else if (exit === 'mask') { w.outer.style.overflow = 'hidden'; y -= pout * em * 1.25; }
     else if (exit === 'rise') { y -= pout * em * 0.35; op *= 1 - pout; }
     w.span.style.opacity = op.toFixed(4);
-    w.span.style.transform = `translateY(${y.toFixed(2)}px) scale(${sc.toFixed(4)})`;
+    // A word at rest carries NO transform: a leftover translate(0) promotes it to its own layer, whose
+    // raster then depends on whether the word was animating before (history-dependent pixels).
+    const rest = Math.abs(y) < 0.005 && Math.abs(sc - 1) < 1e-5;
+    w.span.style.transform = rest ? 'none' : `translateY(${y.toFixed(2)}px) scale(${sc.toFixed(4)})`;
     w.span.style.filter = blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : 'none';
   }
 }

@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import { readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execFileSync } from 'node:child_process';
 import { launch, settleCapture } from '../lib/cdp.mjs';
 import { serve } from '../lib/serve.mjs';
 import { GPU_ARGS, textTimeline } from '../lib/render.mjs';
@@ -24,6 +25,16 @@ async function session(server, film, { w, h, gpu }, fn) {
     return await fn(client, info, errors);
   } finally { await client.close(); }
 }
+// Same pixels across sessions/orders. Blur-heavy scenes may differ by ONE 8-bit level on a small share
+// of pixels between browser sessions (software raster rounding); that is allowed, anything more is not.
+const rgb = b64 => execFileSync('ffmpeg', ['-v', 'error', '-i', 'pipe:0', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'], { input: Buffer.from(b64, 'base64'), maxBuffer: 1 << 26 });
+function sameFrame(a, b, label) {
+  if (a === b) return;
+  const x = rgb(a), y = rgb(b); let n = 0, max = 0;
+  assert.equal(x.length, y.length, `${label}: size differs`);
+  for (let i = 0; i < x.length; i++) if (x[i] !== y[i]) { n++; max = Math.max(max, Math.abs(x[i] - y[i])); }
+  assert.ok(max <= 1 && n <= x.length * 0.03, `${label}: ${n} channel values differ, max ${max} levels`);
+}
 const shot = async (client, t) => { await client.eval(`window.renderAt(${t})`); return (await client.send('Page.captureScreenshot', { format: 'png' })).data; };
 
 test('example studies render and seek deterministically in any order', { skip: !enabled, timeout: 300000 }, async () => {
@@ -41,7 +52,7 @@ test('example studies render and seek deterministically in any order', { skip: !
         assert.deepEqual(errors, [], `${name}: errors while rendering`);
         return frames;
       });
-      for (const [i, t] of forward.times.entries()) assert.equal(reverse[i], forward.frames[i], `${name}: frame at ${t}s differs between sessions/orders`);
+      for (const [i, t] of forward.times.entries()) sameFrame(reverse[i], forward.frames[i], `${name}: frame at ${t}s between sessions/orders`);
       assert.notEqual(forward.frames[0], forward.frames[2], `${name}: picture must change over time`);
     }
   } finally { server.close(); }
@@ -68,7 +79,7 @@ test('legacy films 2–4 still initialise and render on the Gen-2 libraries (pla
   const server = await serve(ROOT, { placeholder: true });
   try {
     for (const [film, w, h, variant] of [['film2', 1080, 1350, 'hero'], ['film3', 1080, 1350, 'hero'], ['film4', 1080, 1920, 'hero'], ['film4', 1080, 1350, 'hero']]) {
-      await session(server, `/${film}/film.js&variant=${variant}`, { w: w / 4, h: h / 4 }, async (c, info, errors) => {
+      await session(server, `/${film}/film.js&variant=${variant}`, { w: Math.round(w / 4), h: Math.round(h / 4) }, async (c, info, errors) => {
         for (const t of [0, info.duration * 0.33, info.duration * 0.66, info.duration - 0.1]) await shot(c, t);
         assert.deepEqual(errors, [], `${film}: errors while rendering`);
         assert.ok(info.duration > 10);
