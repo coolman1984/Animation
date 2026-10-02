@@ -19,10 +19,18 @@ async function still(video, t, out, { w } = {}) {
   await run('ffmpeg', ['-v', 'error', '-y', '-ss', t.toFixed(4), '-i', video, '-frames:v', '1', ...(w ? ['-vf', `scale=${w}:-2`] : []), '-q:v', '3', out]);
   return out;
 }
+// Bounded parallel map: every extraction is an independent ffmpeg process writing its own file, so running
+// several at once changes only wall time, never the output. Order of results = order of items.
+const POOL = 4;
+async function pool(items, fn, n = POOL) {
+  const out = new Array(items.length); let next = 0;
+  await Promise.all(Array.from({ length: Math.min(n, items.length) }, async () => { while (next < items.length) { const i = next++; out[i] = await fn(items[i], i); } }));
+  return out;
+}
 // Horizontal strip of frames at the given times (one ffmpeg call per frame, then hstack).
 async function strip(video, times, out, { h = 240 } = {}) {
   const tmp = times.map((t, i) => out + `.${i}.jpg`);
-  for (const [i, t] of times.entries()) await run('ffmpeg', ['-v', 'error', '-y', '-ss', Math.max(0, t).toFixed(4), '-i', video, '-frames:v', '1', '-vf', `scale=-2:${h}`, '-q:v', '3', tmp[i]]);
+  await pool([...times.entries()], ([i, t]) => run('ffmpeg', ['-v', 'error', '-y', '-ss', Math.max(0, t).toFixed(4), '-i', video, '-frames:v', '1', '-vf', `scale=-2:${h}`, '-q:v', '3', tmp[i]]), 2);
   await run('ffmpeg', ['-v', 'error', '-y', ...tmp.flatMap(f => ['-i', f]), '-filter_complex', `${tmp.map((_, i) => `[${i}]`).join('')}hstack=inputs=${tmp.length}`, '-q:v', '3', out]);
   for (const f of tmp) execFileSync('rm', ['-f', f]);
   return out;
@@ -106,28 +114,28 @@ export async function reviewEvidence({ video, outDir, fps, plan, text, music, ho
     camera = cameraDiagnostics(at, { start: t0 + dt, end: S.at(-1)[0] - dt, fps, viewport: { w: vw, h: vh }, holds, cuts });
   }
   const samples = reviewSamples({ duration, fps, plan, text, camera, music, sourceTimeline });
-  for (const s of samples) {
-    s.file = `frames/t${s.t.toFixed(2).padStart(6, '0')}.jpg`;
-    await still(video, s.t, join(outDir, s.file), { w: Math.min(vw, 720) });
-    if (music) s.music = describeTime(music, s.t);
-  }
+  for (const s of samples) { s.file = `frames/t${s.t.toFixed(2).padStart(6, '0')}.jpg`; if (music) s.music = describeTime(music, s.t); }
+  await pool(samples, s => still(video, s.t, join(outDir, s.file), { w: Math.min(vw, 720) }));
   // Boundary strips (−2f … +2f) and transition motion strips (8 frames across ±0.5 s).
   const strips = [];
-  if (plan && sourceTimeline) for (const s of plan.shots.filter(s => s.start > 0)) {
-    const f = 1 / fps, b = `strips/cut-${s.id}.jpg`, m = `strips/motion-${s.id}.jpg`;
-    await strip(video, [-2, -1, 0, 1, 2].map(k => s.start + k * f), join(outDir, b), { h: 200 });
-    await strip(video, Array.from({ length: 8 }, (_, i) => s.start - 0.5 + i / 7), join(outDir, m), { h: 160 });
-    strips.push({ shot: s.id, t: s.start, boundary: b, motion: m, transition: s.craft?.transition || null, music: music ? describeTime(music, s.start) : null });
+  if (plan && sourceTimeline) {
+    const cuts = plan.shots.filter(s => s.start > 0);
+    for (const s of cuts) strips.push({ shot: s.id, t: s.start, boundary: `strips/cut-${s.id}.jpg`, motion: `strips/motion-${s.id}.jpg`, transition: s.craft?.transition || null, music: music ? describeTime(music, s.start) : null });
+    const f = 1 / fps;
+    await pool(cuts, async s => {
+      await strip(video, [-2, -1, 0, 1, 2].map(k => s.start + k * f), join(outDir, `strips/cut-${s.id}.jpg`), { h: 200 });
+      await strip(video, Array.from({ length: 8 }, (_, i) => s.start - 0.5 + i / 7), join(outDir, `strips/motion-${s.id}.jpg`), { h: 160 });
+    }, 2);
   }
   // 100% crops: centre at each shot's hold, and each line of copy at its readable middle.
   const crops = [], cs = cropSize || Math.round(Math.min(vw, vh) / 2);
-  for (const s of (plan && sourceTimeline ? plan.shots : [{ id: 'mid', start: 0, end: duration }]).slice(0, 12)) {
+  await pool((plan && sourceTimeline ? plan.shots : [{ id: 'mid', start: 0, end: duration }]).slice(0, 12), async s => {
     const t = (s.start + s.end) / 2, file = `crops/${s.id}-centre.png`;
     await run('ffmpeg', ['-v', 'error', '-y', '-ss', t.toFixed(4), '-i', video, '-frames:v', '1', '-vf', `crop=${cs}:${cs}:${Math.round((vw - cs) / 2)}:${Math.round((vh - cs) / 2)}`, join(outDir, file)]);
-    crops.push({ t: r2(t), file, what: `${s.id} centre 100%` });
-  }
+    return { t: r2(t), file, what: `${s.id} centre 100%` };
+  }).then(list => crops.push(...list));
   // Copy diagnostics: reading time, contrast; crop each line for a sharp look at shaping/edges.
-  const copy = [];
+  const copy = [], copyCrops = [];
   for (const [i, l] of (text?.lines || []).entries()) {
     const dur = l.end - l.start, need = readingTime(l.text), row = { text: l.text, start: l.start, end: l.end, seconds: r2(dur), needs: r2(need), readable: dur >= need };
     if (l.box) {
@@ -137,13 +145,14 @@ export async function reviewEvidence({ video, outDir, fps, plan, text, music, ho
       if (!crop) { row.offscreen = true; notes.push(`copy "${l.text}" lies outside the frame at ${r2(t)}s`); copy.push(row); continue; }
       row.contrast = boxContrast(crop.buf); row.lowContrast = row.contrast < 3;
       const file = `crops/copy-${i + 1}.png`;
-      await run('ffmpeg', ['-v', 'error', '-y', '-ss', t.toFixed(4), '-i', video, '-frames:v', '1', '-vf', `crop=${crop.w}:${crop.h}:${crop.x}:${crop.y}`, join(outDir, file)]);
+      copyCrops.push(['-v', 'error', '-y', '-ss', t.toFixed(4), '-i', video, '-frames:v', '1', '-vf', `crop=${crop.w}:${crop.h}:${crop.x}:${crop.y}`, join(outDir, file)]);
       row.crop = file;
     }
     copy.push(row);
     if (!row.readable) notes.push(`copy "${l.text}" is on screen ${row.seconds}s; reading it needs about ${row.needs}s`);
     if (row.lowContrast) notes.push(`copy "${l.text}" contrast ≈ ${row.contrast}:1 at ${r2(l.start)}s; check legibility over the image`);
   }
+  await pool(copyCrops, args => run('ffmpeg', args));
   // Motion energy: suspicious stillness outside declared holds, and the busiest moments.
   const energy = await motionEnergy(video);
   const still_ = []; let s0 = null;

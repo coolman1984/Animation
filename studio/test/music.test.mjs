@@ -100,3 +100,16 @@ test('creative block validation and cross-film look overlap warnings', () => {
   assert.deepEqual(lookOverlap(plan, [{ name: 'other', plan: { creative: { typography: { display: 'Montserrat' }, palette: ['#ff0000'], motif: 'neon rain', transitions: ['push', 'lightWipe'] } } }]), []);
   assert.ok(deltaE('#000000', '#ffffff') > 99);
 });
+
+test('an opening hit on the very first frame is measured as an onset (cue at t = 0)', { timeout: 60000 }, async () => {
+  const { writeWav } = await import('../lib/audio.mjs');
+  const { analyzeNode } = await import('../lib/musicmap.mjs');
+  const dir = mkdtempSync(join(tmpdir(), 'onset0-'));
+  try {
+    const b = new Bus(4); impact(b, 0, { vel: 0.8 }); impact(b, 2, { vel: 0.8 });
+    const file = join(dir, 'hit.wav'); writeWav(file, b, { gain: 0.5 / peak(b) });
+    const { onsets } = await analyzeNode(file);
+    const sync = cueSync([{ id: 'open', t: 0, kind: 'impact', sound: { type: 'impact' } }], onsets);
+    assert.ok(sync[0].ok && onsets[0] < 0.02, `first onset ${onsets[0]} should sit on t = 0 (frame 0, not frame 3)`);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});

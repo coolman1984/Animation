@@ -5,6 +5,15 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-02 — Project optimisation and taste guard (scope DONE)
+Owner request: review the whole project to optimise without lowering quality, and add the two taste rules.
+- **Faster review evidence:** `lib/review.mjs` runs its independent ffmpeg extractions through a bounded pool (4): 103.6 s → 71.1 s on film 5's 141 MB master; all 96 evidence files and review.json byte-identical to the sequential version. Runs after every review and final export.
+- **Fewer tokens every session:** STATUS.md (read first by every session) 12.6 KB → 3.5 KB; full evidence moved verbatim to `STATUS_HISTORY.md`.
+- **One false alarm removed:** onsets are measured from analysis frame 0 (`lib/musicmap.mjs`); a cue at t = 0 no longer reports "1033 ms off". New test fails on the old code.
+- **Taste guard** in `WORKFLOW.md`: two type families; no default decorations without a reason. Guidance only (no new step, check or loop).
+- Considered and rejected (cost > benefit): a 1–10 scoring loop until 8+ (unbounded rebuilds), Playwright/Remotion installs (own CDP renderer already covers them), JPEG capture for finals (would lower quality), shorter keyframe interval for faster seeking (bigger masters).
+- `npm test`: 81 tests, 67 passed, 14 skipped, 0 failed.
+
 ## 2026-10-02 — Film 5: BALACONBAR Beni Suef, 25 s Reels ad (one 9:16 delivery)
 Owner request: a dynamic 25 s ad for the café in Beni Suef using the owner's four images (real photo, swing poster, AI storyboard, vintage board), everything the studio learned,
 retro/80s nostalgia mixed with 2026 motion, exciting original music, ONE video in Reels shape. Source: `film5/` (BRIEF, production.json, film.js, score.mjs, plates.mjs, crops.sh, LEDGER).

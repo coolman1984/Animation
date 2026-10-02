@@ -34,6 +34,9 @@ Read AUTONOMOUS_FILM.md. The owner asks for a video and placement; the agent cho
 6. Before full expansion, fill each shot's `craft` block in production.json (scale, camera, focal, transition, depth layers, primary motions, audio cue). Preflight now warns on accidental repetition, low craft coverage and >2 competing primary motions. These warnings trigger inspection, not an automatic aesthetic verdict.
 7. For cinematic motion, prefer `lib/cinema.js` + `lib/depth.js`: one shared camera, motivated rack focus, bounded micro-drift only when appropriate, and a settled hold for product/copy. Use `lib/rhythm.mjs` to see beat/phrase timing without forcing edits onto every beat.
 
+Taste guard (owner-approved, 2026-10-02): at most two type families per film (one display, one text/UI; an Arabic + Latin pair of the same role counts as one) unless the brief names more.
+No default decorations: frame borders, corner labels, generic confetti/particle bursts, glow on chrome or a fade-in for everything need a stated reason in the shot's craft block.
+
 ## Commands (from studio/)
 ```bash
 node make.mjs film2                               # draft: first 12 s, one delivery, silent
