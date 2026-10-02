@@ -20,3 +20,5 @@ Check backward seeking and worker-independent frames. QA changed intervals plus 
 **Film 5 additions (studio/TECHNIQUES.md → Film 5 recipes):** marquee bands for the unsafe zones of a Reel, FLIP card fly (labels above moving cards), arch portal via clip-path path(), diagonal split swap, blurred-cover + faded window for portrait macros from a square photo, decorative words above (not behind) the product, exit animations must not cross the safe edge.
 
 **Product-UI promos:** `lib/uimotion.js` (tilted 3-D cards, typewriter + caret, headline stack that dims older lines, orbiting/scattering icons, UI wall with travelling spotlights, pulse ring); study `examples/ui-motion-study`; whoosh = `zoomContinuation`. Arabic types by word, never by letter.
+
+**Chrome titles / living posters:** CSS chrome stack (extrusion shadows, gradient-clipped fill, reflection bands, rim stroke, travelling specular sweep) in `film6/film.js`; keep the logo locked and let light travel. Recipe in TECHNIQUES.md → Living poster.

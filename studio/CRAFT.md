@@ -46,6 +46,8 @@
 
 34. **Measure before you copy a rhythm:** the SaaS promo's "fast cards" were exactly one per beat at 128 BPM and the second headline line came half a beat later; eyeballing stills had guessed 1–2 s. Use `reference.mjs timeline/track/audio` first.
 
+35. **A living poster lives in its light, not in moving the logo:** keep the title locked and let light travel over it (sweeps, glints, flares); measure aliveness (frame-change median) against the reference instead of guessing, and keep the background calm enough that the title reads first.
+
 ## Principles learned from reference studies
 Consult `reference/lessons.json` only when its evidence-backed principle is relevant to the current
 craft decision. Learn the timing/composition principle and its counter-case, not reference appearance.

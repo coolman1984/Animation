@@ -4,7 +4,7 @@
 //   node reference.mjs timeline <pack|video> [--crop=x,y,w,h]                             moving/still spans, cuts, motion energy
 //   node reference.mjs strip <pack|video> --range=a:b [--crop=...]                         every decoded frame in a labelled sheet
 //   node reference.mjs audio <pack|video> [--range=a:b]                                    tempo, grid, drums, key/mode, chords, melody, sections, SFX
-// Results go to <pack>/forensics/ (or ./forensics-<name>/ for a bare video). Charts are PNGs meant to be LOOKED at.
+// Results go to <pack>/forensics/ (or studio/takes/forensics/<name>/ for a bare video, git-ignored). Charts are PNGs meant to be LOOKED at.
 import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { join, resolve, basename } from 'node:path';
 import { spawn } from 'node:child_process';
@@ -27,7 +27,7 @@ export function mediaOf(target, packDir) {
     if (m && existsSync(m)) return { media: m, out: join(packDir, 'forensics') };
   }
   const media = resolve(target); if (!existsSync(media)) throw new Error('media not found: ' + target);
-  return { media, out: resolve(`forensics-${basename(media).replace(/\W+/g, '_')}`) };
+  return { media, out: join(STUDIO, 'takes', 'forensics', basename(media).replace(/\W+/g, '_')) };   // takes/ is git-ignored
 }
 export async function forensics(cmd, target, packDir, { range, roi, crop, ref, python = 'python3' } = {}) {
   const { media, out } = mediaOf(target, packDir); mkdirSync(out, { recursive: true });

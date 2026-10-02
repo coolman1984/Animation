@@ -94,6 +94,9 @@ node make.mjs film5 --profile=final              # 1080×1920 @ 30 fps master + 
 ```
 Old/new worlds, 120 BPM grid, original maqsum score. Recipes: `TECHNIQUES.md`; decisions and open owner items: `film5/BRIEF.md`; evidence: `film5/LEDGER.md`.
 
+## Film 6 — living poster (1080×1080, 15 s)
+`node make.mjs film6 --profile=final`. Fully procedural (no assets): CSS chrome title, nebula, stars, flares, original score. Notes: `film6/BRIEF.md`, `film6/LEDGER.md`.
+
 ## Precise forensics (optional Python modules)
 `node reference.mjs timeline|strip|track|audio <pack|video>`: motion timing per frame, easing curves with keyframes, tempo/key/chords/drums. Details: `TECHNIQUES.md`.
 

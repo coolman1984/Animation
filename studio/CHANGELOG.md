@@ -5,6 +5,13 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-02 — Film 6: living poster (chrome title in space), studied from an album teaser (scope DONE)
+Owner request: analyse a supplied video, explain how it is made, make a similar one with a better design.
+- **Analysis with the new tools:** the reference is a static chrome album poster whose picture is ONE 6.0 s loop repeated 5× (frame t ≈ t+180, residual = codec noise); the letters never move (per-pixel change map); music 144.7 BPM stops at 23.9 s of 30 s.
+- **Film:** `film6/` — 1080×1080, 15 s, 128 BPM, `ownerRequest` single delivery; procedural nebula/stars/planet, CSS chrome lettering (extrusion, gradient fill, reflection bands, rim, travelling specular sweep), beat glints, anamorphic flares, original synthwave score.
+- **Gates:** all PASS (take05). One gate fix (Arabic line 4 px outside the safe area). Two correction rounds on living motion; the measured resting motion stayed calmer than the reference (0.57 vs 1.06), kept deliberately for hierarchy. A third render repaired a regression of round 1 (title touching the frame edges) and is disclosed in the ledger.
+- **Tooling:** bare-video forensics now write to `studio/takes/forensics/` (git-ignored) instead of the working directory.
+
 ## 2026-10-02 — Precise forensics tools: exact motion timing, easing curves and measured music (scope DONE)
 Owner request: tools to see motion timing and easing precisely and to understand audio; overcome capability gaps.
 - **Installed** (optional, per `reference/requirements-optional.txt`): OpenCV 4.10 headless, PySceneDetect 0.7 (numpy/scipy/librosa already present). The doctor now lists the importable forensics modules.

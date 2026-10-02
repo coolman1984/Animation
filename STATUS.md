@@ -2,7 +2,12 @@
 
 Updated: 2026-10-02. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE — Precise forensics tools: motion timing, easing curves, measured music (owner request 2026-10-02).**
+**Latest scope: DONE — Film 6 living poster, from an analysed album teaser (owner request 2026-10-02).**
+- Analysis: the reference is one 6.0 s background loop ×5 under a locked chrome logo; music stops 6 s early. Recipe in `studio/TECHNIQUES.md`.
+- Film: `studio/film6/` (1080×1080, 15 s, ownerRequest). take05 local: all gates PASS. Two correction rounds + one disclosed regression repair (see LEDGER).
+- Not verified: listening; human real-speed viewing; fresh reviewer.
+
+**Previous scope: DONE — Precise forensics tools: motion timing, easing curves, measured music (owner request 2026-10-02).**
 - New `studio/tools/motion_curves.py`, `studio/tools/audio_deep.py`, `studio/reference/forensics.mjs`; commands `node reference.mjs timeline|strip|track|audio`.
 - Validated against clips with known answers (`studio/test/forensics-tools.test.mjs`): keyframes within one frame, easing family and spring params, tempo/key/chords/drums recovered.
 - Optional modules installed here (OpenCV, PySceneDetect); the doctor lists them; CI's Python job installs them. Container installs are not persistent.
@@ -25,7 +30,8 @@ Updated: 2026-10-02. This is the current handoff; historical plans are not a tas
 ## Closed scopes (newest first; evidence in `studio/STATUS_HISTORY.md` and `studio/CHANGELOG.md`)
 | Scope | Result |
 |---|---|
-| SaaS UI promo reverse-engineered, `lib/uimotion.js` | DONE, branch |
+| Precise forensics tools | DONE, PR #14 |
+| SaaS UI promo reverse-engineered, `lib/uimotion.js` | DONE, PR #14 |
 | Project optimisation and taste guard | DONE, branch commit 68bf150 |
 | Film 5 — BALACONBAR Beni Suef 25 s Reels ad | DONE, PR #13; take04 local, 1 of 2 correction rounds |
 | Deep artistic reference forensics + autonomous single-video policy | DONE, PR #12 (`AUTONOMOUS_FILM.md`, `ownerRequest`) |

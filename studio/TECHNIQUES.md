@@ -110,3 +110,16 @@ node reference.mjs audio <pack|video> [--range=a:b]                            #
 | Dropdown expand | 0.10 s, `out5`-type, 64 px |
 | UI wall | continuous slow drift 9.58–11.44 s (the only long moving span), exit at 11.44 s |
 Rule taken: in a beat-driven UI promo, put every content change on the beat and every secondary element on the half beat; keep entries ≤ 0.2 s with an expo/quint ease-out.
+
+## Living poster (film 6) — how album "coming soon" teasers are made, and the native recipe
+Observed in the studied teaser (measured): the logo is a locked still layer; only the background, flares and the galaxy behind holes move;
+the picture is one seamless 6.0 s loop repeated; music laid under it (and here cut 6 s before the picture ends — a defect to avoid).
+Native recipe (`film6/film.js`):
+- **CSS chrome text:** a stack of the same text — extrusion (12–22 `text-shadow` steps, dark navy), fill (`background-clip: text` with a sky/ground
+  gradient: white → ice → deep navy horizon at 50 % → ice → white), diagonal reflection bands (`repeating-linear-gradient(118deg …)`, overlay),
+  rim (`-webkit-text-stroke` 2–3 px, screen) and a **specular sweep** (narrow white band, `background-position` 110 % → −10 % over 0.9 s, screen).
+- **Procedural space:** seeded fBm nebula baked once to a 360² canvas and shown at 1560 px (soft by design); 3 star layers redrawn per frame with
+  twinkle and depth-weighted push; a rim-lit planet (`inset` + outer `box-shadow`); anamorphic flares = wide thin radial-gradient ellipses (screen).
+- **Rhythm:** reveal in bar 1 (warp streaks + depth blur 26 px → 0, scale 1.7 → 1), title drop on the downbeat, sweeps every second downbeat,
+  glints on every beat in a travelling order, a finale sweep two bars before the end.
+- **Check with tools:** `reference.mjs timeline` on our export; frame-change median is a fair "aliveness" number to compare with a reference.

@@ -1,0 +1,190 @@
+{
+ "version": 1,
+ "duration": 15,
+ "fps": 30,
+ "audience": "People scrolling a square feed who should stop on a premium chrome-in-space teaser",
+ "promise": "A new generation of the studio is coming: a living, premium chrome poster instead of a still",
+ "cta": "COMING SOON / قريبًا",
+ "direction": "Original living poster: Y2K chrome lettering (Archivo extended heavy) on a procedural nebula with parallax stars, a rim-lit planet, anamorphic flares and specular sweeps synced to a 128 BPM synthwave score. Better than the studied teaser: a real reveal, light that travels across the chrome, depth parallax, readable hierarchy, sound that covers the whole film.",
+ "assets": [],
+ "sound": {
+  "mode": "original",
+  "bpm": 128,
+  "note": "Synthesised in film6/score.mjs (lib/audio.mjs + lib/sfx.mjs)"
+ },
+ "creative": {
+  "viewer": "a feed scroller",
+  "problem": "a still album-style poster gets one glance",
+  "promise": "the poster itself is alive and premium",
+  "evidence": "chrome light that moves, depth that parallaxes, sound on the beat",
+  "emotion": "anticipation, awe",
+  "motif": "a travelling specular sweep across chrome",
+  "palette": [
+   "#030817",
+   "#0B2A6B",
+   "#9CC3FF",
+   "#F4F8FF",
+   "#7C4DFF"
+  ],
+  "light": "cold blue key from top-left, violet nebula fill, white speculars",
+  "typography": {
+   "display": "Archivo",
+   "text": "Archivo"
+  },
+  "camera": "slow push-in with layer parallax",
+  "transitions": [
+   "fadeUp",
+   "none"
+  ],
+  "motion": "reveal from depth, spring drops, beat glints, specular sweeps every two bars",
+  "sound": "128 BPM synthwave: riser into the reveal, groove from bar 2, shimmer on sweeps",
+  "pacing": "reveal 0–5.6 s, living loop 5.6–13.1 s, finale sweep 13.1–15 s",
+  "payoff": "full lock-up with a final sweep and flare",
+  "cta": "coming soon",
+  "styleFrames": {
+   "hook": 1.9,
+   "proof": 7.5,
+   "payoff": 14.0
+  },
+  "proof": {
+   "start": 0,
+   "end": 9.4
+  }
+ },
+ "shots": [
+  {
+   "id": "reveal",
+   "start": 0,
+   "end": 1.875,
+   "purpose": "cold open: space fades up, the G3 monogram arrives from depth with a sweep",
+   "assetIds": [],
+   "craft": {
+    "scale": "monogram",
+    "camera": "push from depth",
+    "focal": "G3",
+    "transition": "fade up from black",
+    "depthLayers": 5,
+    "primaryMotions": [
+     "monogram arrival",
+     "warp streaks"
+    ],
+    "audioCue": "riser into impact at 1.875"
+   }
+  },
+  {
+   "id": "title",
+   "start": 1.875,
+   "end": 3.75,
+   "purpose": "MOTION STUDIO drops in, subtitle letters gather",
+   "assetIds": [],
+   "craft": {
+    "scale": "full lock-up",
+    "camera": "slow push",
+    "focal": "title",
+    "transition": "spring drop",
+    "depthLayers": 5,
+    "primaryMotions": [
+     "title drop",
+     "letter gather"
+    ],
+    "audioCue": "impact + groove starts"
+   },
+   "copy": {
+    "text": "MOTION STUDIO",
+    "start": 2.0,
+    "end": 3.7
+   }
+  },
+  {
+   "id": "coming",
+   "start": 3.75,
+   "end": 5.625,
+   "purpose": "COMING SOON + Arabic line draw out from the centre",
+   "assetIds": [],
+   "craft": {
+    "scale": "full lock-up",
+    "camera": "slow push",
+    "focal": "coming soon",
+    "transition": "rule draw",
+    "depthLayers": 5,
+    "primaryMotions": [
+     "rules",
+     "line rise"
+    ],
+    "audioCue": "shimmer"
+   },
+   "copy": {
+    "text": "COMING SOON",
+    "start": 3.9,
+    "end": 5.6
+   }
+  },
+  {
+   "id": "living",
+   "start": 5.625,
+   "end": 13.125,
+   "purpose": "living poster: sweeps every two bars, beat glints, drifting nebula, twinkling stars",
+   "assetIds": [],
+   "craft": {
+    "scale": "full lock-up",
+    "camera": "slow push with parallax",
+    "focal": "whole poster",
+    "transition": "none (continuous)",
+    "depthLayers": 6,
+    "primaryMotions": [
+     "specular sweeps",
+     "beat glints"
+    ],
+    "audioCue": "groove + shimmer on sweeps"
+   },
+   "copy": {
+    "text": "قريبًا",
+    "start": 5.7,
+    "end": 13.0
+   }
+  },
+  {
+   "id": "finale",
+   "start": 13.125,
+   "end": 15,
+   "purpose": "final big sweep and flare, settle",
+   "assetIds": [],
+   "craft": {
+    "scale": "full lock-up",
+    "camera": "settle",
+    "focal": "G3",
+    "transition": "none (continuous)",
+    "depthLayers": 6,
+    "primaryMotions": [
+     "final sweep",
+     "flare burst"
+    ],
+    "audioCue": "reverse swell into final hit, ring out"
+   }
+  }
+ ],
+ "cues": [
+  {
+   "id": "impact",
+   "t": 1.875,
+   "kind": "impact",
+   "shot": "title",
+   "sound": {
+    "type": "impact",
+    "vel": 0.8,
+    "weight": 0.8
+   }
+  },
+  {
+   "id": "finale",
+   "t": 13.125,
+   "kind": "impact",
+   "shot": "finale",
+   "sound": {
+    "type": "impact",
+    "vel": 0.7,
+    "weight": 0.7
+   }
+  }
+ ]
+}
