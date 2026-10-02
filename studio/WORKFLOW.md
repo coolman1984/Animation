@@ -101,3 +101,5 @@ intentional dark openings are declared with `darkSpans`, intentional stillness w
 ## Documentation is part of done (mandatory)
 A scope closes only after `../STATUS.md`, `CHANGELOG.md`, `CRAFT.md`, `TECHNIQUES.md`, `ASSETS.md`, the film's `LEDGER.md` and any changed skill are updated.
 `npm test` includes `test/docs.test.mjs` for the checkable parts. Record unverified items honestly (audio not heard, no real-speed viewing, etc.).
+
+For supplied references, ARTISTIC_FORENSICS.md adds contextual artistic DNA and whole-film attention/pacing interpretation before original subject direction. reference.mjs direct converts director-authored principle transformations into a reviewable brief; temporal/audio judgments require inspected playback/listening. Ordinary no-reference films do not load this workflow.

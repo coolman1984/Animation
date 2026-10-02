@@ -73,6 +73,16 @@ explicit neutral defaults until reviewed. A prose review does not approve a blue
 and explicitly set approvedForReconstruction=true, or use --study for a provisional experiment.
 Structured transition reviews update transitions.json; evidence-pack and job review states advance together. The technique atlas always includes alternative renderers.
 
+## Artistic DNA and original direction
+
+Every report now includes the 20-part ARTISTIC DNA section plus explicit pending status until artistic
+review. Read `ARTISTIC_FORENSICS.md`: five artistic layers, evidence-linked contextual hypotheses,
+whole-film attention/pacing curves, unknown coverage and original-subject transfer. Fill artisticDNA
+in the review template. `direct <pack> --brief=file` writes an original direction from reviewed
+principles; it does not automatically invent psychological conclusions or copy reference assets.
+Outputs: artistic-dna.json, optional original-direction.json / original-direction.md. Legacy technical
+reviews stay compatible and explicitly artistically pending.
+
 ## Short reconstruction and comparison
 ```sh
 node reference.mjs reconstruct launch-reference --range=3:8

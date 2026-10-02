@@ -15,3 +15,6 @@ Read `STATUS.md` and `studio/REFERENCE_LAB.md`. Respect the bounded scope; do no
 Report ready/blocked and exact unverified limitations. A complete machine pack is not a completed artistic interpretation.
 
 **Screen recordings:** ignore player chrome (bar, speaker, rounded frame, counter); crop the HUD at 1:1; use dense segment grids for fast sections; map times with a measured clock offset; attest the visual review honestly (audio analysed numerically, not heard). Worked example: studio/REFERENCE_LAB.md → Field test.
+
+## Artistic forensics (required for new reference studies)
+Read `studio/ARTISTIC_FORENSICS.md`. Fill artisticDNA in the review template: five passes, all 20 sections, evidence-linked observed choice → likely intention → why/context/confidence/alternative. Describe mixtures, never force a style label. Cover the whole film with adjacent attention/pacing intervals; unknown coverage remains unknown. Study hook/questions/reveals/payoffs, quiet contrast, repetition, overload and boredom risks. Colour effects are contextual hypotheses. Temporal judgments need playback; sonic judgments need listening. Existing technical reviews remain compatible but artistically pending. Then author an original subject-specific direction with `direct --brief`; disclose originality as a reviewer judgment. Learn grammar, create a new sentence.

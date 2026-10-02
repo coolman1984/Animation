@@ -5,6 +5,14 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-02 — Deep artistic reference forensics
+- Adds `reference/artistic.mjs`, 20-section ARTISTIC DNA in every report, contextual evidence-linked observations, full-duration attention/pacing maps with explicit unknowns and playback/listening gates.
+- Reviewed artistic intent enters the recreation blueprint; old technical reviews remain compatible but artistically pending.
+- New `reference.mjs direct --brief=file` and original-direction template map reviewed principles to original subject-specific execution, fit, differences and counter-cases.
+- Guidance: ARTISTIC_FORENSICS.md, REFERENCE_LAB, workflow/index/cookbook/asset policy; skills updated: reference-reverse-engineer, recreation-director, motion-forensics, creative-director.
+- Validation: schema/provenance/coverage/unknown/audio/playback/original-transfer tests plus existing unit/integration suite. Final CI is the publication acceptance record.
+- Not claimed: automatic artistic understanding, psychological universality, measured audience retention, originality certification or a newly produced reference film. No film ledger changed because no film was rendered.
+
 ## 2026-10-02 — Showreel 2: reference recreation (scope DONE, 1 of 2 correction rounds)
 Owner uploaded a screen recording and asked for a 15 s showreel "like this exactly".
 - **Process proven:** `reference.mjs analyze` → visual review of frames, HUD crops and dense segment grids →

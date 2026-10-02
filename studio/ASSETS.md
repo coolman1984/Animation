@@ -19,3 +19,5 @@
 
 Third-party marks visible in owner photos: the coconut-milk carton carries its maker's brand. The film
 makes no claim of partnership; see `film2/BRIEF.md` §5 (owner decision).
+
+Artistic-forensics scope adds no media, fonts or soundtrack. artistic-dna.json and original-direction files are private, ignored reference-pack artifacts. New-subject briefs must specify original assets; a reviewed principle is not permission to reuse reference artwork.

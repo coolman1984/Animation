@@ -1,5 +1,6 @@
+import { artisticScaffold, validateArtistic, renderArtistic } from './artistic.mjs';
 import { join } from 'node:path';
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, rmSync } from 'node:fs';
 import { json, save, inside, round, mean } from './common.mjs';
 import { motionCurve } from './metrics.mjs';
 import { relationship } from './audiovisual.mjs';
@@ -34,6 +35,9 @@ export function writeAnalysis(dir) {
   };
   const report = [`# Reference visual grammar`, `\nStatus: ${reviewed?'VISUALLY REVIEWED (reviewer attestation)':'MACHINE EVIDENCE COMPLETE; VISUAL INTERPRETATION PENDING'}`, `\n${meta.width}×${meta.height}, ${round(meta.duration,3)} s, route ${meta.route}.`, '\nStart with evidence-pack.json and contact-sheets/. Open only targeted full-resolution frames. Stills cannot prove movement, persuasion or music fit.'];
   for(const heading of SECTIONS) report.push(`\n## ${heading}\n\n${reviewed?.sections?.[heading]||defaults[heading]||'Not inferred automatically. Visually inspect the evidence and record the principle, evidence/timecodes, confidence and alternatives.'}`);
+  const artistic = reviewed?.artisticDNA || artisticScaffold(meta.duration,shots);
+  save(join(dir,'artistic-dna.json'),artistic);
+  report.push('\n'+renderArtistic(artistic));
   report.push('\n## Limits\n\n'+[...(meta.limitations||[]),...(motion.limitations||[]),'Low-cost visual-change/focus/light/reveal signals are candidates requiring inspection.','Semantic typography, layer stacks and artistic effectiveness require visual review.'].map(x=>'- '+x).join('\n'));
   writeFileSync(join(dir,'analysis.md'),report.join('\n'));
 }
@@ -42,6 +46,7 @@ export function applyReview(dir, review) {
   for(const file of review.viewedEvidence) if(!existsSync(inside(dir,file))||!/\.(png|jpg|webp)$/i.test(file)) throw new Error('Review evidence must name real pack images: '+file);
   for(const h of SECTIONS) if(typeof review.sections[h]!=='string'||!review.sections[h].trim()) throw new Error('Missing reviewed section: '+h);
   const plan=json(join(dir,'recreation-plan.json'));
+  const artisticDNA=review.artisticDNA ? validateArtistic(review.artisticDNA,{duration:plan.duration,dir,review,audioAvailable:json(join(dir,'audio.json')).available===true}) : null;
   for(const patch of review.shots||[]) {
     const shot=plan.shots.find(s=>s.id===patch.id); if(!shot)throw new Error('Unknown shot '+patch.id);
     for(const k of ['composition','scale','focalPoint','probableLayers','camera','focus','objectMotion','transition','typeBehavior','lighting','audioCue','importantTimestamps','approvedForReconstruction']) if(patch[k]!==undefined)shot[k]=patch[k];
@@ -61,8 +66,12 @@ export function applyReview(dir, review) {
   save(join(dir,'transitions.json'),transitions);
   const evidence=json(join(dir,'evidence-pack.json'));save(join(dir,'evidence-pack.json'),{...evidence,status:'VISUALLY_REVIEWED_REVIEWER_ATTESTATION',reviewer:review.reviewer});
   const job=json(join(dir,'job.json'));save(join(dir,'job.json'),{...job,visualReview:'REVIEWER_ATTESTATION',reviewer:review.reviewer});
+  plan.artisticReview=artisticDNA?'REVIEWER_INTERPRETATION':'PENDING_ARTISTIC_REVIEW';
+  plan.artisticIntent=artisticDNA ? {context:artisticDNA.context,sections:artisticDNA.sections,decisions:artisticDNA.observations.map(o=>({id:o.id,start:o.start,end:o.end,likelyIntention:o.likelyIntention,principle:o.transferablePrinciple,confidence:o.confidence})),timeline:artisticDNA.timeline} : null;
   plan.reconstructionReady=plan.shots.every(s=>s.approvedForReconstruction===true);
   plan.status='REVIEWED — interpretation, not recovered source';plan.reviewer=review.reviewer;
-  save(join(dir,'visual-review.json'),{...review,at:new Date().toISOString(),motionPlaybackInspected:review.motionPlaybackInspected===true,audioListened:review.audioListened===true});
+  // A new review supersedes the evidence basis of any previously authored direction.
+  for(const file of ['original-direction.json','original-direction.md'])rmSync(join(dir,file),{force:true});
+  save(join(dir,'visual-review.json'),{...review,artisticDNA,at:new Date().toISOString(),motionPlaybackInspected:review.motionPlaybackInspected===true,audioListened:review.audioListened===true});
   save(join(dir,'technique-map.json'),{atlas:TECHNIQUE_ATLAS,hypotheses:review.hypotheses||[],rule:'Observable signatures do not prove implementation software'});save(join(dir,'recreation-plan.json'),plan);writeAnalysis(dir);return plan;
 }

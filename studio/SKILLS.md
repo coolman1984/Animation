@@ -38,3 +38,5 @@ choosing reconstruction techniques. Ordinary films without a reference do not lo
 | Camera/object/layers/type/easing inference | motion-forensics | motion.json, optical flow, native primitive blueprint |
 | Music/edit correspondence | audio-forensics | audio.json, audio-visual-map.json |
 | Short original reconstruction and comparison | recreation-director | reconstruct/compare/learn, reference/lessons.json |
+
+Artistic reference study: reference-reverse-engineer → ARTISTIC_FORENSICS.md / artistic-dna.json → creative-director + recreation-director → reference.mjs direct / original-direction.md. Five artistic layers and whole-film curves are evidence-linked reviewer work, never automatic psychological facts.

@@ -14,3 +14,6 @@ Read recreation-plan.json and analysis.md; require reviewed observations before 
 - Add one concise lesson only when a genuinely reusable result was demonstrated. Preserve a counter-case and evidence. No appearance copying or lesson quota.
 
 **Whole-film recreation (field-tested, showreel2):** beyond 3–8 s studies, a short reference can be rebuilt as a full original reel. Write a bar/beat table first, fix the recording-vs-film clock offset, use original geometry/fonts/score, run matched boards and one critique, then at most one more correction round. Never claim 'exactly'; record fidelity in structure/timing/palette/type roles. See studio/TECHNIQUES.md → Reference recreation checklist.
+
+## Original direction from artistic DNA
+For new subject-specific production, read ARTISTIC_FORENSICS.md and reviewed artistic-dna.json. Use `reference/original-direction-template.json` and `reference.mjs direct <pack> --brief=file`. Trace 1–12 principles to original execution, subject fit, difference and counter-case. Adapt emotional arc, pacing, hierarchy, light, camera and payoff to our viewer; never reproduce identifiable artwork, characters, branding or exact composition. Inspect hook/proof/payoff frames for originality. Neutral technical studies may remain artistically pending and must say so.
