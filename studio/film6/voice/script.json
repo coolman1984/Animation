@@ -1,0 +1,14 @@
+{
+ "voice": "ar-EG-ShakirNeural",
+ "rate": "-6%",
+ "pitch": "-2Hz",
+ "note": "Natural, warm Egyptian delivery. Each line starts at `t` (film seconds) and must end before `end`. Rendered by `node film6/voice.mjs` through tools/tts_edge.py when the voice host is reachable.",
+ "lines": [
+  { "id": "l1", "t": 0.30, "end": 2.70, "text": "عندك فكرة حلوة… عايزها تتشاف؟" },
+  { "id": "l2", "t": 3.30, "end": 5.75, "text": "إعلانات، موشن جرافيك، وأفلام لمنتجك." },
+  { "id": "l3", "t": 6.25, "end": 8.90, "text": "بيكسل بلس بتحوّلها لفيلم… يتشاف ويتفتكر." },
+  { "id": "l4", "t": 10.10, "end": 12.70, "text": "من السيناريو، للحركة، للصوت… لحد التسليم." },
+  { "id": "l5", "t": 13.30, "end": 15.70, "text": "إنت عليك الفكرة… وإحنا علينا الباقي." },
+  { "id": "l6", "t": 16.50, "end": 19.30, "text": "بيكسل بلس. ابدأ مشروعك… وخلّي فكرتك تتشاف." }
+ ]
+}

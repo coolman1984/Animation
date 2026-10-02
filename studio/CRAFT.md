@@ -46,6 +46,10 @@
 
 34. **Measure before you copy a rhythm:** the SaaS promo's "fast cards" were exactly one per beat at 128 BPM and the second headline line came half a beat later; eyeballing stills had guessed 1–2 s. Use `reference.mjs timeline/track/audio` first.
 
+35. **A pixel can be the brand, not a filter.** Film 6 dithered its mascot, objects, transitions and logo resolve on one square grid because the agency is called PIXEL Plus; the same dot texture on an unrelated brand would be decoration. Motivate the texture by the name or product.
+36. **Measure layout, not the animated frame.** Any value computed lazily on "the first render" must not depend on which frame that is: parallel workers start at different times. Forward/reverse seek tests catch it.
+37. **Copy the reference's sentence shape, translate the voice.** "Got something to sell? → turns it into a store in minutes → Handled. → You create. We handle the flow." became «عندك فكرة حلوة عايزها تتشاف؟ → بيكسل بلس بتحوّلها لفيلم يتشاف ويتفتكر → اتظبط. → إنت عليك الفكرة… وإحنا علينا الباقي.» — same rhythm of question, promise, proof, stamp, payoff; natural Egyptian words, one accent word per scene.
+
 ## Principles learned from reference studies
 Consult `reference/lessons.json` only when its evidence-backed principle is relevant to the current
 craft decision. Learn the timing/composition principle and its counter-case, not reference appearance.

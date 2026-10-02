@@ -87,3 +87,13 @@ test('legacy films 2–4 still initialise and render on the Gen-2 libraries (pla
     }
   } finally { server.close(); }
 });
+
+test('film 6 (WebGL dithered mascot + pixel transitions) seeks deterministically in any order', { skip: !enabled, timeout: 300000 }, async () => {
+  const server = await serve(ROOT);
+  const times = [0.4, 2.9, 4.8, 5.9, 7.9, 12.3, 12.9, 15.8, 16.3, 18.9];
+  try {
+    const fwd = await session(server, '/film6/film.js', { w: 1080, h: 1920, gpu: true }, async c => { const out = []; for (const t of times) out.push(await shot(c, t)); return out; });
+    const rev = await session(server, '/film6/film.js', { w: 1080, h: 1920, gpu: true }, async c => { const out = []; for (const t of [...times].reverse()) out.unshift(await shot(c, t)); return out; });
+    times.forEach((t, i) => sameFrame(fwd[i], rev[i], `film6 t=${t}`));
+  } finally { server.close(); }
+});
