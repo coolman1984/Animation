@@ -9,7 +9,10 @@ Updated: 2026-10-02. This is the current handoff; historical plans are not a tas
   reconstruction, comparison and five conditional project skills. See `studio/REFERENCE_LAB.md`.
 - Local verification: 64 tests, 50 passed, 14 skipped, 0 failed before the optional Python integration
   test was added. Actual OpenCV/PySceneDetect fixture runs also succeeded.
-- Next acceptance: fixed-head CI browser/render and optional scientific integration. Do not merge
+- CI scientific integration passed in run 36983529292. Browser seek exposed a transient loaded-range
+  issue; correction round 1 adds a bounded seekable-range wait and automatic ordinary preload,
+  resets native transition visibility, preserves hard-cut timing and deduplicates static vision packs.
+- Next acceptance: corrected fixed-head CI browser/render and scientific integration. Do not merge
   until both jobs pass. Machine output explicitly awaits visual interpretation; prose review alone
   does not approve a reconstruction blueprint.
 

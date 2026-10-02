@@ -5,6 +5,7 @@ import { publicURL } from './common.mjs';
 const bounded = (promise, ms, label) => new Promise((res, rej) => { const t = setTimeout(() => rej(new Error(label + ' timed out')), ms); promise.then(v => { clearTimeout(t); res(v); }, e => { clearTimeout(t); rej(e); }); });
 export async function browserSource(url, { selector, frameURL, playSelector, timeout = 12000 } = {}) {
   const client = await bounded(launch({ width: 1920, height: 1080 }), 25000, 'Chromium launch');
+  const send=client.send.bind(client);client.send=(method,args)=>bounded(send(method,args),timeout,'CDP '+method);
   let context;
   const evaluate = async expr => {
     const r = await bounded(client.send('Runtime.evaluate', { expression: expr, contextId: context, awaitPromise: true, returnByValue: true }), timeout + 1000, 'Media evaluation');
@@ -34,7 +35,7 @@ export async function browserSource(url, { selector, frameURL, playSelector, tim
       if(v.readyState<1){v.muted=true;v.play().catch(()=>{});}
       if(v.readyState<1) await new Promise((r,j)=>{ const done=()=>{clearTimeout(timer);v.removeEventListener('loadedmetadata',done);r()}; const timer=setTimeout(()=>{v.removeEventListener('loadedmetadata',done);j(Error('Metadata unavailable; play normally or supply local media'))},${timeout});v.addEventListener('loadedmetadata',done)});
       if(v.mediaKeys || window.__refEncrypted?.has(v))throw Error('Encrypted media: inspection refused');
-      v.pause(); v.controls=false; v.scrollIntoView({block:'center'}); v.style.objectFit='contain';
+      v.pause(); v.preload='auto'; v.controls=false; v.scrollIntoView({block:'center'}); v.style.objectFit='contain';
       const ranges=Array.from({length:v.seekable.length},(_,i)=>[v.seekable.start(i),v.seekable.end(i)]);
       return {duration:v.duration,width:v.videoWidth,height:v.videoHeight,seekable:ranges,source:v.currentSrc,frameAware:typeof v.requestVideoFrameCallback==='function'}; })()`);
     if (!Number.isFinite(meta.duration) || !meta.width || !meta.seekable.length) throw new Error('Finite seekable media is required; live/unloaded/protected media cannot be inspected.');
@@ -44,7 +45,10 @@ export async function browserSource(url, { selector, frameURL, playSelector, tim
       async frame(t, file) {
         const evidence = await evaluate(`(async () => {
           const v=window.__refVideo; if(v.mediaKeys || window.__refEncrypted?.has(v)) throw Error('Protected media: inspection refused');
-          if (!Array.from({length:v.seekable.length},(_,i)=>[v.seekable.start(i),v.seekable.end(i)]).some(([a,b])=>${t}>=a&&${t}<b)) throw Error('Timestamp outside seekable ranges');
+          const ranges=()=>Array.from({length:v.seekable.length},(_,i)=>[v.seekable.start(i),v.seekable.end(i)]);
+          const available=()=>ranges().some(([a,b])=>${t}>=a&&${t}<b);
+          const deadline=performance.now()+${timeout};while(!available()&&performance.now()<deadline&&!v.error)await new Promise(r=>setTimeout(r,50));
+          if(!available())throw Error('Timestamp outside loaded seekable ranges: '+JSON.stringify(ranges())+'; supply normally seekable/local media');
           v.pause(); let callbackId, frameTime=null, frameResolved;
           const awareness = new Promise(r=>{frameResolved=r; if(v.requestVideoFrameCallback) callbackId=v.requestVideoFrameCallback((_,m)=>{frameTime=m.mediaTime;r()});else r()});
           if(Math.abs(v.currentTime-${t})>0.00001 || v.readyState<2) await new Promise((r,j)=>{

@@ -27,7 +27,7 @@ test('local reference creates bounded scientific evidence, reports unknown seman
   try{
     const source=await fixture(dir),pack=await analyze(source,{out:join(dir,'pack'),maxFrames:36,motion:'none'});
     const evidence=json(join(pack,'evidence-pack.json')),meta=json(join(pack,'metadata.json')),shots=json(join(pack,'shots.json'));
-    assert.ok(evidence.extracted<=36);assert.equal(meta.width,320);assert.equal(meta.audio.channels,1);assert.ok(shots.some(s=>Math.abs(s.start-4)<.1));assert.ok(shots.every(s=>s.frames.length===3));
+    assert.ok(evidence.extracted<=36);assert.ok(evidence.uniqueForVision<evidence.extracted);assert.equal(evidence.sourceDurationSeconds,8);assert.equal(meta.width,320);assert.equal(meta.audio.channels,1);assert.ok(shots.some(s=>Math.abs(s.start-4)<.1));assert.ok(shots.every(s=>s.frames.length===3));
     assert.ok(existsSync(join(pack,'contact-sheets/overview-1.png')));assert.ok(json(join(pack,'transitions.json'))[0].strip);assert.equal(json(join(pack,'audio.json')).available,true);
     assert.ok(json(join(pack,'frames.json')).some(f=>Math.abs(f.actual-f.requested)<1/24+.01));
     assert.equal(json(join(pack,'job.json')).status,'DONE_MACHINE_PACK');assert.match(json(join(pack,'recreation-plan.json')).status,/PROVISIONAL/);
@@ -67,4 +67,11 @@ test('optional Python engines analyze motion, adaptive shots and music together'
     assert.match(json(join(pack,'detected-boundaries.json')).engine,/PySceneDetect/);assert.ok(json(join(pack,'shots.json')).some(s=>Math.abs(s.start-4)<.1));
     assert.match(json(join(pack,'audio.json')).map.analyzer,/librosa/i);
   }finally{rmSync(dir,{recursive:true,force:true});}
+});
+
+test('a static silent reference deduplicates to one visual cell without inventing audio',{timeout:60000},async()=>{
+ const dir=mkdtempSync(join(tmpdir(),'reference-static-'));
+ try{const src=join(dir,'static.mp4');await work('ffmpeg',['-v','error','-y','-f','lavfi','-i','color=c=navy:s=320x180:r=24:d=3','-c:v','libx264','-threads','1',src]);
+  const pack=await analyze(src,{out:join(dir,'pack'),maxFrames:24,motion:'none'});assert.equal(json(join(pack,'evidence-pack.json')).uniqueForVision,1);assert.equal(json(join(pack,'audio.json')).available,false);assert.ok(existsSync(join(pack,'contact-sheets/evidence-1.png')));
+ }finally{rmSync(dir,{recursive:true,force:true});}
 });

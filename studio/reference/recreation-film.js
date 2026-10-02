@@ -6,7 +6,7 @@ import { spring, curves } from '../lib/kinetics.js';
 import { textBlock, reveal } from '../lib/typography.js';
 import { applyTransition } from '../lib/transitions.js';
 export function recreationFilm(plan) {
-  let W,H,sets,wrappers,overlay;
+  let W,H,sets,wrappers,overlay,occluder;
   return {
     duration:plan.duration,fps:30,
     init(stage,{W:w,H:h}) {
@@ -23,6 +23,7 @@ export function recreationFilm(plan) {
         const title=textBlock(wrapper,type.text||'FORM IN MOTION',{left:w*.1+'px',width:w*.8+'px',top:h*.1+'px',fontFamily:type.direction==='rtl'?'El Messiri':'Montserrat',fontSize:Math.min(w,h)*(type.sizeRatio||.07)+'px',fontWeight:type.weight||600,color:'#293237',letterSpacing:(type.tracking||0)+'em',zIndex:30},{align:type.alignment||'center',dir:type.direction||'ltr'});
         return {ds,sh,title,shot:s};
       });
+      occluder=el('div',{style:{position:'absolute',width:w*.13+'px',height:h+'px',background:'#777F7F',zIndex:51,display:'none'}},stage);
       overlay=el('div',{style:{position:'absolute',inset:'0',pointerEvents:'none',zIndex:50}},stage);
     },
     render(t) {
@@ -31,12 +32,15 @@ export function recreationFilm(plan) {
         const camera=cameraPath(keys,t);ds.render(camera,{hero:{scale:spring(t,{from:.94,to:1,start:s.start,duration:.8,bounce:.12})}});
         const ground=projectLayer({width:1,height:1,x:W*s.focalPoint[0],y:H*s.focalPoint[1]+W*.18,depth:1},camera,{w:W,h:H});sh({x:ground.x,y:ground.y,scale:ground.scale});
         reveal(title,t,{tIn:s.typeBehavior.start,tOut:s.typeBehavior.end,style:s.typeBehavior.style||'mask',per:s.typeBehavior.per||'word',stagger:s.typeBehavior.stagger??.06,dur:.55,curve:curves.emphasized});
-        Object.assign(wrappers[i].style,{display:'block',opacity:i===Math.max(0,plan.shots.findIndex(x=>t>=x.start&&t<x.end))?'1':'0',transform:'none',filter:'none',clipPath:'none',maskImage:'none'});
+        Object.assign(wrappers[i].style,{display:'block',visibility:'visible',zIndex:String(i),opacity:i===Math.max(0,plan.shots.findIndex(x=>t>=x.start&&t<x.end))?'1':'0',transform:'none',filter:'none',clipPath:'none',maskImage:'none'});
       }
-      overlay.style.opacity='0';
+      overlay.style.opacity='0';occluder.style.display='none';
       for(let i=0;i<sets.length-1;i++){
-        const s=sets[i].shot,d=Math.min(s.transition.duration||.3,.6,s.duration*.3),start=s.end-d;
-        if(t>=start&&t<s.end){applyTransition(s.transition.primitive,t,{a:wrappers[i],b:wrappers[i+1],overlay,start,duration:d,w:W,h:H});}
+        const s=sets[i].shot;if(s.transition.primitive==='cut')continue;
+        const d=Math.min(s.transition.duration||.3,.6,s.duration*.3),start=s.end-d;
+        const subject=shot=>({x:W*(shot.focalPoint[0]-.16),y:H*shot.focalPoint[1]-W*.16,w:W*.32,h:W*.32});
+        const native={box:subject(s),boxA:subject(s),boxB:subject(sets[i+1].shot),round:W*.16,occluder,occluderWidth:W*.13};
+        if(t>=start&&t<s.end){applyTransition(s.transition.primitive,t,{a:wrappers[i],b:wrappers[i+1],overlay,start,duration:d,w:W,h:H,...native});}
       }
     },
   };

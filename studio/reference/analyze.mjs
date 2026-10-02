@@ -32,7 +32,7 @@ export async function analyze(source, opts={}) {
       if(evidence.length>=maxFrames)return null;
       const file=`frames/f${String(evidence.length).padStart(3,'0')}.png`,info=await handle.frame(t,join(dir,file),{width:opts.width||1280});
       const g=await grayOf(join(dir,file));let duplicate=-1;
-      if(!force)duplicate=grays.findIndex(x=>diff(x,g)<.003);
+      duplicate=grays.findIndex(x=>diff(x,g)<.003);
       const rec={t,file,...info,reasons:[reason],redundantWith:duplicate>=0?evidence[duplicate].file:null};
       // Preserve timestamp evidence, reuse visual pixels only in vision packs (raw frame still local).
       evidence.push(rec);grays.push(g);return rec;
