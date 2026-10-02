@@ -11,7 +11,7 @@ retro/80s nostalgia mixed with 2026 motion, exciting original music, ONE video i
 - **Film:** 12 scenes on a 120 BPM grid (bars of 2 s): hook, zaman (old), naharda (new, swing), ingredients, menu (dotted-eighth cards), place, sensory, montage (1/8 cuts), arch portal, collide (old vs new split), brand, hold.
 - **Score:** original jeel-synth in D hijaz with darbuka maqsum; radio low-pass for the old world; drop at 4.0; hits on the menu, montage and logo.
 - **New recipes** (see `TECHNIQUES.md` → Film 5): tape-rewind exit, FLIP card fly, marquee bands, arch portal clip-path, diagonal split swap, blurred-cover portrait macros, `lpSweep` in the score.
-- **Process:** builder stills loop (3 layout rounds before any render), draft 16 s, review build (1 gate fail: arch title 4 px outside the safe area; fixed), final build, one separate critique pass of the exported frames, one correction round.
+- **Process:** builder stills loop (3 layout rounds before any render), draft 16 s, review build (1 gate fail: arch title 4 px outside the safe area; fixed), final build take03, one separate critique pass of the exported frames, one correction round → take04 (all gates PASS, −14 LUFS, share copy 11.45 MB).
 - **Honesty:** the critique pass was done by the builder in a separate pass (no fresh reviewer was spawned); audio never listened to; the vintage-board menu items need the owner's confirmation; address/phone/hours are missing.
 
 ## 2026-10-02 — Showreel 2: reference recreation (scope DONE, 1 of 2 correction rounds)
@@ -70,6 +70,7 @@ Studio foundation: own CDP renderer (`renderAt(t)` pure in t), zero npm packages
 | cdp-capture | `settleCapture` |
 | ffmpeg-master | verification frame/crop recipes used in showreels |
 | post-mortem | append to CHANGELOG/TECHNIQUES, not only CRAFT |
+| motion-composer / sound-designer / platform-delivery | Film 5 recipes: marquee, FLIP, arch portal, split swap, maqsum + lpSweep, Reels safe zones and file sizes |
 
 ## Note on `reference/lessons.json`
 Still empty on purpose: `reference.mjs learn` requires an inspected-motion review, and no motion playback was available in the

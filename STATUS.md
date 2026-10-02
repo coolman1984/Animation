@@ -2,7 +2,14 @@
 
 Updated: 2026-10-02. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE — Documentation and skills consolidation (owner request 2026-10-02).**
+**Latest scope: DONE — Film 5, BALACONBAR Beni Suef, 25 s Reels ad (owner request 2026-10-02).**
+- Source: `studio/film5/` (BRIEF, production.json, film.js, score.mjs, plates.mjs, crops.sh, LEDGER). ONE delivery: 9:16, 1080×1920, 30 fps, 25 s.
+- Final take: `studio/out/film5/take04/` (local, not in git): master 141 MB + 11.45 MB share copy + poster.
+- Technical gates: all PASS (−14 LUFS, TP −2.4, LRA 6.2, text inside the safe area). One separate critique pass (builder, no fresh reviewer) → one of two correction rounds → fixes checked on exported frames.
+- Not verified: audio listening; human real-speed viewing; platform overlays. Owner items: confirm the vintage-board menu items, supply address/phone/handle/hours.
+- Recipes in `studio/TECHNIQUES.md`, lessons 29–31 in `studio/CRAFT.md`, entry in `studio/CHANGELOG.md`.
+
+**Previous scope: DONE — Documentation and skills consolidation (owner request 2026-10-02).**
 - New: `studio/CHANGELOG.md` (evolution log + skill changes), `studio/TECHNIQUES.md` (recipes with numbers), `studio/test/docs.test.mjs` (docs gate).
 - Updated: CLAUDE.md, PLAN.md, README, WORKFLOW, SKILLS, GEN2, CRAFT (lessons 22–28), REFERENCE_LAB, ASSETS (table repaired, showreel + reference rows) and ten skills.
 - Rule now enforced: a scope closes only with docs updated in the same commit; the gate checks skills, lib modules, film ledgers, fonts and STATUS date.
