@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<meta charset="utf-8">
+<title>Cart fixture</title>
+<style>
+  body { margin: 0; font: 18px "Plex Arabic", sans-serif; background: #f4f1ea; color: #1c2321; }
+  main { padding: 24px; } h1 { font-size: 22px; margin: 0 0 16px; }
+  .item { display: flex; justify-content: space-between; align-items: center; background: #fff; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
+  button { font: inherit; border: 0; border-radius: 10px; padding: 8px 14px; background: #1f6f5c; color: #fff; }
+  #total { font-size: 28px; font-weight: 600; } #status { margin-top: 12px; color: #1f6f5c; min-height: 1.4em; }
+</style>
+<main>
+  <h1>السلة</h1>
+  <div class="item"><span>ماتشا مثلجة</span><button data-testid="add-matcha" data-price="85">أضف</button></div>
+  <div class="item"><span>بوبا</span><button data-testid="add-boba" data-price="15.5">أضف</button></div>
+  <div class="item"><span>الإجمالي</span><span id="total" data-testid="total">0</span></div>
+  <button data-testid="order">اطلب</button>
+  <div id="status" data-testid="status"></div>
+</main>
+<script>
+  // A tiny real app: state lives here; the film may only show what this page actually displays.
+  let total = 0, count = 0;
+  const fmt = v => new Intl.NumberFormat('ar-EG', { minimumFractionDigits: v % 1 ? 2 : 0 }).format(v);
+  document.querySelectorAll('[data-price]').forEach(b => b.addEventListener('click', () => { total += +b.dataset.price; count++; document.querySelector('#total').textContent = fmt(total); }));
+  document.querySelector('[data-testid=order]').addEventListener('click', () => { document.querySelector('#status').textContent = `تم الطلب: ${fmt(count)} منتجات`; window.__order = { total, count }; });
+</script>
+</html>

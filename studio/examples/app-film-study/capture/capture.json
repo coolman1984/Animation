@@ -1,0 +1,208 @@
+{
+ "label": "cart fixture",
+ "viewport": {
+  "w": 390,
+  "h": 560,
+  "scale": 2
+ },
+ "chromium": "Chromium 141.0.7390.37",
+ "values": {
+  "total": 100.5,
+  "sourceTotal": 100.5,
+  "status": "تم الطلب: ٢ منتجات"
+ },
+ "verified": [
+  {
+   "name": "total",
+   "value": 100.5,
+   "ok": true,
+   "rule": {
+    "equals": 100.5
+   }
+  },
+  {
+   "name": "sourceTotal",
+   "value": 100.5,
+   "ok": true,
+   "rule": {
+    "equalsRead": "total"
+   }
+  }
+ ],
+ "shots": {
+  "empty": {
+   "file": "empty.png",
+   "css": {
+    "w": 390,
+    "h": 560
+   },
+   "scale": 2,
+   "boxes": {
+    "total": {
+     "x": 40,
+     "y": 230,
+     "w": 15.578125,
+     "h": 32.5,
+     "text": "0"
+    },
+    "matcha": {
+     "x": 40,
+     "y": 80,
+     "w": 66.921875,
+     "h": 37,
+     "text": "أضف"
+    }
+   },
+   "origin": {
+    "x": 0,
+    "y": 0
+   }
+  },
+  "filled": {
+   "file": "filled.png",
+   "css": {
+    "w": 390,
+    "h": 560
+   },
+   "scale": 2,
+   "boxes": {
+    "total": {
+     "x": 40,
+     "y": 230,
+     "w": 84.2890625,
+     "h": 32.5,
+     "text": "١٠٠٫٥٠"
+    },
+    "order": {
+     "x": 295.0390625,
+     "y": 286.5,
+     "w": 70.9609375,
+     "h": 37,
+     "text": "اطلب"
+    }
+   },
+   "origin": {
+    "x": 0,
+    "y": 0
+   }
+  },
+  "ordered": {
+   "file": "ordered.png",
+   "css": {
+    "w": 390,
+    "h": 560
+   },
+   "scale": 2,
+   "boxes": {
+    "status": {
+     "x": 24,
+     "y": 335.5,
+     "w": 342,
+     "h": 25.1953125,
+     "text": "تم الطلب: ٢ منتجات"
+    },
+    "total": {
+     "x": 40,
+     "y": 230,
+     "w": 84.2890625,
+     "h": 32.5,
+     "text": "١٠٠٫٥٠"
+    }
+   },
+   "origin": {
+    "x": 0,
+    "y": 0
+   }
+  }
+ },
+ "log": [
+  {
+   "ms": 44,
+   "event": "goto",
+   "url": "http://127.0.0.1:44443/index.html"
+  },
+  {
+   "ms": 396,
+   "event": "shot",
+   "name": "empty"
+  },
+  {
+   "ms": 419,
+   "event": "click",
+   "target": "[data-testid=add-matcha]",
+   "at": {
+    "x": 73.4609375,
+    "y": 98.5
+   }
+  },
+  {
+   "ms": 551,
+   "event": "click",
+   "target": "[data-testid=add-boba]",
+   "at": {
+    "x": 73.4609375,
+    "y": 173.5
+   }
+  },
+  {
+   "ms": 675,
+   "event": "read",
+   "name": "total",
+   "selector": "[data-testid=total]",
+   "text": "١٠٠٫٥٠"
+  },
+  {
+   "ms": 675,
+   "event": "expect",
+   "name": "total",
+   "ok": true
+  },
+  {
+   "ms": 916,
+   "event": "shot",
+   "name": "filled"
+  },
+  {
+   "ms": 923,
+   "event": "click",
+   "target": {
+    "text": "اطلب"
+   },
+   "at": {
+    "x": 330.51953125,
+    "y": 305
+   }
+  },
+  {
+   "ms": 1047,
+   "event": "waitText",
+   "selector": "[data-testid=status]",
+   "includes": "تم الطلب"
+  },
+  {
+   "ms": 1049,
+   "event": "verify-source",
+   "name": "sourceTotal",
+   "value": 100.5
+  },
+  {
+   "ms": 1049,
+   "event": "expect",
+   "name": "sourceTotal",
+   "ok": true
+  },
+  {
+   "ms": 1051,
+   "event": "read",
+   "name": "status",
+   "selector": "[data-testid=status]",
+   "text": "تم الطلب: ٢ منتجات"
+  },
+  {
+   "ms": 1288,
+   "event": "shot",
+   "name": "ordered"
+  }
+ ],
+ "complete": true
+}

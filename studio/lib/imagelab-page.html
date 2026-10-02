@@ -101,6 +101,49 @@ const lab = {
     g.drawImage(tint, 0, 0);
     return c;
   },
+  // ---- mattes (white = keep, alpha carries coverage) ----
+  // Keep pixels far from a key colour (green/blue screen or a flat studio background).
+  chromaMatte(src, { color = '#00ff00', tolerance = 60, softness = 30, keep = 'subject' } = {}) {
+    const n = parseInt(color.slice(1), 16), kr = n >> 16 & 255, kg = n >> 8 & 255, kb = n & 255;
+    const c = lab.clone(src), D = lab.data(c);
+    for (let i = 0; i < D.data.length; i += 4) {
+      const d = Math.hypot(D.data[i] - kr, D.data[i + 1] - kg, D.data[i + 2] - kb);
+      let a = Math.max(0, Math.min(1, (d - tolerance) / Math.max(1, softness)));
+      if (keep === 'key') a = 1 - a;
+      D.data[i] = D.data[i + 1] = D.data[i + 2] = 255; D.data[i + 3] = Math.round(255 * a);
+    }
+    return lab.put(c, D);
+  },
+  // Keep pixels whose luminance lies in [min, max] (0..255), with a soft ramp.
+  lumaMatte(src, { min = 128, max = 255, softness = 16, invert = false } = {}) {
+    const c = lab.clone(src), D = lab.data(c);
+    for (let i = 0; i < D.data.length; i += 4) {
+      const y = 0.2126 * D.data[i] + 0.7152 * D.data[i + 1] + 0.0722 * D.data[i + 2];
+      let a = Math.min(Math.max(0, Math.min(1, (y - min) / softness + 1)), Math.max(0, Math.min(1, (max - y) / softness + 1)));
+      if (invert) a = 1 - a;
+      D.data[i] = D.data[i + 1] = D.data[i + 2] = 255; D.data[i + 3] = Math.round(255 * a);
+    }
+    return lab.put(c, D);
+  },
+  // The source's own alpha as a matte (pre-cut PNGs).
+  alphaMatte(src) { const c = lab.clone(src), D = lab.data(c); for (let i = 0; i < D.data.length; i += 4) { D.data[i] = D.data[i + 1] = D.data[i + 2] = 255; } return lab.put(c, D); },
+  // A grayscale mask image (white = keep) converted to an alpha matte.
+  grayMatte(img) { const c = lab.clone(img), D = lab.data(c); for (let i = 0; i < D.data.length; i += 4) { const a = D.data[i]; D.data[i] = D.data[i + 1] = D.data[i + 2] = 255; D.data[i + 3] = a; } return lab.put(c, D); },
+  // Bounding box of alpha above a threshold, plus coverage fraction.
+  bounds(mask, threshold = 8) {
+    const D = lab.data(mask).data, w = mask.width, h = mask.height; let x0 = w, y0 = h, x1 = -1, y1 = -1, sum = 0;
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const a = D[(y * w + x) * 4 + 3]; sum += a; if (a > threshold) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; } }
+    return x1 < 0 ? null : { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1, coverage: +(sum / 255 / (w * h)).toFixed(5) };
+  },
+  // Contact/cast shadow plate from a subject matte: flattened at the base, blurred, black with alpha.
+  shadowFrom(mask, { squash = 0.12, blur = 18, opacity = 0.6, offsetY = 0, spread = 1.05 } = {}) {
+    const b = lab.bounds(mask); const c = lab.canvas(mask.width, mask.height); if (!b) return c;
+    const g = c.getContext('2d'); const sh = Math.max(2, b.h * squash), base = b.y + b.h + offsetY;
+    g.filter = `blur(${blur}px)`; g.globalAlpha = opacity;
+    g.drawImage(mask, b.x, b.y, b.w, b.h, b.x + b.w * (1 - spread) / 2, base - sh / 2, b.w * spread, sh);
+    g.globalCompositeOperation = 'source-in'; g.filter = 'none'; g.globalAlpha = 1; g.fillStyle = '#000'; g.fillRect(0, 0, c.width, c.height);
+    return c;
+  },
   crop(src, x, y, w, h, scale = 1) { const c = lab.canvas(Math.round(w * scale), Math.round(h * scale)); const g = c.getContext('2d'); g.imageSmoothingQuality = 'high'; g.drawImage(src, x, y, w, h, 0, 0, c.width, c.height); return c; },
 };
 </script>

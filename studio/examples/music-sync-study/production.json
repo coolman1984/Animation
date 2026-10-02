@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "duration": 16,
+  "fps": 30,
+  "audience": "Future studio sessions learning music-driven editing",
+  "promise": "Picture events can land on measured musical moments without cutting on every beat",
+  "cta": "Read the music map before choosing cut points",
+  "direction": "Graphic score visualisation: navy night, cream energy line, a yellow flood on the release",
+  "musicMap": "examples/music-sync-study/track.musicmap.json",
+  "assets": [],
+  "sound": { "mode": "original", "bpm": 120, "note": "Synthetic study track from test/fixture/music-track.mjs; no third-party material" },
+  "creative": {
+    "viewer": "an editor deciding where a reveal should land",
+    "problem": "cuts placed by guesswork feel late or early",
+    "promise": "the music map names quiet holds, builds and the release",
+    "evidence": "measured beats/downbeats/energy from the analyzer",
+    "emotion": "suspense resolving into release",
+    "motif": "a line drawing the music's energy",
+    "palette": ["#0F1220", "#F1E9D8", "#F2D14A", "#5B6CFF"],
+    "light": "flat graphic, one colour flood at the release",
+    "typography": { "display": "Aref Ruqaa", "text": "Montserrat" },
+    "camera": "locked frame; the graphic itself moves",
+    "transitions": ["colorHandoff"],
+    "motion": "beat pulses only on measured beats; one big impact on the release",
+    "sound": "the track plus a single impact on the release",
+    "pacing": "quiet hold, rising build, release, settle",
+    "payoff": "the frame floods yellow exactly on the measured downbeat",
+    "cta": "use describeTime/cutReport before cutting",
+    "styleFrames": { "hook": 3, "proof": 8.4, "payoff": 13 },
+    "proof": { "start": 4, "end": 14 }
+  },
+  "shots": [
+    { "id": "hold", "start": 0, "end": 6.3, "purpose": "quiet hold: the line breathes, the word waits", "assetIds": [],
+      "craft": { "scale": "graphic wide", "camera": "locked", "focal": "energy line", "transition": "cut", "primaryMotions": ["line draw"], "audioCue": "quiet pad" },
+      "copy": { "text": "استنى…", "start": 1.2, "end": 6.0 } },
+    { "id": "build", "start": 6.3, "end": 8.266, "purpose": "build: the line climbs, pulses tighten", "assetIds": [],
+      "craft": { "scale": "graphic wide", "camera": "locked", "focal": "rising line", "transition": "cut", "primaryMotions": ["line draw", "pulse"], "audioCue": "riser" } },
+    { "id": "release", "start": 8.266, "end": 16, "purpose": "release: yellow flood on the measured downbeat, beats pulse", "assetIds": [],
+      "craft": { "scale": "graphic full", "camera": "locked", "focal": "the word", "transition": "colorHandoff", "primaryMotions": ["impact", "beat pulses"], "audioCue": "impact on the release" },
+      "copy": { "text": "دلوقتي", "start": 8.6, "end": 15.6 } }
+  ],
+  "cues": [
+    { "id": "release", "t": 8.266, "kind": "impact", "shot": "release", "sound": { "type": "impact", "vel": 0.5, "weight": 0.7 } }
+  ]
+}

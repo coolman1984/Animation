@@ -98,6 +98,19 @@ export async function connect(url) {
   return client;
 }
 
+// The first screenshot after a page loads can be torn (lower tiles still showing an older raster),
+// measured on Chromium 141 headless with heavy filter layers. Capture until two consecutive
+// screenshots match before any real frame is taken; later captures were verified stable.
+export async function settleCapture(client, { tries = 8, gap = 30 } = {}) {
+  let prev;
+  for (let i = 0; i < tries; i++) {
+    const shot = (await client.send('Page.captureScreenshot', { format: 'png' })).data;
+    if (shot === prev) return i;
+    prev = shot; await new Promise(r => setTimeout(r, gap));
+  }
+  return tries;
+}
+
 // Width of a PNG or JPEG buffer — used by the device-scale gate.
 export function imageWidth(buf) {
   if (buf[0] === 0x89 && buf[1] === 0x50) return buf.readUInt32BE(16);

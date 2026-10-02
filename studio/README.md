@@ -1,6 +1,6 @@
 # Studio — code-driven video, animation & editing
 
-Start with [WORKFLOW.md](WORKFLOW.md) and the [department index](SKILLS.md).
+Start with the [current status](../STATUS.md), [WORKFLOW.md](WORKFLOW.md) and the [department index](SKILLS.md).
 [CRAFT_GUIDE.md](CRAFT_GUIDE.md) covers directing, natural Egyptian copy, source truth, layered staging and music audition.
 
 ```bash

@@ -8,24 +8,26 @@ import { fileURLToPath } from 'node:url';
 import { cpus } from 'node:os';
 import { once } from 'node:events';
 import { frameRange, PROFILES } from './build-options.mjs';
-import { launch, imageWidth } from './cdp.mjs';
+import { launch, imageWidth, settleCapture } from './cdp.mjs';
 import { serve } from './serve.mjs';
 
 const STUDIO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
-export function run(cmd, args, { input, quiet = true } = {}) {
+export function run(cmd, args, { input, quiet = true, cwd, env } = {}) {
   return new Promise((res, rej) => {
-    const p = spawn(cmd, args, { stdio: [input ? 'pipe' : 'ignore', 'pipe', 'pipe'] });
+    const p = spawn(cmd, args, { stdio: [input ? 'pipe' : 'ignore', 'pipe', 'pipe'], ...(cwd ? { cwd } : {}), ...(env ? { env: { ...process.env, ...env } } : {}) });
     let out = '', err = '';
     p.stdout.on('data', (d) => (out += d)); p.stderr.on('data', (d) => (err += d));
     p.on('error', rej);
-    p.on('close', (c) => (c === 0 ? res({ out, err }) : rej(new Error(`${cmd} exited ${c}\n${err.slice(-2000)}`))));
+    p.on('close', (c) => (c === 0 ? res({ out, err }) : rej(new Error(`${cmd} exited ${c}\n${err.slice(-2000)}${out ? `\n--- stdout tail ---\n${out.slice(-1500)}` : ""}`))));
     if (input) { p.stdin.end(input); }
   });
 }
 
-async function openFilm(port, film, { w, h, variant, segments, fadeOut, scale = 1 }) {
-  const client = await launch({ width: w, height: h, scale });
+// WebGL via SwiftShader (CPU, deterministic) for films that declare gpu: true. Off by default.
+export const GPU_ARGS = ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'];
+async function openFilm(port, film, { w, h, variant, segments, fadeOut, scale = 1, gpu = false }) {
+  const client = await launch({ width: w, height: h, scale, extraArgs: gpu ? GPU_ARGS : [] });
   try {
     const query = new URLSearchParams({ film: '/' + relative(STUDIO, film), w: String(w), h: String(h), variant: variant || 'hero' });
     if (segments) query.set('segments', segments);
@@ -39,6 +41,7 @@ async function openFilm(port, film, { w, h, variant, segments, fadeOut, scale = 
     }
     const info = await client.eval('window.ready');
     if (!info || errors.length) throw new Error('composer failed to become ready: ' + errors.join('\n'));
+    await settleCapture(client);
     return { client, info, errors };
   } catch (error) { await client.close(); throw error; }
 }
@@ -51,13 +54,13 @@ async function frameAt(client, t, frame, { format = 'png', quality = 95 } = {}) 
 }
 
 // Stills at given times → PNGs (+ a contact sheet and text boxes for QA).
-export async function stills({ film, times, outDir, w = 1080, h = 1350, variant, sheetCols = 5 }) {
+export async function stills({ film, times, outDir, w = 1080, h = 1350, variant, sheetCols = 5, gpu = false }) {
   const srv = await serve(STUDIO);
   mkdirSync(outDir, { recursive: true });
   let client, info;
   const boxes = {};
   try {
-    ({ client, info } = await openFilm(srv.port, film, { w, h, variant }));
+    ({ client, info } = await openFilm(srv.port, film, { w, h, variant, gpu }));
     for (const t of times) {
       const png = await frameAt(client, t, Math.round(t * info.fps));
       if (imageWidth(png) !== w) throw new Error(`frame width ${imageWidth(png)} != ${w}`);
@@ -73,13 +76,13 @@ export async function stills({ film, times, outDir, w = 1080, h = 1350, variant,
 
 // Sample the composition's text every `step` seconds: caption timeline + layout checks, read back
 // from the DOM (what is really on screen, not what the script intended).
-export async function textTimeline({ film, w = 1080, h = 1350, variant, segments, step = 0.1, safe = 24, safeRect, t0 = 0, t1, fadeOut }) {
+export async function textTimeline({ film, w = 1080, h = 1350, variant, segments, step = 0.1, safe = 24, safeRect, t0 = 0, t1, fadeOut, gpu = false }) {
   const [sx0, sy0, sx1, sy1] = safeRect || [safe, safe, w - safe, h - safe];
   const srv = await serve(STUDIO);
-  let client, info, end;
+  let client, info, end, camera;
   const spans = new Map(); const issues = [];
   try {
-    ({ client, info } = await openFilm(srv.port, film, { w, h, variant, segments, fadeOut }));
+    ({ client, info } = await openFilm(srv.port, film, { w, h, variant, segments, fadeOut, gpu }));
     end = t1 ?? info.duration;
     frameRange(t0, end, info.duration, 1 / step);
     for (let t = t0; t < end - 1e-9; t += step) {
@@ -88,7 +91,9 @@ export async function textTimeline({ film, w = 1080, h = 1350, variant, segments
       for (const b of boxes) {
         const key = b.text;
         const s = spans.get(key) || []; const last = s[s.length - 1];
-        if (last && Math.abs(last.end - (t - step)) < step / 2) last.end = t; else s.push({ start: t, end: t });
+        const box = [b.x0, b.y0, b.x1, b.y1].map(Math.round);
+        if (last && Math.abs(last.end - (t - step)) < step / 2) { last.end = t; last.box = [Math.min(last.box[0], box[0]), Math.min(last.box[1], box[1]), Math.max(last.box[2], box[2]), Math.max(last.box[3], box[3])]; }
+        else s.push({ start: t, end: t, box });
         spans.set(key, s);
         if (b.x0 < sx0 || b.x1 > sx1 || b.y0 < sy0 || b.y1 > sy1) issues.push({ t: +t.toFixed(2), kind: 'outside-safe', text: key, box: [b.x0, b.y0, b.x1, b.y1].map(Math.round) });
       }
@@ -98,15 +103,20 @@ export async function textTimeline({ film, w = 1080, h = 1350, variant, segments
         if (ox > 4 && oy > 4) issues.push({ t: +t.toFixed(2), kind: 'overlap', text: `${a.text} | ${b.text}` });
       }
     }
+    // Films exposing camera(t) also get a camera timeline (for motion diagnostics and review sampling).
+    if (await client.eval('typeof window.cameraAt === "function"')) {
+      const dt = 1 / (2 * info.fps);
+      camera = await client.eval(`(() => { const out = []; for (let t = ${t0}; t < ${end} - 1e-9; t += ${dt}) { const c = window.cameraAt(t) || {}; out.push([+t.toFixed(5), c.x ?? 0, c.y ?? 0, c.zoom ?? 1, c.focus ?? 1, c.aperture ?? 0]); } return out; })()`);
+    }
   } finally { await client?.close(); srv.close(); }
-  const lines = [...spans.entries()].flatMap(([text, ss]) => ss.map((s) => ({ text, start: +s.start.toFixed(2), end: +Math.min(end, s.end + step).toFixed(2) }))).sort((a, b) => a.start - b.start);
-  return { lines, issues };
+  const lines = [...spans.entries()].flatMap(([text, ss]) => ss.map((s) => ({ text, start: +s.start.toFixed(2), end: +Math.min(end, s.end + step).toFixed(2), box: s.box }))).sort((a, b) => a.start - b.start);
+  return { lines, issues, ...(camera ? { camera: { fields: ['t', 'x', 'y', 'zoom', 'focus', 'aperture'], samples: camera } } : {}) };
 }
 
 // Full render in parallel slices → out.mp4 (video only).
 export async function video({ film, out, w = 1080, h = 1350, variant, segments, fadeOut,
   workers = Math.min(4, cpus().length), crf = 14, preset = 'slow', t0 = 0, t1,
-  fps: fpsOverride, scale = 1, format = 'png', quality = 95 }) {
+  fps: fpsOverride, scale = 1, format = 'png', quality = 95, gpu = false }) {
   if (!Number.isInteger(workers) || workers < 1 || workers > 16 || !Number.isFinite(scale) || scale <= 0 || scale > 2)
     throw new Error('invalid workers or capture scale');
   if (!['png', 'jpeg'].includes(format)) throw new Error('invalid capture format');
@@ -114,7 +124,7 @@ export async function video({ film, out, w = 1080, h = 1350, variant, segments, 
   const tmp = out + '.slices';
   rmSync(tmp, { recursive: true, force: true }); mkdirSync(tmp, { recursive: true });
   try {
-    const probe = await openFilm(srv.port, film, { w, h, variant, segments, fadeOut, scale });
+    const probe = await openFilm(srv.port, film, { w, h, variant, segments, fadeOut, scale, gpu });
     const info = probe.info;
     await probe.client.close();
     const fps = fpsOverride ?? info.fps, end = t1 ?? info.duration;
@@ -126,7 +136,7 @@ export async function video({ film, out, w = 1080, h = 1350, variant, segments, 
     const jobs = Array.from({ length: count }, async (_, k) => {
       const a = first + k * per, b = Math.min(last, a + per);
       if (a >= b) return null;
-      const { client } = await openFilm(srv.port, film, { w, h, variant, segments, fadeOut, scale });
+      const { client } = await openFilm(srv.port, film, { w, h, variant, segments, fadeOut, scale, gpu });
       const file = join(tmp, `s${String(k).padStart(2, '0')}.mp4`);
       const ff = spawn('ffmpeg', ['-v', 'error', '-y', '-f', 'image2pipe', '-c:v', format === 'png' ? 'png' : 'mjpeg', '-framerate', String(fps), '-i', '-',
         '-c:v', 'libx264', '-threads', '1', '-preset', preset, '-crf', String(crf), '-pix_fmt', 'yuv420p',
@@ -177,7 +187,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const filmPath = resolve(film);
   if (cmd === 'stills') {
     const times = opt.times.split(',').map(Number);
-    const r = await stills({ film: filmPath, times, outDir: resolve(opt.out), w: +(opt.w || 1080), h: +(opt.h || 1350), variant: opt.variant });
+    const r = await stills({ film: filmPath, times, outDir: resolve(opt.out), w: +(opt.w || 1080), h: +(opt.h || 1350), variant: opt.variant, gpu: opt.gpu === '1' });
     console.log(JSON.stringify(r.info));
   } else if (cmd === 'video') {
     const profile = PROFILES[opt.profile || 'final'];
@@ -185,7 +195,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     const r = await video({ ...profile, film: filmPath, out: resolve(opt.out), w: +(opt.w || 1080), h: +(opt.h || 1350), variant: opt.variant,
       segments: opt.segments, fadeOut: opt.fadeOut ? +opt.fadeOut : undefined,
       preset: opt.preset || profile.preset, crf: opt.crf ? +opt.crf : profile.crf, fps: opt.fps ? +opt.fps : profile.fps,
-      t0: +(opt.t0 || 0), t1: opt.t1 ? +opt.t1 : undefined, workers: +(opt.workers || Math.min(4, cpus().length)) });
+      t0: +(opt.t0 || 0), t1: opt.t1 ? +opt.t1 : undefined, workers: +(opt.workers || Math.min(4, cpus().length)), gpu: opt.gpu === '1' });
     console.log(JSON.stringify(r));
   }
 }

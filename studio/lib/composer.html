@@ -26,9 +26,12 @@
   const W = +(q.get('w') || 1080), H = +(q.get('h') || 1350);
   const stage = document.getElementById('stage');
   stage.style.width = W + 'px'; stage.style.height = H + 'px';
+  // Libraries that load resources outside <img> (textures, data) register promises here; ready awaits them.
+  const pending = [];
+  window.studioWait = (promise) => { pending.push(promise); return promise; };
   const mod = await import(q.get('film'));
   const film = mod.default;
-  film.init(stage, { W, H, variant: q.get('variant') || 'hero' });
+  await film.init(stage, { W, H, variant: q.get('variant') || 'hero' });
   // Optional cut-down: ?segments=a-b,c-d (film seconds) &fadeOut=sec — output time u maps onto the
   // film's own timeline, so a cut-down is the same deterministic picture, re-edited.
   const segs = (q.get('segments') || '').split(',').filter(Boolean).map((s) => s.split('-').map(Number));
@@ -49,6 +52,8 @@
     if (fadeOut) { if (!veil.parentNode) stage.appendChild(veil); veil.style.opacity = Math.min(1, Math.max(0, (u - (total - fadeOut)) / fadeOut)).toFixed(4); }
     return true;
   };
+  // Optional: films that expose camera(t) get camera diagnostics and velocity-aware review sampling.
+  if (typeof film.camera === 'function') window.cameraAt = (u) => film.camera(mapT(u));
   window.duration = total;
   window.fps = film.fps || 30;
   window.textBoxes = () => [...stage.querySelectorAll('.line')]
@@ -57,12 +62,13 @@
       const words = [...l.querySelectorAll('.word')].filter((w) => +getComputedStyle(w).opacity > 0.5);
       if (!words.length) return null;
       const rs = words.map((w) => w.getBoundingClientRect());
-      return { text: [...l.querySelectorAll('.word')].map((w) => w.textContent).join(' '), x0: Math.min(...rs.map((r) => r.left)), y0: Math.min(...rs.map((r) => r.top)), x1: Math.max(...rs.map((r) => r.right)), y1: Math.max(...rs.map((r) => r.bottom)) };
+      return { text: l.dataset.text || [...l.querySelectorAll('.word')].map((w) => w.textContent).join(' '), x0: Math.min(...rs.map((r) => r.left)), y0: Math.min(...rs.map((r) => r.top)), x1: Math.max(...rs.map((r) => r.right)), y1: Math.max(...rs.map((r) => r.bottom)) };
     }).filter(Boolean);
   window.ready = (async () => {
     await document.fonts.ready;
     await Promise.all([...document.fonts].map((f) => f.load()));
     await Promise.all([...stage.querySelectorAll('img')].map((i) => i.decode().catch(() => { throw new Error('image failed: ' + i.src); })));
+    await Promise.all(pending);
     window.renderAt(0);
     return { W, H, duration: total, fps: film.fps || 30, fonts: [...document.fonts].filter((f) => f.status === 'loaded').map((f) => f.family) };
   })();
