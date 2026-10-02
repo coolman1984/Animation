@@ -40,3 +40,5 @@ choosing reconstruction techniques. Ordinary films without a reference do not lo
 | Short original reconstruction and comparison | recreation-director | reconstruct/compare/learn, reference/lessons.json |
 
 Artistic reference study: reference-reverse-engineer → ARTISTIC_FORENSICS.md / artistic-dna.json → creative-director + recreation-director → reference.mjs direct / original-direction.md. Five artistic layers and whole-film curves are evidence-linked reviewer work, never automatic psychological facts.
+
+Owner-facing workflow: AUTONOMOUS_FILM.md — one natural-language request, agent completes every internal step, one finished video. lib/build-options.mjs ownerRequest enforces exact single-delivery width/height/duration/fps.

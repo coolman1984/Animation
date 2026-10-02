@@ -17,3 +17,5 @@ Read recreation-plan.json and analysis.md; require reviewed observations before 
 
 ## Original direction from artistic DNA
 For new subject-specific production, read ARTISTIC_FORENSICS.md and reviewed artistic-dna.json. Use `reference/original-direction-template.json` and `reference.mjs direct <pack> --brief=file`. Trace 1–12 principles to original execution, subject fit, difference and counter-case. Adapt emotional arc, pacing, hierarchy, light, camera and payoff to our viewer; never reproduce identifiable artwork, characters, branding or exact composition. Inspect hook/proof/payoff frames for originality. Neutral technical studies may remain artistically pending and must say so.
+
+**Owner production policy:** read `studio/AUTONOMOUS_FILM.md` first for new films. The owner requests subject + placement/size; the Claude Code agent does ALL analysis, direction, internal JSON, review, corrections and export. No ordinary approval pauses or manual owner tasks. Deliver one finished video link. Use config.ownerRequest to enforce the single requested canvas/duration/fps.

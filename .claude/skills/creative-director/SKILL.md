@@ -22,3 +22,5 @@ Rules:
 - One dominant action at a time; quiet holds can feel more premium than permanent motion.
 
 When a supplied reference is used, read ARTISTIC_FORENSICS.md and the reviewed ARTISTIC DNA. Transfer evidence-linked principles into an original new-subject direction using reference.mjs direct, rather than reuse surface style. Plan attention through contrast: hook, question, quiet inspection and payoff when appropriate. Use context-specific colour/emotion hypotheses; audience retention is unknown without viewer data.
+
+**Owner production policy:** read `studio/AUTONOMOUS_FILM.md` first for new films. The owner requests subject + placement/size; the Claude Code agent does ALL analysis, direction, internal JSON, review, corrections and export. No ordinary approval pauses or manual owner tasks. Deliver one finished video link. Use config.ownerRequest to enforce the single requested canvas/duration/fps.

@@ -28,6 +28,13 @@ export function artisticScaffold(duration, shots = []) {
     limitations:['No automatic style label, emotional claim, attention score or creative intention inferred from pixels.','Still frames cannot establish pacing, retention, camera velocity or sound fit.','Actual audience retention needs viewer data.']};
 }
 export function validateArtistic(dna, {duration,dir,review,audioAvailable}) {
+  if(dna?.autoSections===true && Array.isArray(dna.observations)) {
+    for(const o of dna.observations)if(!Array.isArray(o.topics)||o.topics.some(h=>!ARTISTIC_SECTIONS.includes(h)))fail('autoSections needs valid observation topics');
+    dna={...dna,sections:Object.fromEntries(ARTISTIC_SECTIONS.map(h=>{
+      const decisions=dna.observations.filter(o=>o.topics.includes(h));
+      return [h,decisions.length?{status:'reviewed',observationIds:decisions.map(o=>o.id),summary:decisions.map(o=>`${o.observedChoice} → ${o.likelyIntention} (confidence ${o.confidence}).`).join(' ')}:{status:'not-assessed',observationIds:[],summary:'Not assessed; no inspected decision supplied for this topic.'}];
+    }))};
+  }
   if (!dna || dna.version !== 1 || !Array.isArray(dna.observations) || dna.observations.length > 80 || !Array.isArray(dna.timeline) || !dna.timeline.length || dna.timeline.length > 48) fail('version 1, <=80 observations and 1–48 whole-film timeline intervals required');
   if (!words(dna.context?.viewer) || !words(dna.context?.purpose) || !words(dna.context?.viewingSituation)) fail('viewer, purpose and viewingSituation required');
   const ids = new Set();
@@ -86,4 +93,18 @@ export function originalDirection(dir, brief) {
   save(join(dir,'original-direction.json'),result);
   writeFileSync(join(dir,'original-direction.md'),'# Original creative direction\n\n'+Object.entries(result).filter(([k])=>k!=='transformations').map(([k,v])=>`## ${k}\n\n${v}`).join('\n\n')+'\n\n## Principle → original execution\n\n'+result.transformations.map(t=>`- ${t.principle} → ${t.originalExecution}. Fit: ${t.whyItFitsSubject}. Difference: ${t.differenceFromReference}. Counter-case: ${t.counterCase}. Evidence: ${t.observationIds.join(', ')}.`).join('\n'));
   return join(dir,'original-direction.md');
+}
+
+// Prepare paperwork and candidate evidence only; the agent still opens the actual images/playback.
+export function prepareReview(dir) {
+  const file=join(dir,'review-draft.json');if(existsSync(file))throw new Error('Review draft already exists; edit it without overwriting work');
+  const template=json(join(import.meta.dirname,'review-template.json')),meta=json(join(dir,'metadata.json')),shots=json(join(dir,'shots.json'));
+  const dna=artisticScaffold(meta.duration,shots),blank=template.artisticDNA.timeline[0];
+  const count=Math.min(12,Math.max(1,shots.length)),bounds=Array.from({length:count+1},(_,i)=>i===count?meta.duration:shots.length?shots[Math.floor(i*shots.length/count)].start:0);
+  dna.autoSections=true;dna.context=template.artisticDNA.context;
+  dna.timeline=Array.from({length:count},(_,i)=>({...structuredClone(blank),start:bounds[i],end:bounds[i+1],suggestedEvidence:shots.filter(s=>s.start>=bounds[i]&&s.start<bounds[i+1]).flatMap(s=>s.frames.map(f=>({file:f.file,t:f.t}))).slice(0,9)}));
+  template.artisticDNA=dna;
+  template.sections=Object.fromEntries(Object.keys(template.sections).map(h=>[h,'Not visually interpreted yet. Machine evidence remains in analysis.md; replace this where inspected evidence supports a technical conclusion.']));
+  template.workflowNote='Open suggested evidence first; record actual viewedEvidence. Write each important observation once with topics from ARTISTIC_SECTIONS. autoSections routes it into the report. Set reviewer/context and honest playback/listening flags. Keep unknown timeline fields/axes unchanged when uninspected. Never treat this prepared draft as a completed review.';
+  save(file,template);return file;
 }

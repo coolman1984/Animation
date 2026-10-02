@@ -93,3 +93,5 @@ the film's `LEDGER.md`, and any skill whose advice changed. `npm test` runs `tes
 or a film ledger is undocumented or when STATUS.md is older than the newest changelog entry.
 
 Artistic reference analysis: `ARTISTIC_FORENSICS.md` documents the five-layer review, 20-part ARTISTIC DNA, attention/pacing curves and `reference.mjs direct` for an original new-subject direction. Technical machine evidence and artistic reviewer judgment remain separate.
+
+Owner-facing workflow: AUTONOMOUS_FILM.md — one natural-language request, agent completes every internal step, one finished video. lib/build-options.mjs ownerRequest enforces exact single-delivery width/height/duration/fps.

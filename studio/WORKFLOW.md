@@ -8,6 +8,9 @@ do not reopen completed work. The two-correction-round budget is a total per req
 not a fresh allowance for every defect. If a blocker remains after that budget, record BLOCKED
 with evidence and a concrete next action; stop without delivering an unverified final.
 
+## Autonomous delivery (owner instruction, takes precedence)
+Read AUTONOMOUS_FILM.md. The owner asks for a video and placement; the agent chooses, analyses, authors all internal files, reviews and renders autonomously. Any “approved direction” below means agent acceptance, not a pause for the owner. New configs declare ownerRequest; final exports only that delivery. Return one finished video link.
+
 ## Model effort and context budget
 - Start routine implementation, variations and local fixes at **medium** effort.
 - Use **high** for the initial art direction, difficult composition decisions and the final visual critique.
@@ -27,7 +30,7 @@ with evidence and a concrete next action; stop without delivering an unverified 
 4. Build a **8–12 s proof segment** with a real transition and sound before expanding the film.
    Establish visual hierarchy and coherent camera movement here. Intentional quiet holds are allowed when logged.
 5. Expand the approved direction; every shot must add information or emotion. Alternate wide/close/detail shots when the assets support them.
-   Flat input photos limit lighting/camera realism: request better assets or choose a suitable graphic treatment; never invent product evidence.
+   Flat input photos limit lighting/camera realism: choose a suitable truthful graphic treatment with available assets; never invent product evidence.
 6. Before full expansion, fill each shot's `craft` block in production.json (scale, camera, focal, transition, depth layers, primary motions, audio cue). Preflight now warns on accidental repetition, low craft coverage and >2 competing primary motions. These warnings trigger inspection, not an automatic aesthetic verdict.
 7. For cinematic motion, prefer `lib/cinema.js` + `lib/depth.js`: one shared camera, motivated rack focus, bounded micro-drift only when appropriate, and a settled hold for product/copy. Use `lib/rhythm.mjs` to see beat/phrase timing without forcing edits onto every beat.
 

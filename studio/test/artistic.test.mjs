@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, writeFileSync, rmSync, readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { artisticScaffold, validateArtistic, renderArtistic, originalDirection, ARTISTIC_SECTIONS, ATTENTION_AXES, PACING_AXES } from '../reference/artistic.mjs';
+import { artisticScaffold, validateArtistic, renderArtistic, originalDirection, prepareReview, ARTISTIC_SECTIONS, ATTENTION_AXES, PACING_AXES } from '../reference/artistic.mjs';
 import { applyReview, SECTIONS, writeAnalysis } from '../reference/report.mjs';
 const save=(d,f,v)=>writeFileSync(join(d,f),JSON.stringify(v));
 function fixture(){
@@ -61,5 +61,16 @@ test('new-subject direction needs artistic review and traceable original transfo
 test('unseen and still-only intervals preserve unknown temporal values rather than silently scoring zero',()=>{
  const f=fixture();try{const d=structuredClone(f.dna),r=d.timeline[0];r.basis='unknown';r.observationIds=[];r.attention=Object.fromEntries(ATTENTION_AXES.map(k=>[k,null]));r.pacing=Object.fromEntries(PACING_AXES.map(k=>[k,null]));
   assert.equal(validateArtistic(d,f.opts).timeline[0].pacing.cameraEnergy,null);r.basis='still';r.observationIds=['push'];r.attention.informationDensity=0;assert.equal(validateArtistic(d,f.opts).timeline[0].attention.informationDensity,0);
+ }finally{rmSync(f.dir,{recursive:true,force:true});}
+});
+
+
+test('prepared drafts prefill real timing/evidence without claiming inspection; one observation routes to multiple topics',()=>{
+ const f=fixture();try{
+  save(f.dir,'metadata.json',{duration:4});save(f.dir,'shots.json',[{id:'one',start:0,end:4,frames:[{file:'frame.png',t:2}]}]);
+  const file=prepareReview(f.dir),draft=JSON.parse(readFileSync(file));assert.equal(draft.viewedEvidence.length,0);assert.equal(draft.motionPlaybackInspected,false);assert.equal(draft.artisticDNA.timeline[0].end,4);assert.equal(draft.artisticDNA.timeline[0].suggestedEvidence[0].file,'frame.png');assert.throws(()=>prepareReview(f.dir),/already exists/);
+  const dna=structuredClone(f.dna);dna.autoSections=true;dna.observations[0].topics=['CAMERA PSYCHOLOGY','TENSION AND RELEASE'];
+  const out=validateArtistic(dna,f.opts);assert.deepEqual(out.sections['TENSION AND RELEASE'].observationIds,['push']);assert.equal(out.sections['STYLE LANGUAGE'].status,'not-assessed');
+  dna.observations[0].topics=['invented'];assert.throws(()=>validateArtistic(dna,f.opts),/valid observation topics/);
  }finally{rmSync(f.dir,{recursive:true,force:true});}
 });

@@ -40,3 +40,5 @@ craft decision. Learn the timing/composition principle and its counter-case, not
 No required lesson quota or automatic reuse of a prior visual style.
 
 29. **Artistic intent is a contextual hypothesis.** A visible push/hold is evidence; increased importance/inspection is a likely intention with alternatives and a counter-case. Null means unobserved, not calm. Contrast may earn attention; speed and decoration alone do not certify retention or premium quality. Schema tests prove validation, not taste.
+
+30. **Owner asks; agent produces.** Reference paperwork, creative choices, proofs and judging are internal agent tasks. Use ownerRequest for exactly one target canvas/duration/fps; deliver one final video, not a pile of variants or a manual checklist.

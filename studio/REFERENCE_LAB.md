@@ -129,3 +129,5 @@ The lab was used beyond 3–8 s studies: a 15 s screen recording → a 15 s orig
 - Match boards (reference above, ours below) + one independent critique found the real gaps (type scale, width motion, point-cloud look) that numbers did not.
 - Fidelity statement used: structure, order, timing ±~0.1 s, palette, type roles. Not claimed: pixel equality, source code, audio.
 Recipes: `TECHNIQUES.md`. Result and limits: `showreel2/LEDGER.md`. A recording uploaded into git is the owner's reference only; its artwork and audio are not reused.
+
+Low-effort path: analyze automatically prepares review-draft.json with real intervals and suggested evidence. Existing packs: `prepare <pack>`. One observation with topics can populate multiple ARTISTIC DNA headings; uninspected areas remain unknown. See ARTISTIC_FORENSICS.md.

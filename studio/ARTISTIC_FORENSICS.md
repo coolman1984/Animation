@@ -119,3 +119,19 @@ Do not populate shared lessons with these schema examples. Artistic outputs and 
 private reference artifacts; no new reference media/assets or licensed audio are imported by this scope.
 This module structures experienced judgment; it does not replace a director's eyes, listening, audience
 research or an actual final-film critique. Apply the existing bounded correction policy.
+
+## Low-effort agent workflow
+
+`analyze` now writes a private review-draft.json automatically. Existing packs use
+`node reference.mjs prepare <pack>` once; it refuses to overwrite an existing draft.
+The draft fills real whole-film ranges (<=12 merged sections) and suggested frame paths/timestamps,
+unknown curve values and all report headings. Suggested evidence is NOT marked viewed.
+
+The agent opens the suggested images/playback, enters viewer/context and records 8–24 useful decisions
+once. With autoSections=true, add topics (ARTISTIC_SECTIONS names) to each observation; review routes
+one observation into all applicable headings. No need to write twenty duplicate summaries. Unaddressed
+headings stay not-assessed; no creative effect is invented to complete paperwork. Edit only observed
+narrative moments/ratings. Then review the draft and author one original direction. Auto-routing saves
+writing; actual artistic reasoning and evidence inspection remain the agent's job.
+
+All inspection, observations, drafts and direction files in this document are authored by the Claude Code agent, never assigned to the owner. See AUTONOMOUS_FILM.md.
