@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "duration": 20,
+  "fps": 30,
+  "audience": "Young Egyptian café-goers scrolling Reels/feed who already like iced matcha and want a treat worth trying",
+  "promise": "BALACONBAR's iced matcha with coconut milk and boba looks and feels irresistible — your matcha moment",
+  "cta": "Remember the drink and the brand: BALACONBAR — Your Matcha Moment / لحظتك مع الماتشا",
+  "direction": "Contemporary product cinema first, heritage café second. Real cup (owner photo) is always the hero. Light: cool fresh → natural green → cream → gold → deep green. Type: El Messiri 500 (Arabic), Montserrat 500 tracked caps (English line only). Camera: one shared depth camera per scene (cinema.js + depth.js), rack focus and settle. Transitions: foreground occlusion (rope, pillar), focus handoff, match cut. Sound: warm 96 BPM Rhodes/pad score, ice + rope + one bell; hook → development → lift at 10 s → resolution at 17.5 s.",
+  "assets": [
+    { "id": "hero", "path": "film4/source/hero-duo.jpg", "role": "product", "rights": "Owner photo supplied for this ad (2026-10-01); client material, not in git" },
+    { "id": "swing", "path": "film4/source/swing.jpg", "role": "background", "rights": "Owner's previous poster; only its rope + wooden seat are reused as set dressing, its cup is removed and replaced by the real cup" },
+    { "id": "vintage", "path": "film4/source/vintage-board.jpg", "role": "reference", "rights": "Owner mood board; palette/arch grammar only, no people, cars, dates or claims used" },
+    { "id": "plates", "path": "film4/plates", "role": "product", "rights": "Derived in code from the owner photos (film4/plates.mjs)" }
+  ],
+  "sound": { "mode": "original", "bpm": 96, "note": "Synthesised in film4/score.mjs with lib/audio.mjs; no samples, no licence needed" },
+  "shots": [
+    { "id": "hook", "start": 0, "end": 2.5, "purpose": "hook: real drink texture before any branding", "assetIds": ["hero", "plates"],
+      "craft": { "scale": "macro", "camera": "decelerating pull-back", "focal": "ice and matcha band, focus travels to the printed logo", "transition": "open on image", "depthLayers": 4, "primaryMotions": ["camera", "focus"], "audioCue": "ice + low opening chord" },
+      "copy": { "text": "مش أي ماتشا", "start": 0.45, "end": 2.3 } },
+    { "id": "swing", "start": 2.5, "end": 6.25, "purpose": "hero reveal: full real cup on the wooden swing, café light behind", "assetIds": ["hero", "swing", "plates"],
+      "craft": { "scale": "full product", "camera": "truck behind the foreground rope, settle", "focal": "whole cup and logo", "transition": "foreground occlusion (rope)", "depthLayers": 5, "primaryMotions": ["camera", "swing drift"], "audioCue": "rope creak, keys enter" },
+      "copy": { "text": "لحظتك مع الماتشا", "start": 3.4, "end": 5.7 } },
+    { "id": "coconut", "start": 6.25, "end": 9.375, "purpose": "ingredient evidence: the real coconut-milk carton behind the real cup", "assetIds": ["hero", "plates"],
+      "craft": { "scale": "two-shot", "camera": "slow lateral then push to the boba", "focal": "carton, rack back to cup", "transition": "focus handoff", "depthLayers": 4, "primaryMotions": ["focus", "camera"], "audioCue": "none — music carries" },
+      "copy": { "text": "بجوز الهند", "start": 6.8, "end": 8.65 } },
+    { "id": "texture", "start": 9.375, "end": 13.125, "purpose": "sensory climax: boba → matcha gradient → ice in macro", "assetIds": ["hero", "plates"],
+      "craft": { "scale": "detail", "camera": "vertical crane with travelling focus band", "focal": "texture under a passing light", "transition": "match cut (same cup position, new light)", "depthLayers": 3, "primaryMotions": ["camera", "light sweep"], "audioCue": "music lift at 10 s" } },
+    { "id": "world", "start": 13.125, "end": 17.0, "purpose": "BALACONBAR world: cup inside a warm arched window, gold café light, no text", "assetIds": ["hero", "plates"],
+      "craft": { "scale": "medium", "camera": "slow push through the arch", "focal": "hero cup", "transition": "foreground occlusion (pillar)", "depthLayers": 5, "primaryMotions": ["camera", "light sweep"], "audioCue": "full groove + motif" } },
+    { "id": "payoff", "start": 17.0, "end": 20.0, "purpose": "brand payoff: one clean cup, logo, line; held still", "assetIds": ["hero", "plates"],
+      "craft": { "scale": "brand resolve", "camera": "breathe out then locked", "focal": "logo, line, cup", "transition": "light falls to deep green (continuous)", "depthLayers": 3, "primaryMotions": ["camera", "type"], "audioCue": "resolving chord + bell" },
+      "copy": { "text": "لحظتك مع الماتشا", "start": 17.75, "end": 20.0 } }
+  ]
+}
