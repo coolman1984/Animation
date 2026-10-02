@@ -4,7 +4,7 @@ description: Study a supplied reference video, visually inspect compact evidence
 ---
 # Reference reverse engineer
 Read `STATUS.md` and `studio/REFERENCE_LAB.md`. Respect the bounded scope; do not create a film or clone an entire reference automatically.
-1. Load reference-ingest; run `node reference.mjs analyze <source>` from studio. Start with the overview, then the compact sheets in evidence-pack.json. Read metadata/limits; never send every frame to a model.
+1. Load reference-ingest; run `node reference.mjs analyze <source>` from studio. Start with the overview, then the compact sheets in evidence-pack.json. Read metadata/limits and scientific-summary.json; never send every frame to a model.
 2. Visually open the actual images. Examine transition strips and watch/listen to authorized original media when available. Load motion-forensics or audio-forensics only for that decision. A JSON manifest is not a visual inspection.
 3. Use `refine` only for an unresolved observed issue, a justified <=2s interval and <=12 extra frames. Default pack budget is 72 extraction requests. Explain skipped coverage in long/dense films.
 4. Fill `reference/review-template.json` into a private observations file. Cover all report headings, including what does not matter, what should not be copied, psychological effect as a hypothesis, and how our studio can improve. Supply actual viewed evidence paths and disclose unplayed/unheard media.

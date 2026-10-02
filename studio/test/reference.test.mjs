@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, rmSync, existsSync, writeFileSync, mkdirSync } from 'node:fs';
+import { mkdtempSync, rmSync, existsSync, writeFileSync, mkdirSync, readFileSync } from 'node:fs';
+import { createServer } from 'node:http';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { analyze, refine } from '../reference/analyze.mjs';
@@ -11,6 +12,16 @@ import { SECTIONS, applyReview } from '../reference/report.mjs';
 import { serve } from '../lib/serve.mjs';
 import { browserSource } from '../reference/browser.mjs';
 const render=process.env.STUDIO_RENDER_TEST==='1';
+async function seekableServer(dir){
+ const server=createServer((req,rsp)=>{
+  const name=new URL(req.url,'http://localhost').pathname.slice(1);if(!['index.html','reference.mp4'].includes(name)){rsp.writeHead(404);return rsp.end();}
+  const body=readFileSync(join(dir,name)),type=name.endsWith('.mp4')?'video/mp4':'text/html';
+  const range=/^bytes=(\d+)-(\d*)$/.exec(req.headers.range||'');
+  if(range){const a=Number(range[1]),b=Math.min(body.length-1,range[2]?Number(range[2]):body.length-1);if(a>b){rsp.writeHead(416,{'content-range':`bytes */${body.length}`});return rsp.end();}rsp.writeHead(206,{'content-type':type,'accept-ranges':'bytes','content-range':`bytes ${a}-${b}/${body.length}`,'content-length':b-a+1});return rsp.end(body.subarray(a,b+1));}
+  rsp.writeHead(200,{'content-type':type,'content-length':body.length,'accept-ranges':'bytes'});rsp.end(body);
+ });
+ await new Promise(r=>server.listen(0,'127.0.0.1',r));return {port:server.address().port,close:()=>server.close()};
+}
 async function fixture(dir){
   const file=join(dir,'reference.mp4');
   await work('ffmpeg',['-v','error','-y','-f','lavfi','-i','testsrc2=size=320x180:rate=24:duration=4','-f','lavfi','-i','smptebars=size=320x180:rate=24:duration=4','-f','lavfi','-i','sine=frequency=440:sample_rate=22050:duration=8','-filter_complex','[0:v][1:v]concat=n=2:v=1:a=0[v]','-map','[v]','-map','2:a','-c:v','libx264','-threads','1','-preset','ultrafast','-pix_fmt','yuv420p','-c:a','aac',file]);return file;
@@ -27,7 +38,7 @@ test('local reference creates bounded scientific evidence, reports unknown seman
   try{
     const source=await fixture(dir),pack=await analyze(source,{out:join(dir,'pack'),maxFrames:36,motion:'none'});
     const evidence=json(join(pack,'evidence-pack.json')),meta=json(join(pack,'metadata.json')),shots=json(join(pack,'shots.json'));
-    assert.ok(evidence.extracted<=36);assert.ok(evidence.uniqueForVision<evidence.extracted);assert.equal(evidence.sourceDurationSeconds,8);assert.equal(meta.width,320);assert.equal(meta.audio.channels,1);assert.ok(shots.some(s=>Math.abs(s.start-4)<.1));assert.ok(shots.every(s=>s.frames.length===3));
+    assert.ok(evidence.extracted<=36);assert.ok(evidence.uniqueForVision<evidence.extracted);assert.equal(evidence.sourceDurationSeconds,8);assert.equal(meta.width,320);assert.ok(json(join(pack,'scientific-summary.json')).audiovisualCandidates.length<=24);assert.equal(meta.audio.channels,1);assert.ok(shots.some(s=>Math.abs(s.start-4)<.1));assert.ok(shots.every(s=>s.frames.length===3));
     assert.ok(existsSync(join(pack,'contact-sheets/overview-1.png')));assert.ok(json(join(pack,'transitions.json'))[0].strip);assert.equal(json(join(pack,'audio.json')).available,true);
     assert.ok(json(join(pack,'frames.json')).some(f=>Math.abs(f.actual-f.requested)<1/24+.01));
     assert.equal(json(join(pack,'job.json')).status,'DONE_MACHINE_PACK');assert.match(json(join(pack,'recreation-plan.json')).status,/PROVISIONAL/);
@@ -50,7 +61,7 @@ test('direct media URL streams through FFmpeg; protected manifests are refused',
 test('browser video seeks record actual timestamps; native neutral reconstruction and comparison render',{skip:!render,timeout:180000},async()=>{
   const dir=mkdtempSync(join(tmpdir(),'reference-browser-'));let srv,handle;
   try{
-    const src=await fixture(dir);writeFileSync(join(dir,'index.html'),'<video controls width="640" src="reference.mp4"></video>');srv=await serve(dir);
+    const src=await fixture(dir);writeFileSync(join(dir,'index.html'),'<video controls width="640" src="reference.mp4"></video>');srv=await seekableServer(dir);
     handle=await browserSource(`http://127.0.0.1:${srv.port}/index.html`);assert.equal(handle.metadata.duration,8);assert.equal(handle.metadata.width,320);assert.ok(handle.metadata.seekable.length);
     const f=await handle.frame(2.5,join(dir,'browser.png'));assert.ok(Math.abs(f.actual-2.5)<.02);assert.ok(['requestVideoFrameCallback','currentTime-after-seeked'].includes(f.timestampSource));assert.ok(existsSync(join(dir,'browser.png')));await handle.close();handle=null;
     const pack=await analyze(src,{out:join(dir,'pack'),maxFrames:24,motion:'none'}),plan=json(join(pack,'recreation-plan.json'));

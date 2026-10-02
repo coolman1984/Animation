@@ -6,6 +6,7 @@ import { decodeMetrics, cutTimes, seriesMetrics, findEvents } from './metrics.mj
 import { blueprint, writeAnalysis } from './report.mjs';
 import { TECHNIQUE_ATLAS } from './atlas.mjs';
 const PY = join(STUDIO,'tools/reference_motion.py');
+import { scientificSummary } from './summary.mjs';
 import { relationship } from './audiovisual.mjs';
 export async function analyze(source, opts={}) {
   const maxFrames=opts.maxFrames??72;
@@ -84,8 +85,9 @@ export async function analyze(source, opts={}) {
     const sheets=[];for(let i=0;i<unique.length;i+=12){const file=`contact-sheets/evidence-${i/12+1}.png`;await sheet(unique.slice(i,i+12).map(f=>join(dir,f.file)),join(dir,file),unique.slice(i,i+12).map(f=>f.mediaTime??f.actual??f.t));sheets.push(file);}
     for(const t of allCuts.filter(t=>!cuts.includes(t)))transitions.push({t,duration:null,observedResult:'detected boundary; detailed visual sampling omitted by budget',likelyTechnique:null,confidence:0,alternatives:['hard cut','dissolve','flash','fast motion'],frames:[],strip:null,evidenceCoverage:'not inspected'});transitions.sort((a,b)=>a.t-b.t);
     save(join(dir,'frames.json'),evidence);save(join(dir,'shots.json'),shots);save(join(dir,'transitions.json'),transitions);save(join(dir,'motion.json'),motion);save(join(dir,'audio.json'),audio);save(join(dir,'audio-visual-map.json'),relationship(audio,events));
+    save(join(dir,'scientific-summary.json'),scientificSummary(meta,shots,motion,audio,relationship(audio,events)));
     save(join(dir,'technique-map.json'),{atlas:TECHNIQUE_ATLAS,hypotheses:[],status:'Await visual review; no software certainty from pixels'});save(join(dir,'recreation-plan.json'),blueprint(meta,shots,transitions,motion));
-    save(join(dir,'evidence-pack.json'),{status:'MACHINE_COMPLETE_VISUAL_REVIEW_PENDING',slug:name,passes:['coarse overview','shot candidates and triads','targeted transition/motion/audio neighborhoods','near-frame requests only when justified'],maxFrames,extracted:evidence.length,uniqueForVision:unique.length,doNotSendEveryFrame:true,contactSheets:sheets,firstLook:'contact-sheets/overview-1.png',omittedDetailedBoundaries:allCuts.length-cuts.length,nearFrameCommand:`node reference.mjs refine ${name} --range=start:end --reason="observed unresolved issue"`,sourceDurationSeconds:D,analysisSeconds:(Date.now()-started)/1000,limits:meta.limitations||[]});writeAnalysis(dir);
+    save(join(dir,'evidence-pack.json'),{status:'MACHINE_COMPLETE_VISUAL_REVIEW_PENDING',slug:name,passes:['coarse overview','shot candidates and triads','targeted transition/motion/audio neighborhoods','near-frame requests only when justified'],maxFrames,extracted:evidence.length,uniqueForVision:unique.length,doNotSendEveryFrame:true,contactSheets:sheets,firstLook:'contact-sheets/overview-1.png',machineSummary:'scientific-summary.json',rawMetricsPolicy:'Read only justified temporal windows, never all raw arrays by default',omittedDetailedBoundaries:allCuts.length-cuts.length,nearFrameCommand:`node reference.mjs refine ${name} --range=start:end --reason="observed unresolved issue"`,sourceDurationSeconds:D,analysisSeconds:(Date.now()-started)/1000,limits:meta.limitations||[]});writeAnalysis(dir);
     save(join(dir,'job.json'),{status:'DONE_MACHINE_PACK',visualReview:'PENDING',at:new Date().toISOString(),seconds:(Date.now()-started)/1000});return dir;
   }catch(e){save(join(dir,'job.json'),{status:'BLOCKED',error:e.message,at:new Date().toISOString()});throw e;}finally{await handle?.close();}
 }

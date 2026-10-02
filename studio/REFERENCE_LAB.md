@@ -34,7 +34,8 @@ effort; currentTime-after-seeked is an explicit fallback, never claimed frame-ex
 Default limits: 72 extracted frames, 300s duration, 128 MB download, 10-minute job budget and bounded
 subprocesses. Low-resolution machine decoding measures many frames without showing them to a model.
 Visually redundant images are excluded from compact evidence sheets, while exact requested/decoded
-provenance remains. Budgets/omitted coverage are recorded. Long/dense references may need explicit
+provenance remains. scientific-summary.json reduces raw motion/audio arrays to <=12 shot summaries
+and <=24 correspondence candidates; read raw metrics only for a justified temporal window. Budgets/omitted coverage are recorded. Long/dense references may need explicit
 expanded budgets; the tool does not silently claim complete detailed coverage.
 
 ```sh
@@ -99,7 +100,7 @@ an automatically adopted style or a new requirement in every film.
 ## Artifacts
 source.json, metadata.json, frames.json, frames/, contact-sheets/, detected-boundaries.json,
 shots.json, transitions.json, motion.json, audio.json, audio-visual-map.json, technique-map.json,
-analysis.md, recreation-plan.json, evidence-pack.json, job.json, optional visual-review.json,
+analysis.md, recreation-plan.json, scientific-summary.json, evidence-pack.json, job.json, optional visual-review.json,
 comparisons/ (neutral study + pair images + motion curves + comparison report).
 `job.json` records blocked ingestion/analysis without marking the pack complete. Never restart an identical
 blocked job or optional-polish loop; resolve a concrete cause within the bounded scope in STATUS.md.

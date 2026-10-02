@@ -3,7 +3,7 @@ name: audio-forensics
 description: Interpret measured audio energy, onset/beat candidates and their relationship to reference-film cuts, type, product reveals and camera movement without assuming beat-driven editing.
 ---
 # Audio forensics
-Read audio.json and audio-visual-map.json. Listen to the authorized exported audio/film before interpreting mood or music suitability.
+Start with scientific-summary.json. Read only relevant intervals from audio.json and audio-visual-map.json; do not load every raw beat/energy sample. Listen to the authorized exported audio/film before interpreting mood or music suitability.
 FFmpeg extracts mono analysis audio. Default Node musicmap analyzer measures energy/onsets and a constant-tempo candidate grid. `--audio-engine=python` uses optional NumPy/librosa (and its decode dependencies); no automatic package installation.
 - Distinguish a measured transient from an estimated beat/downbeat grid. Record tempo/downbeat confidence; half/double tempo, speech, silence and tempo changes can mislead the analyzer.
 - Inspect energy curves, quiet/build/release/peak candidates. Musical meaning and emotional response remain interpretation, not a scientific fact about every viewer.

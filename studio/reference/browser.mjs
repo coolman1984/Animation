@@ -5,10 +5,10 @@ import { publicURL } from './common.mjs';
 const bounded = (promise, ms, label) => new Promise((res, rej) => { const t = setTimeout(() => rej(new Error(label + ' timed out')), ms); promise.then(v => { clearTimeout(t); res(v); }, e => { clearTimeout(t); rej(e); }); });
 export async function browserSource(url, { selector, frameURL, playSelector, timeout = 12000 } = {}) {
   const client = await bounded(launch({ width: 1920, height: 1080 }), 25000, 'Chromium launch');
-  const send=client.send.bind(client);client.send=(method,args)=>bounded(send(method,args),timeout,'CDP '+method);
+  const send=client.send.bind(client);client.send=(method,args)=>bounded(send(method,args),method==='Runtime.evaluate'?2*timeout+2000:timeout,'CDP '+method);
   let context;
   const evaluate = async expr => {
-    const r = await bounded(client.send('Runtime.evaluate', { expression: expr, contextId: context, awaitPromise: true, returnByValue: true }), timeout + 1000, 'Media evaluation');
+    const r = await bounded(client.send('Runtime.evaluate', { expression: expr, contextId: context, awaitPromise: true, returnByValue: true }), 2*timeout + 1500, 'Media evaluation');
     if (r.exceptionDetails) throw new Error(r.exceptionDetails.exception?.description || r.exceptionDetails.text);
     return r.result.value;
   };
@@ -38,7 +38,7 @@ export async function browserSource(url, { selector, frameURL, playSelector, tim
       v.pause(); v.preload='auto'; v.controls=false; v.scrollIntoView({block:'center'}); v.style.objectFit='contain';
       const ranges=Array.from({length:v.seekable.length},(_,i)=>[v.seekable.start(i),v.seekable.end(i)]);
       return {duration:v.duration,width:v.videoWidth,height:v.videoHeight,seekable:ranges,source:v.currentSrc,frameAware:typeof v.requestVideoFrameCallback==='function'}; })()`);
-    if (!Number.isFinite(meta.duration) || !meta.width || !meta.seekable.length) throw new Error('Finite seekable media is required; live/unloaded/protected media cannot be inspected.');
+    if (!Number.isFinite(meta.duration) || !meta.width || !meta.seekable.some(([a,b])=>b>a)) throw new Error('Finite seekable media is required; live/unloaded/protected media cannot be inspected.');
     const result = { duration: meta.duration, width: meta.width, height: meta.height, fps: null, audio: null, route: 'browser', seekable: meta.seekable, frameAware: meta.frameAware, frameURL: chosen.frame, limitations: ['Browser-only audio unavailable; supply authorized local media for audio forensics.', 'Browser seek accuracy is best effort; actual media timestamps are recorded.', 'Custom overlays may appear in compositor captures.'] };
     return {
       metadata: result,

@@ -3,7 +3,7 @@ name: motion-forensics
 description: Infer camera-like global movement, local object motion, possible depth/layers and perceptually equivalent easing from a reference film's measured motion and visually inspected frames.
 ---
 # Motion forensics
-Read motion.json, shots.json and the relevant transition strip; visually inspect motion playback and frames.
+Start with scientific-summary.json. Read only a justified time window of motion.json, then shots.json and the relevant transition strip; visually inspect motion playback and frames.
 - Native fallback measures small grayscale translations and residual change. Optional OpenCV uses forward/backward LK features, RANSAC affine fitting, regional residuals and feature coverage. It is evidence, not automatic camera identification.
 - Exclude pairs crossing cuts. Compare normalized displacement/second, acceleration, static holds, affine scale/rotation, inlier coverage and residuals. Invalid/weak tracking is unknown, not zero physical motion.
 - A coherent global transform may be a push/pull/pan/truck, whole-composition scale/translation or composited footage. Local residuals may be moving objects, parallax, occlusion, changing light or tracking error. State alternatives.
