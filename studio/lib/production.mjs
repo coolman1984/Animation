@@ -1,7 +1,8 @@
 // Cheap content checks before Chromium starts. Findings are evidence, not an aesthetic score.
-import { existsSync, readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
-import { creativeIssues, validateCraft } from './creative.mjs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { resolve, join } from 'node:path';
+import { creativeIssues, validateCraft, validateCreative, lookOverlap } from './creative.mjs';
+import { validateCues } from './cues.mjs';
 const filled = value => typeof value === 'string' && value.trim().length > 0;
 
 export function copyIssues(text, duration, { minDwell = 1.8, maxCps = 17, maxWords = 7 } = {}) {
@@ -72,6 +73,14 @@ export function validateProduction(plan, { root, final = false } = {}) {
   if (sound?.mode === 'licensed' && !filled(sound.licenseScope)) add('record music license scope including paid social use', final);
   if (sound?.bpm !== undefined && !(Number.isFinite(sound.bpm) && sound.bpm > 0)) add('sound.bpm must be positive');
   for (const issue of creativeIssues(plan)) add(`craft: ${issue}`, false);
+  const cues = validateCues(plan);
+  for (const e of cues.errors) add(`cues: ${e}`); for (const w of cues.warnings) add(`cues: ${w}`, false);
+  const creative = validateCreative(plan);
+  for (const e of creative.errors) add(`creative: ${e}`); for (const w of creative.warnings) add(`creative: ${w}`, false);
+  if (plan.musicMap !== undefined) {
+    if (!filled(plan.musicMap)) add('musicMap must be a local path to a music map JSON');
+    else if (root && !existsSync(resolve(root, plan.musicMap))) add(`musicMap not found: ${plan.musicMap} (run node lib/musicmap.mjs analyze)`, false);
+  }
   return { errors, warnings };
 }
 
@@ -85,6 +94,14 @@ export function loadProduction(root, cfg, { final = false } = {}) {
   const result = validateProduction(plan, { root, final });
   if (!plan || typeof plan !== 'object' || Array.isArray(plan)) return { plan: null, ...result };
   if (plan.fps !== cfg.fps) result.errors.push('production fps differs from config fps');
+  // Cross-film anti-repetition: compare this look with every other film plan in the studio.
+  const others = [];
+  for (const name of readdirSync(root, { withFileTypes: true }).filter(d => d.isDirectory()).map(d => d.name)) {
+    const other = join(root, name, 'production.json');
+    if (resolve(other) === path || !existsSync(other)) continue;
+    try { others.push({ name, plan: JSON.parse(readFileSync(other, 'utf8')) }); } catch {}
+  }
+  for (const w of lookOverlap(plan, others)) result.warnings.push(`look: ${w}`);
   for (const d of cfg.deliveries || []) {
     if (!d.segments && Math.abs(d.duration - plan.duration) > 1 / cfg.fps) result.errors.push(`${d.name}: duration differs from production plan`);
   }

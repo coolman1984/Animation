@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
-import { launch } from '../lib/cdp.mjs';
+import { launch, settleCapture } from '../lib/cdp.mjs';
 import { serve } from '../lib/serve.mjs';
 const root = fileURLToPath(new URL('../', import.meta.url));
 test('real depth scene: reverse seek is identical, selective focus excludes Arabic, matte diagnostics preserve alpha', { skip: process.env.STUDIO_RENDER_TEST !== '1', timeout: 60000 }, async () => {
@@ -10,7 +10,7 @@ test('real depth scene: reverse seek is identical, selective focus excludes Arab
     client = await launch({ width: 400, height: 450 });
     await client.goto(`http://127.0.0.1:${server.port}/lib/composer.html?film=/examples/depth-study/film.js&w=400&h=450`);
     for (let i = 0; i < 100 && !(await client.eval('!!window.ready')); i++) await new Promise(r => setTimeout(r, 50));
-    await client.eval('window.ready');
+    await client.eval('window.ready'); await settleCapture(client);
     const frame = async t => {
       await client.eval(`window.renderAt(${t})`);
       return (await client.send('Page.captureScreenshot', { format: 'png' })).data;

@@ -19,6 +19,7 @@ Start a film with film-director + its brief/production.json. Read CRAFT_GUIDE.md
 | Final visual critique | qa-judge | exported frames AND motion/audio playback |
 | Cover art | thumbnail-poster | selected hero frame |
 | A new reusable lesson | post-mortem | append only a useful discovery |
+| Gen-2 toolkit map | — | GEN2.md + examples/* studies |
 
 One builder by default. A separate final judging pass is required; use a fresh reviewer when available.
 Do not spawn a specialist for each department. Never claim a review happened if it did not.

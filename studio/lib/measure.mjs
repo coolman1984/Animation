@@ -57,7 +57,8 @@ export function gates(m, brief) {
   add('no frozen span > 1 s', badFrozen.length === 0, badFrozen.length ? JSON.stringify(badFrozen) : `${m.frozen.length} (all logged holds)`);
   const badBlack = m.black.filter(b => !((b.start <= 0.05 && b.end <= 0.1) || b.start >= m.probe.duration - (brief.fadeOut || 0) - 0.1));
   add('no black frames mid-film', badBlack.length === 0, badBlack.length ? JSON.stringify(badBlack) : 'ok');
-  if (m.text) add('text inside safe area, no overlaps', m.text.issues.length === 0, m.text.issues.length ? `${m.text.issues.length} issues, first: ${JSON.stringify(m.text.issues[0])}` : `${m.text.lines.length} lines checked every 0.1 s`);
+  if (m.text?.unavailable) add('text read-back', true, `NOT CHECKED — ${m.text.unavailable}; inspect copy manually`);
+  else if (m.text) add('text inside safe area, no overlaps', m.text.issues.length === 0, m.text.issues.length ? `${m.text.issues.length} issues, first: ${JSON.stringify(m.text.issues[0])}` : `${m.text.lines.length} lines checked every 0.1 s`);
   if (m.share) add(`share copy ≤ ${brief.shareMB} MB`, m.share.sizeMB <= brief.shareMB, `${m.share.sizeMB} MB`);
   return g;
 }
