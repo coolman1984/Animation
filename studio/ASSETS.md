@@ -23,3 +23,8 @@ makes no claim of partnership; see `film2/BRIEF.md` §5 (owner decision).
 Artistic-forensics scope adds no media, fonts or soundtrack. artistic-dna.json and original-direction files are private, ignored reference-pack artifacts. New-subject briefs must specify original assets; a reviewed principle is not permission to reuse reference artwork.
 
 Startup cleanup correction imports no assets and never creates a completed capture.json after failed browser launch.
+
+## 2026-10-02 — Film5 private owner material
+- Four uploaded BALACONBAR images copied to ignored film5/source; cutouts/crops in ignored film5/plates. Photo02 is authentic drink evidence. Others are supplied graphic/illustrative direction,not real interior or founding-date evidence. Not reusable for other clients.
+- Whole-word Arabic type uses bundled OFL fonts. Score/SFX synthesized originally in film5/score.mjs; no reference recording/sample reused.
+- Source URLs in film5/BRIEF.md were researched for creative principles only; no remote artwork imported.

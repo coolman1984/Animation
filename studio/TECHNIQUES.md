@@ -52,3 +52,10 @@ Low-effort forensics: analyze → prepared private draft with <=12 real interval
 Owner-facing workflow: AUTONOMOUS_FILM.md — one natural-language request, agent completes every internal step, one finished video. lib/build-options.mjs ownerRequest enforces exact single-delivery width/height/duration/fps.
 
 Capture startup reliability: create the server, launch inside cleanup protection, close the server even on startup/client-close failure. cdp.mjs permits one bounded retry only for transient Chromium startup failures, never for failed product verification.
+
+## Film5: rhythmic paper / modern product
+-115.2BPM→beat0.520833s,bar2.083333s,twelve bars=25s. Seven sections share that clock; one quiet breakdown precedes the collage lift.
+-Whole-word Arabic stretch: damped scaleX oscillation multiplied onto playLine word transforms; never split joined Arabic letters. Allow full vertical entry envelope between line boxes.
+-Alternate portal iris,paper shutters,hard sensory match cuts and diagonal paper occlusion. Use a clear dominant motion; settle the final brand rather than force motion to appease freeze checks.
+-For printed poster extraction,intersect adaptive alpha with measured rope/cup/plank/leaf regions; inspect source-letter residue. Keep source/plates private.
+-Managed host forbids AF_UNIX sockets required by normal Chrome ProcessSingleton; Chrome headless-shell supports this native studio CDP path without renderer changes. STUDIO_CHROMIUM selects the runtime.

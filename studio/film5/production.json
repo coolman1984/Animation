@@ -1,0 +1,263 @@
+{
+  "version": 1,
+  "duration": 25,
+  "fps": 30,
+  "audience": "Facebook Reels viewers in Beni Suef, Egypt seeking an inviting cafe/drink break.",
+  "promise": "A nostalgic visual personality with a contemporary matcha drink shown in the original supplied photograph.",
+  "cta": "Try the cafe in Beni Suef; no specific address or offer is invented.",
+  "direction": "Paper memory opens onto matcha green. Cream/deep green/lime/terracotta; nostalgic Ruqaa vs modern Arabic Plex; rhythmic scales, cutout collage, whole-word elastic type, one quiet swing breakdown, readable final resolve.",
+  "assets": [
+    {
+      "id": "real",
+      "path": "film5/source/hero-duo.jpg",
+      "role": "product",
+      "rights": "Owner supplied original photo for this advertisement."
+    },
+    {
+      "id": "swing",
+      "path": "film5/source/swing.jpg",
+      "role": "background",
+      "rights": "Owner supplied illustrative poster. Not evidence of actual interior."
+    },
+    {
+      "id": "mood",
+      "path": "film5/source/mood.jpg",
+      "role": "background",
+      "rights": "Owner supplied vintage graphic moodboard; treated as illustration."
+    },
+    {
+      "id": "story",
+      "path": "film5/source/story.jpg",
+      "role": "background",
+      "rights": "Owner supplied illustrative storyboard; timestamps/headlines excluded."
+    }
+  ],
+  "sound": {
+    "mode": "original",
+    "bpm": 115.2,
+    "note": "Original synthesized twelve-bar retro soul/disco groove and restrained scene-specific SFX. No commercial recording or reference score copied."
+  },
+  "shots": [
+    {
+      "id": "s1",
+      "start": 0,
+      "end": 4.166667,
+      "purpose": "hook",
+      "assetIds": [
+        "mood",
+        "swing"
+      ],
+      "craft": {
+        "scale": "editorial wide",
+        "camera": "paper arrival",
+        "focal": "nostalgic phrase",
+        "transition": "circular window reveal",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "paper"
+        ],
+        "audioCue": "groove accent"
+      },
+      "copy": {
+        "text": "روح زمان…",
+        "start": 0.25,
+        "end": 3.9166670000000003
+      }
+    },
+    {
+      "id": "s2",
+      "start": 4.166667,
+      "end": 8.333333,
+      "purpose": "authentic product reveal",
+      "assetIds": [
+        "real"
+      ],
+      "craft": {
+        "scale": "hero",
+        "camera": "product settle",
+        "focal": "actual drink",
+        "transition": "alternating paper shutters",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "product"
+        ],
+        "audioCue": "groove accent"
+      },
+      "copy": {
+        "text": "بمزاج النهارده",
+        "start": 4.416667,
+        "end": 8.083333
+      }
+    },
+    {
+      "id": "s3",
+      "start": 8.333333,
+      "end": 12.5,
+      "purpose": "sensory detail",
+      "assetIds": [
+        "real"
+      ],
+      "craft": {
+        "scale": "macro triptych",
+        "camera": "detail scale cuts",
+        "focal": "ice/green/pearls",
+        "transition": "sensory matched cut",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "details"
+        ],
+        "audioCue": "groove accent"
+      },
+      "copy": {
+        "text": "ماتشا على مزاجك",
+        "start": 8.583333,
+        "end": 12.25
+      }
+    },
+    {
+      "id": "s4",
+      "start": 12.5,
+      "end": 15.625,
+      "purpose": "quiet release",
+      "assetIds": [
+        "swing"
+      ],
+      "craft": {
+        "scale": "medium",
+        "camera": "pendulum settle",
+        "focal": "swing",
+        "transition": "paper occlusion lift",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "pendulum"
+        ],
+        "audioCue": "drum breakdown"
+      },
+      "copy": {
+        "text": "خد لك لحظة",
+        "start": 12.75,
+        "end": 15.375
+      }
+    },
+    {
+      "id": "s5",
+      "start": 15.625,
+      "end": 19.791667,
+      "purpose": "illustrated identity",
+      "assetIds": [
+        "mood",
+        "story"
+      ],
+      "craft": {
+        "scale": "collage",
+        "camera": "fan unfold",
+        "focal": "paper drinks",
+        "transition": "diagonal ingredient swipe",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "collage"
+        ],
+        "audioCue": "groove accent"
+      },
+      "copy": {
+        "text": "وقعدة ليها روح",
+        "start": 15.875,
+        "end": 19.541667
+      }
+    },
+    {
+      "id": "s6",
+      "start": 19.791667,
+      "end": 21.875,
+      "purpose": "payoff bridge",
+      "assetIds": [
+        "real",
+        "story"
+      ],
+      "craft": {
+        "scale": "hero",
+        "camera": "lateral wipe",
+        "focal": "actual drink",
+        "transition": "product matched cut",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "wipe"
+        ],
+        "audioCue": "groove accent"
+      },
+      "copy": {
+        "text": "مزاجك له مكان",
+        "start": 19.85,
+        "end": 21.825
+      }
+    },
+    {
+      "id": "s7",
+      "start": 21.875,
+      "end": 25,
+      "purpose": "brand and CTA",
+      "assetIds": [
+        "real",
+        "swing"
+      ],
+      "craft": {
+        "scale": "brand resolve",
+        "camera": "locked hold",
+        "focal": "logo and CTA",
+        "transition": "locked resolve",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "type"
+        ],
+        "audioCue": "groove accent"
+      },
+      "copy": {
+        "text": "جرّبها في بني سويف",
+        "start": 22.125,
+        "end": 24.75
+      }
+    }
+  ],
+  "creative": {
+    "viewer": "Facebook Reels viewers in Beni Suef, Egypt seeking an inviting cafe/drink break.",
+    "problem": "Cafe imagery can become a static sepia slideshow; viewers need a tangible drink and an inviting reason to pause.",
+    "promise": "A nostalgic visual personality with a contemporary matcha drink shown in the original supplied photograph.",
+    "evidence": "Original photographed green matcha/boba cup; vintage owner illustrations are explicitly graphic identity, not real interior evidence.",
+    "emotion": "Likely curiosity then refreshment/playfulness then intimacy; context dependent, not universal psychology.",
+    "motif": "Old paper opens a window onto present-tense matcha green.",
+    "palette": [
+      "#F4E5C8",
+      "#153D31",
+      "#C8DA61",
+      "#A3442C",
+      "#C1A465"
+    ],
+    "light": "Original photographic material lighting; flat printed-paper illustrations, restrained cutout shadows.",
+    "typography": {
+      "display": "Aref Ruqaa for nostalgic hook and quiet release",
+      "text": "IBM Plex Sans Arabic for contemporary copy. Whole-word stretch, no split Arabic letters."
+    },
+    "camera": "Two-dimensional crop scale, paper arrival and product settle; no fake new 3D viewpoint.",
+    "transitions": [
+      "circular window",
+      "alternating paper shutters",
+      "sensory matched cut",
+      "diagonal occlusion",
+      "product matched cut"
+    ],
+    "motion": "Whole-word damped stretch, independent fan unfold, pendulum settle; one dominant motion at a time.",
+    "sound": "Original 115.2 BPM twelve-bar retro electric-key/disco groove, syncopated bass and restrained designed SFX. Listening unavailable in this host; numerical mixing checks only.",
+    "pacing": "Hook0-4.17, hero4.17-8.33, details8.33-12.5, quiet12.5-15.625, lift15.625-21.875, branded resolve21.875-25.",
+    "payoff": "Original cup returns beside extracted cafe brand, with one local CTA.",
+    "cta": "Try the cafe in Beni Suef; no specific address or offer is invented.",
+    "styleFrames": {
+      "hook": 1.5,
+      "proof": 5.8,
+      "payoff": 23.5
+    },
+    "proof": {
+      "start": 0,
+      "end": 10
+    }
+  }
+}

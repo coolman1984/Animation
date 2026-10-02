@@ -44,3 +44,8 @@ No required lesson quota or automatic reuse of a prior visual style.
 30. **Owner asks; agent produces.** Reference paperwork, creative choices, proofs and judging are internal agent tasks. Use ownerRequest for exactly one target canvas/duration/fps; deliver one final video, not a pile of variants or a manual checklist.
 
 31. **Failed startup must release every resource.** A capture server opened before Chromium must close if launch fails; otherwise the test/process hangs after the real error. Never mark incomplete capture complete. One startup retry is bounded recovery, not relaxed film acceptance.
+
+## 2026-10-02 — Film5 lessons
+1. Automatic foreground extraction is only a first pass: pale printed letters can survive inside adaptive silhouettes. Tight measured masks must be inspected on the final background.
+2. Arabic glyphs can look separated while animated layout boxes overlap. Reserve the entry envelope between lines,not only the settled glyph height.
+3. Check owner moodboard spelling against authentic product branding; crop contradictory decorative headers before the brand resolve.

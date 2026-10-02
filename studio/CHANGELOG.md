@@ -5,6 +5,13 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-02 — Film5: one autonomous cafe Reel
+- Adds film5 native studio composition,private plate recipes and original115.2BPMtwelve-bar25sretro/disco score. One1080×1920 delivery enforced by ownerRequest.
+- Original direction translates researched motion/music/contrast principles into owner-specific paper→green language,not cloned reference artwork or music. Four supplied images contribute; authentic photograph remains product evidence,illustrations remain graphic identity.
+- Internal10sproof,full review,one independent critique and two correction rounds. Final take05closes crop/matte/typography/alternate-spelling findings; quiet shot uses an honest framed original poster rather than fragile alpha reconstruction.
+- All final technical gates pass:25s,1080×1920,30fps,zero text collisions/unsafe boxes,−13.8LUFS,−3.2dBTP. Documentation gate5/5passes. Private sources/plates/audio/renders remain ignored.
+- Limit: no supported audio input or real-speed video playback; audio inspected numerically,motion through sequential exported frames. No claims of audible audition or measured retention.
+
 ## 2026-10-02 — Deep artistic reference forensics
 - Adds `reference/artistic.mjs`, 20-section ARTISTIC DNA in every report, contextual evidence-linked observations, full-duration attention/pacing maps with explicit unknowns and playback/listening gates.
 - Owner goal enforced: AUTONOMOUS_FILM.md makes all production/inspection/paperwork agent-owned; ownerRequest selects and validates one exact delivery. Owner receives one finished video, no internal approval flow.
