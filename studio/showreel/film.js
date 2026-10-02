@@ -48,7 +48,7 @@ function init1(root) {
   S1.head = textBlock(root, 'كل حركة محسوبة', { left: px(W / 2 - F(48, 44) * u), width: px(F(96, 88) * u), top: px(cy), fontFamily: 'El Messiri', fontWeight: 700,
     fontSize: px(F(15, 13) * u), lineHeight: 1.12, color: C.paper }, { align: 'center' });
   S1.head.words[2].span.style.color = C.red;
-  S1.mark = highlight(S1.head, [2], { color: C.red, height: 0.07, offset: 1.02 });
+  S1.mark = highlight(S1.head, [2], { color: C.red, height: 0.075, offset: 0.84 });
   S1.dot = div(root, { width: px(3.4 * u), height: px(3.4 * u), borderRadius: '50%', background: C.red, left: '0', top: '0' });
 }
 function dotRest1() { // left of the headline's last word (end of the RTL line)
@@ -58,7 +58,12 @@ function dotRest1() { // left of the headline's last word (end of the RTL line)
 function render1(t) {
   if (!S1.fit) { fitBlock(S1.head, { maxWidth: F(96, 80) * u, maxHeight: F(20, 34) * u, max: F(15, 13) * u }); centerOn(S1.head, cy); S1.fit = true; S1.rest = dotRest1(); }
   reveal(S1.head, t, { tIn: 0.24, style: 'mask', stagger: 0.1, dur: 0.62, curve: curves.emphasized });
-  S1.mark(t, { start: 0.95, dur: 0.4 });
+  S1.mark(t, { start: BEAT * 2, dur: 0.35 });
+  // the thesis word answers beat 3 with a spring; the whole line keeps a slow push so the bar never freezes
+  const word = S1.head.words[2].outer;
+  word.style.transform = `scale(${(1 + 0.12 * (t >= BEAT * 3 ? Math.sin(Math.PI * Math.min(1, (t - BEAT * 3) / 0.18)) * Math.exp(-(t - BEAT * 3) * 6) + 0 : 0)).toFixed(4)})`;
+  word.style.transformOrigin = '50% 70%';
+  S1.head.box.style.transform = `scale(${lerp(1, 1.045, curves.gentle(ramp(t, 0.3, 1.9))).toFixed(4)})`;
   const p = springStep(t - 0.3, { duration: 0.62, bounce: 0.18 }).value;
   const x = lerp(W / 2, S1.rest[0], p), y = lerp(cy, S1.rest[1], p);
   // Frame one: the dot arrives huge on the opening impact and springs down to its working size.
@@ -74,13 +79,13 @@ function render1(t) {
 const S2 = {};
 const SPH = () => F(30, 34) * u;
 function init2(root) {
-  const cols = F(11, 5), rows = F(5, 9), cell = 7 * u, gap = 2.4 * u;
+  const cols = F(11, 5), rows = F(5, 10), cell = 7 * u, gap = 2.4 * u, gy = F(cy, H * 0.48);
   const gw = cols * cell + (cols - 1) * gap, gh = rows * cell + (rows - 1) * gap;
   S2.cells = [];
   for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
-    const x = W / 2 - gw / 2 + i * (cell + gap) + cell / 2, y = cy - gh / 2 + j * (cell + gap) + cell / 2;
-    const node = div(root, { left: px(x - cell / 2), top: px(y - cell / 2), width: px(cell), height: px(cell), borderRadius: px(1.4 * u), background: C.ink });
-    S2.cells.push({ i, j, x, y, node, centre: i === (cols - 1) / 2 && j === (rows - 1) / 2 });
+    const x = W / 2 - gw / 2 + i * (cell + gap) + cell / 2, y = gy - gh / 2 + j * (cell + gap) + cell / 2;
+    const node = div(root, { left: px(x - cell / 2), top: px(y - cell / 2), width: px(cell), height: px(cell), borderRadius: px(1.4 * u), background: C.ink, boxShadow: `0 0 0 ${0.35 * u}px ${C.paper}` });
+    S2.cells.push({ i, j, x, y, node, centre: i === Math.floor((cols - 1) / 2) && j === Math.floor((rows - 1) / 2) });
   }
   S2.cols = cols; S2.rows = rows; S2.cell = cell;
 }
@@ -134,6 +139,7 @@ function init3(root) {
   const fg = ds.add('fg', { width: 11 * u, height: H * 2, x: S3.sx - F(46, 30) * u, y: H * 0.5, depth: 1.8, z: 6 });
   fg.style.background = `linear-gradient(90deg, ${C.night}, #1A2380 55%, ${C.night})`;
   S3.scene = ds;
+  div(root, { left: '0', top: '0', width: px(W), height: px(D.y0 + F(11, 22) * u), zIndex: '20', background: 'linear-gradient(180deg, rgba(10,14,51,0.72) 40%, rgba(10,14,51,0))' });
 }
 const aim3 = (sx, sy, X, Y, z) => ({ x: sx - W / 2 - (X - W / 2) / z, y: sy - H / 2 - (Y - H / 2) / z, zoom: z });
 function cam3(t) {
@@ -161,7 +167,7 @@ function init4(root) {
   S4.field = shaderLayer(root, { w: W, h: H, fragment: SHADERS.colorField, scale: 0.4, z: 0 });
   S4.rays = shaderLayer(root, { w: W, h: H, fragment: SHADERS.rays, scale: 0.4, z: 1, blend: 'screen' });
   S4.dust = particleField(root, { w: W, h: H, preset: 'embers', seed: 31, count: 46, colors: ['rgba(255,120,80,0.9)', 'rgba(255,214,190,0.8)'], z: 2 });
-  const R = F(16, 19) * u, size = R * 2 + 4 * u;
+  const R = F(22, 26) * u, size = R * 2 + 4 * u;
   S4.R = R;
   S4.svg = el('svg', { width: size, height: size, viewBox: `0 0 ${size} ${size}`, style: { position: 'absolute', left: px(W / 2 - size / 2), top: px(cy - size / 2), zIndex: '3', overflow: 'visible' } }, root);
   S4.ring = el('circle', { cx: size / 2, cy: size / 2, r: R, fill: 'none', stroke: C.red, 'stroke-width': 0.8 * u, 'stroke-linecap': 'round', transform: `rotate(-90 ${size / 2} ${size / 2})` }, S4.svg);
@@ -171,7 +177,7 @@ function init4(root) {
 }
 function render4(t) {
   const build = ramp(t, S(3), S(4));
-  S4.field.render(t, { u_c0: rgb('#0B0B10'), u_c1: rgb('#131A63'), u_c2: rgb('#2A0E1A'), u_c3: rgb('#07081A'), u_amount: 0.35 + 0.2 * build });
+  S4.field.render(t, { u_c0: rgb('#191920'), u_c1: rgb('#16206E'), u_c2: rgb('#0E1240'), u_c3: rgb('#0B0C1E'), u_amount: 0.35 + 0.2 * build });
   S4.rays.render(t, { u_origin: [0.82, 1.05], u_amount: 0.3 + 0.55 * build * build, u_color: rgb('#FFD3C4') });
   S4.dust.render(t, { x: 0, y: -build * 4 * u, zoom: 1 + 0.04 * build, focus: 1, aperture: 6 });
   lineDraw(S4.ring, curves.decelerate(ramp(t, S(3) + 0.06, S(3) + 0.7)));
@@ -189,15 +195,15 @@ function render4(t) {
 const S5 = {};
 function init5(root) {
   const n = F(40, 24), x0 = D.x0, x1 = D.x1, gap = F(0.7, 0.9) * u, bw = (x1 - x0 - (n - 1) * gap) / n;
-  S5.base = F(D.y1 - 7 * u, D.y1 - 6 * u); S5.hmax = F(34, 30) * u;
+  S5.base = F(D.y1 - 7 * u, H * 0.76); S5.hmax = F(32, 46) * u;
   S5.bars = Array.from({ length: n }, (_, i) => div(root, { left: px(x0 + i * (bw + gap)), top: px(S5.base - S5.hmax), width: px(bw), height: px(S5.hmax), background: C.ink, borderRadius: px(bw / 2), transformOrigin: '50% 100%' }));
   const bpm = Math.round(map.tempo.bpm);
   S5.bpm = bpm;
-  S5.num = counter(root, { left: px(F(D.x0, W / 2 - 40 * u)), top: px(F(D.y0 + 7 * u, D.y0 + 6 * u)), width: px(F(60, 80) * u), textAlign: F('left', 'center'),
+  S5.num = counter(root, { left: px(F(D.x0, W / 2 - 40 * u)), top: px(F(D.y0 + 9 * u, D.y0 + 14 * u)), width: px(F(60, 80) * u), textAlign: F('left', 'center'),
     fontFamily: 'Montserrat', fontWeight: 800, fontSize: px(F(21, 24) * u), lineHeight: 1, color: C.ink, letterSpacing: '-0.03em' }, { digits: 'latn' });
-  S5.unit = textBlock(root, 'BPM', { left: px(F(D.x0 + 0.6 * u, 0)), width: px(F(30 * u, W)), top: px(F(D.y0 + 30 * u, D.y0 + 33 * u)), fontFamily: 'Montserrat', fontWeight: 700,
+  S5.unit = textBlock(root, 'BPM', { left: px(F(D.x0 + 0.6 * u, 0)), width: px(F(30 * u, W)), top: px(F(D.y0 + 32 * u, D.y0 + 41 * u)), fontFamily: 'Montserrat', fontWeight: 700,
     fontSize: px(3.4 * u), letterSpacing: '0.34em', color: C.ink }, { align: F('left', 'center') });
-  S5.line = textBlock(root, 'إيقاع متقاس… مش متخمّن', { left: px(F(W - D.x0 - 70 * u, 0)), width: px(F(70 * u, W)), top: px(F(D.y0 + 15 * u, D.y0 + 39 * u)), fontFamily: 'El Messiri', fontWeight: 700,
+  S5.line = textBlock(root, 'إيقاع متقاس… مش متخمّن', { left: px(F(W - D.x0 - 70 * u, 0)), width: px(F(70 * u, W)), top: px(F(D.y0 + 17 * u, D.y0 + 47 * u)), fontFamily: 'El Messiri', fontWeight: 700,
     fontSize: px(F(5.6, 5.4) * u), color: C.ink }, { align: F('right', 'center') });
 }
 function render5(t) {
@@ -218,7 +224,7 @@ function render5(t) {
 // =====================================================================================================
 // 06 EVERY FORMAT — one composition springs 16:9 → 1:1 → 9:16 and re-lays itself out; the 9:16 frame is the next phone.
 const S6 = {};
-const PHONE = () => { const w = F(30, 30) * u, h = w * 16 / 9; return { w, h, cx: F(W * 0.33, W / 2), cy: F(cy, D.y0 + 9 * u + h / 2) }; };
+const PHONE = () => { const w = F(30, 40) * u, h = w * 16 / 9; return { w, h, cx: F(W * 0.33, W / 2), cy: F(cy, D.y0 + 35 * u + h / 2) }; };
 const SLOTS = {
   product: { wide: [0.56, 0.16, 0.34, 0.68], square: [0.27, 0.1, 0.46, 0.46], tall: [0.18, 0.1, 0.64, 0.36] },
   title: { wide: [0.08, 0.26, 0.4, 0.14], square: [0.12, 0.64, 0.76, 0.1], tall: [0.12, 0.54, 0.76, 0.07] },
@@ -228,15 +234,15 @@ const SLOTS = {
 function init6(root) {
   const ph = PHONE();
   S6.states = [
-    { w: F(66, 82) * u, h: F(66, 82) * u * 9 / 16, cx: W / 2, cy: F(cy - 2 * u, D.y0 + 30 * u), t: 0, label: '16:9' },
-    { w: F(46, 62) * u, h: F(46, 62) * u, cx: W / 2, cy: F(cy - 2 * u, D.y0 + 36 * u), t: S(5) + BEAT, label: '1:1' },
+    { w: F(66, 82) * u, h: F(66, 82) * u * 9 / 16, cx: W / 2, cy: F(cy - 2 * u, H * 0.47), t: 0, label: '16:9' },
+    { w: F(46, 62) * u, h: F(46, 62) * u, cx: W / 2, cy: F(cy - 2 * u, H * 0.5), t: S(5) + BEAT, label: '1:1' },
     { w: ph.w, h: ph.h, cx: ph.cx, cy: ph.cy, t: S(5) + 2 * BEAT, label: '9:16' },
   ];
   S6.frame = div(root, { left: '0', top: '0', border: `${0.45 * u}px solid ${C.ink}`, borderRadius: px(1.6 * u), boxSizing: 'border-box', overflow: 'hidden' });
   S6.items = { product: div(S6.frame, { borderRadius: '50%', background: C.red }), title: div(S6.frame, { background: C.ink, borderRadius: px(0.5 * u) }),
     title2: div(S6.frame, { background: 'rgba(11,11,16,0.35)', borderRadius: px(0.5 * u) }), cta: div(S6.frame, { background: C.blue, borderRadius: px(5 * u) }) };
   for (const s of S6.states) s.rects = compose(SLOTS, s.w, s.h, { safe: 'none' }).rects;
-  S6.labels = S6.states.map((s, k) => textBlock(root, s.label, { left: px(s.cx - 20 * u), width: px(40 * u), top: px(s.cy + s.h / 2 + 2.2 * u), fontFamily: 'Montserrat', fontWeight: 800,
+  S6.labels = S6.states.map((s, k) => textBlock(root, s.label, { left: px(s.cx - 20 * u), width: px(40 * u), top: px(V ? s.cy - s.h / 2 - 7.5 * u : s.cy + s.h / 2 + 2.2 * u), fontFamily: 'Montserrat', fontWeight: 800,
     fontSize: px(4.6 * u), letterSpacing: '0.04em', color: C.ink }, { align: 'center' }));
 }
 function frame6(t) {
@@ -253,7 +259,7 @@ function render6(t) {
     if (name === 'product') { const d = Math.min(r.w, r.h); r.x += (r.w - d) / 2; r.y += (r.h - d) / 2; r.w = r.h = d; }
     Object.assign(node.style, { left: px(r.x), top: px(r.y), width: px(r.w), height: px(r.h) });
   }
-  S6.labels.forEach((L, k) => reveal(L, t, { tIn: k ? S6.states[k].t + 0.05 : S(5) + 0.05, tOut: k < 2 ? S6.states[k + 1].t - 0.16 : Infinity, style: 'rise', stagger: 0, dur: 0.3, exitDur: 0.12 }));
+  S6.labels.forEach((L, k) => reveal(L, t, { tIn: k ? S6.states[k].t + 0.05 : S(5) + 0.05, tOut: k < 2 ? S6.states[k + 1].t - 0.16 : HANDOFFS[6].start - 0.14, style: 'rise', stagger: 0, dur: 0.3, exitDur: 0.12 }));
   S6.current = f;
 }
 
@@ -271,16 +277,16 @@ function init7(root) {
   const b = S7.plate.box('total');
   S7.total = { x: b.x + ph.cx - ph.w / 2, y: b.y + ph.cy - ph.h / 2, w: b.w, h: b.h };
   const value = capture.values.total;
-  S7.num = counter(root, { left: px(F(W * 0.56, 0)), width: px(F(W * 0.38, W)), top: px(F(cy - 11 * u, D.y1 - 21 * u)), textAlign: 'center', fontFamily: 'El Messiri', fontWeight: 700,
+  S7.num = counter(root, { left: px(F(W * 0.56, 0)), width: px(F(W * 0.38, W)), top: px(F(cy - 11 * u, D.y0 + 20 * u)), textAlign: 'center', fontFamily: 'El Messiri', fontWeight: 700,
     fontSize: px(F(12, 9) * u), lineHeight: 1, color: C.paper, direction: 'rtl' }, { digits: 'arab', decimals: 2, suffix: ' ج.م' });
   S7.value = value;
-  S7.ar = textBlock(root, 'الرقم ده من التطبيق نفسه', { left: px(F(W * 0.56, 0)), width: px(F(W * 0.38, W)), top: px(F(cy + 4 * u, D.y1 - 9 * u)), fontFamily: 'El Messiri', fontWeight: 600,
+  S7.ar = textBlock(root, 'الرقم ده من التطبيق نفسه', { left: px(F(W * 0.56, 0)), width: px(F(W * 0.38, W)), top: px(F(cy + 4 * u, D.y0 + 13 * u)), fontFamily: 'El Messiri', fontWeight: 600,
     fontSize: px(F(3.8, 3.6) * u), color: C.paper }, { align: 'center' });
   if (!V) S7.en = textBlock(root, 'READ BACK · VERIFIED', { left: px(W * 0.56), width: px(W * 0.38), top: px(cy + 12 * u), fontFamily: 'Montserrat', fontWeight: 700, fontSize: px(2.1 * u),
     letterSpacing: '0.32em', color: 'rgba(242,238,230,0.75)' }, { align: 'center' });
 }
 function cam7(t) {
-  const ph = PHONE(), tx = S7.total.x + S7.total.w / 2, ty = S7.total.y + S7.total.h / 2, z = F(1.55, 1.16);
+  const ph = PHONE(), tx = S7.total.x + S7.total.w / 2, ty = S7.total.y + S7.total.h / 2, z = F(1.55, 1.07);
   // pan so the total moves toward the phone's centre line while zooming in (2D camera about frame centre)
   // wide: bring the total toward the phone's centre line; tall: zoom about the total so the phone keeps clear of the copy below
   const target = V ? { x: (tx - W / 2) * (1 - 1 / z), y: (ty - H / 2) * (1 - 1 / z), zoom: z }
@@ -341,24 +347,25 @@ const HANDOFFS = [
   { start: 1.62, dur: 0.4, name: 'maskedReveal', opts: () => ({ cx: S1.center[0] / W, cy: S1.center[1] / H }) },
   { start: S(2), dur: 0, name: 'cut', opts: () => ({}) }, // a true match cut: the sphere sits exactly where the circle was
   { start: S(3) - 0.2, dur: 0.38, name: 'cameraPass', opts: () => ({ direction: 'left', maxBlur: 3 * u }) },
-  { start: S(4) - 0.18, dur: 0.34, name: 'lightWipe', opts: () => ({ angle: 100, width: 0.24, color: 'rgba(255,238,228,0.98)' }) },
-  { start: S(5) - 0.18, dur: 0.36, name: 'colorHandoff', opts: () => ({ color: C.paper, cx: 0.5, cy: S5.base / H }) },
+  { start: S(4) - 0.2, dur: 0.38, name: 'colorHandoff', opts: () => ({ color: '#FFF3EC', cx: 0.5, cy: cy / H }) }, // the ring's light floods the frame
+  { start: S(5) - 0.26, dur: 0.38, name: 'colorHandoff', opts: () => ({ color: C.paper, cx: 0.5, cy: S5.base / H }) },
   { start: S(6) - 0.12, dur: 0.42, name: 'shapeMatch', opts: () => { const f = S6.current; return { box: { x: f.cx - f.w / 2, y: f.cy - f.h / 2, w: f.w, h: f.h }, round: 1.6 * u }; } },
   { start: S(7) - 0.16, dur: 0.38, name: 'maskedReveal', opts: () => { const [x, y] = ring7At(S(7) - 0.16); return { cx: x / W, cy: y / H }; } },
 ];
 const RENDER = [render1, render2, render3, render4, render5, render6, render7, render8];
 
 function initHud() {
-  const top = D.y0, size = 2.2 * u;
+  const top = D.y0, size = 2.2 * u, big = 3.6 * u;
   SECTIONS.forEach((s, k) => {
-    const idx = textBlock(stage, `0${k + 1}/08`, { left: px(D.x0), width: px(12 * u), top: px(top), fontFamily: 'Montserrat', fontWeight: 500, fontSize: px(size), letterSpacing: '0.12em', color: s.hud, zIndex: 100 }, { align: 'left' });
-    const en = textBlock(stage, s.en, { left: px(D.x0 + 11 * u), width: px(F(50, 46) * u), top: px(top), fontFamily: 'Montserrat', fontWeight: 800, fontSize: px(size), letterSpacing: '0.2em', color: s.hud, zIndex: 100 }, { align: 'left' });
-    const ar = textBlock(stage, s.ar, { left: px(D.x1 - F(40, 30) * u), width: px(F(40, 30) * u), top: px(top - 0.35 * u), fontFamily: 'El Messiri', fontWeight: 600, fontSize: px(2.6 * u), color: s.hud, zIndex: 100 }, { align: 'right' });
+    const idx = textBlock(stage, `0${k + 1}/08`, { left: px(D.x0), width: px(12 * u), top: px(top + 1.1 * u), fontFamily: 'Montserrat', fontWeight: 500, fontSize: px(size), letterSpacing: '0.12em', color: s.hud, zIndex: 100 }, { align: 'left' });
+    const en = textBlock(stage, s.en, { left: px(D.x0 + 11 * u), width: px(F(60, 76) * u), top: px(top), fontFamily: 'Montserrat', fontWeight: 800, fontSize: px(big), letterSpacing: '0.14em', color: s.hud, zIndex: 100 }, { align: 'left' });
+    const ar = textBlock(stage, s.ar, { left: px(F(D.x1 - 40 * u, D.x0 + 11 * u)), width: px(F(40 * u, 60 * u)), top: px(F(top - 0.4 * u, top + 5.2 * u)), fontFamily: 'El Messiri', fontWeight: 600,
+      fontSize: px(3.8 * u), color: s.hud, zIndex: 100 }, { align: F('right', 'left'), dir: 'rtl' });
     hud.push({ idx, en, ar });
   });
-  const n = 8, gap = 0.8 * u, sw = (D.x1 - D.x0 - gap * (n - 1)) / n;
+  const n = 8, gap = 0.8 * u, sw = (D.x1 - D.x0 - gap * (n - 1)) / n, y = top + F(6.4, 11.4) * u;
   for (let k = 0; k < n; k++) {
-    const track = div(stage, { left: px(D.x0 + k * (sw + gap)), top: px(D.y1 - 0.25 * u), width: px(sw), height: px(0.25 * u), background: 'rgba(128,128,128,0.35)', zIndex: '100' });
+    const track = div(stage, { left: px(D.x0 + k * (sw + gap)), top: px(y), width: px(sw), height: px(0.25 * u), background: 'rgba(128,128,128,0.35)', zIndex: '100' });
     progress.push({ track, fill: div(track, { left: '0', top: '0', width: '100%', height: '100%', transformOrigin: '0 50%' }) });
   }
 }
@@ -382,7 +389,7 @@ export default {
     stage = st; W = w; H = h; u = Math.min(w, h) / 100; V = h > w;
     const safe = V ? [65, 269, 1015, 1248].map((v, i) => v * (i % 2 ? h / 1920 : w / 1080)) : [96, 54, 1824, 1026].map((v, i) => v * (i % 2 ? h / 1080 : w / 1920));
     D = { x0: safe[0] + 1.4 * u, y0: safe[1] + 1.4 * u, x1: safe[2] - 1.4 * u, y1: safe[3] - 1.4 * u };
-    cy = (D.y0 + D.y1) / 2 + F(1, 0) * u;
+    cy = V ? H * 0.44 : (D.y0 + D.y1) / 2 + 3 * u;
     stage.style.background = C.ink;
     roots = SECTIONS.map((s, k) => div(stage, { left: '0', top: '0', width: px(W), height: px(H), overflow: 'hidden', background: s.bg, zIndex: String(k + 1) }));
     [init1, init2, init3, init4, init5, init6, init7, init8].forEach((f, k) => f(roots[k]));
