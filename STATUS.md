@@ -2,7 +2,13 @@
 
 Updated: 2026-10-02. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE — Showreel 2, reference recreation (15 s, 16:9, 60 fps), owner request 2026-10-02.**
+**Latest scope: DONE — Documentation and skills consolidation (owner request 2026-10-02).**
+- New: `studio/CHANGELOG.md` (evolution log + skill changes), `studio/TECHNIQUES.md` (recipes with numbers), `studio/test/docs.test.mjs` (docs gate).
+- Updated: CLAUDE.md, PLAN.md, README, WORKFLOW, SKILLS, GEN2, CRAFT (lessons 22–28), REFERENCE_LAB, ASSETS (table repaired, showreel + reference rows) and ten skills.
+- Rule now enforced: a scope closes only with docs updated in the same commit; the gate checks skills, lib modules, film ledgers, fonts and STATUS date.
+- `reference/lessons.json` stays empty (learn needs inspected motion playback; not available).
+
+**Previous scope: DONE — Showreel 2, reference recreation (15 s, 16:9, 60 fps), owner request 2026-10-02.**
 - Source: `studio/showreel2/` (BRIEF, production.json, film.js, score.mjs, measured music map, LEDGER). Reference pack is private (git-ignored).
 - Final take: `studio/out/showreel2/take04/` (local, not in git): master 1920×1080 + 11 MB share copy.
 - Technical gates: all PASS (15.00 s, 60 fps, −14.1 LUFS, TP −3.2 dBTP, LRA 3.5). New tested gate option `darkSpans`.

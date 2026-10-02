@@ -110,3 +110,12 @@ blocked job or optional-polish loop; resolve a concrete cause within the bounded
 - PySceneDetect detector methods: https://www.scenedetect.com/docs/latest/api/detectors.html
 - Browser callback mediaTime and best-effort presentation: https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement/requestVideoFrameCallback
 - OpenCV optical flow and affine tracking: https://docs.opencv.org/4.x/dc/d6b/group__video__track.html
+
+## Field test: whole-film recreation of a screen recording (2026-10-02)
+The lab was used beyond 3–8 s studies: a 15 s screen recording → a 15 s original showreel (`showreel2/`). What worked:
+- Machine pack first, then **visual inspection of every shot**, HUD crops at 1:1 and six dense segment grids for the fast part. Observations file attested as reviewer attestation; audio analysed numerically only (BPM ≈ 128), never listened to.
+- **Exclude capture chrome** (player bar, speaker icon, rounded frame, counter). **Fix the clock offset** on one hard event before mapping times.
+- Express the reference as a bar/beat table (what proves which skill in which bar), then build on the same grid.
+- Match boards (reference above, ours below) + one independent critique found the real gaps (type scale, width motion, point-cloud look) that numbers did not.
+- Fidelity statement used: structure, order, timing ±~0.1 s, palette, type roles. Not claimed: pixel equality, source code, audio.
+Recipes: `TECHNIQUES.md`. Result and limits: `showreel2/LEDGER.md`. A recording uploaded into git is the owner's reference only; its artwork and audio are not reused.

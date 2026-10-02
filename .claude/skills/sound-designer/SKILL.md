@@ -16,3 +16,5 @@ Shot craft.audioCue records the intended sonic event in the same shot plan used 
 Use measured mastering: default −14 LUFS / −1.5dBTP / LRA<8 are project targets. Empty/unmeasurable audio must fail early.
 Check ending, transient clicks, voice masking, phone/mono translation and exported AAC. Waveforms cannot judge musical taste.
 If playback/listening isn't available, label music selection unverified instead of saying it sounds excellent.
+
+**Code-scored reels:** derive hit times from the same beat grid as picture (beat 60/BPM, bar = 4 beats, 1/8 = beat/2) and place them with `placeCues`; riser into the first impact, breakdown before the drop, linear-frequency sweep for a 'linear' word, fade to silence on the last frame. Leave headroom: mastered result was −14.1 LUFS / −3.2 dBTP. Without playback, report the music as unverified by ear (studio/showreel2/score.mjs).

@@ -1,5 +1,6 @@
 # Motion Studio — Architecture Plan
 
+> Current evolution log: `studio/CHANGELOG.md`.
 > Status: **SUPERSEDED (2026-10-01)** by `studio/PROMPT_STUDIO.md` — the studio is now code-driven
 > (own CDP + `renderAt(t)` composer, zero packages). Kept for its research: HyperFrames/Remotion remain
 > optional accelerators for specific shots.

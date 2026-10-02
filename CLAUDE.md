@@ -18,3 +18,7 @@ these are host settings, not parameters controlled by the repository. Never clai
 New films must declare config.production pointing to production.json; use studio/templates/production.json.
 The shared depth and music tools are opt-in; adopt them deliberately, never claim old scenes were automatically redirected.
 Do not load PROMPT_STUDIO.md or all skills for routine work. Record unknown model/effort names instead of inventing a host setting.
+
+Documentation is part of done: when a scope closes, update `STATUS.md`, `studio/CHANGELOG.md`, `studio/CRAFT.md`, `studio/TECHNIQUES.md`,
+`studio/ASSETS.md`, the film's `LEDGER.md` and every skill whose advice changed, in the same commit. `npm test` (`test/docs.test.mjs`) checks the checkable parts.
+Reusable recipes: `studio/TECHNIQUES.md`. Evolution/log: `studio/CHANGELOG.md`.

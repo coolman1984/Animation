@@ -23,3 +23,5 @@ Targets are starting points: clear first 2–3s, recognisable brand early, reada
 No mandatory motion in every shot, SFX on every cut, quota of ideas or quota of revision rounds.
 Report in concise Egyptian Arabic: ready/not ready, file links, meaningful changes, remaining unverified issue.
 Technical gate success alone never means artistically ready. Keep client photos/plates, licensed audio and renders out of public git.
+
+**Documentation duty (2026-10-02):** a film is not closed until STATUS.md, studio/CHANGELOG.md, CRAFT.md (0–3 lessons), TECHNIQUES.md, ASSETS.md and the film's LEDGER.md are updated in the same commit. For an owner-supplied video to match, follow WORKFLOW.md → Reference-matched reel.

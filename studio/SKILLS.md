@@ -20,6 +20,9 @@ Start a film with film-director + its brief/production.json. Read CRAFT_GUIDE.md
 | Cover art | thumbnail-poster | selected hero frame |
 | A new reusable lesson | post-mortem | append only a useful discovery |
 | Gen-2 toolkit map | — | GEN2.md + examples/* studies |
+| Recipes with numbers (blur, width-axis type, sync grid, gates) | — | TECHNIQUES.md |
+| What changed and when | — | CHANGELOG.md (update at every scope close) |
+| Recreate a supplied film as a full short reel | reference-reverse-engineer → recreation-director | showreel2 as the worked example |
 
 One builder by default. A separate final judging pass is required; use a fresh reviewer when available.
 Do not spawn a specialist for each department. Never claim a review happened if it did not.

@@ -14,3 +14,5 @@ Pick one motion language and at most two transition families. Prefer motivated c
 No universal entrance duration, required grain/vignette, compulsory animation on every object or blanket fade to black.
 Readability takes priority: establish the frame, move attention, settle. Text outside scene focus layers; words never split into letters.
 Check backward seeking and worker-independent frames. QA changed intervals plus transitions; full artistic review only at delivery.
+
+**Showreel-proven recipes (see studio/TECHNIQUES.md):** the SVG helper `el()` only draws tags in its list (text/textPath/polyline/polygon added) — test a new tag on a frame. Directional blur = per-id `feGaussianBlur stdDeviation="x y"` driven by velocity, zero when settled. Variable-width type via `fontVariationSettings 'wdth'`; letters as spans, never Arabic letter-splitting. Measure text only while visible (hidden = 0 px). Declare intentional dark openings with `darkSpans`, stillness with `holds`.

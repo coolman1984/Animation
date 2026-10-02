@@ -12,3 +12,5 @@ Read recreation-plan.json and analysis.md; require reviewed observations before 
 - Compare framing, timing, direction/magnitude, transition time, focal/type hierarchy, depth, energy and rhythm. Record which principle creates the effect and whether ours communicates more clearly/beautifully. Different assets make pixel error the wrong goal.
 - Make only actionable corrections, respect STATUS.md's total correction budget. A measured motion curve cannot certify taste, persuasion or premium quality.
 - Add one concise lesson only when a genuinely reusable result was demonstrated. Preserve a counter-case and evidence. No appearance copying or lesson quota.
+
+**Whole-film recreation (field-tested, showreel2):** beyond 3–8 s studies, a short reference can be rebuilt as a full original reel. Write a bar/beat table first, fix the recording-vs-film clock offset, use original geometry/fonts/score, run matched boards and one critique, then at most one more correction round. Never claim 'exactly'; record fidelity in structure/timing/palette/type roles. See studio/TECHNIQUES.md → Reference recreation checklist.

@@ -16,3 +16,5 @@ Check hook/message; focal hierarchy; source truth; Arabic spelling/dialect/reada
 no doubled product; music fit/ending/dialogue; correct dimensions/duration/safe layout; one clear CTA.
 Ledger: time → observed defect → blocker/major/minor → smallest fix → evidence after. Do not manufacture arbitrary 9/10 scores.
 Fix blocker/major issues, then verify only affected evidence. Two failed attempts require diagnosis. Mark unviewed/unheard evidence explicitly.
+
+**Reference-matched work:** build matched boards (reference above, ours below, offset-corrected timestamps), check fixes on frames extracted from the exported mp4, and give the critic a list of deliberate non-defects. Say what fidelity means (structure, timing, palette, type roles) and what is unverified (audio heard? real-speed? loop seam? share copy?). Examples: studio/showreel2/LEDGER.md.

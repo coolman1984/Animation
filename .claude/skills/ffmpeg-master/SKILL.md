@@ -35,3 +35,5 @@ runs ~3.5 Mbps — check its 1:1 crops for mush on gradients. 4 workers on 4 cor
 ## Checklist
 1. bt709 tags. 2. yuv420p. 3. faststart. 4. Slices joined with copy. 5. AAC 48 kHz. 6. Share ≤ target.
 7. Loudness from ebur128. 8. Freeze on blurred copy. 9. Sheet + strips viewed. 10. ffprobe the final.
+
+**Verification recipes used in showreels:** frame from the export `ffmpeg -ss T -i master.mp4 -frames:v 1 f.png`; strip `-filter_complex hstack=inputs=N` or `tile`; 1:1 HUD crop `crop=480:270:0:0,scale=960:540`; matched board = reference row above ours with the same timestamps (offset-corrected). Prefer frames from the exported file over the preview path.
