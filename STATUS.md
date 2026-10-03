@@ -2,7 +2,9 @@
 
 Updated: 2026-10-03. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE — The SANAD/films-6–9 branch merged into main as the house method (owner order 2026-10-03).**
+**Latest scope: DONE — Film 9 v3: chair scene = a low wavering warning bell (owner 2026-10-03; v2 foley rejected).** Rest unchanged. take07 all gates PASS. Not verified: listening.
+
+**Previous scope: DONE — The SANAD/films-6–9 branch merged into main as the house method (owner order 2026-10-03).**
 - `CLAUDE.md`, `QUALITY_PLAYBOOK.md` §0 "Owner taste", `film-director` and `sound-designer` now make this branch's taste, lessons and recipes authoritative for creative work.
 - Merge kept main's platform work (studio.mjs, Windows port, render stability, voice department). Main's unfinished 3-min Pixel Plus presentation was renumbered `film7` → `film10` (SANAD keeps `film7`).
 - `npm test` after the merge: 114 tests, 100 pass, 13 skipped, 1 fail — `platform.test.mjs` worker-planning expectation; it fails identically on main alone (machine-dependent memory/CPU), not caused by the merge.

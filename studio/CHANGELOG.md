@@ -5,6 +5,12 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-03 — Film 9 v3: the chair scene becomes a low wavering warning bell (scope DONE)
+Owner: no patient sounds at all; a low, wavering alarm-like bell that says "I have a problem and I'm worried". Bell tolled on the start and each failure, lower each time, over a beating hum. take07 all gates PASS. Owner taste recorded in QUALITY_PLAYBOOK §0.
+
+## 2026-10-03 — Film 9 v2: expressive chair-scene sound (superseded by v3)
+Owner: the chair-scene sounds were bad and not expressive. Rebuilt 0–3.9 s only: heartbeat, breath in/out, stick-slip wooden creak, seat thump, leg knocks. take06 all gates PASS. Not verified: listening.
+
 ## 2026-10-03 — House method: films 6–9 branch merged into main as the authority (scope DONE)
 Owner: this branch's experience, techniques and ideas must dominate the project so he can use it from main.
 - New `QUALITY_PLAYBOOK.md` §0 "Owner taste" (music, logos, honesty, language, film shape, placement, references), referenced first from `CLAUDE.md`, `film-director`, `sound-designer`.

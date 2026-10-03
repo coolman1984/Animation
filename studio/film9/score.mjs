@@ -18,16 +18,28 @@ function tone(t, f0, f1, { dur = 0.12, vel = 0.2, p = 0, g = 0.04 } = {}) {
   for (let k = 0; k < dur * 3 * SR; k++) { const tt = k / SR, f = f1 + (f0 - f1) * Math.exp(-tt / g); ph += 2 * Math.PI * f / SR; const s = Math.sin(ph) * Math.min(1, tt / 0.002) * Math.exp(-tt / dur) * vel * 0.35; fx.add(i0 + k, s * gl, s * gr); }
 }
 texture(fx, 0, DUR, { level: 0.02, kind: 'room', seed: 9, fade: 0.8 });
-// A · the sign
-[0.35, 1.25].forEach((t) => click(fx, t, { vel: 0.12, bright: 0.8 }));
-[[1.1, 1.7], [2.4, 3.0]].forEach(([up, back], i) => {
-  whooshBy(fx, up, { dur: 0.7, vel: 0.07, direction: 'center', low: 150, high: 900, seed: 3 + i });           // the body leans forward
-  mechanical(fx, up - 0.15, { dur: 0.3, vel: 0.05, f0: 150, f1: 120 });                                     // the chair creaks
-  softHit(fx, back, { vel: 0.3, tone: 92 - i * 6 }); mechanical(fx, back, { dur: 0.22, vel: 0.06, f0: 120, f1: 95 }); // and sinks back
-});
-sweep(fx, 1.4, { dur: 0.9, vel: 0.04, up: true, seed: 5 });                                                // the gold arc
-uiConfirm(fx, 2.6, { vel: 0.12, notes: [76, 81] });                                                        // "same sign, different causes"
-whooshBy(fx, 3.95, { dur: 0.6, vel: 0.08, direction: 'lr', low: 300, high: 2400, seed: 6 });                 // the figure steps back
+// A · the sign — owner direction: no human or chair sounds at all. A low, wavering warning bell, as if the case itself says
+// "I have a problem and I'm worried": inharmonic bell partials, each doubled slightly out of tune so they beat (the waver),
+// a slow vibrato and tremolo, tolled on the start and on each failed attempt; under it a faint uneasy hum that beats at 1.6 Hz.
+function alarmBell(t, f, vel = 0.3, { decay = 2.2, p = 0 } = {}) {
+  const i0 = Math.round(t * SR), len = Math.round(decay * 2.4 * SR), [gl, gr] = pan(p);
+  const parts = [[1, 1, 1], [2.0, 0.45, 0.6], [2.76, 0.3, 0.45], [5.4, 0.12, 0.2]];
+  for (let k = 0; k < len; k++) {
+    const x = k / SR, vib = 1 + 0.004 * Math.sin(2 * Math.PI * 5.2 * x), trem = 1 - 0.35 * (0.5 + 0.5 * Math.sin(2 * Math.PI * 6.3 * x));
+    let v = 0;
+    for (const [m, amp, d] of parts) { const ff = f * m * vib; v += amp * (Math.sin(2 * Math.PI * ff * x) + Math.sin(2 * Math.PI * ff * 1.006 * x)) * 0.5 * Math.exp(-x / (decay * d)); }
+    v *= Math.min(1, x / 0.004) * trem * vel * 0.3; fx.add(i0 + k, v * gl, v * gr);
+  }
+}
+function unease(t0, t1, f = 98, vel = 0.05) { // a faint hum that beats (two sines 1.6 Hz apart), swelling and fading
+  const i0 = Math.round(t0 * SR), len = Math.round((t1 - t0) * SR);
+  for (let k = 0; k < len; k++) { const x = k / SR, u = k / len, env = Math.min(1, u / 0.15) * Math.min(1, (1 - u) / 0.2); const v = (Math.sin(2 * Math.PI * f * x) + Math.sin(2 * Math.PI * (f + 1.6) * x) + 0.3 * Math.sin(2 * Math.PI * f * 2 * x)) * env * vel; fx.add(i0 + k, v, v); }
+}
+unease(0.1, 3.95, 98, 0.016);
+alarmBell(0.3, 196, 0.11, { decay: 2.0 });             // the case announces itself
+alarmBell(1.7, 185, 0.12, { decay: 2.0, p: -0.15 });   // first failed attempt: the bell again, a little lower
+alarmBell(3.0, 175, 0.14, { decay: 2.4, p: 0.15 });    // second failure: lower and longer — the worry grows
+whooshBy(fx, 3.95, { dur: 0.6, vel: 0.05, direction: 'lr', low: 250, high: 1800, seed: 6 }); // the figure steps back
 // B · causes branch out like dendrites
 for (let i = 0; i < 8; i++) { const t0 = 4.2 + i * 0.22; glide(t0 - 0.28, 0.32, 500 + i * 40, 1500 + i * 90, 0.035, 0.4); click(fx, t0, { vel: 0.1, bright: 0.85, p: 0.4 }); bell(fx, t0 + 0.02, 81 + (i % 4) * 2, 0.04, { decay: 0.5, p: 0.4 }); }
 uiConfirm(fx, 6.25, { vel: 0.16, notes: [69, 76] });                                                       // "understand why the movement failed"

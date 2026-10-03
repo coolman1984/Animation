@@ -11,3 +11,14 @@
 | take04 | all gates PASS: 1080×1920, 30 fps, 20.00 s, −15.8 LUFS, TP −2.6, LRA 3.6, 40 text lines in the safe band, share 9.8 MB | — | — | delivered |
 
 Deliberate: a 0.4 s clean breath at ~7.4 between the causes and the decode diagram. Not verified: listening, real-speed phone viewing, a fresh reviewer.
+
+## Owner revision (2026-10-03): "the chair-scene sounds are very bad and not expressive; change only those" → take06
+0–3.9 s rebuilt in `score.mjs` §A: a quiet heartbeat that quickens, a breath in on each lean, a wooden creak synthesised as stick-slip friction
+(a train of tiny clicks ringing a 480–620 Hz resonance), a felt thump as he drops back onto the seat, two chair-leg knocks, a tired breath out;
+the text clicks and the UI chime were removed. Everything after 3.9 s is unchanged. First pass made the scene 5 dB louder than the rest (LRA 8.6 FAIL)
+→ levels halved → take06 all gates PASS (−15.8 LUFS, TP −2.5, LRA 4.9). Not verified: listening.
+
+## Owner revision 2 (2026-10-03): "no sound for the patient at all — make it like a low, wavering alarm bell: 'I have a problem and I'm worried'" → take07
+The v2 foley (heartbeat, breaths, creak, thump) was removed. §A is now a low warning bell (inharmonic partials 1 / 2 / 2.76 / 5.4, each doubled
+0.6 % sharp so they beat; 5.2 Hz vibrato, 6.3 Hz tremolo) tolled at 0.3, 1.7 and 3.0 s, each lower and longer (196 → 185 → 175 Hz), over a faint hum
+beating at 1.6 Hz. First level was 10 dB above the rest → reduced to ~3 dB above. take07 all gates PASS (−15.8 LUFS, TP −3.6, LRA 5.2). Not verified: listening.
