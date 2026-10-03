@@ -141,3 +141,12 @@ node reference.mjs audio <pack|video> [--range=a:b]                            #
 | Dropdown expand | 0.10 s, `out5`-type, 64 px |
 | UI wall | continuous slow drift 9.58–11.44 s (the only long moving span), exit at 11.44 s |
 Rule taken: in a beat-driven UI promo, put every content change on the beat and every secondary element on the half beat; keep entries ≤ 0.2 s with an expo/quint ease-out.
+
+## Calm premium brand film: night → dawn (2026-10-03; film `film7/`)
+- **Ground rises along the line:** one line function `lineY(x, t)` drives the drawn line, the objects riding it and the ivory world's clip polygon (`clip-path: polygon()` of the region below the line, bottom edge first, then the line); chips follow with tilt = slope, lift and fade by words.
+- **Weights on a line:** per-weight spring × Gaussian bump (`118·spr(t,tk,.6,.3)·exp(-((x-xk)/185)²)`) gives overshoot and a shared sag; chips fall with ease-in over 0.36 s, land with squash anchored at the bottom.
+- **Outline-to-fill:** SVG `pathLength=1` + dash offset draws the outline; a faint full blueprint underlay first (so early fragments read as construction), fill fades in 0.3 s, halves lock with a spring.
+- **Path draw by clip polygon:** offset the dense centre line ±w along the normal, add round caps, set `clip-path: path()` on the group; nonzero fill unions the self-crossing at the infinity's crossing. Pen of light = a radial glow at the head.
+- **Logo pieces by colour:** `film7/icon_trace.py` (class masks → components → potrace); overlapping parts keep their white halo as a stroked underlay.
+- **Keeping holds alive without decoration:** two large soft glows orbiting slowly (amplitude 150 px, ω 0.55–0.8) are enough for `freezedetect`; no particles needed.
+- **Score:** story-timed groove (96 BPM): E7 → C (deceptive resolution) on the dawn, a 0.15 s cut of every bus + a 0.5 s breath before it, one hook voiced per chord (`HOOK[chord]`) so any chord order stays coherent.

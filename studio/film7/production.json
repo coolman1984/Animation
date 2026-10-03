@@ -1,0 +1,354 @@
+{
+  "version": 1,
+  "duration": 25,
+  "fps": 30,
+  "audience": "Egyptian and Arab small-business owners and founders who carry finance, team, sales and decisions alone and are deciding whether an advisory partner can lighten the load",
+  "promise": "SANAD (سند) is the support that lets a business grow steadily instead of carrying everything alone: trust, partnership, sustainable growth",
+  "cta": "احجز استشارتك — book your consultation (no contact details were supplied, so none are shown)",
+  "direction": "«معاك سند» — the name means support. A founder's growth line is dragged down by four weights; the ground rises under it like a dawn (night navy → ivory); the brand's own icon is built from its three meanings (shield = trust, infinity ribbon = partnership, arrow = growth); the four weights return as four calm service rows; the logo lands. Alexandria (Arabic + Latin) only. Locked frame with a rising ground, outline-to-fill, path draw, spring pop; calm, balanced, warm. Original 96 BPM score: heavy and thin at night, a warm groove at dawn, lifts on the arrow, resolves on the logo.",
+  "assets": [
+    {
+      "id": "logo",
+      "path": "film7/source/logo-primary.jpg",
+      "role": "logo",
+      "rights": "Owner-supplied SANAD primary logo (identity board image, chat upload 2026-10-03); client material, not in git. Traced faithfully (film7/icon_trace.py, tools/logo_trace.py), never redrawn"
+    },
+    {
+      "id": "plates",
+      "path": "film7/plates",
+      "role": "logo",
+      "rights": "Derived in code from the owner's boards: icon pieces by colour, SANAD wordmark outlines, Arabic wordmark outlines (from the navy banner board)"
+    },
+    {
+      "id": "boards",
+      "path": "film7/source/identity-board-1.jpg",
+      "role": "reference",
+      "rights": "Owner-supplied identity boards (palette, services list, tagline, lock-up); read for brand truth only, not shown"
+    }
+  ],
+  "sound": {
+    "mode": "original",
+    "bpm": 96,
+    "note": "Original score synthesised in film7/score.mjs with lib/audio.mjs and lib/sfx.mjs; bar = 2.5 s so every beat of the story lands on the grid; no samples, no licence needed"
+  },
+  "creative": {
+    "viewer": "a founder or owner of a small or mid-size business in Egypt who feels they are doing everything alone",
+    "problem": "the owner carries accounts, team, sales and decisions at once; growth stalls and the load never shrinks",
+    "promise": "a partner you can lean on: trust, partnership and sustainable growth",
+    "evidence": "the brand's own identity boards: the icon's three meanings, the five service areas, the Arabic tagline «شريكك في الثقة والنمو المستدام»; no invented clients, numbers or results",
+    "emotion": "recognition of the weight, then relief, then quiet confidence",
+    "motif": "the growth line that becomes the horizon, then the logo's shield, ribbon and arrow",
+    "palette": [
+      "#0A192F",
+      "#10B981",
+      "#D4AF37",
+      "#F8F6F0",
+      "#46536B"
+    ],
+    "light": "deep night navy with a faint chart grid at the start; warm ivory dawn with a soft gold glow after the turn",
+    "typography": {
+      "display": "Alexandria",
+      "text": "Alexandria"
+    },
+    "camera": "locked frame; the ground rises, then slow push-ins and a lift as the icon climbs to the top and settles",
+    "transitions": [
+      "drop and sag",
+      "dawn wipe along the line",
+      "outline draw to fill",
+      "path draw",
+      "spring pop",
+      "row pops"
+    ],
+    "motion": "springs with overshoot for weights and arrow, outline-to-fill, a pen of light drawing the ribbon, blur-resolve type",
+    "sound": "96 BPM: thin, low and heavy at night; warm groove from the dawn; lift on the arrow; resolve on the logo",
+    "pacing": "one idea per bar (2.5 s), readable holds of 1.7–2.4 s, a 1.2 s hold on the final lock-up",
+    "payoff": "the full SANAD lock-up with its own tagline and one action",
+    "cta": "احجز استشارتك",
+    "styleFrames": {
+      "hook": 1.7,
+      "proof": 4.4,
+      "payoff": 24.0
+    },
+    "proof": {
+      "start": 0,
+      "end": 12
+    }
+  },
+  "shots": [
+    {
+      "id": "hook",
+      "start": 0,
+      "end": 2.5,
+      "purpose": "hook: the owner's growth line climbs; the question every founder knows — carrying everything alone",
+      "assetIds": [],
+      "craft": {
+        "scale": "wide chart, small arrow",
+        "camera": "locked, slow grid drift",
+        "focal": "the rising line and the question",
+        "transition": "cut on the beat",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "line draw",
+          "type rise"
+        ],
+        "audioCue": "low pad, heartbeat pulse, nothing sweet"
+      },
+      "copy": {
+        "text": "شايل شغلك كله لوحدك؟",
+        "start": 0.4,
+        "end": 2.0
+      }
+    },
+    {
+      "id": "weight",
+      "start": 2.5,
+      "end": 5.0,
+      "purpose": "proof of the feeling: four weights (accounts, team, sales, decisions) land one per beat and the line sags under them",
+      "assetIds": [],
+      "craft": {
+        "scale": "medium graphic objects on a line",
+        "camera": "locked",
+        "focal": "the four weights",
+        "transition": "drop and sag",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "weights land",
+          "line sags"
+        ],
+        "audioCue": "four low thuds on 2.5/3.125/3.75/4.375, music thins out, a breath at 4.9"
+      },
+      "copy": {
+        "text": "والمسؤولية بتتراكم..",
+        "start": 2.8,
+        "end": 4.95
+      }
+    },
+    {
+      "id": "dawn",
+      "start": 5.0,
+      "end": 7.5,
+      "purpose": "the turn: the ground rises under the line like a dawn, the weights become light and float away; «مش لازم تشيل لوحدك»",
+      "assetIds": [],
+      "craft": {
+        "scale": "full-frame world change",
+        "camera": "ground rising, line as horizon",
+        "focal": "the horizon and the answer",
+        "transition": "dawn wipe along the line",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "ground rise",
+          "type rise"
+        ],
+        "audioCue": "inhale, a rising swell, warm chord opens at 5.9"
+      },
+      "copy": {
+        "text": "مش لازم تشيل لوحدك.",
+        "start": 5.8,
+        "end": 7.15
+      }
+    },
+    {
+      "id": "shield",
+      "start": 7.5,
+      "end": 10.0,
+      "purpose": "the name is the idea: سند = support. The logo's shield is drawn and locks; «معاك سند»",
+      "assetIds": [
+        "logo",
+        "plates"
+      ],
+      "craft": {
+        "scale": "medium hero icon",
+        "camera": "slow push-in",
+        "focal": "the shield",
+        "transition": "outline draw to fill",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "outline draw",
+          "halves lock"
+        ],
+        "audioCue": "groove enters on 7.5, lock hit 8.3"
+      },
+      "copy": {
+        "text": "معاك سند.",
+        "start": 8.2,
+        "end": 9.95
+      }
+    },
+    {
+      "id": "trust",
+      "start": 10.0,
+      "end": 12.5,
+      "purpose": "meaning 1 of 3: trust — the shield protects every decision; a light runs round its edge",
+      "assetIds": [
+        "logo",
+        "plates"
+      ],
+      "craft": {
+        "scale": "medium hero icon",
+        "camera": "slow drift",
+        "focal": "the shield and the word «ثقة»",
+        "transition": "type swap",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "light orbit",
+          "type rise"
+        ],
+        "audioCue": "bell on 10.0, soft pad lifts"
+      },
+      "copy": {
+        "text": "ثقة تحمي كل قرار تاخده",
+        "start": 10.0,
+        "end": 12.4
+      }
+    },
+    {
+      "id": "partner",
+      "start": 12.5,
+      "end": 15.0,
+      "purpose": "meaning 2 of 3: partnership — the infinity ribbon is drawn through the shield by a pen of light",
+      "assetIds": [
+        "logo",
+        "plates"
+      ],
+      "craft": {
+        "scale": "medium hero icon",
+        "camera": "slow push toward the ribbon",
+        "focal": "the ribbon being drawn",
+        "transition": "path draw",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "ribbon draw",
+          "type rise"
+        ],
+        "audioCue": "rising sweep follows the pen, chord change on 12.5"
+      },
+      "copy": {
+        "text": "شراكة بتكمّل معاك الطريق",
+        "start": 12.5,
+        "end": 14.9
+      }
+    },
+    {
+      "id": "growth",
+      "start": 15.0,
+      "end": 17.5,
+      "purpose": "meaning 3 of 3: growth — the arrow springs out of the ribbon and a gold trail keeps climbing past the frame",
+      "assetIds": [
+        "logo",
+        "plates"
+      ],
+      "craft": {
+        "scale": "medium hero icon",
+        "camera": "settle, then lift toward the top",
+        "focal": "the arrow and its trail",
+        "transition": "spring pop",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "arrow pop",
+          "trail"
+        ],
+        "audioCue": "lift and cymbal swell into 15.0, impact"
+      },
+      "copy": {
+        "text": "نمو مستدام.. بثبات",
+        "start": 15.0,
+        "end": 17.15
+      }
+    },
+    {
+      "id": "shared",
+      "start": 17.5,
+      "end": 20.0,
+      "purpose": "what was heavy became shared: the four weights return as four calm service rows with check marks (finance & governance, HR & talent, sales & growth, decisions & operations)",
+      "assetIds": [
+        "logo",
+        "plates"
+      ],
+      "craft": {
+        "scale": "small icon above a list",
+        "camera": "icon climbs to the top",
+        "focal": "the four rows",
+        "transition": "row pops with checks",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "rows land",
+          "check draws"
+        ],
+        "audioCue": "steady groove, a soft tick per row"
+      },
+      "copy": {
+        "text": "اللي كان تقيل.. بقى مشترك.",
+        "start": 17.5,
+        "end": 19.75
+      }
+    },
+    {
+      "id": "logo",
+      "start": 20.0,
+      "end": 25.0,
+      "purpose": "payoff and CTA: the full lock-up (icon, SANAD wordmark, Business Advisory), the brand's own Arabic tagline, one action",
+      "assetIds": [
+        "logo",
+        "plates"
+      ],
+      "craft": {
+        "scale": "brand resolve",
+        "camera": "locked, gentle breathing",
+        "focal": "the lock-up",
+        "transition": "letter reveal",
+        "depthLayers": 2,
+        "primaryMotions": [
+          "wordmark reveal",
+          "type rise"
+        ],
+        "audioCue": "impact on 20.0, shimmer, final chord rings under the hold"
+      },
+      "copy": {
+        "text": "شريكك في الثقة والنمو المستدام",
+        "start": 22.5,
+        "end": 25.0
+      }
+    }
+  ],
+  "cues": [
+    {
+      "id": "dawn",
+      "t": 5.0,
+      "kind": "transition",
+      "shot": "dawn"
+    },
+    {
+      "id": "lock",
+      "t": 8.3,
+      "kind": "impact",
+      "shot": "shield",
+      "sound": {
+        "type": "impact",
+        "vel": 0.5,
+        "weight": 0.5
+      }
+    },
+    {
+      "id": "arrow",
+      "t": 15.0,
+      "kind": "impact",
+      "shot": "growth",
+      "sound": {
+        "type": "impact",
+        "vel": 0.6,
+        "weight": 0.6
+      }
+    },
+    {
+      "id": "logo",
+      "t": 20.0,
+      "kind": "reveal",
+      "shot": "logo",
+      "sound": {
+        "type": "impact",
+        "vel": 0.7,
+        "weight": 0.7
+      }
+    }
+  ]
+}

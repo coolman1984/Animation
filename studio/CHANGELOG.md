@@ -5,6 +5,17 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-03 — Film 7: SANAD «معاك سند», 25 s Reels ad (scope DONE)
+Owner request: a premium, calm, motivating 25 s ad for SANAD Business Advisory that plays on the client's emotional and psychological needs, shown as a motion-designer showreel ("go all out").
+No placement named → studio default for social video: 1080×1920 @ 30 fps, one delivery.
+- **Idea:** the name means *support*. A founder's growth line is dragged down by four weights (accounts · team · sales · decisions); the ground rises under the line like a dawn; the brand's
+  icon is built from its three meanings (shield = trust, infinity ribbon = partnership, arrow = growth); the four weights return as four calm service rows; the lock-up lands with the brand's own tagline.
+- **New:** `film7/` (BRIEF, production.json, config, film.js, score.mjs, `icon_trace.py`, LEDGER). `icon_trace.py` splits a raster logo into colour pieces (navy/gold/green components, potrace, the owner's pixels as colour plate).
+  Original 96 BPM score (heartbeat + four thuds → breath → E7→C deceptive resolution → groove with a returning hook → lift on the arrow → arrival on the logo).
+- **Techniques:** ground-rises-along-the-line wipe (clip polygon from the line), outline-to-fill with a blueprint underlay, stroked bridges where a logo's halo cuts a shape, path draw by clip polygon with a pen of light, white sticker halos under overlapping logo parts.
+- take08: all gates PASS after 2 of 2 correction rounds. Not verified: listening, real-speed human viewing, a fresh reviewer, live Meta overlays.
+- Brand conflicts reported to the owner: three different icons and two descriptors across the boards (see BRIEF).
+
 ## 2026-10-03 — film6 (Pixel Plus) music v2: energetic catchy dance-pop (scope DONE)
 The owner's "music very bad and ugly" note was about the Pixel Plus ad. `film6/score.mjs` rewritten on the same 120 BPM grid: 909 kick, off-beat sub,
 pumping supersaw Am–F | C–G, one hook returning in every chapter, builds into each drop, final chorus on the logo; every UI foley event kept.
