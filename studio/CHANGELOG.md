@@ -5,6 +5,13 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-03 — Engineering audit and technology report (scope DONE)
+Owner request: find bugs, problems, missing capabilities, useful GitHub projects, and current studio technologies; write a full root Markdown report.
+- Added `../STUDIO_AUDIT_AND_TECHNOLOGY_REPORT_2026-10-03.md`: prioritized findings, reproduced evidence, missing tools, project/license/hardware comparisons, verified releases through October 3, and an ordered implementation roadmap.
+- Reviewed a hashed 225-file snapshot and preserved concurrent changes. The report distinguishes snapshot defects from later fixes and records test failures/skips without claiming full certification.
+- Verification: report links/formatting valid; corrected snapshot docs 5/5, current platform/docs 7/7, current audio analyzer 1/1. Isolated snapshot reference integration still cancelled at its 120-second timeout. Browser rendering and advanced model workflows unverified.
+- No production implementation, film, creative recipe, asset or skill advice changed by the report scope. Local evidence remains ignored under `takes/`.
+
 ## 2026-10-03 — Windows port, speed-ups and testing policy (scope DONE)
 Owner request: "fix and improve, search for needed tools", then "make tests shorter", then "never run slow tests unless producing a real video".
 - New `lib/platform.mjs` (`isMain`, `PYTHON`, `devNull`, `slash`, `onPath`, `browserCandidates`) + `test/platform.test.mjs`, which also fails on POSIX-only idioms. The doctor finds Windows Chrome/Edge, reads the version from DevTools and measures disk with `statfsSync`.

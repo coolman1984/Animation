@@ -56,8 +56,13 @@ Updated: 2026-10-03. This is the current handoff; historical plans are not a tas
 - `npm test`: 90 tests, 76 passed, 14 optional skipped, 0 failed; real-browser examples test 4/4.
 
 ## Closed scopes (newest first; evidence in `studio/STATUS_HISTORY.md` and `studio/CHANGELOG.md`)
+
+**Audit report scope: DONE (2026-10-03).** Root report: `STUDIO_AUDIT_AND_TECHNOLOGY_REPORT_2026-10-03.md`.
+Reviewed a 225-file code snapshot, reproduced server/validator/OTIO defects, researched studio technologies through October 3, and documented priorities, licenses and hardware limits. Snapshot tests: 112 total, 91 passed, 4 failed, 1 cancelled, 16 skipped; one failure was snapshot font setup, corrected by a 5/5 documentation check. Later current platform/documentation checks passed 7/7 and the corrected audio analyzer passed 1/1. The isolated snapshot reference test still timed out at 120 seconds. Browser rendering and advanced model workflows remain unverified. Report local links and formatting were checked. Concurrent implementation edits are outside this completed report scope.
+
 | Scope | Result |
 |---|---|
+| Engineering audit and October 2026 technology report | DONE; root Markdown report |
 | Windows port, speed-ups, testing policy | DONE, local commit |
 | Deep app study (APP_MAP.md) | DONE, local commit |
 | Live-action toolkit + `live1` study | DONE, PR to main |
