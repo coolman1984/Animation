@@ -42,9 +42,10 @@ export function clampCrop([x0, y0, x1, y1], vw, vh) {
   if (bx - ax < 2 || by - ay < 2) return null;
   return { x: ax, y: ay, w: bx - ax, h: by - ay };
 }
-function rawCrop(video, t, box, vw, vh) {
+// maxBuffer: a full-width copy box on a 1080×1920 frame is several MB of rgb24 (the 1 MB default threw ENOBUFS).
+export function rawCrop(video, t, box, vw, vh) {
   const c = clampCrop(box, vw, vh); if (!c) return null;
-  return { buf: execFileSync('ffmpeg', ['-v', 'error', '-ss', t.toFixed(4), '-i', video, '-frames:v', '1', '-vf', `crop=${c.w}:${c.h}:${c.x}:${c.y},format=rgb24`, '-f', 'rawvideo', '-']), ...c };
+  return { buf: execFileSync('ffmpeg', ['-v', 'error', '-ss', t.toFixed(4), '-i', video, '-frames:v', '1', '-vf', `crop=${c.w}:${c.h}:${c.x}:${c.y},format=rgb24`, '-f', 'rawvideo', '-'], { maxBuffer: 256 * 1024 * 1024 }), ...c };
 }
 const lum = (r, g, b) => { const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b); };
 

@@ -20,3 +20,5 @@ Fix blocker/major issues, then verify only affected evidence. Two failed attempt
 **Reference-matched work:** build matched boards (reference above, ours below, offset-corrected timestamps), check fixes on frames extracted from the exported mp4, and give the critic a list of deliberate non-defects. Say what fidelity means (structure, timing, palette, type roles) and what is unverified (audio heard? real-speed? loop seam? share copy?). Examples: studio/showreel2/LEDGER.md.
 
 **Our own exports can be measured too:** `node reference.mjs timeline <our.mp4>` shows dead spans and cut rhythm; `audio` checks that hits land on the grid.
+
+**Finish check for dark/blue gradients (film 6):** extract the frame from the exported master AND the share copy, crop the glow, boost levels (`-level 0%,18%`); rings at a 5.5× boost that are faintly visible at 1:1 are a finish defect — fix with `config.dither`, not with picture-side noise.

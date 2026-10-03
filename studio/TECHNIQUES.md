@@ -86,6 +86,27 @@ Reference facts (observed on stills + numbers; motion/audio not played): dark na
 Taste notes: the reference never uses more than two type families, no frame borders and no confetti; colour = navy + one blue + white, with a single warm icon as accent.
 Counter-case: a calm luxury product should not use the whoosh/orbit energy; the kit is for tech/UI explainers.
 
+## UI-morph showreel grammar (two owner references, measured 2026-10-03; film: `film6/film.js`; reusable kit: `lib/uimorph.js`, `tools/logo_trace.py`)
+Reference facts (`reference.mjs timeline/audio` + 30 fps strips): 0 hard cuts in 20 s and 15 s; one black container on warm off-white springs between
+shapes (button → spinner → check → player card → volume pill → toggle …) in 0.2–0.27 s with motion blur; old content blurs out first (≈3 frames),
+new content blurs in staggered (≈5 frames); a cursor causes every change; holds 0.5–1.5 s; both tracks 120 BPM (bar 2.0 s).
+| Move | Native recipe |
+|---|---|
+| One container that becomes the next UI | per-property `springTrack([[t, value], …], t, {duration ≈ 0.42–0.45, bounce 0.14–0.18})` for w/h/radius/x/y — retargeting carries momentum; `mblur()` = summed per-property speed × 1/1100–1/1500 → CSS blur ≤ 4–5 px; colour via `mixHex` |
+| Content swap | old content opacity/blur out over 0.1 s, new in over 0.15–0.2 s from blur 8 px, staggered rows (tiles 0.08 s apart) |
+| Cursor | arc path (`cursorAt`: ease-in-out + perpendicular sine offset), dip to 0.8 on click, a ring at the tip (0.45 s) |
+| Portal dive | click → camera scales the scene around the clicked pixel (1 + 2.4u²) while the pixel grows exponentially to 5200 px and becomes `inset(... round r)` clip of the next world |
+| Circle wipe from an object | the object first lands exactly on the wipe centre at the same size; radius ease-out ×1.08 of the cover radius so it completes before the cut-over |
+| Dark-mode toggle wipe | knob slides (spring 0.3 s), track darkens first, then the dark world opens from the knob |
+| Pixel assembly of a logo | sample the traced logo on an 11 px grid (1,699 cells), quadratic-bezier flights from the burst point with a perpendicular swirl offset, `springStep` progress (0.55 s, bounce 0.16), random 0.02–0.32 s delays biased by distance; mosaic dissolves cell by cell into the crisp vector letters |
+| Animator's in-jokes | onion skin = 6 outlined ghosts 2 frames apart; spacing chart = one dot per frame along the path; squash on contact anchored at the floor, stretch along velocity |
+| Pixel grid motif | square 4 px dots every 54 px on every world; ripples (`exp(-((d - v·t)/band)²)`) on landings, seeded twinkles keep holds alive |
+Counter-case: the grammar is calm and precise; it is wrong for loud retail promos.
+
+### Film 6 encode and review recipes
+- **`config.dither: true`** for films with dark or saturated slow gradients (radial glows): error-diffused RGB→YUV via 10-bit (`encodeFilter` in `lib/render.mjs`). Same file size; check `crop` + `-level 0%,18%` on the exported master and share copy.
+- **Faithful logo trace:** `film6/logo_trace.py` — coverage from local max of distance-to-white (handles dark, grey and blue strokes alike), potrace at 4×, colour plate with the fringe inpainted, letters as `<img>` + `clip-path: path()` (awaited by `ready`, unlike SVG `<image>`).
+
 ## Precise forensics: measure timing, easing and music instead of guessing (2026-10-02)
 Commands (optional Python: numpy, scipy, OpenCV, librosa — `pip install -r reference/requirements-optional.txt`; the doctor lists them):
 ```bash

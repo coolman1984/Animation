@@ -46,6 +46,11 @@
 
 34. **Measure before you copy a rhythm:** the SaaS promo's "fast cards" were exactly one per beat at 128 BPM and the second headline line came half a beat later; eyeballing stills had guessed 1–2 s. Use `reference.mjs timeline/track/audio` first.
 
+## Film 6 — Pixel Plus 30 s Reels showreel-ad (2026-10-03)
+35. **One hero object beats a montage of effects:** the logo's own i-dot carried all 30 s (portal, ad frame, ball, toggle knob, button, and finally the logo's dot), so every transition was motivated and the payoff ("pixel by pixel") wrote itself.
+36. **Banding can come from the colour conversion, not the encoder:** dark saturated radial glows stepped into chroma rings after a plain RGB→yuv420p conversion; a dither layer in the picture did not help; error-diffused conversion via 10-bit (`config.dither`) did. Check dark gradients with a levels-boosted crop of the exported file.
+37. **Line boxes, not glyphs, trip the overlap gate:** big Arabic headlines with line-height 1.35 overlapped their second line by 4–17 px of empty box; line-height 1.12/1.2 fixed it without moving a glyph.
+
 ## Principles learned from reference studies
 Consult `reference/lessons.json` only when its evidence-backed principle is relevant to the current
 craft decision. Learn the timing/composition principle and its counter-case, not reference appearance.

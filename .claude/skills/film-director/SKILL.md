@@ -6,7 +6,7 @@ description: Route a film from a concise brief through one proof clip to verifie
 Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `studio/SKILLS.md`.
 
 
-Read studio/WORKFLOW.md first; studio/SKILLS.md routes optional departments. Do not re-read the historical prompt.
+Read studio/WORKFLOW.md first, then studio/QUALITY_PLAYBOOK.md (one hero object, measured references, stills → strips → critique, finish checks); studio/SKILLS.md routes optional departments. Do not re-read the historical prompt.
 
 If a reference film is supplied, invoke reference-reverse-engineer via SKILLS.md before inferring its techniques. Do not load the reference lab for ordinary films.
 
