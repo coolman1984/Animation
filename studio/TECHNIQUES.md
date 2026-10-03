@@ -151,3 +151,8 @@ Rule taken: in a beat-driven UI promo, put every content change on the beat and 
 - **Keeping holds alive without decoration:** two large soft glows orbiting slowly (amplitude 150 px, ω 0.55–0.8) are enough for `freezedetect`; no particles needed.
 - **Score:** story-timed groove (96 BPM): E7 → C (deceptive resolution) on the dawn, a 0.15 s cut of every bus + a 0.5 s breath before it, one hook voiced per chord (`HOOK[chord]`) so any chord order stays coherent.
 - **Cutting a section without re-authoring:** render the scene on its long timeline with `t < cut ? t : t + skip`, compose the score on the long timeline too and splice it on a bar line (equal-power 20 ms crossfade), mapping cue times back (`film7/score.mjs`).
+
+## Formal pitch film: the production-line rail (2026-10-03; film `film8/`)
+- **Statements as stations:** a rail along the bottom with numbered, labelled stations; the brand object travels station to station (spring per station, hop + squash on arrival); the visited part fills with the brand gradient and flowing dashes keep the line "running" (also keeps holds alive for `freezedetect`).
+- **Two-column 16:9 layout:** statements right-aligned in x 1000–1800 (RTL), visuals in x 140–880; keep headlines ≤ 84 px so long Arabic lines never cross into the visual column.
+- **Copying a reference's argument, not its claims:** transcribe it (`tools/live.py transcribe`), map each statement to the client's true equivalent, and replace any claim the client cannot make ("and many more") with an honest forward line.

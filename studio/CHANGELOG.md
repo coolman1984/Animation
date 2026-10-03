@@ -5,6 +5,12 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-03 — Film 8: Pixel Plus formal factory pitch, 25 s 16:9 (scope DONE)
+Owner: same content and order as a supplied promo, formal, for a factory's top management; Pixel Plus's only clients are Samsung Electronics Egypt's TV and mobile plants.
+- Reference transcribed with `tools/live.py` (VAD + Whisper turbo) to get the exact order; mapped statement by statement, "and many more" replaced by «ومصنعكم.. المحطة القادمة».
+- `film8/`: production-line rail with seven stations, the brand pixel as the work-piece, blueprint factory, template-scan → pixel-built screen, braided strands, client cards (name as text only), reticle on the floor, logo lock-up (white letters, blue dot/plus).
+- take04: all gates PASS (−16 LUFS for room playback). Not verified: listening, viewing on the real screen.
+
 ## 2026-10-03 — Film 7 revision: logo build cut, 15 s (scope DONE)
 Owner: the logo-building part was "very ugly"; keep the logo entering ready with the text under it, shorten. The 10 s build was removed; the finished logo pops in at 7.5;
 the score is composed on the long timeline and spliced on the bar line. Delivery `reels15`; take09 all gates PASS. Not verified: listening.

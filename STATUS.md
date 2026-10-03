@@ -2,7 +2,11 @@
 
 Updated: 2026-10-03. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE — Film 7 revision: logo-building section removed, 15 s (owner 2026-10-03: "the logo build is very ugly").**
+**Latest scope: DONE — Film 8, Pixel Plus formal factory pitch, 25 s 16:9 (owner request 2026-10-03).**
+- `studio/film8/` (BRIEF with the reference-order table, production.json, config, film.js, score.mjs, LEDGER). Final take04 (local): all gates PASS, share 13.5 MB.
+- Only the owner's real client (Samsung Electronics Egypt, TV + mobile plants) named, as text; no third-party logos. Not verified: listening, real-screen viewing.
+
+**Previous scope: DONE — Film 7 revision: logo-building section removed, 15 s (owner 2026-10-03: "the logo build is very ugly").**
 - Finished logo now pops in whole at 7.5 over the service rows; lock-up 10–15. Score spliced on the bar line. Final take09 (local): all gates PASS, share 9.64 MB. Not verified: listening.
 
 **Previous scope: DONE — Film 7, SANAD «معاك سند», 25 s Reels ad (owner request 2026-10-03).**
@@ -54,6 +58,7 @@ Updated: 2026-10-03. This is the current handoff; historical plans are not a tas
 ## Closed scopes (newest first; evidence in `studio/STATUS_HISTORY.md` and `studio/CHANGELOG.md`)
 | Scope | Result |
 |---|---|
+| Film 8 — Pixel Plus factory pitch 25 s 16:9 | DONE, branch; take04 local |
 | Film 7 — SANAD Reels ad (25 s, then cut to 15 s on owner feedback) | DONE, branch; take09 local |
 | Live-action toolkit + `live1` study | DONE, PR to main |
 | Film 6 knowledge: playbook, `lib/uimorph.js`, `tools/logo_trace.py` | DONE, PR #15 merged |

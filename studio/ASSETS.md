@@ -26,6 +26,8 @@
 | SANAD logo and identity boards | `film7/source/` (logo-primary.jpg, identity-board-1/2.jpg, office-wall.jpg, logo-arabic-dark.jpg), git-ignored | Supplied by the owner on 2026-10-03 for the SANAD ad (AI-made identity boards). Traced faithfully, never redrawn. Not to be reused for other clients. |
 | Film 7 plates (icon pieces, SANAD and Arabic wordmark outlines, colour plates) | `film7/plates/` (by `film7/icon_trace.py` + `tools/logo_trace.py`), git-ignored | Derived in code from the owner boards. |
 | Film 7 score | `film7/score.mjs` | Synthesised in code — original, no samples. |
+| Film 8 reference recording | `film8/source/reference.mp4`, git-ignored | Owner-supplied Facebook screen recording (third-party promo); used only for the order of statements; transcript pack in `film8/plates/` (git-ignored). |
+| Film 8 score | `film8/score.mjs` | Synthesised in code — original, no samples. |
 | Live 1 footage | `live1/source/face-demographics-walking-and-pause.mp4` (+ head-pose sample), git-ignored | Intel IoT DevKit sample-videos, CC BY 4.0 — attribution "Sample video © Intel Corporation, CC BY 4.0" (github.com/intel-iot-devkit/sample-videos) |
 | Live 1 analysis pack + scratch voice | `live1/plates/pack/`, git-ignored | Derived by `tools/live.py`; voice synthesised by Piper ar_JO-kareem (sherpa-onnx) — placeholder only |
 | Live 1 score | `live1/score.mjs` | Synthesised in code; voice chain/ducking by ffmpeg via `lib/dialogue.mjs` |
