@@ -35,7 +35,7 @@
   "sound": {
     "mode": "original",
     "bpm": 120,
-    "note": "Synthesised in film6/score.mjs with lib/audio.mjs and lib/sfx.mjs; no samples, no licence needed"
+    "note": "v2 (owner: v1 music too soft/ugly): energetic Western dance-pop, 909 four-on-the-floor, off-beat sub, pumping supersaw Am-F|C-G, one catchy two-bar hook that returns in every chapter, snare-roll builds into each drop. Synthesised in film6/score.mjs with lib/audio.mjs and lib/sfx.mjs; no samples, no licence needed"
   },
   "creative": {
     "viewer": "a business owner or marketer on Facebook Reels deciding which studio can make their ad, animation or app",
@@ -50,7 +50,7 @@
     "camera": "locked frame with the object moving (reference grammar), plus one portal dive into the pixel",
     "transitions": ["portal dive", "circle wipe", "toggle wipe", "cut", "implosion"],
     "motion": "spring morphs of one container (size/radius/colour) with motion blur, blur cross-fades of content, squash and stretch, onion skin, typewriter code, particle assembly",
-    "sound": "120 BPM minimal tech-pop in A minor: soft intro, drop at 4.0, bouncy animation section, filtered dark software section, three stabs, logo shimmer; UI foley clicks/pops on every interaction",
+    "sound": "120 BPM energetic dance-pop in A minor: hook teaser + build, drop at 4.0, bounce groove + heartbeat break, dark driving section, three stabs, final chorus on the logo; UI foley clicks/pops on every interaction",
     "pacing": "one idea per beat inside a chapter, a readable 2 s headline hold per chapter, quiet logo hold at the end",
     "payoff": "the pixel bursts into 1,699 pixels that assemble the Pixel Plus logo; tagline «نصنع الفرق.. بكسل ببكسل»; credit Made by: Mohamed Fawzy Labib",
     "cta": "ابدأ مشروعك معنا",

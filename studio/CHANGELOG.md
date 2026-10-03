@@ -103,6 +103,16 @@ Owner request: learn the app deeply after cloning the repository.
 - Recorded Windows browser discovery, CLI URL guards, POSIX commands, missing optional Python tools and intentionally excluded assets. Historical Linux results are distinct from local verification.
 - Updated STATUS and linked the map from README. No application behavior, creative recipe, asset, film ledger or project skill advice changed; no new media/model downloads.
 - Not verified: browser renders, playback/listening, model-backed analysis, complete Windows production or current remote CI. Learning is complete; portability repair was not requested.
+## 2026-10-03 — film6 (Pixel Plus) music v2: energetic catchy dance-pop (scope DONE)
+The owner's "music very bad and ugly" note was about the Pixel Plus ad. `film6/score.mjs` rewritten on the same 120 BPM grid: 909 kick, off-beat sub,
+pumping supersaw Am–F | C–G, one hook returning in every chapter, builds into each drop, final chorus on the logo; every UI foley event kept.
+take09 final: all gates PASS; measured 120.0 BPM, logo chorus the loudest section. Not verified: listening.
+
+## 2026-10-03 — live1 music v2: energetic Western tech-pop bed locked to the cuts (scope DONE)
+Owner: the soft bed was "very bad and ugly"; wanted Western music with energy, beats and a catchy rhythm that fits the video.
+- `live1/score.mjs` rewritten: 133⅓ BPM (bar = 1.8 s, so every cut lands on a downbeat), 909 kick/clap/hats, supersaw Em–C–G–D with sidechain pump,
+  sub, two-phrase hook; freeze-frame = musical stop (tape-stop + riser + snare roll), drop on unfreeze, stab on the title. Voice still ducked over it.
+- take04 final: all gates PASS; measured tempo 132.86 BPM. Not verified: listening.
 
 ## 2026-10-03 — Live-action toolkit: real footage of real people, cut, captioned and animated around (scope DONE)
 Owner request: comprehensive research (GitHub + trusted sources) and professional tools for ads with real people who talk and move:

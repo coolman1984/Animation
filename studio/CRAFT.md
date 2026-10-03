@@ -62,6 +62,8 @@ Timeless craft only. Dated technology and trend notes go to `TECH_RADAR.md`, nev
 40e. **A hang is a missing deadline.** A render waited for hours on a Chrome that had died. Every request to another process needs a timeout and a "the other side is gone" path; "it will answer eventually" is not a plan.
 40c. **A voice is only checked when it is heard or measured:** the first Arabic draft line "succeeded" with 0.3 s of silence (a hidden voice fallback). Always read back the duration and loudness of generated speech (`volumedetect`) before using it, and listen before calling it natural.
 40. **Headless capture has two traps:** a detached `<img>.decode()` may never resolve (use `createImageBitmap`), and stacked CSS `drop-shadow` filters on a full-frame layer froze screenshots for > 90 s (draw strokes on canvas). Bisect with a skip switch, do not just add retries.
+41. **A bed under a voice still needs a pulse.** "Soft and safe" read as ugly to the owner; ducking already protects the words, so give the music a kick, a hook and a tempo derived from the cut grid, and make edit events musical (freeze = stop, unfreeze = drop).
+42. **One hook, every chapter.** A catchy ad track repeats one short hook and changes only its instrument and energy per chapter (pluck → lead → bells → low saw → full chorus); the loudest section is the logo. If an owner note is ambiguous ("the music"), it usually means the main client film, not a study.
 
 
 Consult `reference/lessons.json` only when its evidence-backed principle is relevant to the current

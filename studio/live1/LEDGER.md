@@ -24,3 +24,11 @@ Deliberate: footage is soft (768×432 source, ~3× in the 9:16 crop); the freeze
 ## Close
 take03: all gates PASS (1080×1920, 30 fps, 12.00 s, −14 LUFS, TP −2.3, LRA 6.2, 6 text lines in the safe band, share 7.65 MB).
 Not verified: listening; real-speed human viewing; fresh reviewer. Study only — not a client deliverable.
+
+## Music v2 (owner: "music very bad and ugly — Western, energy, beats, catchy rhythm") → take04
+Replaced the soft 120 BPM bed with a 133⅓ BPM tech-pop track in `live1/score.mjs`: 909 four-on-the-floor, clap on 2/4, 16th hats,
+supersaw Em–C–G–D with sidechain pump, sub bass, two-phrase hook (A answers B). Tempo chosen so one bar = 1.8 s and the cuts
+(3.2 freeze, 5.0 unfreeze, 6.8 punch-in, 8.6 card) land on downbeats; freeze = tape-stop + riser + snare roll, drop on unfreeze, final stab on the title.
+Measured: tempo 132.86 BPM on the mix; durations 12.00 s; voice still ducked over the bed.
+take04 final: all gates PASS (12.00 s, −13.6 LUFS, TP −2.4, LRA 3, 6 text lines in safe band, share 7.65 MB).
+Not verified: listening (measured only).
