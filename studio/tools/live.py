@@ -8,7 +8,8 @@ films read the pack, so renders stay deterministic even though some models are n
   python3 tools/live.py models [--asr turbo|base]          download + verify models into studio/models/
   python3 tools/live.py ingest VIDEO PACK [--ss 0 --t 20 --fps 30 --width 1080 --interp dup|blend|mci]
   python3 tools/live.py vad PACK                           speech segments + 10 ms loudness (Silero VAD v5, ONNX)
-  python3 tools/live.py transcribe PACK [--lang ar]        Whisper (sherpa-onnx) segments → word timings
+  python3 tools/live.py transcribe PACK [--lang ar|en|auto] Whisper (sherpa-onnx) segments → word timings (+ speakers if diarized)
+  python3 tools/live.py diarize PACK [--speakers N]       who speaks when → speakers.json (models --diar=1)
   python3 tools/live.py align PACK --script FILE           known script → word timings on the real speech
   python3 tools/live.py scenes PACK                        hard cuts (PySceneDetect content detector)
   python3 tools/live.py matte PACK [--model multiclass|selfie] [--scale 0.5]   soft person alpha per frame
@@ -42,6 +43,9 @@ CATALOG = {
 }
 TTS = ('vits-piper-ar_JO-kareem-medium', 'https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/vits-piper-ar_JO-kareem-medium.tar.bz2')
 ASR = {'turbo': 'sherpa-onnx-whisper-turbo', 'base': 'sherpa-onnx-whisper-base', 'small': 'sherpa-onnx-whisper-small'}
+# Speaker diarization (who speaks when): pyannote segmentation 3.0 + 3D-Speaker ERes2Net embeddings, both ONNX via sherpa-onnx (Apache-2.0 runtime).
+DIAR = {'sherpa-onnx-pyannote-segmentation-3-0': 'https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-segmentation-models/sherpa-onnx-pyannote-segmentation-3-0.tar.bz2',
+        '3dspeaker_speech_eres2net_base_sv_zh-cn_3dspeaker_16k.onnx': 'https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/3dspeaker_speech_eres2net_base_sv_zh-cn_3dspeaker_16k.onnx'}
 ASR_URL = 'https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/{}.tar.bz2'
 
 
@@ -71,7 +75,20 @@ def cmd_models(pos, o):
     os.makedirs(MODELS, exist_ok=True)
     for name, url in CATALOG.items():
         p = os.path.join(MODELS, name)
-        if not os.path.exists(p): log('download', name); urllib.request.urlretrieve(url, p)
+        if not os.path.exists(p):
+            log('download', name)
+            try: urllib.request.urlretrieve(url, p + '.part'); os.replace(p + '.part', p)
+            except Exception as e:
+                if name != 'silero_vad.onnx': raise
+                # Corporate proxies often block raw.githubusercontent.com. The identical file ships inside the official
+                # `silero-vad` wheel on PyPI: download the wheel without its torch dependencies and extract only the model.
+                log('blocked', url, f'({e}); trying the silero-vad wheel from PyPI')
+                import subprocess, tempfile, zipfile, glob
+                tmp = tempfile.mkdtemp()
+                subprocess.run([sys.executable, '-m', 'pip', 'download', 'silero-vad', '--no-deps', '-d', tmp, '-q'], check=True)
+                with zipfile.ZipFile(glob.glob(os.path.join(tmp, '*.whl'))[0]) as z:
+                    member = next(m for m in z.namelist() if m.endswith('data/silero_vad.onnx'))
+                    with open(p, 'wb') as f: f.write(z.read(member))
         log('ok', name, os.path.getsize(p), hashlib.sha256(open(p, 'rb').read()).hexdigest()[:12])
     asr = o.get('asr', 'turbo')
     if asr and asr != 'none':
@@ -81,6 +98,16 @@ def cmd_models(pos, o):
             with tarfile.open(tmp) as tf: tf.extractall(MODELS, filter='data')
             os.remove(tmp)
         log('ok', ASR[asr])
+    if o.get('diar'):
+        for name, url in DIAR.items():
+            p = os.path.join(MODELS, name)
+            if os.path.exists(p): log('ok', name); continue
+            if url.endswith('.tar.bz2'):
+                tmp = p + '.tar.bz2'; urllib.request.urlretrieve(url, tmp)
+                with tarfile.open(tmp) as tf: tf.extractall(MODELS, filter='data')
+                os.remove(tmp)
+            else: urllib.request.urlretrieve(url, p + '.part'); os.replace(p + '.part', p)
+            log('ok', name)
     if o.get('tts'):
         d = os.path.join(MODELS, TTS[0])
         if not os.path.isdir(d):
@@ -252,19 +279,39 @@ def cmd_transcribe(pos, o):
     import sherpa_onnx
     name = ASR[o.get('model', 'turbo')]; d = os.path.join(MODELS, name); p = name.split('-')[-1]
     if not os.path.isdir(d): raise SystemExit(f'missing {name}: run `python3 tools/live.py models --asr={o.get("model", "turbo")}`')
+    # --lang=auto: Whisper detects the language (an empty language lets the multilingual model choose; mixed Arabic/English stays as spoken).
+    lang = o.get('lang', 'ar'); lang = '' if lang == 'auto' else lang
     rec = sherpa_onnx.OfflineRecognizer.from_whisper(encoder=f'{d}/{p}-encoder.int8.onnx', decoder=f'{d}/{p}-decoder.int8.onnx', tokens=f'{d}/{p}-tokens.txt',
-                                                     language=o.get('lang', 'ar'), task='transcribe', num_threads=os.cpu_count() or 2, enable_segment_timestamps=True)
+                                                     language=lang, task='transcribe', num_threads=os.cpu_count() or 2, enable_segment_timestamps=True)
     wav = o.get('wav') or os.path.join(pack, 'audio16k.wav')
     x, sr = read_wav(wav)
     speech = jload(os.path.join(pack, 'speech.json')) or cmd_vad([pack], {'wav': wav} if o.get('wav') else {})
-    s = rec.create_stream(); s.accept_waveform(sr, x); rec.decode_stream(s); r = s.result
+    if lang == '':
+        # Mixed Arabic/English: Whisper picks ONE language per decode window and dropped an English sentence inside Arabic
+        # speech. Decode every VAD phrase separately so each phrase gets its own language detection.
+        pieces = []
+        for s0, s1 in speech['segments']:
+            st = rec.create_stream(); st.accept_waveform(sr, x[int(s0 * sr):int(s1 * sr)]); rec.decode_stream(st)
+            txt = st.result.text.strip()
+            if txt: pieces.append((txt, s0, s1 - s0, getattr(st.result, 'lang', '') or ''))
+        class R: pass
+        r = R(); r.text = ' '.join(p[0] for p in pieces); r.segment_texts = [p[0] for p in pieces]
+        r.segment_timestamps = [p[1] for p in pieces]; r.segment_durations = [p[2] for p in pieces]; seg_lang = [p[3] for p in pieces]
+    else:
+        s = rec.create_stream(); s.accept_waveform(sr, x); rec.decode_stream(s); r = s.result; seg_lang = []
     segs, words = [], []
     for txt, st, du in zip(r.segment_texts or [r.text], r.segment_timestamps or [0.0], r.segment_durations or [len(x) / sr]):
         a, b = float(st), float(st) + float(du)
         active = [[max(a, s0), min(b, s1)] for s0, s1 in speech['segments'] if min(b, s1) > max(a, s0)] or [[a, b]]
         segs.append({'start': round(a, 3), 'end': round(b, 3), 'text': txt.strip()})
         words += place_words(txt.split(), active, speech.get('rmsDb'))
+    spk = jload(os.path.join(pack, 'speakers.json'))
+    if spk:  # label each word with the speaker whose turn overlaps its middle (run `diarize` first)
+        for wd in words:
+            mid = (wd['start'] + wd['end']) / 2
+            wd['speaker'] = next((t['speaker'] for t in spk['turns'] if t['start'] <= mid < t['end']), None)
     d = jsave(os.path.join(pack, 'transcript.json'), {'model': name, 'lang': o.get('lang', 'ar'), 'text': r.text.strip(), 'segments': segs, 'words': words,
+                                                      'confidence': 'not provided by the sherpa-onnx Whisper decoder (null per word)',
                                                       'wordTiming': 'proportional within Whisper segments, snapped to loudness dips (not forced alignment)'})
     log('transcribe', len(segs), 'segments,', len(words), 'words:', d['text'][:80])
     return d
@@ -528,6 +575,30 @@ def cmd_preview(pos, o):
     ff.stdin.close(); ff.wait(); log('preview', out)
 
 
+def cmd_diarize(pos, o):
+    """Who speaks when: speakers.json {turns: [{start, end, speaker: 'S1'}], speakers: n}. --speakers=N if known, else clustered."""
+    pack = pos[0]; pack_info(pack)
+    import sherpa_onnx
+    seg = os.path.join(MODELS, 'sherpa-onnx-pyannote-segmentation-3-0', 'model.onnx'); emb = os.path.join(MODELS, '3dspeaker_speech_eres2net_base_sv_zh-cn_3dspeaker_16k.onnx')
+    if not (os.path.exists(seg) and os.path.exists(emb)): raise SystemExit('missing diarization models: run `python tools/live.py models --asr=none --diar=1`')
+    n = int(o.get('speakers', -1))
+    cfg = sherpa_onnx.OfflineSpeakerDiarizationConfig(
+        segmentation=sherpa_onnx.OfflineSpeakerSegmentationModelConfig(pyannote=sherpa_onnx.OfflineSpeakerSegmentationPyannoteModelConfig(model=seg)),
+        embedding=sherpa_onnx.SpeakerEmbeddingExtractorConfig(model=emb),
+        clustering=sherpa_onnx.FastClusteringConfig(num_clusters=n, threshold=float(o.get('threshold', 0.5))),
+        min_duration_on=0.3, min_duration_off=0.5)
+    sd = sherpa_onnx.OfflineSpeakerDiarization(cfg)
+    x, sr = read_wav(o.get('wav') or os.path.join(pack, 'audio16k.wav'))
+    if sr != sd.sample_rate: raise SystemExit(f'diarization needs {sd.sample_rate} Hz mono audio (got {sr})')
+    res = sd.process(x).sort_by_start_time()
+    order = {}  # S1, S2 … in order of first appearance (cluster ids are arbitrary)
+    for r in res: order.setdefault(r.speaker, len(order) + 1)
+    turns = [{'start': round(r.start, 3), 'end': round(r.end, 3), 'speaker': f'S{order[r.speaker]}'} for r in res]
+    d = jsave(os.path.join(pack, 'speakers.json'), {'turns': turns, 'speakers': len({t['speaker'] for t in turns}), 'model': 'pyannote-segmentation-3.0 + 3D-Speaker ERes2Net (sherpa-onnx)'})
+    log('diarize', d['speakers'], 'speakers,', len(turns), 'turns')
+    return d
+
+
 def cmd_tts(pos, o):
     import sherpa_onnx, soundfile as sf
     d = os.path.join(MODELS, TTS[0])
@@ -535,6 +606,12 @@ def cmd_tts(pos, o):
     tts = sherpa_onnx.OfflineTts(sherpa_onnx.OfflineTtsConfig(model=sherpa_onnx.OfflineTtsModelConfig(vits=sherpa_onnx.OfflineTtsVitsModelConfig(
         model=f'{d}/ar_JO-kareem-medium.onnx', tokens=f'{d}/tokens.txt', data_dir=f'{d}/espeak-ng-data'), num_threads=os.cpu_count() or 2)))
     lines = [l.strip() for l in open(pos[0], encoding='utf-8') if l.strip()]; gap = float(o.get('gap', 0.7)); sr = 22050
+    if o.get('each'):  # one wav per line into the folder pos[1] (line_001.wav …): used by lib/voice.mjs provider 'local'
+        os.makedirs(pos[1], exist_ok=True)
+        for i, l in enumerate(lines):
+            a = tts.generate(l, sid=0, speed=float(o.get('speed', 1.0)))
+            sf.write(os.path.join(pos[1], f'line_{i + 1:03d}.wav'), np.array(a.samples, np.float32), a.sample_rate)
+        log('tts', len(lines), 'lines →', pos[1]); return
     parts = [np.zeros(int(sr * float(o.get('lead', 0.4))), np.float32)]
     for l in lines:
         a = tts.generate(l, sid=0, speed=float(o.get('speed', 1.0))); sr = a.sample_rate
@@ -552,7 +629,7 @@ def cmd_all(pos, o):
     cmd_scenes([pack], {}); cmd_matte([pack], o); cmd_track([pack], o); cmd_space([pack], o); cmd_reframe([pack], o)
 
 
-COMMANDS = {'models': cmd_models, 'ingest': cmd_ingest, 'vad': cmd_vad, 'transcribe': cmd_transcribe, 'align': cmd_align, 'scenes': cmd_scenes,
+COMMANDS = {'models': cmd_models, 'ingest': cmd_ingest, 'vad': cmd_vad, 'diarize': cmd_diarize, 'transcribe': cmd_transcribe, 'align': cmd_align, 'scenes': cmd_scenes,
             'matte': cmd_matte, 'track': cmd_track, 'space': cmd_space, 'reframe': cmd_reframe, 'preview': cmd_preview, 'tts': cmd_tts, 'all': cmd_all}
 if __name__ == '__main__':
     if len(sys.argv) < 2 or sys.argv[1] not in COMMANDS: print(__doc__); sys.exit(2)

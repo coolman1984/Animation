@@ -6,6 +6,9 @@
 //   node studio.mjs setup <profile>          install a tool pack (vision, audio, live, logo, gpu, color) or show links (core, pro)
 //   node studio.mjs doctor                   full machine check (lib/doctor.mjs)
 //   node studio.mjs new <film> --placement=reels|youtube|feed|square --duration=30 [--fps=30]
+//   node studio.mjs review <film | out/<film>/takeNN>     playback review: frame steps, A/B, timed notes, hash-bound approval
+//   node studio.mjs voice [status | say <text> --lang=ar | script <film>]   voice studio (VOICE_STUDIO.md)
+//   node studio.mjs transcript <pack>  ·  mixcheck <audio|video>  ·  color check|scopes|range  ·  sounds [category]
 // Films are then built with make.mjs (WORKFLOW.md). Registry: capabilities.json. Architecture: PLATFORM.md.
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -26,8 +29,8 @@ const flags = args => Object.fromEntries(args.filter(a => a.startsWith('--')).ma
 
 function caps() {
   const all = detect(loadRegistry());
-  console.log(`\n${pad('CAPABILITY', 16)}${pad('MATURITY', 14)}${pad('STATUS', 11)}${pad('DEPT', 13)}BEST FOR`);
-  for (const c of all) console.log(`${pad(c.id, 16)}${pad(c.maturity, 14)}${pad(c.status, 11)}${pad(c.department, 13)}${c.bestFor}`);
+  console.log(`\n${pad('CAPABILITY', 20)}${pad('MATURITY', 14)}${pad('STATUS', 11)}${pad('DEPT', 13)}BEST FOR`);
+  for (const c of all) console.log(`${pad(c.id, 20)}${pad(c.maturity, 14)}${pad(c.status, 11)}${pad(c.department, 13)}${c.bestFor}`);
   const missing = all.filter(c => c.status === 'missing' && c.profile);
   if (missing.length) console.log(`\nInstall when a film needs it: ${[...new Set(missing.map(c => `node studio.mjs setup ${c.profile}`))].join(' | ')}`);
   console.log('Maturity: CORE > PRODUCTION > PROVEN > EXPERIMENTAL > PLANNED > LEARN (ideas only). See capabilities.json.\n');
@@ -131,6 +134,60 @@ writeWav(join(OUT, 'music.wav'), music); writeWav(join(OUT, 'sfx.wav'), sfx); wr
   console.log(`Created ${name}/ (config, production.json, film.js, score.mjs, BRIEF.md, LEDGER.md).\nNext: fill BRIEF + production.json, declare craft.layers per shot, then: node studio.mjs route ${name} && node make.mjs ${name}`);
 }
 
+// Voice studio (VOICE_STUDIO.md): providers, one line, a film's voice.json script.
+async function voiceCmd([sub, ...rest], opt) {
+  const v = await import('./lib/voice.mjs');
+  if (!sub || sub === 'status') { for (const p of v.voiceStatus()) console.log(`${pad(p.provider, 11)}${pad(p.offline ? 'offline' : 'cloud', 9)}${pad(p.ready ? 'READY' : 'not set', 9)}${p.voices.join('; ')}`); return; }
+  if (sub === 'say') {
+    const [r] = await v.generate({ id: 'say', text: rest.join(' '), language: opt.lang || 'ar', dialect: opt.dialect, voice: opt.voice, provider: opt.provider || 'auto',
+      performance: { style: opt.style, pace: opt.pace ? +opt.pace : undefined, energy: opt.energy }, out: opt.out || join(STUDIO, 'takes', 'voice-say.wav') }, { mode: opt.final ? 'final' : 'draft' });
+    console.log(`${r.file} · ${r.duration}s · ${r.voice} (${r.provider}) · spoken: ${r.spoken}`); return;
+  }
+  if (sub === 'script') {
+    const m = await v.renderScript(rest[0], { mode: opt.final ? 'final' : 'draft', duration: opt.duration ? +opt.duration : undefined });
+    for (const l of m.lines) console.log(`${pad(l.id, 8)} t=${pad(l.t, 7)} ${pad(l.duration + 's', 9)} slot ${l.slot ?? '-'}${l.overruns ? '  OVERRUNS: shorten the line' : ''}  ${l.voice}`);
+    console.log(`manifest: takes/${rest[0]}/voice/manifest.json — listen before calling it natural.`); return;
+  }
+  console.error('usage: node studio.mjs voice [status] | say <text> --lang=ar|en [--voice=id --provider=… --style=warm --pace=0.95 --final] | script <film> [--final]');
+}
+async function transcriptCmd(src, opt) {
+  if (!src) { console.error('usage: node studio.mjs transcript <pack-folder | transcript.json> [--out=base] [--translation=layer.json --layer=en]'); process.exit(2); }
+  const T = await import('./lib/transcript.mjs');
+  const file = existsSync(join(src, 'transcript.json')) ? join(src, 'transcript.json') : src;
+  const raw = JSON.parse(readFileSync(file, 'utf8')), t = raw.version === 1 && raw.sentences ? raw : T.fromLive(raw, { file });
+  if (opt.translation) T.addLayer(t, opt.layer || 'en', 'translation', t.language, JSON.parse(readFileSync(opt.translation, 'utf8')));
+  const out = T.exportAll(t, opt.out || file.replace(/\.json$/, ''), { layer: opt.translation ? opt.layer || 'en' : undefined });
+  console.log(`${t.sentences.length} sentences, ${t.words.length} words, language ${t.language}, speakers ${t.speakers.map(s => s.id).join(',') || '-'}`);
+  console.log(`fillers ${T.fillers(t).length}, repeated phrases ${T.repeats(t).length}, best cut points: ${T.cutPoints(t).slice(0, 3).map(c => c.t + 's').join(', ')}`);
+  for (const [k, f] of Object.entries(out)) console.log(`  ${pad(k, 10)} ${f}`);
+}
+async function colorCmd([sub, video, t], opt) {
+  const c = await import('./lib/color.mjs');
+  if (sub === 'check') { const r = await c.colorCheck({ dither: !!opt.dither, lut: opt.lut }); console.log(`ΔE mean ${r.meanDE}, max ${r.maxDE} over ${r.patches.length} patches (< 1 invisible, > 3 a real shift)${r.lut ? ' with LUT ' + r.lut : ''}`); return; }
+  if (sub === 'scopes') { console.log(await c.scopes(video, +(t || 0), opt.out || join(STUDIO, 'takes', 'scopes.png'))); return; }
+  if (sub === 'range') { console.log(JSON.stringify(await c.legalRange(video))); return; }
+  console.error('usage: node studio.mjs color check [--dither --lut=file.cube] | scopes <video> <t> [--out=png] | range <video>   (LUTs: python tools/ocio_bake.py)');
+}
+
+// Playback review: serve out/<film>/ and open the newest take's player (or the given take folder).
+async function reviewCmd(target, opt) {
+  const { readdirSync, statSync } = await import('node:fs');
+  const { dirname, basename, resolve } = await import('node:path');
+  let take = target && existsSync(resolve(target)) && statSync(resolve(target)).isDirectory() ? resolve(target) : null;
+  if (!take && target && existsSync(join(STUDIO, 'out', target))) {
+    const takes = readdirSync(join(STUDIO, 'out', target)).filter(d => /^take\d+$/.test(d)).sort();
+    if (takes.length) take = join(STUDIO, 'out', target, takes.at(-1));
+  }
+  if (!take) { console.error('usage: node studio.mjs review <film | out/<film>/takeNN> [--port=8765] [--no-open]'); process.exit(2); }
+  const players = readdirSync(take).filter(d => d.startsWith('review-') && existsSync(join(take, d, 'player.html')));
+  if (!players.length) { console.error(`${take} has no review player (build it with --profile=review or final)`); process.exit(1); }
+  const { reviewServer } = await import('./lib/review-server.mjs');
+  const srv = await reviewServer(dirname(take), { port: Number(opt.port || 0) });
+  const urls = players.map(p => `http://127.0.0.1:${srv.port}/${basename(take)}/${p}/player.html`);
+  console.log(`Review server for ${dirname(take)} (Ctrl+C to stop):\n${urls.map(u => '  ' + u).join('\n')}\nNotes and approval are saved next to each export (<video>.review.json); approval is tied to the file's SHA-256.`);
+  if (!opt['no-open']) spawnSync(WINDOWS ? 'cmd' : process.platform === 'darwin' ? 'open' : 'xdg-open', WINDOWS ? ['/c', 'start', '', urls[0]] : [urls[0]], { stdio: 'ignore' });
+}
+
 if (isMain(import.meta.url)) {
   const [cmd, ...args] = process.argv.slice(2);
   if (cmd === 'caps') caps();
@@ -138,5 +195,11 @@ if (isMain(import.meta.url)) {
   else if (cmd === 'setup') setup(args[0]);
   else if (cmd === 'doctor') { const { doctor } = await import('./lib/doctor.mjs'); const r = await doctor(); caps(); process.exitCode = r.ok ? 0 : 1; }
   else if (cmd === 'new') newFilm(args[0], flags(args));
-  else console.log(readFileSync(new URL(import.meta.url), 'utf8').split('\n').slice(1, 9).map(l => l.replace(/^\/\/ ?/, '')).join('\n'));
+  else if (cmd === 'review') await reviewCmd(args[0], flags(args));
+  else if (cmd === 'voice') await voiceCmd(args.filter(a => !a.startsWith('--')), flags(args));
+  else if (cmd === 'transcript') await transcriptCmd(args[0], flags(args));
+  else if (cmd === 'mixcheck') { const { mixCheck } = await import('./lib/mixcheck.mjs'); console.log(JSON.stringify(await mixCheck(args[0]), null, 2)); }
+  else if (cmd === 'color') await colorCmd(args.filter(a => !a.startsWith('--')), flags(args));
+  else if (cmd === 'sounds') { const { searchSounds } = await import('./lib/sounds.mjs'); for (const s of searchSounds(args[0] || '')) console.log(`${pad(s.id, 20)}${pad(s.category, 11)}${pad(s.kind, 7)}${s.use}  [${s.rights}]`); }
+  else console.log(readFileSync(new URL(import.meta.url), 'utf8').split('\n').slice(1, 12).map(l => l.replace(/^\/\/ ?/, '')).join('\n'));
 }

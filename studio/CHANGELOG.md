@@ -5,6 +5,37 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-03 — Browser attach mode, colour management, playback review, voice & sound department (scope DONE)
+Owner request: decide the Chrome-launcher question without breaking anything; add colour management and a playback review screen; build
+a first-class Arabic/English voice, transcript and sound studio.
+- **Browser:** private headless Chrome stays the default.
+  - New attach mode (`STUDIO_CDP_URL`) uses an isolated context in a launcher-started Chrome and never starts or kills it. Verified: renders work, owner tabs survive, the context is disposed.
+  - Pixels differ between modes by 42 dB, so the picture cache keys on the mode. The doctor supports both modes.
+- **Colour:** `lib/color.mjs`:
+  - ΔE chart round-trip through the real encoder: mean 0.70, or 0.54 with dither.
+  - Scopes for several moments in one launch.
+  - Legal range, also folded into `measureAll`.
+  - `config.lut` grade via `lut3d`.
+  - `tools/ocio_bake.py` (OCIO 2.6 built-in config).
+  - Every review gallery shows scopes; make prints a legal-range note.
+- **Review:**
+  - `lib/review-player.html` is written next to every review gallery. It offers frame stepping, a shot/copy/cue timeline, a waveform, A/B takes, timed notes and keyboard control.
+  - `lib/review-server.mjs` + `node studio.mjs review <film>` add HTTP Range, notes storage and approval bound to the export's SHA-256 (voided on change).
+- **Voice & sound** (`VOICE_STUDIO.md`, skill `voice-director`):
+  - `tools/live.py`: `diarize` (sherpa-onnx pyannote + ERes2Net), `transcribe --lang=auto` decoding per VAD phrase (mixed Arabic/English), speaker labels per word, `tts --each`, safe model download with a PyPI fallback for the blocked Silero host.
+  - `lib/transcript.mjs`: canonical transcript, translation/adaptation layers + coverage, logged corrections, fillers, repeats, cut points, search, keep-ranges, SRT/VTT/ASS/TXT/JSON/bilingual.
+  - `lib/voice.mjs`:
+    - provider-neutral `generate()` with windows/local/openai/elevenlabs/azure
+    - performance map, pronunciation lexicon (`voice/lexicon.json`) and voice registry with rights and a consent gate (`voice/voices.json`)
+    - film `voice.json` → stems + manifest, `fitToSlot` (±8 % or rewrite), `mixScript` (adelay + ducking)
+  - `lib/mixcheck.mjs`: clipping, mono, phone speaker and phase in one pass. `sounds/library.json` + `lib/sounds.mjs`.
+- **Verified here:**
+  - Windows Hoda ar-EG, David en-US and Piper lines generated (real audio, measured).
+  - The mixed AR/EN test clip transcribed with both languages; diarization separated 2 of 3 voices (two similar synthetic male voices merged).
+  - Bilingual SRT written; voice script placed, mixed and checked; LUT path applied.
+  - Fast tests 30/30 (+2 render-gated skips) in 6 s.
+- **Not verified:** the cloud voice adapters (no keys), a listening judgement of naturalness, attach mode with the owner's real launcher, the player in the owner's own browser session.
+
 ## 2026-10-03 — Studio platform v1 + audit fixes (scope DONE)
 Owner request: apply the "visual production operating system" vision (capability registry, router, universal scene, setup profiles,
 maturity, visual lab, technology scout, knowledge layers), the deep artistic forensics brief and the audit report — simple for the agent.

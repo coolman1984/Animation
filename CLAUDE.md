@@ -6,7 +6,9 @@ At most two correction rounds per requested scope: then record DONE or BLOCKED a
 
 This repo is a code-driven film studio. Everything lives in `studio/` (start with `studio/WORKFLOW.md` and `studio/SKILLS.md`).
 Front door: `node studio/studio.mjs` (`caps`, `new`, `route`, `setup`, `doctor`). Architecture, the capability registry and maturity
-rules: `studio/PLATFORM.md` + `studio/capabilities.json`. New tools follow learn → adapt → integrate (skill `technology-scout`, dated `studio/TECH_RADAR.md`).
+rules: `studio/PLATFORM.md` + `studio/capabilities.json`. Speech, narration, transcripts, dubbing and the final mix: skill `voice-director` / `studio/VOICE_STUDIO.md`.
+Watch and approve an export: `node studio/studio.mjs review <film>`. Browser: private headless Chrome by default; if Chrome must come from an approved
+launcher, set `STUDIO_CDP_URL` (attach mode, isolated context; one film = one mode). New tools follow learn → adapt → integrate (skill `technology-scout`, dated `studio/TECH_RADAR.md`).
 The skill library is in `.claude/skills/` — read `film-director` first for any video request.
 Never commit `studio/takes/` or `studio/out/`. Owner speaks Egyptian Arabic and is not technical:
 reports go conclusion-first, simple words.

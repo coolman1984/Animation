@@ -6,8 +6,16 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { findChromium } from './doctor.mjs';
 
+// Browser session modes (one switch, nothing else changes):
+//  - private (default): the studio starts its own headless Chrome with a throwaway profile per worker and closes it.
+//  - attach: STUDIO_CDP_URL=http://127.0.0.1:<port> points at a Chrome that an approved launcher already started with
+//    --remote-debugging-port. The studio opens an isolated browser context (own cookies/storage) per worker, renders,
+//    then disposes ONLY that context. It never starts, kills or reconfigures the owner's browser.
+export const sessionMode = () => (process.env.STUDIO_CDP_URL ? 'attach' : 'private');
+
 // One bounded retry for transient startup failures, never for navigation/render/verification errors.
 export async function launch(options = {}) {
+  if (sessionMode() === 'attach') return attach(options);
   try { return await launchOnce(options); }
   catch(error){
     if(!/Chromium did not start|Chromium exited/.test(error.message))throw error;
@@ -59,6 +67,37 @@ async function launchOnce({ width = 1280, height = 720, scale = 1, headless = tr
   await client.send('Runtime.enable');
   await client.send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: scale, mobile: false });
   return client;
+}
+
+async function attach({ width = 1280, height = 720, scale = 1, extraArgs = [] } = {}) {
+  const base = process.env.STUDIO_CDP_URL.replace(/\/+$/, '');
+  let info;
+  try { info = await (await fetch(`${base}/json/version`)).json(); }
+  catch (error) { throw new Error(`attach mode: no Chrome DevTools endpoint at ${base} (start Chrome through the approved launcher with --remote-debugging-port, or unset STUDIO_CDP_URL for private mode): ${error.message}`); }
+  if (extraArgs.length) console.warn('attach mode: launch flags (e.g. SwiftShader for config.gpu) cannot be applied to an existing browser; WebGL uses that browser\'s own GPU settings');
+  const browser = await connect(info.webSocketDebuggerUrl);
+  let browserContextId;
+  try {
+    ({ browserContextId } = await browser.send('Target.createBrowserContext', { disposeOnDetach: true }));
+    const { targetId } = await browser.send('Target.createTarget', { url: 'about:blank', browserContextId, newWindow: true });
+    const client = await connect(info.webSocketDebuggerUrl.replace(/\/devtools\/browser\/.*$/, `/devtools/page/${targetId}`));
+    client.version = info.Browser;
+    client.close = async () => {
+      try { client.ws.close(); } catch {}
+      try { await browser.send('Target.disposeBrowserContext', { browserContextId }); } catch {}
+      try { browser.ws.close(); } catch {}
+    };
+    await client.send('Page.enable');
+    await client.send('Runtime.enable');
+    await client.send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: scale, mobile: false });
+    // A visible browser may keep our window in the background: emulate focus so it keeps producing frames.
+    await client.send('Emulation.setFocusEmulationEnabled', { enabled: true }).catch(() => {});
+    return client;
+  } catch (error) {
+    if (browserContextId) await browser.send('Target.disposeBrowserContext', { browserContextId }).catch(() => {});
+    try { browser.ws.close(); } catch {}
+    throw error;
+  }
 }
 
 // Close Chromium and remove its throwaway profile. A bare kill leaves helper processes holding the profile (and our stderr

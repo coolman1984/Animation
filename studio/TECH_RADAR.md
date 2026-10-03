@@ -30,6 +30,20 @@ Sources: the engineering audit `../STUDIO_AUDIT_AND_TECHNOLOGY_REPORT_2026-10-03
 | LTX-2, Wan2.2, HunyuanVideo, Veo 3.1, Runway | Generative video | DEFER: optional service adapter; never as product evidence | audit §9.4 |
 | Industry trend | Hybrid production: AI directs, procedural systems build, GPU renders, specialist models isolate, automated QA checks. Generated flat clips are not editable films | Principle applied in PLATFORM.md | owner; audit §8 |
 
+## Voice and speech (researched 2026-10-03)
+| Technology | What it offers | Decision | Source |
+|---|---|---|---|
+| OpenAI gpt-4o-mini-tts | Current OpenAI TTS model; 11 built-in voices; `instructions` control accent, emotion, intonation, speed, whispering | Adapter written, unverified (needs key) | [OpenAI TTS guide](https://developers.openai.com/api/docs/guides/text-to-speech) |
+| ElevenLabs (multilingual v2 / Flash v2.5) | MSA + several Arabic regional variants incl. Egyptian; fast | Adapter written, unverified | [SILMA benchmark Aug 2026](https://silma.ai/blog/best-arabic-tts-models---aug-2026), [Munsit overview](https://munsit.com/blog/best-arabic-tts) |
+| Azure AI Speech ar-EG neural (Salma, Shakir) | Native Egyptian neural voices with SSML prosody | Adapter written, unverified; first choice for Egyptian narration | Azure voice list (verify in the portal) |
+| SILMA TTS v2, Munsit Faseeh, Lahajati | Arabic-specialist TTS with dialect depth (Egyptian among many) | PILOT: compare by listening against Azure/ElevenLabs before writing an adapter | [SILMA latency benchmark](https://silma.ai/blog/best-low-latency-arabic-text-to-speech-apis-for-developers-2026-benchmark), [Lahajati alternatives](https://munsit.com/blog/lahajati-alternatives-2026-arabic-tts-platforms) |
+| Google Cloud TTS, Amazon Polly | Arabic = MSA only (no Egyptian per these reviews) | LEARN | [Munsit overview](https://munsit.com/blog/best-arabic-tts) |
+| sherpa-onnx speaker diarization (pyannote seg 3.0 + 3D-Speaker/WeSpeaker embeddings) | Torch-free, CPU, Apache-2 runtime | ADOPTED (EXPERIMENTAL): `tools/live.py diarize` | [diarization research note](https://raw.githubusercontent.com/haberwooki/dia_live_captions/main/docs/diarization-research.md) |
+| Whisper turbo via sherpa-onnx | Offline multilingual ASR | ADOPTED; mixed language handled per VAD phrase | existing studio tool |
+| Windows OneCore voices (Microsoft Hoda ar-EG) | Free offline Egyptian Arabic draft voice | ADOPTED for drafts (needs PowerShell 7) | local machine |
+| Demucs-class source separation | Speech/music/effects stems | PLANNED: needs PyTorch | audit §9.2 |
+| Network note | This office network blocks raw.githubusercontent.com (HTTP 403 "URLBlocked"); GitHub releases, PyPI, Google storage work | `live.py models` falls back to the PyPI wheel for Silero VAD | observed 2026-10-03 |
+
 ## Next refresh
 Check the official sites for the rows marked PILOT/WATCH. Add only what changed, with its date and source.
 Promote to `capabilities.json` only after a passing study.

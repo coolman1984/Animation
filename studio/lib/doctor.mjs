@@ -70,6 +70,17 @@ async function probeChromium(bin, scale = 2) {
   }
 }
 
+async function probeAttached(scale = 2) {
+  const { launch } = await import('./cdp.mjs');
+  let client;
+  try {
+    client = await launch({ width: 400, height: 300, scale });
+    const png = Buffer.from((await client.send('Page.captureScreenshot', { format: 'png' })).data, 'base64');
+    return { ok: true, cssWidth: await client.eval('innerWidth'), deviceWidth: png.readUInt32BE(16), scale, version: client.version?.replace('/', ' ') || null };
+  } catch (e) { return { ok: false, error: String(e.message || e) }; }
+  finally { await client?.close(); }
+}
+
 function ffmpegCaps({ gpuProbe = true } = {}) {
   const enc = run('ffmpeg', ['-hide_banner', '-encoders']) || '';
   const fil = run('ffmpeg', ['-hide_banner', '-filters']) || '';
@@ -96,10 +107,12 @@ function fonts() {
 // optional: false (make.mjs) checks only what a build needs: no Python imports, GPU test-encodes or report file.
 export async function doctor({ quiet = false, optional = true } = {}) {
   const nodeMajor = Number(process.versions.node.split('.')[0]);
-  const chromium = findChromium();
+  // Attach mode (STUDIO_CDP_URL, lib/cdp.mjs): the browser belongs to an approved launcher; probe it through a private context.
+  const attached = process.env.STUDIO_CDP_URL;
+  const chromium = attached ? `attach:${attached}` : findChromium();
   const ffv = (run('ffmpeg', ['-version']) || '').split('\n')[0];
   const caps = ffv ? ffmpegCaps({ gpuProbe: optional }) : null;
-  const probe = chromium ? await probeChromium(chromium, 2) : { ok: false, error: 'no chromium' };
+  const probe = attached ? await probeAttached(2) : chromium ? await probeChromium(chromium, 2) : { ok: false, error: 'no chromium' };
   const chromiumVersion = probe.version || (chromium && !WINDOWS ? (run(chromium, ['--version']) || '').trim() : null);
   const f = optional ? fonts() : { count: 0, arabic: [], bundled: [] };
   let df = null;
@@ -160,7 +173,8 @@ export async function doctor({ quiet = false, optional = true } = {}) {
 export async function buildCheck() {
   const file = join(ROOT, 'takes', 'doctor-build.json');
   const stamp = (p) => { try { const s = statSync(p); return [p, s.size, s.mtimeMs]; } catch { return [p]; } };
-  const key = JSON.stringify([process.version, ...[findChromium(), onPath('ffmpeg'), onPath('ffprobe')].map(stamp)]);
+  const browser = process.env.STUDIO_CDP_URL ? [`attach:${process.env.STUDIO_CDP_URL}`] : stamp(findChromium());
+  const key = JSON.stringify([process.version, browser, ...[onPath('ffmpeg'), onPath('ffprobe')].map(stamp)]);
   try { const saved = JSON.parse(readFileSync(file, 'utf8')); if (saved.key === key && saved.report.ok) return { ...saved.report, reused: true }; } catch {}
   const report = await doctor({ quiet: true, optional: false });
   if (report.ok) { mkdirSync(dirname(file), { recursive: true }); writeFileSync(file, JSON.stringify({ key, report })); }

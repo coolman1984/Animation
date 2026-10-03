@@ -79,21 +79,36 @@ Artistic DNA) is already built: `ARTISTIC_FORENSICS.md` + `reference.mjs`. Learn
 | 3D | camera-director (+ motion-composer) | three (EXPERIMENTAL), blender (PLANNED) |
 | Camera and depth | camera-director | cinema, depth |
 | Editing and rhythm | edit-rhythm | rhythm, cues, edl/otio |
-| Sound | sound-designer | score, music-analysis |
+| Sound | sound-designer | score, music-analysis, sound-library, mixcheck |
+| Voice, transcript, dubbing | voice-director | transcript, speech-recognition, voice-windows/local/cloud (VOICE_STUDIO.md) |
+| Colour | qa-judge (+ ffmpeg-master) | color-management: ΔE check, scopes, legal range, OCIO-baked LUTs |
 | Live action | live-action-editor | footage, live-analysis |
 | Product UI | screen-actor, cdp-capture, studio-clock | app-capture, ui-motion |
 | Reference study | reference-reverse-engineer (+ ingest, motion/audio forensics, recreation-director) | reference-lab |
-| QA and delivery | qa-judge, platform-delivery, ffmpeg-master, thumbnail-poster | make.mjs gates, review evidence |
+| QA and delivery | qa-judge, platform-delivery, ffmpeg-master, thumbnail-poster | make.mjs gates, review evidence, review player (`studio.mjs review`) |
 | Research | technology-scout | TECH_RADAR.md, capabilities.json |
 | Machine | studio-doctor | `studio.mjs doctor` |
 
+## Browser session modes
+- **private** (default): each render worker starts its own headless Chrome with a throwaway profile and closes it.
+- **attach**: set `STUDIO_CDP_URL=http://127.0.0.1:<port>` when Chrome must be started by an approved launcher with `--remote-debugging-port`.
+  - The studio opens an isolated browser context per worker and disposes only that context. It never starts, kills or reconfigures that browser, and the owner's tabs stay open (verified).
+  - Launch flags (e.g. SwiftShader for `config.gpu`) cannot be applied to an existing browser.
+  - Pixels differ slightly between modes (42 dB PSNR measured). The picture cache keys on the mode, so one film never mixes modes.
+
+## Colour contract
+The browser renders sRGB. Exports are BT.709, limited range, tagged.
+- `node studio.mjs color check` proves it end to end: ΔE mean 0.70 / max 1.22, and 0.54 / 1.07 with `config.dither`.
+- Review galleries carry waveform/vectorscope/histogram scopes. make prints a legal-range note.
+- `config.lut` applies a .cube grade before encoding. `tools/ocio_bake.py` bakes LUTs with OpenColorIO's built-in studio config (e.g. ACEScg renders → sRGB).
+
 ## Not built yet (honest list; open only on an owner request)
 - Blender bridge.
-- An OCIO/EXR color route (the libraries are installed, there is no adapter).
+- EXR multi-pass compositing (OCIO LUT baking exists).
 - Exact OTIO handoff (audit B05: gaps, speed and audio offsets are not exported).
-- A playback review console.
 - A shared job runner with deadlines.
 - Concurrent-build safety.
-- Live-action ML model download.
+- Source separation (needs PyTorch).
+- Verified cloud voice adapters (need keys).
 
 The full audit with sources: `../STUDIO_AUDIT_AND_TECHNOLOGY_REPORT_2026-10-03.md`.

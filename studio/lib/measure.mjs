@@ -41,8 +41,12 @@ export async function measureAll(file, { minDur = 1.0 } = {}) {
   const p = await probe(file);
   if (!p.acodec) return { probe: p, loud: null, frozen: await frozen(file, { minDur }), black: await black(file) };
   const { err } = await run('ffmpeg', ['-hide_banner', '-nostats', '-i', file, '-filter_complex',
-    `[0:v]split[a][b];[a]scale=180:-2,gblur=sigma=2,freezedetect=n=-58dB:d=${minDur}[fz];[b]blackdetect=d=0.05:pix_th=0.08[bk];[0:a]ebur128=peak=true[ld]`,
-    '-map', '[fz]', '-f', 'null', '-', '-map', '[bk]', '-f', 'null', '-', '-map', '[ld]', '-f', 'null', '-']);
+    `[0:v]split=3[a][b][c];[a]scale=180:-2,gblur=sigma=2,freezedetect=n=-58dB:d=${minDur}[fz];[b]blackdetect=d=0.05:pix_th=0.08[bk];[c]signalstats,metadata=print[ss];[0:a]ebur128=peak=true[ld]`,
+    '-map', '[fz]', '-f', 'null', '-', '-map', '[bk]', '-f', 'null', '-', '-map', '[ss]', '-f', 'null', '-', '-map', '[ld]', '-f', 'null', '-']);
+  // Colour legal range (advisory for web; lib/color.mjs legalRange is the standalone version).
+  const nums = (re) => [...err.matchAll(re)].map((m) => +m[1]);
+  const ymin = nums(/YMIN=([\d.]+)/g), ymax = nums(/YMAX=([\d.]+)/g), sat = nums(/SATMAX=([\d.]+)/g);
+  const range = ymin.length ? { frames: ymin.length, below16: ymin.filter((v) => v < 16).length, above235: ymax.filter((v) => v > 235).length, minY: Math.min(...ymin), maxY: Math.max(...ymax), maxSat: Math.max(...sat) } : null;
   const sum = err.slice(err.lastIndexOf('Summary:'));
   const num = (re) => { const m = sum.match(re); return m ? +m[1] : null; };
   const starts = [...err.matchAll(/freeze_start: ([\d.]+)/g)].map((m) => +m[1]), ends = [...err.matchAll(/freeze_end: ([\d.]+)/g)].map((m) => +m[1]);
@@ -51,6 +55,7 @@ export async function measureAll(file, { minDur = 1.0 } = {}) {
     loud: { I: num(/I:\s+(-?[\d.]+) LUFS/), LRA: num(/LRA:\s+(-?[\d.]+) LU/), TP: num(/Peak:\s+(-?[\d.]+) dBFS/) },
     frozen: starts.map((s, i) => ({ start: s, end: ends[i] ?? null })),
     black: [...err.matchAll(/black_start:([\d.]+) black_end:([\d.]+)/g)].map((m) => ({ start: +m[1], end: +m[2] })),
+    range,
   };
 }
 

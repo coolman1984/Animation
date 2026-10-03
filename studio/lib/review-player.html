@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Review player</title>
+<style>
+  :root { --bg:#111317; --panel:#1A1D23; --line:#2A2F38; --text:#E6E8EB; --dim:#9AA3AE; --blue:#4C9AFF; --red:#FF5C5C; --amber:#FFB547; --green:#3DDC97; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:14px system-ui, 'Segoe UI', sans-serif; }
+  header { display:flex; gap:16px; align-items:center; padding:10px 16px; background:var(--panel); border-bottom:1px solid var(--line); }
+  header b { font-size:15px; } header .dim { color:var(--dim); }
+  main { display:grid; grid-template-columns: 1fr 340px; gap:12px; padding:12px; height: calc(100vh - 46px); }
+  .stage { display:flex; flex-direction:column; gap:8px; min-height:0; }
+  .videos { flex:1; display:flex; gap:8px; justify-content:center; align-items:center; min-height:0; position:relative; background:#000; border-radius:6px; overflow:hidden; }
+  video { max-width:100%; max-height:100%; background:#000; }
+  .videos.ab video { max-width:50%; }
+  .videos.wipe { display:block; } .videos.wipe video { position:absolute; inset:0; margin:auto; }
+  .bar { display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+  button, select, input { background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:5px; padding:5px 9px; font:inherit; }
+  button:hover { border-color:var(--blue); cursor:pointer; } button.on { background:var(--blue); color:#000; }
+  .tc { font: 600 15px ui-monospace, Consolas, monospace; min-width: 210px; }
+  .timeline { position:relative; height:74px; background:var(--panel); border:1px solid var(--line); border-radius:6px; cursor:pointer; overflow:hidden; }
+  .timeline img { position:absolute; left:0; bottom:0; width:100%; height:34px; opacity:.55; }
+  .shot { position:absolute; top:0; height:20px; border-right:1px solid var(--bg); font-size:11px; padding:2px 4px; overflow:hidden; white-space:nowrap; background:#26303D; color:var(--dim); }
+  .copy { position:absolute; top:22px; height:6px; background:#3A5577; border-radius:2px; }
+  .mark { position:absolute; top:30px; width:2px; height:10px; background:var(--amber); }
+  .note-mark { position:absolute; top:0; width:3px; height:100%; opacity:.9; }
+  .head { position:absolute; top:0; width:2px; height:100%; background:#fff; pointer-events:none; }
+  aside { background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:10px; overflow:auto; display:flex; flex-direction:column; gap:10px; }
+  aside h3 { margin:4px 0; font-size:13px; color:var(--dim); text-transform:uppercase; letter-spacing:.06em; }
+  textarea { width:100%; min-height:60px; background:var(--bg); color:var(--text); border:1px solid var(--line); border-radius:5px; padding:6px; font:inherit; }
+  .note { border-left:3px solid var(--dim); padding:4px 8px; background:var(--bg); border-radius:4px; cursor:pointer; }
+  .note small { color:var(--dim); } .blocker{border-color:var(--red)} .major{border-color:var(--amber)} .minor{border-color:var(--blue)}
+  .approved { color:var(--green); font-weight:600; } .warn { color:var(--amber); }
+  kbd { background:var(--bg); border:1px solid var(--line); border-radius:3px; padding:0 4px; font-size:12px; }
+</style>
+</head>
+<body>
+<header><b id="title">Review</b><span class="dim" id="meta"></span><span id="status" class="dim"></span></header>
+<main>
+  <section class="stage">
+    <div class="videos" id="videos"><video id="a" preload="auto" playsinline></video></div>
+    <div class="bar">
+      <button id="play" title="Space / K">▶ Play</button>
+      <button data-step="-1" title="← or ,">◀ 1 frame</button><button data-step="1" title="→ or .">1 frame ▶</button>
+      <button data-jump="-1" title="J">−1 s</button><button data-jump="1" title="L">+1 s</button>
+      <select id="rate" title="Speed"><option>0.25</option><option>0.5</option><option selected>1</option><option>2</option></select>
+      <button id="loop" title="Loop the current shot">Loop shot</button>
+      <span class="tc" id="tc">00:00.000 · f0</span>
+      <select id="compare" title="A/B compare with another take"><option value="">A/B: off</option></select>
+      <select id="abmode"><option value="ab">side by side</option><option value="wipe">wipe</option></select>
+      <input id="wipe" type="range" min="0" max="100" value="50" style="width:110px" title="Wipe position">
+    </div>
+    <div class="timeline" id="timeline"><img id="wave" alt=""><div class="head" id="head"></div></div>
+  </section>
+  <aside>
+    <div><h3>Note at the playhead</h3>
+      <select id="sev"><option value="note">note</option><option value="minor">minor</option><option value="major">major</option><option value="blocker">blocker</option></select>
+      <textarea id="text" placeholder="What is wrong / what to keep (N to focus)"></textarea>
+      <button id="add">Add note</button> <button id="export">Download notes</button></div>
+    <div><h3>Notes</h3><div id="notes"></div></div>
+    <div><h3>Approval</h3><div id="approval" class="dim">not approved</div>
+      <input id="reviewer" placeholder="Reviewer name" style="width:100%;margin:6px 0">
+      <button id="approve">Approve this exact export</button></div>
+    <div class="dim" style="font-size:12px">Keys: <kbd>Space</kbd>/<kbd>K</kbd> play · <kbd>←</kbd><kbd>→</kbd> frame · <kbd>J</kbd><kbd>L</kbd> ±1 s · <kbd>N</kbd> note · <kbd>[</kbd><kbd>]</kbd> prev/next shot</div>
+  </aside>
+</main>
+<script>
+// Data is inlined by lib/review.mjs (works from file://). Notes/approval persist through `node studio.mjs review <take>`;
+// opened as a plain file they fall back to localStorage + "Download notes".
+const D = /*__DATA__*/{};
+const $ = (id) => document.getElementById(id);
+const A = $('a'), fps = D.fps || 30, dur = D.duration || 1, server = location.protocol.startsWith('http');
+const key = 'review:' + (D.video || '');
+let notes = [], loopShot = null, B = null;
+$('title').textContent = D.video || 'Review';
+$('meta').textContent = `${D.width}×${D.height} · ${fps} fps · ${dur.toFixed(2)} s · ${D.take || ''}`;
+A.src = D.videoUrl;
+// Show the displayed frame (floor) and that frame's start time, so f and the clock always agree.
+const fmt = (t0) => { const f = Math.floor(t0 * fps + 1e-6), t = f / fps; const s = Math.floor(t); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}.${String(Math.round((t - s) * 1000) % 1000).padStart(3, '0')} · f${f}`; };
+// Seek to the middle of frame n: never lands on a frame boundary, so the shown frame is exactly n.
+const seekFrame = (n) => { n = Math.max(0, Math.min(Math.round(dur * fps) - 1, n)); A.currentTime = (n + 0.5) / fps; if (B) B.currentTime = A.currentTime; };
+const frameNow = () => Math.floor(A.currentTime * fps + 1e-6);
+const shotAt = (t) => (D.shots || []).find((s) => t >= s.start && t < s.end);
+
+// Timeline: shots, copy spans, cues, waveform, notes.
+const tl = $('timeline'), pct = (t) => `${(100 * t / dur).toFixed(3)}%`;
+for (const s of D.shots || []) { const e = document.createElement('div'); e.className = 'shot'; e.style.left = pct(s.start); e.style.width = pct(s.end - s.start); e.textContent = s.id; e.title = s.purpose || s.id; tl.appendChild(e); }
+for (const c of D.copy || []) { const e = document.createElement('div'); e.className = 'copy'; e.style.left = pct(c.start); e.style.width = pct(c.end - c.start); e.title = c.text; tl.appendChild(e); }
+for (const c of D.cues || []) { const e = document.createElement('div'); e.className = 'mark'; e.style.left = pct(c.t); e.title = `${c.id} (${c.kind})`; tl.appendChild(e); }
+if (D.waveform) $('wave').src = D.waveform;
+tl.addEventListener('click', (ev) => { const r = tl.getBoundingClientRect(); seekFrame(Math.floor((ev.clientX - r.left) / r.width * dur * fps)); });
+
+function tick() {
+  const t = A.currentTime; $('tc').textContent = fmt(t); $('head').style.left = pct(t);
+  if (loopShot && t >= loopShot.end) { A.currentTime = loopShot.start; if (B) B.currentTime = loopShot.start; }
+  if (B && !A.paused && Math.abs(B.currentTime - t) > 1.5 / fps) B.currentTime = t;
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+const play = () => { if (A.paused) { A.play(); B?.play(); $('play').textContent = '❚❚ Pause'; } else { A.pause(); B?.pause(); $('play').textContent = '▶ Play'; seekFrame(frameNow()); } };
+$('play').onclick = play;
+document.querySelectorAll('[data-step]').forEach((b) => b.onclick = () => { A.pause(); B?.pause(); seekFrame(frameNow() + +b.dataset.step); });
+document.querySelectorAll('[data-jump]').forEach((b) => b.onclick = () => seekFrame(frameNow() + Math.round(+b.dataset.jump * fps)));
+$('rate').onchange = () => { A.playbackRate = +$('rate').value; if (B) B.playbackRate = A.playbackRate; };
+$('loop').onclick = () => { loopShot = loopShot ? null : shotAt(A.currentTime) || null; $('loop').classList.toggle('on', !!loopShot); };
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+  const k = e.key.toLowerCase();
+  if (k === ' ' || k === 'k') { e.preventDefault(); play(); }
+  else if (k === 'arrowright' || k === '.') { A.pause(); seekFrame(frameNow() + 1); }
+  else if (k === 'arrowleft' || k === ',') { A.pause(); seekFrame(frameNow() - 1); }
+  else if (k === 'j') seekFrame(frameNow() - fps); else if (k === 'l') seekFrame(frameNow() + fps);
+  else if (k === 'n') { e.preventDefault(); $('text').focus(); }
+  else if (k === '[' || k === ']') { const s = D.shots || [], t = A.currentTime, i = s.findIndex((x) => t >= x.start && t < x.end); const j = Math.max(0, Math.min(s.length - 1, i + (k === ']' ? 1 : -1))); if (s[j]) seekFrame(Math.ceil(s[j].start * fps)); }
+});
+
+// A/B: another take of the same film, synced to A. Wipe = B under A, clipped.
+for (const t of D.otherTakes || []) { const o = document.createElement('option'); o.value = t.url; o.textContent = 'A/B: ' + t.label; $('compare').appendChild(o); }
+function setCompare() {
+  B?.remove(); B = null; const url = $('compare').value, box = $('videos'); box.className = 'videos';
+  if (!url) return;
+  B = document.createElement('video'); B.src = url; B.muted = true; B.preload = 'auto'; B.currentTime = A.currentTime; B.playbackRate = A.playbackRate;
+  box.className = 'videos ' + $('abmode').value; box.insertBefore(B, $('abmode').value === 'wipe' ? A : null); wipe();
+}
+function wipe() { A.style.clipPath = B && $('abmode').value === 'wipe' ? `inset(0 0 0 ${$('wipe').value}%)` : ''; }
+$('compare').onchange = setCompare; $('abmode').onchange = setCompare; $('wipe').oninput = wipe;
+
+// Notes and approval: server when available, else localStorage.
+async function load() {
+  if (server) { try { const r = await fetch('api/state?video=' + encodeURIComponent(D.videoPath)); const s = await r.json(); notes = s.notes || []; showApproval(s.approval, s.sha256); } catch { $('status').textContent = 'notes server unavailable: saving in this browser only'; } }
+  else { notes = JSON.parse(localStorage.getItem(key) || '[]'); $('status').textContent = 'opened as a file: notes stay in this browser (Download notes). For saved notes and approval run: node studio.mjs review <take>'; }
+  render();
+}
+async function save() {
+  if (server) await fetch('api/notes', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ video: D.videoPath, notes }) }).catch(() => {});
+  else localStorage.setItem(key, JSON.stringify(notes));
+}
+function render() {
+  document.querySelectorAll('.note-mark').forEach((e) => e.remove());
+  $('notes').innerHTML = '';
+  notes.sort((a, b) => a.t - b.t).forEach((n, i) => {
+    const d = document.createElement('div'); d.className = 'note ' + n.severity;
+    d.innerHTML = `<small>${fmt(n.t)} · ${n.severity}${n.shot ? ' · ' + n.shot : ''}</small><div></div><small><a href="#" data-del="${i}">delete</a></small>`;
+    d.children[1].textContent = n.text; d.onclick = (e) => { if (e.target.dataset.del !== undefined) { e.preventDefault(); notes.splice(+e.target.dataset.del, 1); save(); render(); } else seekFrame(Math.round(n.t * fps)); };
+    $('notes').appendChild(d);
+    const m = document.createElement('div'); m.className = 'note-mark'; m.style.left = pct(n.t); m.style.background = { blocker: 'var(--red)', major: 'var(--amber)', minor: 'var(--blue)' }[n.severity] || 'var(--dim)'; tl.appendChild(m);
+  });
+}
+$('add').onclick = () => { const text = $('text').value.trim(); if (!text) return; notes.push({ t: +(frameNow() / fps).toFixed(3), frame: frameNow(), severity: $('sev').value, shot: shotAt(A.currentTime)?.id || null, text, at: new Date().toISOString() }); $('text').value = ''; save(); render(); };
+$('export').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify({ video: D.video, notes }, null, 2)], { type: 'application/json' })); a.download = 'review-notes.json'; a.click(); };
+function showApproval(ap, sha) {
+  if (!ap) { $('approval').textContent = 'not approved'; $('approval').className = 'dim'; return; }
+  const valid = ap.sha256 === sha; $('approval').className = valid ? 'approved' : 'warn';
+  $('approval').textContent = valid ? `approved by ${ap.reviewer} at ${ap.at.slice(0, 16).replace('T', ' ')}` : 'approval is VOID: the file changed after approval';
+}
+$('approve').onclick = async () => {
+  if (!server) { alert('Approval needs the review server: node studio.mjs review <take>'); return; }
+  const open = notes.filter((n) => n.severity === 'blocker' || n.severity === 'major');
+  if (open.length && !confirm(`${open.length} blocker/major note(s) are still listed. Approve anyway?`)) return;
+  const r = await fetch('api/approve', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ video: D.videoPath, reviewer: $('reviewer').value || 'reviewer', openMajor: open.length }) });
+  const s = await r.json(); showApproval(s.approval, s.sha256);
+};
+load();
+</script>
+</body>
+</html>

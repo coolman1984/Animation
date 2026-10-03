@@ -10,6 +10,10 @@ Architecture and engine choice: PLATFORM.md. Before choosing an engine run `node
 | Which engine for a layer? What is installed? | — | `node studio.mjs caps` / `route`; capabilities.json; PLATFORM.md |
 | Browser 3D (Three.js) / 20k+ particles (PixiJS) | motion-composer, camera-director | examples/three-study, examples/pixi-study (EXPERIMENTAL; config.gpu: true) |
 | New tool or trend: worth adding? | technology-scout | TECH_RADAR.md (dated), LEARN / ADAPT / INTEGRATE |
+| Speech, transcripts, narration, dubbing, sound mix | voice-director | VOICE_STUDIO.md, lib/transcript.mjs, lib/voice.mjs, voice/voices.json, voice/lexicon.json, lib/mixcheck.mjs, sounds/library.json |
+| Watch and approve an export | qa-judge | `node studio.mjs review <film>` (lib/review-player.html, lib/review-server.mjs) |
+| Colour accuracy, scopes, LUT grade | qa-judge, ffmpeg-master | lib/color.mjs, tools/ocio_bake.py, config.lut |
+| Chrome must be started by an approved launcher | cdp-capture | STUDIO_CDP_URL attach mode (lib/cdp.mjs) |
 | Route a film | film-director | make.mjs, production.json, QUALITY_PLAYBOOK.md (method that reached premium) |
 | UI-morph / showreel motion, logo assembly | motion-composer | lib/uimorph.js, tools/logo_trace.py |
 | No concept / direction yet | creative-director, idea-lab | style frames + craft metadata + creative preflight |

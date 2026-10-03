@@ -1,0 +1,15 @@
+{
+  "about": "Pronunciation lexicon (lib/voice.mjs applyLexicon). Changes only the SPOKEN text sent to TTS; captions and transcripts keep the written form. `say` per language: how the term should sound inside that language's narration (Arabic script for Arabic voices). Add product names, acronyms and technical terms as films need them; optional diacritics help TTS with ambiguous words.",
+  "entries": [
+    { "term": "Pixel Plus", "say": { "ar": "بِكسِل بلَس" }, "note": "brand name inside Arabic narration (film 6)" },
+    { "term": "AI", "say": { "ar": "إيه آي", "en": "A.I." }, "caseSensitive": true, "note": "acronym" },
+    { "term": "UI", "say": { "ar": "يو آي", "en": "U.I." }, "caseSensitive": true },
+    { "term": "UX", "say": { "ar": "يو إكس", "en": "U.X." }, "caseSensitive": true },
+    { "term": "MRP", "say": { "ar": "إم آر بي", "en": "M.R.P." }, "caseSensitive": true, "note": "supply-chain term" },
+    { "term": "ERP", "say": { "ar": "إي آر بي", "en": "E.R.P." }, "caseSensitive": true },
+    { "term": "Reels", "say": { "ar": "ريلز" } },
+    { "term": "iPhone", "say": { "ar": "آيفون" } },
+    { "term": "Wi-Fi", "say": { "ar": "واي فاي" } },
+    { "term": "BALACONBAR", "say": { "ar": "بلكون بار", "en": "Balcon Bar" }, "note": "client brand (films 2–5)" }
+  ]
+}

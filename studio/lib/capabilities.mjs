@@ -50,6 +50,7 @@ export function detect(reg) {
     const k = c.check || {};
     let ok = true, where = null;
     if (c.maturity === 'LEARN') return { ...c, status: 'reference' };
+    if (!Object.keys(k).length) return { ...c, status: c.maturity === 'PLANNED' ? 'planned' : 'reference' }; // nothing installable to detect
     if (k.file) { ok = existsSync(join(STUDIO, k.file)); where = k.file; }
     if (k.vendor) { ok = existsSync(join(VENDOR, k.vendor)); where = `vendor/node_modules/${k.vendor}`; }
     if (k.exe) { where = k.exe === 'blender' ? findBlender() : onPath(k.exe); ok = !!where; }

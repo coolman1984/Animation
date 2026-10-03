@@ -2,7 +2,19 @@
 
 Updated: 2026-10-03. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE — Studio platform v1 + audit fixes (owner request 2026-10-03: apply the platform vision, artistic forensics and the audit report, keep it simple).**
+**Latest scope: DONE — Browser attach mode, colour management, playback review, voice & sound department (owner request 2026-10-03).**
+- **Browser:** the default stays private headless Chrome. `STUDIO_CDP_URL` attaches to a launcher-started Chrome through an isolated context; verified it never closes the owner's browser or tabs. One film = one mode.
+- **Colour:** `node studio.mjs color check|scopes|range`, `config.lut`, `tools/ocio_bake.py`; scopes appear in every review gallery. Export accuracy: ΔE mean 0.70 (0.54 with dither).
+- **Review:** `node studio.mjs review <film>` opens the playback player: frame steps, timeline, waveform, A/B, timed notes, approval bound to the file hash.
+- **Voice & sound:**
+  - Department guide `studio/VOICE_STUDIO.md`, skill `voice-director`.
+  - Offline speech models downloaded (Whisper turbo, Piper, Silero via PyPI, diarization models).
+  - Commands: `studio.mjs voice|transcript|mixcheck|sounds`.
+- **Verification:** fast tests 30/30 in 6 s, plus the targeted real runs listed in CHANGELOG.
+- **Not verified:** cloud voices (need API keys), listening judgement, attach mode with the owner's actual launcher.
+- **To enable a production voice:** set `AZURE_SPEECH_KEY` + `AZURE_SPEECH_REGION` (native Egyptian), or `OPENAI_API_KEY` / `ELEVENLABS_API_KEY`, then run `node studio.mjs voice status`.
+
+**Previous scope: DONE — Studio platform v1 + audit fixes (owner request 2026-10-03: apply the platform vision, artistic forensics and the audit report, keep it simple).**
 - Front door `studio/studio.mjs` (`caps`, `new`, `route`, `setup`, `doctor`). Capability registry `studio/capabilities.json` (25 entries, maturity CORE → LEARN, setup profiles, graduation rule) via `lib/capabilities.mjs`. Architecture `studio/PLATFORM.md`. Per-shot `craft.layers` drive the engine router.
 - New engines: Three.js 0.186.1 and PixiJS 8.22.0, vendored by `setup gpu` and imported by name through the composer import map. Both are EXPERIMENTAL after studies (`examples/three-study`, `examples/pixi-study`) rendered identical PNG hashes in separate runs and were inspected. OpenColorIO/OpenImageIO/OpenEXR are installed (PLANNED, no adapter yet).
 - Research department: skill `technology-scout` + dated `studio/TECH_RADAR.md`. Craft and trends are kept apart.
@@ -79,6 +91,7 @@ Reviewed a 225-file code snapshot, reproduced server/validator/OTIO defects, res
 | Scope | Result |
 |---|---|
 | Engineering audit and October 2026 technology report | DONE; root Markdown report |
+| Browser attach mode, colour, review player, voice & sound department | DONE, local commit |
 | Studio platform v1 (registry, router, Three/Pixi, scout) + audit fixes | DONE, local commit |
 | Windows port, speed-ups, testing policy | DONE, local commit |
 | Deep app study (APP_MAP.md) | DONE, local commit |

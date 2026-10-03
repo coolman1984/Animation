@@ -119,8 +119,11 @@ export async function textTimeline({ film, w = 1080, h = 1350, variant, segments
 
 // RGB frames → bt709 limited-range yuv420p. dither (opt-in, config.dither): convert through 16-bit RGB and 10-bit YUV with
 // error diffusion, so slow dark/saturated gradients do not step into visible chroma rings (8-bit RGB→YUV rounding).
-export function encodeFilter({ dither = false } = {}) {
-  const pad = 'pad=ceil(iw/2)*2:ceil(ih/2)*2';
+// Optional creative grade (config.lut: a .cube, e.g. from tools/ocio_bake.py) runs in RGB before the YUV conversion.
+// Windows: forward slashes, escaped drive colon, quoted for spaces.
+export const lutFilter = (file) => `lut3d=file='${slash(resolve(file)).replace(/:/g, '\\:')}':interp=tetrahedral`;
+export function encodeFilter({ dither = false, lut } = {}) {
+  const pad = (lut ? lutFilter(lut) + ',' : '') + 'pad=ceil(iw/2)*2:ceil(ih/2)*2';
   return dither
     ? `${pad},format=rgb48le,scale=out_color_matrix=bt709:out_range=tv:flags=accurate_rnd+full_chroma_int:sws_dither=ed,format=yuv420p10le,scale=flags=accurate_rnd:sws_dither=ed,format=yuv420p`
     : `${pad},scale=out_color_matrix=bt709:out_range=tv`;
@@ -129,7 +132,7 @@ export function encodeFilter({ dither = false } = {}) {
 // Full render in parallel slices → out.mp4 (video only).
 export async function video({ film, out, w = 1080, h = 1350, variant, segments, fadeOut,
   workers = Math.min(4, cpus().length), crf = 14, preset = 'slow', t0 = 0, t1,
-  fps: fpsOverride, scale = 1, format = 'png', quality = 95, gpu = false, dither = false }) {
+  fps: fpsOverride, scale = 1, format = 'png', quality = 95, gpu = false, dither = false, lut }) {
   if (!Number.isInteger(workers) || workers < 1 || workers > 16 || !Number.isFinite(scale) || scale <= 0 || scale > 2)
     throw new Error('invalid workers or capture scale');
   if (!['png', 'jpeg'].includes(format)) throw new Error('invalid capture format');
@@ -154,7 +157,7 @@ export async function video({ film, out, w = 1080, h = 1350, variant, segments, 
       const ff = spawn('ffmpeg', ['-v', 'error', '-y', '-f', 'image2pipe', '-c:v', format === 'png' ? 'png' : 'mjpeg', '-framerate', String(fps), '-i', '-',
         '-c:v', 'libx264', '-threads', '1', '-preset', preset, '-crf', String(crf), '-pix_fmt', 'yuv420p',
         '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv',
-        '-vf', encodeFilter({ dither }),
+        '-vf', encodeFilter({ dither, lut }),
         '-x264-params', 'keyint=60:min-keyint=30',
         // Exact timescales: with B-frames the slice's edit list is written in the MOVIE timescale (1000 by default), so each
         // slice lost up to 1 ms and every worker join shifted later frames (FFmpeg 9: 15 frames measured 30.039 fps).

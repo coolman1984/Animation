@@ -14,7 +14,12 @@ Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `s
 `--force-device-scale-factor=N --window-size=W,H --disable-background-timer-throttling --disable-renderer-backgrounding`
 Plus `Emulation.setDeviceMetricsOverride` with the same scale. Chromium: `STUDIO_CHROMIUM`, `/opt/pw-browsers/chromium` on
 Linux, installed Chrome/Edge on Windows (doctor finds it via `lib/platform.mjs`). Each launch uses a throwaway headless profile,
-so the owner's own Chrome windows and profile are untouched. Page URLs use forward slashes (`slash()`), never Windows `\`.
+so the owner's own Chrome windows and profile are untouched.
+**Attach mode (2026-10-03):** with `STUDIO_CDP_URL=http://127.0.0.1:<port>`, `launch()` connects to a Chrome started by an approved launcher (`--remote-debugging-port`).
+- It opens an isolated browser context with `Target.createBrowserContext` and `Target.createTarget`, and turns on focus emulation.
+- `close()` disposes only that context. The browser and the owner's tabs are never touched (verified).
+- Launch flags cannot be applied in this mode.
+- Pixels differ from private mode (42 dB), so one film = one mode; the make picture cache keys on the mode. Page URLs use forward slashes (`slash()`), never Windows `\`.
 
 ## Device-scale gate (mandatory)
 Read the first frame's width from the PNG/JPEG header (`imageWidth`) and **refuse to continue** unless

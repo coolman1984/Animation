@@ -75,8 +75,10 @@ log('take', OUT);
 
 // Picture cache includes local imported code, fonts and images, not just their mtimes.
 // A sound-only edit leaves silent video reusable. Config values are hashed per artifact.
-const pictureInputs = [filmName, 'lib', 'assets', ...(cfg.production ? [cfg.production] : []), ...visualAssets, ...(cfg.cacheInputs || []), ...(cfg.engine?.inputs || [])];
-const pictureKey = fingerprint(ROOT, pictureInputs, { chromium: doc.chromium.version, engine: cfg.engine ?? 'native' }, [cfg.score, ...audioAssets]);
+const pictureInputs = [filmName, 'lib', 'assets', ...(cfg.production ? [cfg.production] : []), ...(cfg.lut ? [cfg.lut] : []), ...visualAssets, ...(cfg.cacheInputs || []), ...(cfg.engine?.inputs || [])];
+// Browser session mode is part of the key: an attached launcher browser and the private headless one rasterise slightly
+// differently (measured 42 dB PSNR), so one film's frames must never mix modes.
+const pictureKey = fingerprint(ROOT, pictureInputs, { chromium: doc.chromium.version, engine: cfg.engine ?? 'native', session: process.env.STUDIO_CDP_URL ? 'attach' : 'private' }, [cfg.score, ...audioAssets]);
 
 const report = { film: filmName, take: n, profile, final: profile === 'final', at: new Date().toISOString(),
   content: { available: !!production.plan, warnings: production.warnings }, scoreCached, deliveries: {} };
@@ -108,7 +110,7 @@ const reviewed = [];
 for (const d of selected) {
   const deliveryStarted = performance.now();
   const dw = d.w || cfg.w, dh = d.h || cfg.h;
-  const renderSettings = { ...settings, w: dw, h: dh, variant: d.variant, segments: d.segments, fadeOut: d.fadeOut, t0: range?.[0] ?? 0, t1: range?.[1] ?? d.duration, ...(cfg.gpu ? { gpu: true } : {}), ...(cfg.dither ? { dither: true } : {}) };
+  const renderSettings = { ...settings, w: dw, h: dh, variant: d.variant, segments: d.segments, fadeOut: d.fadeOut, t0: range?.[0] ?? 0, t1: range?.[1] ?? d.duration, ...(cfg.gpu ? { gpu: true } : {}), ...(cfg.dither ? { dither: true } : {}), ...(cfg.lut ? { lut: join(ROOT, cfg.lut) } : {}) };
   const key = fingerprint(ROOT, [], { pictureKey, ...renderSettings });
   const silent = join(TAKES, `${d.name}-${profile}-video.mp4`);
   let renderStats;
@@ -193,6 +195,12 @@ for (const d of selected) {
   report.deliveries[d.name].review = { dir: evidenceDir, notes: ev.notes, camera: ev.camera?.max ?? null };
   if (!d.segments && !offset) reviewed.push({ name: d.name, file });
   for (const n of ev.notes) console.log(`   NOTE  ${n}`);
+  // Colour legal range from the same measurement pass: advisory (web players accept it; broadcast does not).
+  if (m.range) {
+    report.deliveries[d.name].colour = m.range;
+    const out = Math.max(m.range.below16, m.range.above235);
+    if (out) console.log(`   NOTE  colour: luma leaves 16–235 on up to ${out}/${m.range.frames} frames (Y ${m.range.minY}–${m.range.maxY}); fine for social/web, grade down for broadcast`);
+  }
   console.log(`   LOOK  ${join(evidenceDir, 'index.html')}`);
 }
 if (reviewed.length > 1) {

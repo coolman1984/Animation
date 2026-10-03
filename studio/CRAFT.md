@@ -58,6 +58,7 @@ Timeless craft only. Dated technology and trend notes go to `TECH_RADAR.md`, nev
 39. **Offline editing can look ahead:** forward-backward smoothing gives a reframing camera with zero lag (it moves with the subject, not after him), reset at every cut; a dead zone removes micro pans.
 40a. **Windows port (2026-10-03): run the real pipeline, not only the unit tests.** Unit tests passed on Windows while real builds would have failed on missing `rm`/`mv`, `/dev/null`, FFmpeg glob and Fontconfig. Real renders also exposed two cross-platform bugs: B-frame edit lists rounded to 1 ms at every worker join, and a last-frame seek that returned no frame. Measure the gap (`ffprobe` packet pts) before blaming the OS.
 40b. **"Silent success" is the expensive failure:** a PNG still that exits 0 without a file, a profile delete wrapped in `try {}`, a CLI guard that never matches. Each of these looked fine. Add an existence/regression check where a step can fail quietly.
+40c. **A voice is only checked when it is heard or measured:** the first Arabic draft line "succeeded" with 0.3 s of silence (a hidden voice fallback). Always read back the duration and loudness of generated speech (`volumedetect`) before using it, and listen before calling it natural.
 40. **Headless capture has two traps:** a detached `<img>.decode()` may never resolve (use `createImageBitmap`), and stacked CSS `drop-shadow` filters on a full-frame layer froze screenshots for > 90 s (draw strokes on canvas). Bisect with a skip switch, do not just add retries.
 
 

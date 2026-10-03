@@ -2,8 +2,9 @@
 // what happens in the film (shot boundaries, transitions, copy, camera peaks, musical landings),
 // plus advisory diagnostics. Nothing here scores taste; it makes looking fast and targeted.
 // Output: <dir>/index.html (gallery), review.json, frames/*.jpg, strips/*.jpg, crops/*.png, contact.jpg.
-import { mkdirSync, writeFileSync, existsSync, rmSync, renameSync, readFileSync } from 'node:fs';
-import { join, basename } from 'node:path';
+import { mkdirSync, writeFileSync, existsSync, rmSync, renameSync, readFileSync, readdirSync } from 'node:fs';
+import { join, basename, dirname, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 import { run } from './render.mjs';
 import { probe } from './measure.mjs';
@@ -11,6 +12,7 @@ import { readingTime } from './typography.js';
 import { cameraDiagnostics } from './cinema.js';
 import { describeTime } from './musicmap.mjs';
 import { cueSync } from './cues.mjs';
+import { scopesAt } from './color.mjs';
 
 const r2 = v => +v.toFixed(2);
 // Input seek target 1 ms early: FFmpeg returns the first frame with pts >= target, and a time rounded to 4 decimals can sit
@@ -158,6 +160,11 @@ export async function reviewEvidence({ video, outDir, fps, plan, text, music, ho
   thumbShots.forEach((s, i) => jobs.push({ times: [(s.start + s.end) / 2], vf: `scale=${gw}:${gh}:flags=area,format=gray`, out: raw(`thumb-${i}`) }));
   jobs.push({ all: true, vf: `fps=${Math.max(0.5, 24 / duration).toFixed(3)},scale=${Math.round(vw / Math.max(vw, vh) * 260)}:-2,tile=6x4:padding=4:color=0x202020`, out: join(outDir, 'contact.jpg') });
   await grab(video, fps, Math.max(1, Math.round(duration * fps)), jobs);
+  // Colour scopes (waveform parade, vectorscope, histogram) at the style frames, else 25/50/75 %: one launch (lib/color.mjs).
+  const scopeTimes = (plan?.creative?.styleFrames && sourceTimeline ? Object.entries(plan.creative.styleFrames) : [['25%', duration * 0.25], ['50%', duration * 0.5], ['75%', duration * 0.75]])
+    .filter(([, t]) => t >= 0 && t < duration).slice(0, 4);
+  const scopes = scopeTimes.map(([name, t]) => ({ name, t: r2(t), file: `scopes/${name.replace(/[^a-z0-9]+/gi, '')}.png` }));
+  await scopesAt(video, scopes.map(s => ({ t: s.t, out: join(outDir, s.file) })), fps);
   const readRaw = (name) => { const file = raw(name), buf = readFileSync(file); rmSync(file, { force: true }); return buf; };
   copy.forEach((row, i) => {
     if (row.offscreen !== undefined) { notes.push(`copy "${row.text}" lies outside the frame at ${row.offscreen}s`); row.offscreen = true; return; }
@@ -194,11 +201,31 @@ export async function reviewEvidence({ video, outDir, fps, plan, text, music, ho
   }
   for (const e of camera?.events || []) notes.push(`camera ${e.kind} at ${e.t}s: ${e.message}`);
   const report = { video: basename(video), duration: r2(duration), size: [vw, vh], timeline: sourceTimeline ? 'source = delivery' : 'delivery (cut-down: plan times not applied)',
-    samples, strips, crops, copy, camera, stillness: still_, busiest, repeats, silence, sync, notes,
+    samples, strips, crops, copy, scopes, camera, stillness: still_, busiest, repeats, silence, sync, notes,
     disclaimer: 'Advisory evidence for a human/AI director. It does not judge taste and does not replace watching and listening to the film.' };
   writeFileSync(join(outDir, 'review.json'), JSON.stringify(report, null, 1));
   writeFileSync(join(outDir, 'index.html'), galleryHtml(report));
+  await writePlayer({ video, outDir, fps, duration, vw, vh, hasAudio: !!p.acodec, plan: plan && sourceTimeline ? plan : null, text, cues });
   return report;
+}
+
+// Playback review player (lib/review-player.html) next to the gallery: data inlined so it also opens from file://.
+// Notes + hash-bound approval need `node studio.mjs review <take>` (lib/review-server.mjs). A/B lists sibling takes.
+export async function writePlayer({ video, outDir, fps, duration, vw, vh, hasAudio, plan, text, cues }) {
+  const rel = p => relative(outDir, p).replaceAll('\\', '/');
+  const takeDir = dirname(video), filmDir = dirname(takeDir);
+  if (hasAudio) await run('ffmpeg', ['-v', 'error', '-y', '-i', video, '-filter_complex', 'showwavespic=s=1600x120:colors=0x8FB8FF', '-frames:v', '1', join(outDir, 'waveform.png')]).catch(() => {});
+  const otherTakes = existsSync(filmDir) ? readdirSync(filmDir).filter(d => /^take\d+$/.test(d) && d !== basename(takeDir)).sort().reverse()
+    .flatMap(d => readdirSync(join(filmDir, d)).filter(f => f.endsWith('.mp4') && !f.includes('-share-')).map(f => ({ label: `${d}/${f}`, url: rel(join(filmDir, d, f)) }))) : [];
+  const data = {
+    video: basename(video), take: basename(takeDir), videoUrl: rel(video), videoPath: `${basename(takeDir)}/${basename(video)}`,
+    fps, duration, width: vw, height: vh, waveform: hasAudio && existsSync(join(outDir, 'waveform.png')) ? 'waveform.png' : null,
+    shots: (plan?.shots || []).map(s => ({ id: s.id, start: s.start, end: s.end, purpose: s.purpose })), cues: (cues || []).map(c => ({ id: c.id, t: c.t, kind: c.kind })),
+    copy: (text?.lines || []).map(l => ({ text: l.text, start: l.start, end: l.end })), otherTakes,
+  };
+  const page = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'review-player.html'), 'utf8').replace('/*__DATA__*/{}', JSON.stringify(data).replace(/</g, '\\u003c'));
+  writeFileSync(join(outDir, 'player.html'), page);
+  return join(outDir, 'player.html');
 }
 
 function galleryHtml(r) {
@@ -212,7 +239,9 @@ li{margin:4px 0}.n{color:#f0c674}</style>
 <h2>Moments</h2><div class="g">${r.samples.map(s => fig(s.file, `<b>${s.t}s</b> ${esc(s.why.join(' · '))}${s.music ? `<br>${esc(s.music)}` : ''}`)).join('')}</div>
 <h2>Cuts (−2f … +2f) and transition motion</h2>${r.strips.map(s => `<div class="w">${fig(s.boundary, `<b>${s.shot}</b> at ${s.t}s ${esc(s.transition || '')}${s.music ? ` · ${esc(s.music)}` : ''}`)}${fig(s.motion, 'transition ±0.5 s')}</div>`).join('') || '<p>no plan boundaries</p>'}
 <h2>100% crops</h2><div class="g">${[...r.crops.map(c => fig(c.file, esc(c.what))), ...r.copy.filter(c => c.crop).map(c => fig(c.crop, `${esc(c.text)} · ${c.seconds}s (needs ${c.needs}s) · contrast ≈ ${c.contrast}:1`))].join('')}</div>
-<h2>Contact sheet</h2><div class="w">${fig('contact.jpg', 'uniform sampling')}</div>`;
+<h2>Colour scopes (waveform parade · vectorscope · histogram)</h2>${(r.scopes || []).map(s => `<div class="w">${fig(s.file, `${esc(s.name)} at ${s.t}s`)}</div>`).join('') || '<p>none</p>'}
+<h2>Contact sheet</h2><div class="w">${fig('contact.jpg', 'uniform sampling')}</div>
+<p><a href="player.html">▶ Open the playback review player</a> (node studio.mjs review &lt;take&gt; for notes and approval)</p>`;
 }
 
 // Side-by-side aspect comparison at shared times (each frame scaled to the same height).

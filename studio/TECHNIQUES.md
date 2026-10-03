@@ -44,6 +44,25 @@ Your film may use none of them; they are tools, not a house style.
 - **Look on software WebGL:** use a PMREM `RoomEnvironment` for metal/glossy products and ACES tone mapping with sRGB output. A radial-gradient plane gives the contact shadow (shadow maps are costly and noisy on SwiftShader). PixiJS handles 20,000 `Particle`s in one `ParticleContainer` with `dynamicProperties: { position, color }`.
 - **Framing:** the first three-study frame put the title over the bottle. Moving the camera from 7 to 9.5 and looking 0.8 lower freed the copy band. Check framing on stills before motion, as usual.
 
+## Colour, review, voice (2026-10-03)
+- **Colour round-trip:** a 24-patch chart is encoded with the film's exact `encodeFilter`, x264 at CRF 14, then decoded with BT.709/tv.
+  - Result: ΔE76 mean 0.70 / max 1.22, and 0.54 / 1.07 with `dither`. Under 1 is invisible.
+  - Re-run `node studio.mjs color check` after any encoder change.
+- **LUT in FFmpeg on Windows:** `lut3d=file='D\:/path with spaces/x.cube'`. Use forward slashes, escape the drive colon, and quote the path.
+- **OCIO without config files:** `ocio://studio-config-latest` (OCIO 2.6) bakes `.cube` LUTs, e.g. ACEScg → "sRGB - Texture".
+- **One launch for many scopes or measurements:** use a `select=eq(n\,N)` branch per moment. `measureAll` adds a `signalstats` branch for legal range.
+  - `metadata=print` with several `key=` options keeps only the LAST key: print everything and parse it.
+- **Review player:** a `<video>` needs HTTP Range to seek frame by frame (`lib/review-server.mjs`).
+  - Seek to `(n + 0.5)/fps` so the shown frame is exactly n, and display the floor frame.
+  - Approval stores the file's SHA-256; a re-export voids it.
+- **Windows TTS:** OneCore voices (Microsoft Hoda ar-EG) are visible only from PowerShell 7 (`pwsh`). In Windows PowerShell 5 a failed `SelectVoice` silently fell back to an English voice that rendered Arabic as 0.3 s of silence.
+  - Set `$ErrorActionPreference='Stop'`.
+  - Make SSML `xml:lang` the voice's locale (`ar-EG`).
+  - Never use `prosody rate="0%"`: it dragged a 3 s line to 9.5 s. Use "default" or a signed percentage.
+- **Mixed-language ASR:** Whisper picks one language per decode. Decode each VAD phrase separately with `language=''` and the English sentence inside Arabic speech survives.
+- **Mono check baseline:** identical L/R measures exactly 3 LU lower when folded to mono, so only warn beyond 4.5 LU.
+- **Blocked downloads:** if `raw.githubusercontent.com` is blocked, take the same file from the project's PyPI wheel (`pip download <pkg> --no-deps`, then unzip the one file).
+
 ## Cross-platform (Linux CI + the owner's Windows machine, 2026-10-03)
 All OS differences live in `lib/platform.mjs`; `test/platform.test.mjs` fails on a regression.
 - **Browser:** `STUDIO_CHROMIUM`, else Linux paths, Windows Chrome/Edge under Program Files / LocalAppData, macOS Chrome. Get the version from DevTools `/json/version`: on Windows `chrome.exe --version` opens a window.
