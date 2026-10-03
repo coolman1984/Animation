@@ -11,3 +11,9 @@
 | take04 | all gates PASS: 1080×1920, 30 fps, 20.00 s, −15.8 LUFS, TP −2.6, LRA 3.6, 40 text lines in the safe band, share 9.8 MB | — | — | delivered |
 
 Deliberate: a 0.4 s clean breath at ~7.4 between the causes and the decode diagram. Not verified: listening, real-speed phone viewing, a fresh reviewer.
+
+## Owner revision (2026-10-03): "the chair-scene sounds are very bad and not expressive; change only those" → take06
+0–3.9 s rebuilt in `score.mjs` §A: a quiet heartbeat that quickens, a breath in on each lean, a wooden creak synthesised as stick-slip friction
+(a train of tiny clicks ringing a 480–620 Hz resonance), a felt thump as he drops back onto the seat, two chair-leg knocks, a tired breath out;
+the text clicks and the UI chime were removed. Everything after 3.9 s is unchanged. First pass made the scene 5 dB louder than the rest (LRA 8.6 FAIL)
+→ levels halved → take06 all gates PASS (−15.8 LUFS, TP −2.5, LRA 4.9). Not verified: listening.
