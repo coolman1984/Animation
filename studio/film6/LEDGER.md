@@ -41,3 +41,11 @@ take08: all technical gates PASS (1080×1920, 30 fps, 30.00 s, −13.8 LUFS, TP 
 Delivered file: `out/film6/take08/film6-reels30-share-14MB.mp4` (banding verified on it). Master `film6-reels30-1080x1920.mp4` (29 MB) stays local.
 Not verified: listening (sound checked by tempo/section/loudness analysis and spectrogram only); real-speed viewing by a human; a fresh-reviewer critique;
 the 9:16 under live Facebook overlays; Facebook's own re-encode.
+
+## Music v2 (owner: "music very bad and ugly — Western, energy, beats, catchy rhythm") → take09
+`film6/score.mjs` rewritten on the same 120 BPM grid (chapters still start on bar lines): 909 four-on-the-floor, clap 2/4, off-beat sub,
+pumping supersaw Am–F | C–G (dark section Am–F | Dm–E), one two-bar 3-3-2 hook that returns in every chapter (pluck → lead → marimba bells →
+low saw → full chorus on the logo), snare-roll builds and risers into each drop; heartbeat break 13–16 kept; all UI foley kept on the fx bus.
+Measured: tempo 120.0 BPM; sections intro −31.6 dB → drop −21 → bounce −25.5 → break −29.2 → dark −22.3 → logo chorus −19.3 (loudest).
+take09 final: all gates PASS (30.00 s, −14 LUFS, TP −3.7, LRA 4.3, 16 text lines, share 13.64 MB). Picture unchanged (same review notes as before).
+Not verified: listening (measured only).

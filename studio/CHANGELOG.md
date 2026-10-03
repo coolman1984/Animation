@@ -5,6 +5,11 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-03 — film6 (Pixel Plus) music v2: energetic catchy dance-pop (scope DONE)
+The owner's "music very bad and ugly" note was about the Pixel Plus ad. `film6/score.mjs` rewritten on the same 120 BPM grid: 909 kick, off-beat sub,
+pumping supersaw Am–F | C–G, one hook returning in every chapter, builds into each drop, final chorus on the logo; every UI foley event kept.
+take09 final: all gates PASS; measured 120.0 BPM, logo chorus the loudest section. Not verified: listening.
+
 ## 2026-10-03 — live1 music v2: energetic Western tech-pop bed locked to the cuts (scope DONE)
 Owner: the soft bed was "very bad and ugly"; wanted Western music with energy, beats and a catchy rhythm that fits the video.
 - `live1/score.mjs` rewritten: 133⅓ BPM (bar = 1.8 s, so every cut lands on a downbeat), 909 kick/clap/hats, supersaw Em–C–G–D with sidechain pump,

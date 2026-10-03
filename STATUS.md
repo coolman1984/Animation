@@ -2,7 +2,11 @@
 
 Updated: 2026-10-03. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE — live1 music v2 (owner 2026-10-03: "music very bad and ugly", wants energetic catchy Western beats).**
+**Latest scope: DONE — film6 (Pixel Plus ad) music v2 (owner 2026-10-03: the ugly-music note meant this film).**
+- `film6/score.mjs`: energetic 120 BPM dance-pop with one recurring hook, pumping chords, builds into each drop; foley unchanged.
+- take09 final: all gates PASS; measured 120.0 BPM. Not verified: listening.
+
+**Previous scope: DONE — live1 music v2 (owner 2026-10-03: "music very bad and ugly", wants energetic catchy Western beats).**
 - `live1/score.mjs`: 133⅓ BPM tech-pop bed locked to the cuts (bar = 1.8 s), hook, tape-stop on the freeze, drop on unfreeze; voice still ducked.
 - take04 final: all gates PASS; measured tempo 132.86 BPM. Not verified: listening.
 
