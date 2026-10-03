@@ -17,6 +17,7 @@ import plan from './production.json' with { type: 'json' };
 const HERE = dirname(fileURLToPath(import.meta.url));
 const OUT = join(HERE, '..', 'takes', 'film7');
 mkdirSync(OUT, { recursive: true });
+const CUT = 7.5, SKIP = 10, OUT_DUR = 15; // owner cut: bars 4–7 (the logo build) are removed from the long score
 const DUR = 25, BEAT = 0.625, BAR = 2.5, E8 = BEAT / 2, S16 = BEAT / 4, N = DUR + 2;
 const mk = () => new Bus(N);
 const drums = mk(), low = mk(), pads = mk(), keys = mk(), arp = mk(), lead = mk(), fx = mk();
@@ -174,7 +175,9 @@ sweep(fx, 24.5, { dur: 0.8, vel: 0.06, up: true, seed: 20 });
 saw(pads, 23.75, [48, 55, 60, 64, 67, 71], 1.25, 0.34, { cut0: 3000, cut1: 1000, decay: 0.9, voices: 5, width: 0.7 });
 kick909(23.75, 0.7); sub(23.75, 36, 1.25, 0.75);
 [72, 76, 79, 83, 88].forEach((m, i) => bell(fx, 23.78 + i * 0.07, m, 0.1, { decay: 2.4, p: -0.4 + i * 0.2 }));
-placeCues(fx, plan.cues);
+// cue sheet is in the short (delivered) timeline; the score is composed on the long one and spliced below
+placeCues(fx, plan.cues.map((c) => ({ ...c, t: c.t < CUT ? c.t : c.t + SKIP })));
+bell(fx, 17.52, 84, 0.12, { decay: 1.4 }); whooshBy(fx, 17.5, { dur: 0.5, vel: 0.08, direction: 'center', low: 400, high: 3000, seed: 33 }); // the finished logo enters
 
 // ---------- processing ----------
 const pump = (bus, depth, rel = 0.18) => { for (const kk of kicks) { const i0 = Math.round(kk * SR), n = Math.round(BEAT * SR); for (let i = 0; i < n && i0 + i < bus.n; i++) { const u = i / (rel * SR), g = 1 - depth * Math.max(0, 1 - u) ** 2; bus.L[i0 + i] *= g; bus.R[i0 + i] *= g; } } };
@@ -184,18 +187,28 @@ const cut = (bus, t0, t1, t2) => { for (let i = Math.round(t0 * SR); i < Math.mi
 for (const b of [drums, low, keys, arp, lead]) cut(b, 4.82, 4.98, 5.0 + 1e-3);
 const hp = (bus, f) => { for (const ch of ['L', 'R']) { const a = biquad('hp', f, 0.7), x = bus[ch]; for (let i = 0; i < bus.n; i++) x[i] = a(x[i]); } };
 hp(pads, 150); hp(arp, 200); hp(lead, 220); hp(keys, 160); hp(fx, 40);
-const music = mk();
+let music = mk();
 drums.mixInto(music, 1); low.mixInto(music, 0.75); pads.mixInto(music, 1.25); keys.mixInto(music, 1.3); arp.mixInto(music, 1.35); lead.mixInto(music, 1.2);
 const send = mk(); pads.mixInto(send, 0.4); keys.mixInto(send, 0.55); arp.mixInto(send, 0.5); lead.mixInto(send, 0.6);
 reverb(send, { room: 0.86, damp: 0.4 }).mixInto(music, 0.75);
 hp(music, 28);
-const sfx = mk(); fx.mixInto(sfx, 1);
+let sfx = mk(); fx.mixInto(sfx, 1);
 const sendF = mk(); fx.mixInto(sendF, 0.45); reverb(sendF, { room: 0.74, damp: 0.3 }).mixInto(sfx, 0.5);
-for (const b of [music, sfx]) {
-  for (let i = 0; i < b.n; i++) { const t = i / SR, g = t >= DUR ? 0 : t > DUR - 0.6 ? Math.cos(((t - (DUR - 0.6)) / 0.6) * Math.PI / 2) : 1; b.L[i] *= g; b.R[i] *= g; }
-  b.n = DUR * SR; b.L = b.L.subarray(0, b.n); b.R = b.R.subarray(0, b.n);
-}
-const mix = new Bus(DUR); music.mixInto(mix, 1); sfx.mixInto(mix, 0.9);
+// splice: [0, 7.5) + [17.5, 25) with a 20 ms equal-power crossfade at the bar line, then the end fade
+const splice = (b) => {
+  const o = new Bus(OUT_DUR), c = Math.round(CUT * SR), sk = Math.round(SKIP * SR), xf = Math.round(0.02 * SR);
+  for (let i = 0; i < o.n; i++) {
+    let l, r;
+    if (i < c - xf) { l = b.L[i]; r = b.R[i]; }
+    else if (i < c) { const u = (i - (c - xf)) / xf, ga = Math.cos(u * Math.PI / 2), gb = Math.sin(u * Math.PI / 2); l = b.L[i] * ga + b.L[i + sk] * gb; r = b.R[i] * ga + b.R[i + sk] * gb; }
+    else { l = b.L[i + sk] || 0; r = b.R[i + sk] || 0; }
+    const t = i / SR, g = t > OUT_DUR - 0.6 ? Math.cos(((t - (OUT_DUR - 0.6)) / 0.6) * Math.PI / 2) : 1;
+    o.L[i] = l * g; o.R[i] = r * g;
+  }
+  return o;
+};
+music = splice(music); sfx = splice(sfx);
+const mix = new Bus(OUT_DUR); music.mixInto(mix, 1); sfx.mixInto(mix, 0.9);
 const norm = 0.5 / peak(mix);
 writeWav(join(OUT, 'music.wav'), music, { gain: norm }); writeWav(join(OUT, 'sfx.wav'), sfx, { gain: norm * 0.9 }); writeWav(join(OUT, 'mix.wav'), mix, { gain: norm });
-console.log(`film7 score: ${DUR}s 96 BPM, norm ${norm.toFixed(3)}`);
+console.log(`film7 score: ${OUT_DUR}s (cut from ${DUR}s) 96 BPM, norm ${norm.toFixed(3)}`);

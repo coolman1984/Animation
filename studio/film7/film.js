@@ -164,6 +164,8 @@ SC.push({ id: 'thread', a: 0, b: 6.8, z: 3, init(root) {
 
 // ---------------------------------------------------------------------------------------------------
 // DAY 5–25 — the dawn: ivory ground rising under the line (clip = the region below the line), then the brand world.
+// Owner revision: the build of the icon (shield → ribbon → arrow, 10 s) was cut; the finished logo enters at 7.5.
+const CUT = 7.5, SKIP = 10;
 const ICON_C = [626, 487];                       // icon source-space centre
 const IX0 = 290, IY0 = 110;                      // plate origin (source px)
 const RIB = [[372, 495], [430, 400], [520, 372], [645, 495], [740, 570], [815, 605], [880, 585], [900, 497], [870, 410], [815, 382], [740, 420], [645, 495], [560, 570], [480, 600], [410, 575]];
@@ -187,11 +189,12 @@ const ROWS = [
 const rowY = (i) => 856 + i * 106;
 // icon pose: gentle pushes while the three meanings build, then it climbs to the top for the services, then lands in the lock-up
 function iconPose(t) {
-  const up = spr(t, 17.2, 0.6, 0.1), down = spr(t, 19.95, 0.7, 0.12);
+  const up = t >= 17.4 ? 1 : spr(t, 17.2, 0.6, 0.1), down = spr(t, 19.95, 0.7, 0.12);
   const s0 = track([[7.0, 0.80], [9.6, 0.86], [15.0, 0.88, ioS], [17.2, 0.89, ioS]], t, ioS);
   const y0 = track([[7.0, 826], [9.6, 822, ioS], [17.2, 822, ioS]], t, ioS);
   let s = lerp(s0, 0.46, up), y = lerp(y0, 468, up);
   s = lerp(s, 0.56, down); y = lerp(y, 548, down);
+  if (t >= 17.4) s *= lerp(0.7, 1, clamp(spr(t, 17.5, 0.6, 0.22), 0, 1.15));
   return { x: 540, y, s: s * (1 + 0.005 * Math.sin(t * 1.9) + 0.035 * Math.max(0, Math.sin(Math.PI * clamp((t - 15.0) / 0.6))) ** 1.5) };
 }
 function shineLayer(parent, d, ox, oy, z = 9) {
@@ -199,7 +202,7 @@ function shineLayer(parent, d, ox, oy, z = 9) {
   const band = div(g, { left: '0', top: '-200px', width: '150px', height: '1500px', background: 'linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.6), rgba(255,255,255,0))', transform: 'rotate(18deg)', opacity: '0' });
   return { g, band };
 }
-SC.push({ id: 'day', a: 5.0, b: 25.1, z: 2, init(root) {
+SC.push({ id: 'day', a: 5.0, b: 15.1, z: 2, init(root) {
   full(root, { background: DAY_BG });
   const P = ICON.pieces, byId = (i) => P.find((p) => p.id === i);
   const PLATE = new URL('./plates/icon/icon-color.png', import.meta.url).href;
@@ -290,7 +293,8 @@ SC.push({ id: 'day', a: 5.0, b: 25.1, z: 2, init(root) {
   el('path', { d: 'M 14 0 L -12 0 M -2 -10 L -12 0 L -2 10', fill: 'none', stroke: C.goldL, 'stroke-width': 4.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, arrow);
   const ctaShine = div(cta, { left: '0', top: '-20px', width: '120px', height: '140px', background: 'linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.28), rgba(255,255,255,0))', transform: 'rotate(18deg)', opacity: '0' });
   S.day = { root, blue, bN, bG, ghost, warm, cool, t1, t2, cam, gNavy, gGold, gRib, gArr, outPaths, orbPaths, shield, rshine, pen, trail, trailGlow, comet, ring3, ring, ring2, arWord, maak, h1, h2, h3, d1, d2, d3, shared, rows, wm, letters, adv, hair, diamond, tag, cta, ctaL, arrow, ctaShine, wmBand };
-}, render(t) {
+}, render(tReal) {
+  const t = tReal < CUT ? tReal : tReal + SKIP; // owner cut: the logo-building section (7.5–17.5 of the long cut) is removed
   const s = S.day;
   // dawn: the ivory ground is the region under the chart line while it rises
   if (t < 6.78) {
@@ -304,8 +308,8 @@ SC.push({ id: 'day', a: 5.0, b: 25.1, z: 2, init(root) {
   rise(s.t1, t, 5.8, 7.0, { stagger: 0.12, dur: 0.9, scale0: 0.96 });
   rise(s.t2, t, 6.1, 7.1, { stagger: 0.1 });
   // icon pose
-  const P = iconPose(t), vis = t >= 7.0 && t < 25.1;
-  s.cam.style.display = vis ? 'block' : 'none';
+  const P = iconPose(t), vis = t >= 17.4 && t < 25.1;
+  s.cam.style.display = vis ? 'block' : 'none'; s.cam.style.opacity = sm(17.5, 17.75, t).toFixed(3); setBlur(s.cam, (1 - sm(17.5, 17.8, t)) * 8);
   s.cam.style.transform = `translate(${P.x.toFixed(2)}px, ${P.y.toFixed(2)}px) scale(${P.s.toFixed(4)}) translate(${-ICON_C[0]}px, ${-ICON_C[1]}px)`;
   // 1) shield: outlines draw, halves fill and lock, a light sweep
   s.blue.forEach((p) => p.setAttribute('opacity', (0.22 * sm(7.15, 7.5, t) * (1 - sm(8.4, 8.9, t))).toFixed(3)));
@@ -339,7 +343,7 @@ SC.push({ id: 'day', a: 5.0, b: 25.1, z: 2, init(root) {
   s.gArr.style.transform = `translate(${(-22 * (1 - clamp(ap, 0, 1))).toFixed(2)}px, ${(22 * (1 - clamp(ap, 0, 1))).toFixed(2)}px) scale(${clamp(ap, 0, 1.25).toFixed(4)})`;
   const tr = ioC(ramp(t, 15.4, 16.7));
   s.trail.setAttribute('stroke-dashoffset', (1 - tr).toFixed(4)); s.trailGlow.setAttribute('stroke-dashoffset', (1 - tr).toFixed(4));
-  s.trail.setAttribute('opacity', (1 - sm(17.2, 17.6, t)).toFixed(3)); s.trailGlow.setAttribute('opacity', (0.2 * (1 - sm(17.2, 17.6, t))).toFixed(3));
+  s.trail.setAttribute('opacity', (1 - sm(17.0, 17.4, t)).toFixed(3)); s.trailGlow.setAttribute('opacity', (0.2 * (1 - sm(17.0, 17.4, t))).toFixed(3));
   s.comet.style.left = px(903 + tr * 557 - 23); s.comet.style.top = px(306 - tr * 586 - 23); s.comet.style.opacity = (t > 15.4 && t < 16.7 ? Math.sin(Math.PI * clamp((t - 15.4) / 1.3)) ** 0.5 : 0).toFixed(3);
   ringAt(s.ring3, t, 15.0, 540 + (903 - ICON_C[0]) * P.s, P.y + (306 - ICON_C[1]) * P.s, { dur: 0.9, r0: 20, r1: 380, a: 0.55 });
   // headlines
@@ -350,7 +354,7 @@ SC.push({ id: 'day', a: 5.0, b: 25.1, z: 2, init(root) {
   rise(s.h2, t, 12.5, 14.85, { stagger: 0.1, dur: 0.9, scale0: 0.95 }); rise(s.d2, t, 12.85, 14.9, { stagger: 0.09, dy: 26, blur: 8 });
   rise(s.h3, t, 15.0, 17.1, { stagger: 0.1, dur: 0.9, scale0: 0.95 }); rise(s.d3, t, 15.35, 17.15, { stagger: 0.09, dy: 26, blur: 8 });
   // services: the four weights come back, relieved
-  rise(s.shared, t, 17.5, 19.75, { stagger: 0.09, dy: 30, blur: 10 });
+  rise(s.shared, t, 17.6, 19.75, { stagger: 0.09, dy: 30, blur: 10 });
   s.rows.forEach(({ box, dot, chk, r }, i) => {
     const vis = t >= r.tIn - 0.02 && t < 20.3;
     box.style.display = vis ? 'block' : 'none';
@@ -388,7 +392,7 @@ SC.push({ id: 'day', a: 5.0, b: 25.1, z: 2, init(root) {
 
 // =====================================================================================================
 export default {
-  duration: 25, fps: FPS,
+  duration: 15, fps: FPS,
   async init(st, { W: w, H: h }) {
     stage = st; W = w; H = h;
     const get = async (p) => (await fetch(new URL(p, import.meta.url))).json();

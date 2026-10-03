@@ -5,6 +5,10 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-03 — Film 7 revision: logo build cut, 15 s (scope DONE)
+Owner: the logo-building part was "very ugly"; keep the logo entering ready with the text under it, shorten. The 10 s build was removed; the finished logo pops in at 7.5;
+the score is composed on the long timeline and spliced on the bar line. Delivery `reels15`; take09 all gates PASS. Not verified: listening.
+
 ## 2026-10-03 — Film 7: SANAD «معاك سند», 25 s Reels ad (scope DONE)
 Owner request: a premium, calm, motivating 25 s ad for SANAD Business Advisory that plays on the client's emotional and psychological needs, shown as a motion-designer showreel ("go all out").
 No placement named → studio default for social video: 1080×1920 @ 30 fps, one delivery.

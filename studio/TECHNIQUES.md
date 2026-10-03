@@ -150,3 +150,4 @@ Rule taken: in a beat-driven UI promo, put every content change on the beat and 
 - **Logo pieces by colour:** `film7/icon_trace.py` (class masks → components → potrace); overlapping parts keep their white halo as a stroked underlay.
 - **Keeping holds alive without decoration:** two large soft glows orbiting slowly (amplitude 150 px, ω 0.55–0.8) are enough for `freezedetect`; no particles needed.
 - **Score:** story-timed groove (96 BPM): E7 → C (deceptive resolution) on the dawn, a 0.15 s cut of every bus + a 0.5 s breath before it, one hook voiced per chord (`HOOK[chord]`) so any chord order stays coherent.
+- **Cutting a section without re-authoring:** render the scene on its long timeline with `t < cut ? t : t + skip`, compose the score on the long timeline too and splice it on a bar line (equal-power 20 ms crossfade), mapping cue times back (`film7/score.mjs`).

@@ -39,3 +39,10 @@ the trail leaves the frame; the final hold 24–25 is declared. Open notes left 
 take08: all technical gates PASS (1080×1920, 30 fps, 25.00 s, −13.9 LUFS, TP −3.4 dBTP, LRA 3.3, no frozen/black spans, 24 text lines inside the safe band with no overlaps,
 share copy 11.61 MB). No blocker or major remains → scope DONE after 2 of 2 correction rounds.
 Not verified: listening to the score (measured only: 95.94 BPM, C major, sections −20/−37 breath/−21…−23 groove), real-speed human viewing on a phone, a fresh reviewer, live Meta overlays and re-encode.
+
+## Owner revision (2026-10-03): "the logo-building part is very ugly — remove it; the logo enters ready, text under it; shorten" → take09
+Cut the 10 s build (shield → ribbon → arrow, long-cut 7.5–17.5). The day world renders on the long timeline with `t + 10` after 7.5, so the finished logo pops in
+whole at 7.5 (spring 0.7 → 1, blur-resolve) at the top, over «اللي كان تقيل.. بقى مشترك.» and the four rows; lock-up 10–15. The score is still composed on the long
+timeline and spliced at the bar line (0–7.5 + 17.5–25, 20 ms equal-power crossfade), so the 96 BPM grid is unbroken; cues are mapped back to the long timeline.
+Delivery is now `reels15` (15.00 s). take09 final: all gates PASS (−13.9 LUFS, TP −3.6, LRA 3.4, 17 text lines in the safe band, share 9.64 MB).
+Not verified: listening (the splice was measured, not heard), real-speed phone viewing.

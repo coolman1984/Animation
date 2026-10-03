@@ -1,3 +1,5 @@
+> **Owner revision 2026-10-03:** the icon-building section (7.5–17.5 below) was removed as ugly; the finished logo now enters whole at 7.5 and the film is 15 s (`reels15`). The table below is the original 25 s plan; 17.5→7.5 and 20–25→10–15 in the delivered cut.
+
 # BRIEF — Film 7 «معاك سند» · SANAD Business Advisory · 25 s · ONE delivery: Reels 9:16
 
 Owner request 2026-10-03: a 25 s ad for SANAD (سند) — "premium, balanced, calm, attractive, motivating, playing on the client's emotions and psychological

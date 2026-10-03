@@ -2,7 +2,10 @@
 
 Updated: 2026-10-03. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE — Film 7, SANAD «معاك سند», 25 s Reels ad (owner request 2026-10-03).**
+**Latest scope: DONE — Film 7 revision: logo-building section removed, 15 s (owner 2026-10-03: "the logo build is very ugly").**
+- Finished logo now pops in whole at 7.5 over the service rows; lock-up 10–15. Score spliced on the bar line. Final take09 (local): all gates PASS, share 9.64 MB. Not verified: listening.
+
+**Previous scope: DONE — Film 7, SANAD «معاك سند», 25 s Reels ad (owner request 2026-10-03).**
 - Source: `studio/film7/` (BRIEF, production.json, config, film.js, score.mjs, icon_trace.py, LEDGER). ONE delivery: 9:16, 1080×1920, 30 fps, 25.00 s (no placement named → studio default).
 - Final take: `studio/out/film7/take08/` (local, not in git): share copy 11.61 MB + master + poster. All technical gates PASS (−13.9 LUFS, TP −3.4, LRA 3.3, 24 text lines in the safe band); 2 of 2 correction rounds used.
 - Not verified: listening to the score (measured: 95.94 BPM, C major), real-speed viewing on a phone, a fresh reviewer, live Meta overlays/re-encode. Brand conflicts (3 icons, 2 descriptors) are listed in the BRIEF for the owner.
@@ -51,7 +54,7 @@ Updated: 2026-10-03. This is the current handoff; historical plans are not a tas
 ## Closed scopes (newest first; evidence in `studio/STATUS_HISTORY.md` and `studio/CHANGELOG.md`)
 | Scope | Result |
 |---|---|
-| Film 7 — SANAD 25 s Reels ad | DONE, branch; take08 local, 2 of 2 correction rounds |
+| Film 7 — SANAD Reels ad (25 s, then cut to 15 s on owner feedback) | DONE, branch; take09 local |
 | Live-action toolkit + `live1` study | DONE, PR to main |
 | Film 6 knowledge: playbook, `lib/uimorph.js`, `tools/logo_trace.py` | DONE, PR #15 merged |
 | Film 6 — Pixel Plus 30 s Facebook Reels showreel-ad | DONE, branch; take08 local, 2 of 2 correction rounds |
