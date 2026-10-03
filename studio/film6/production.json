@@ -1,0 +1,190 @@
+{
+  "version": 1,
+  "duration": 30,
+  "fps": 30,
+  "audience": "Egyptian and Arab business owners and marketing managers scrolling Facebook Reels who need ads, animation or software and judge a studio by its craft",
+  "promise": "Pixel Plus turns one small idea into ads, animation and software with the polish of a top motion studio",
+  "cta": "ابدأ مشروعك معنا — start your project with Pixel Plus (no contact details were supplied, so none are shown)",
+  "direction": "«One pixel»: the blue square from the logo's i-dot is the only hero; it morphs (UI-morph grammar of the two owner references) through three worlds — blue ads, paper animation, dark software — and finally bursts into 1,699 pixels that build the logo pixel by pixel. Alexandria (Arabic + Latin display/text) + Space Mono (code/labels). Locked frame, the object moves; portal dive, circle wipe, dark-mode toggle wipe, tri-band montage, implosion. 120 BPM original minimal tech-pop score with UI foley.",
+  "assets": [
+    {
+      "id": "logo",
+      "path": "film6/source/logo.jpg",
+      "role": "logo",
+      "rights": "Owner-supplied Pixel Plus logo (chat upload 2026-10-03); client material, not in git. Traced faithfully (film6/logo_trace.py), never redrawn"
+    },
+    {
+      "id": "plates",
+      "path": "film6/plates",
+      "role": "logo",
+      "rights": "Derived in code from the owner logo: vector outlines, cleaned colour plate, particle targets"
+    },
+    {
+      "id": "refA",
+      "path": "film6/source/refA.mp4",
+      "role": "reference",
+      "rights": "Owner-supplied screen recording (X post, 20 s UI-morph promo); grammar study only, nothing copied"
+    },
+    {
+      "id": "refB",
+      "path": "film6/source/refB.mp4",
+      "role": "reference",
+      "rights": "Owner-supplied screen recording (X post, 15 s UI-morph motion study); grammar study only, nothing copied"
+    }
+  ],
+  "sound": {
+    "mode": "original",
+    "bpm": 120,
+    "note": "Synthesised in film6/score.mjs with lib/audio.mjs and lib/sfx.mjs; no samples, no licence needed"
+  },
+  "creative": {
+    "viewer": "a business owner or marketer on Facebook Reels deciding which studio can make their ad, animation or app",
+    "problem": "agency ads all claim creativity; this one must PROVE motion craft in the first seconds and stay elegant, Arabic and premium",
+    "promise": "one idea → ads, animation and software, built pixel by pixel",
+    "evidence": "the real Pixel Plus logo (traced from the owner's file) and the film itself as the showreel; no invented clients, numbers or results",
+    "emotion": "admiration and calm confidence, with playful wit",
+    "motif": "one blue pixel (the logo's i-dot) that becomes everything and finally becomes the logo",
+    "palette": ["#F2F0EB", "#1F2328", "#8D949E", "#0A66FF", "#18B6FF"],
+    "light": "soft warm paper with a centre glow, a saturated brand-blue world and a dark night-mode world; soft contact shadows under objects",
+    "typography": { "display": "Alexandria", "text": "Space Mono" },
+    "camera": "locked frame with the object moving (reference grammar), plus one portal dive into the pixel",
+    "transitions": ["portal dive", "circle wipe", "toggle wipe", "cut", "implosion"],
+    "motion": "spring morphs of one container (size/radius/colour) with motion blur, blur cross-fades of content, squash and stretch, onion skin, typewriter code, particle assembly",
+    "sound": "120 BPM minimal tech-pop in A minor: soft intro, drop at 4.0, bouncy animation section, filtered dark software section, three stabs, logo shimmer; UI foley clicks/pops on every interaction",
+    "pacing": "one idea per beat inside a chapter, a readable 2 s headline hold per chapter, quiet logo hold at the end",
+    "payoff": "the pixel bursts into 1,699 pixels that assemble the Pixel Plus logo; tagline «نصنع الفرق.. بكسل ببكسل»; credit Made by: Mohamed Fawzy Labib",
+    "cta": "ابدأ مشروعك معنا",
+    "styleFrames": { "hook": 1.9, "proof": 8.5, "payoff": 26.5 },
+    "proof": { "start": 0, "end": 12 }
+  },
+  "shots": [
+    {
+      "id": "hook",
+      "start": 0,
+      "end": 4,
+      "purpose": "hook: a blue pixel drops onto paper and sends a ripple through the pixel grid; the promise line; the cursor clicks the pixel and we dive into it",
+      "assetIds": [],
+      "craft": {
+        "scale": "macro object on wide paper",
+        "camera": "locked, then a dive into the pixel",
+        "focal": "the pixel",
+        "transition": "portal dive",
+        "depthLayers": 3,
+        "primaryMotions": ["pixel squash and stretch", "type rise"],
+        "audioCue": "landing pop on 0.5, click on 3.5, riser into the drop at 4.0"
+      },
+      "copy": { "text": "كل فكرة عظيمة تبدأ ببكسل واحد", "start": 0.75, "end": 3.5 }
+    },
+    {
+      "id": "ads",
+      "start": 4,
+      "end": 10,
+      "purpose": "advertising: the pixel becomes a Reels ad («إعلانك هنا»), a tap sends a stream of hearts, the frame morphs 9:16 → 1:1 → 16:9, headline",
+      "assetIds": [],
+      "craft": {
+        "scale": "medium UI object",
+        "camera": "locked",
+        "focal": "the ad frame",
+        "transition": "circle wipe",
+        "depthLayers": 3,
+        "primaryMotions": ["frame morph", "hearts stream"],
+        "audioCue": "drop on 4.0, heart plinks, morph whooshes on 6.0 / 6.5"
+      },
+      "copy": { "text": "إعلانات تصنع الأثر", "start": 7.1, "end": 9.4 }
+    },
+    {
+      "id": "anim",
+      "start": 10,
+      "end": 16,
+      "purpose": "animation: a bouncing ball with squash/stretch and onion skin, a graph-editor ease curve dragged by the cursor, headline; the ball becomes a dark-mode toggle",
+      "assetIds": [],
+      "craft": {
+        "scale": "wide stage, small object",
+        "camera": "locked",
+        "focal": "the ball and its curve",
+        "transition": "toggle wipe",
+        "depthLayers": 2,
+        "primaryMotions": ["ball bounce", "curve drag"],
+        "audioCue": "tuned bounce plucks on each contact, toggle click on 15.5"
+      },
+      "copy": { "text": "أنيميشن ينبض بالحياة", "start": 13.3, "end": 15.3 }
+    },
+    {
+      "id": "soft",
+      "start": 16,
+      "end": 22,
+      "purpose": "software: button → spinner → check → code editor typing → the code becomes a live app card, headline",
+      "assetIds": [],
+      "craft": {
+        "scale": "close UI card",
+        "camera": "locked with a slight push",
+        "focal": "the code and app",
+        "transition": "cut",
+        "depthLayers": 3,
+        "primaryMotions": ["container morph", "typewriter"],
+        "audioCue": "click 16.5, confirm 17.0, typing on 16ths, app whoosh 18.75"
+      },
+      "copy": { "text": "برمجيات تعمل بذكاء", "start": 19.3, "end": 21.6 }
+    },
+    {
+      "id": "tri",
+      "start": 22,
+      "end": 24,
+      "purpose": "the three worlds slam in as bands on three beats, then implode into one pixel",
+      "assetIds": [],
+      "craft": {
+        "scale": "full-frame graphic bands",
+        "camera": "locked",
+        "focal": "three words",
+        "transition": "implosion",
+        "depthLayers": 1,
+        "primaryMotions": ["band slams"],
+        "audioCue": "three stabs on 22.0 / 22.5 / 23.0, reverse swell into 24.0"
+      },
+      "copy": { "text": "إبداع. تقنية. أثر.", "start": 22.0, "end": 23.85 }
+    },
+    {
+      "id": "logo",
+      "start": 24,
+      "end": 28,
+      "purpose": "payoff: the pixel bursts into 1,699 pixels that build the real logo, the hero pixel lands as the i-dot, the plus spins in; tagline, services, CTA pill clicked",
+      "assetIds": ["logo", "plates"],
+      "craft": {
+        "scale": "brand resolve",
+        "camera": "locked hold",
+        "focal": "logo",
+        "transition": "particle assembly",
+        "depthLayers": 2,
+        "primaryMotions": ["particle assembly", "type rise"],
+        "audioCue": "impact on 24.0, shimmer arps, plus ping 25.0, CTA click 27.5"
+      },
+      "copy": { "text": "نصنع الفرق.. بكسل ببكسل", "start": 25.6, "end": 28.0 }
+    },
+    {
+      "id": "credit",
+      "start": 28,
+      "end": 30,
+      "purpose": "end card hold with the owner's credit line",
+      "assetIds": ["logo", "plates"],
+      "craft": {
+        "scale": "brand resolve",
+        "camera": "locked hold",
+        "focal": "credit line",
+        "transition": "cut",
+        "depthLayers": 2,
+        "primaryMotions": ["mask wipe"],
+        "audioCue": "final chord rings out"
+      },
+      "copy": { "text": "Made by: Mohamed Fawzy Labib", "start": 28.0, "end": 30.0 }
+    }
+  ],
+  "cues": [
+    { "id": "land", "t": 0.5, "kind": "impact", "shot": "hook", "sound": { "type": "softHit", "vel": 0.45, "tone": 220 } },
+    { "id": "drop", "t": 4.0, "kind": "impact", "shot": "ads", "sound": { "type": "impact", "vel": 0.8, "weight": 0.8 } },
+    { "id": "wipeAnim", "t": 10.0, "kind": "transition", "shot": "anim" },
+    { "id": "dark", "t": 16.0, "kind": "impact", "shot": "soft", "sound": { "type": "impact", "vel": 0.7, "weight": 0.7 } },
+    { "id": "tri", "t": 22.0, "kind": "transition", "shot": "tri" },
+    { "id": "logo", "t": 24.0, "kind": "impact", "shot": "logo", "sound": { "type": "impact", "vel": 0.85, "weight": 0.85 } },
+    { "id": "credit", "t": 28.0, "kind": "reveal", "shot": "credit" }
+  ]
+}

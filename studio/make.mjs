@@ -103,7 +103,7 @@ const reviewed = [];
 for (const d of selected) {
   const deliveryStarted = performance.now();
   const dw = d.w || cfg.w, dh = d.h || cfg.h;
-  const renderSettings = { ...settings, w: dw, h: dh, variant: d.variant, segments: d.segments, fadeOut: d.fadeOut, t0: range?.[0] ?? 0, t1: range?.[1] ?? d.duration, ...(cfg.gpu ? { gpu: true } : {}) };
+  const renderSettings = { ...settings, w: dw, h: dh, variant: d.variant, segments: d.segments, fadeOut: d.fadeOut, t0: range?.[0] ?? 0, t1: range?.[1] ?? d.duration, ...(cfg.gpu ? { gpu: true } : {}), ...(cfg.dither ? { dither: true } : {}) };
   const key = fingerprint(ROOT, [], { pictureKey, ...renderSettings });
   const silent = join(TAKES, `${d.name}-${profile}-video.mp4`);
   let renderStats;

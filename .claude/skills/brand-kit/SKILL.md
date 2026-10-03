@@ -23,3 +23,5 @@ Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `s
 ## Checklist
 1. Colours sampled. 2. Logo matte white + colour. 3. Fonts vendored + licensed. 4. Motif chosen. 5. Contrast ok.
 6. Conflicts listed. 7. No brand in lib/. 8. ASSETS.md updated. 9. Logo ≥ 150 px wide on 1080 frame. 10. Logo checked at 1:1.
+
+**Raster-only logo (film 6):** trace it faithfully instead of redrawing — `film6/logo_trace.py` (coverage from the local max of distance-to-white, potrace on a 4× upsample, difference overlay against the source, colour plate with the white fringe inpainted). Render letters as `<img>` + `clip-path: path()` so `ready` awaits them; animate per letter or assemble from sampled pixel cells.

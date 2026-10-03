@@ -1,8 +1,16 @@
 # Studio status and session handoff
 
-Updated: 2026-10-02. This is the current handoff; historical plans are not a task queue.
+Updated: 2026-10-03. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE — Precise forensics tools: motion timing, easing curves, measured music (owner request 2026-10-02).**
+**Latest scope: DONE — Film 6, Pixel Plus «بكسل واحد», 30 s Facebook Reels showreel-ad (owner request 2026-10-03).**
+- Source: `studio/film6/` (BRIEF, production.json, film.js, score.mjs, logo_trace.py, LEDGER). ONE delivery: 9:16, 1080×1920, 30 fps, 30.00 s.
+- Final take: `studio/out/film6/take08/` (local, not in git): delivered share copy 13.66 MiB + 29 MB master + poster.
+- Technical gates: all PASS (−13.8 LUFS, TP −2.0, LRA 4.1, 16 text lines inside the safe area, end hold declared). Separate critique pass (builder; no subagent without an owner request) → 2 of 2 correction rounds → fixes checked on the exported mp4s.
+- Studio changes: `lib/review.mjs` ENOBUFS fix (+ regression test), opt-in `config.dither` / `encodeFilter()` in `lib/render.mjs` (+ test), Alexandria font in `lib/composer.html`, docs gate covers woff2.
+- Not verified: listening; human real-speed viewing; fresh reviewer; live Facebook overlays and re-encode. Spelling follows the logo (Pixel Plus).
+- `npm test`: 94 tests, 80 passed, 14 skipped, 0 failed.
+
+**Previous scope: DONE — Precise forensics tools: motion timing, easing curves, measured music (owner request 2026-10-02).**
 - New `studio/tools/motion_curves.py`, `studio/tools/audio_deep.py`, `studio/reference/forensics.mjs`; commands `node reference.mjs timeline|strip|track|audio`.
 - Validated against clips with known answers (`studio/test/forensics-tools.test.mjs`): keyframes within one frame, easing family and spring params, tempo/key/chords/drums recovered.
 - Optional modules installed here (OpenCV, PySceneDetect); the doctor lists them; CI's Python job installs them. Container installs are not persistent.
@@ -15,16 +23,11 @@ Updated: 2026-10-02. This is the current handoff; historical plans are not a tas
 - Not verified: the reference's motion and audio were not played (stills + numbers only); no film produced.
 - `npm test`: 90 tests, 76 passed, 14 optional skipped, 0 failed; real-browser examples test 4/4.
 
-**Previous scope: DONE — Project optimisation and taste guard (owner request 2026-10-02).**
-- Review evidence after every review/final export now extracts frames in parallel (bounded pool of 4): 103.6 s → 71.1 s on film 5's master, all 96 evidence files and review.json byte-identical.
-- STATUS.md compacted (this file is read first every session): full scope evidence moved verbatim to `studio/STATUS_HISTORY.md`.
-- Taste guard added to `studio/WORKFLOW.md`: two type families, no default decorations. Guidance only, no new step or check.
-- False tool alarm fixed: the onset detector skipped the first 3 analysis frames, so an opening hit at t = 0 read as "1033 ms off"; now measured from frame 0, with a test that fails on the old code.
-- `npm test`: 81 tests, 67 passed, 14 optional/browser skipped, 0 failed.
-
 ## Closed scopes (newest first; evidence in `studio/STATUS_HISTORY.md` and `studio/CHANGELOG.md`)
 | Scope | Result |
 |---|---|
+| Film 6 — Pixel Plus 30 s Facebook Reels showreel-ad | DONE, branch; take08 local, 2 of 2 correction rounds |
+| Precise forensics tools (motion timing, easing, measured music) | DONE, branch |
 | SaaS UI promo reverse-engineered, `lib/uimotion.js` | DONE, branch |
 | Project optimisation and taste guard | DONE, branch commit 68bf150 |
 | Film 5 — BALACONBAR Beni Suef 25 s Reels ad | DONE, PR #13; take04 local, 1 of 2 correction rounds |

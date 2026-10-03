@@ -2,6 +2,14 @@
 
 Full evidence of every closed scope. Read only when a past scope matters; `../STATUS.md` holds the current state.
 
+(moved from STATUS.md on 2026-10-03)
+**Closed scope: DONE — Project optimisation and taste guard (owner request 2026-10-02).**
+- Review evidence after every review/final export now extracts frames in parallel (bounded pool of 4): 103.6 s → 71.1 s on film 5's master, all 96 evidence files and review.json byte-identical.
+- STATUS.md compacted (this file is read first every session): full scope evidence moved verbatim to `studio/STATUS_HISTORY.md`.
+- Taste guard added to `studio/WORKFLOW.md`: two type families, no default decorations. Guidance only, no new step or check.
+- False tool alarm fixed: the onset detector skipped the first 3 analysis frames, so an opening hit at t = 0 read as "1033 ms off"; now measured from frame 0, with a test that fails on the old code.
+- `npm test`: 81 tests, 67 passed, 14 optional/browser skipped, 0 failed.
+
 **Latest scope: DONE — Film 5, BALACONBAR Beni Suef, 25 s Reels ad (owner request 2026-10-02).**
 - Source: `studio/film5/` (BRIEF, production.json, film.js, score.mjs, plates.mjs, crops.sh, LEDGER). ONE delivery: 9:16, 1080×1920, 30 fps, 25 s.
 - Final take: `studio/out/film5/take04/` (local, not in git): master 141 MB + 11.45 MB share copy + poster.

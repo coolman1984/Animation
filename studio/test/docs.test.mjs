@@ -38,7 +38,7 @@ test('required evolution docs exist and STATUS is not older than the changelog',
 });
 
 test('every font file in assets has an ASSETS.md row', () => {
-  const fonts = readdirSync(join(STUDIO, 'assets/fonts')).filter(f => f.endsWith('.ttf'));
+  const fonts = readdirSync(join(STUDIO, 'assets/fonts')).filter(f => f.endsWith('.ttf') || f.endsWith('.woff2'));
   const assets = read(join(STUDIO, 'ASSETS.md'));
   const missing = fonts.filter(f => !assets.includes(f) && !assets.includes(f.replace(/-[A-Za-z]+\.ttf$/, '-*.ttf')) && !assets.includes(f.split(/[-.]/)[0]));
   assert.deepEqual(missing, [], `fonts without an ASSETS.md row: ${missing.join(', ')}`);

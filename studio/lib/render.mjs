@@ -113,10 +113,19 @@ export async function textTimeline({ film, w = 1080, h = 1350, variant, segments
   return { lines, issues, ...(camera ? { camera: { fields: ['t', 'x', 'y', 'zoom', 'focus', 'aperture'], samples: camera } } : {}) };
 }
 
+// RGB frames → bt709 limited-range yuv420p. dither (opt-in, config.dither): convert through 16-bit RGB and 10-bit YUV with
+// error diffusion, so slow dark/saturated gradients do not step into visible chroma rings (8-bit RGB→YUV rounding).
+export function encodeFilter({ dither = false } = {}) {
+  const pad = 'pad=ceil(iw/2)*2:ceil(ih/2)*2';
+  return dither
+    ? `${pad},format=rgb48le,scale=out_color_matrix=bt709:out_range=tv:flags=accurate_rnd+full_chroma_int:sws_dither=ed,format=yuv420p10le,scale=flags=accurate_rnd:sws_dither=ed,format=yuv420p`
+    : `${pad},scale=out_color_matrix=bt709:out_range=tv`;
+}
+
 // Full render in parallel slices → out.mp4 (video only).
 export async function video({ film, out, w = 1080, h = 1350, variant, segments, fadeOut,
   workers = Math.min(4, cpus().length), crf = 14, preset = 'slow', t0 = 0, t1,
-  fps: fpsOverride, scale = 1, format = 'png', quality = 95, gpu = false }) {
+  fps: fpsOverride, scale = 1, format = 'png', quality = 95, gpu = false, dither = false }) {
   if (!Number.isInteger(workers) || workers < 1 || workers > 16 || !Number.isFinite(scale) || scale <= 0 || scale > 2)
     throw new Error('invalid workers or capture scale');
   if (!['png', 'jpeg'].includes(format)) throw new Error('invalid capture format');
@@ -141,7 +150,7 @@ export async function video({ film, out, w = 1080, h = 1350, variant, segments, 
       const ff = spawn('ffmpeg', ['-v', 'error', '-y', '-f', 'image2pipe', '-c:v', format === 'png' ? 'png' : 'mjpeg', '-framerate', String(fps), '-i', '-',
         '-c:v', 'libx264', '-threads', '1', '-preset', preset, '-crf', String(crf), '-pix_fmt', 'yuv420p',
         '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv',
-        '-vf', 'pad=ceil(iw/2)*2:ceil(ih/2)*2,scale=out_color_matrix=bt709:out_range=tv',
+        '-vf', encodeFilter({ dither }),
         '-x264-params', 'keyint=60:min-keyint=30', file], { stdio: ['pipe', 'ignore', 'pipe'] });
       let ferr = ''; ff.stderr.on('data', d => (ferr += d));
       ff.stdin.on('error', () => {});

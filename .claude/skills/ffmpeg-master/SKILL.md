@@ -37,3 +37,5 @@ runs ~3.5 Mbps — check its 1:1 crops for mush on gradients. 4 workers on 4 cor
 7. Loudness from ebur128. 8. Freeze on blurred copy. 9. Sheet + strips viewed. 10. ffprobe the final.
 
 **Verification recipes used in showreels:** frame from the export `ffmpeg -ss T -i master.mp4 -frames:v 1 f.png`; strip `-filter_complex hstack=inputs=N` or `tile`; 1:1 HUD crop `crop=480:270:0:0,scale=960:540`; matched board = reference row above ours with the same timestamps (offset-corrected). Prefer frames from the exported file over the preview path.
+
+**Film 6 (2026-10-03):** chroma rings in dark/saturated radial glows come from 8-bit RGB→yuv420p rounding (present before x264). Opt in with `config.dither: true` → `encodeFilter()` (`lib/render.mjs`): `format=rgb48le,scale=…:sws_dither=ed,format=yuv420p10le,scale=sws_dither=ed,format=yuv420p`. Verify with `crop=…,` + `convert -level 0%,18%` on the master and the share copy. Raw rgb24 crops of a 1080×1920 frame need `maxBuffer` well above Node's 1 MB default.

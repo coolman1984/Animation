@@ -5,7 +5,7 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { video, textTimeline, run } from '../lib/render.mjs';
+import { video, textTimeline, run, encodeFilter } from '../lib/render.mjs';
 import { probe } from '../lib/measure.mjs';
 import { PROFILES } from '../lib/build-options.mjs';
 const enabled = process.env.STUDIO_RENDER_TEST === '1';
@@ -43,4 +43,10 @@ test('review/final profiles keep authored output size/fps and segment source map
     }
     await assert.rejects(video({ film, out: join(dir, 'bad.mp4'), w: 400, h: 450, t0: 3, t1: 2 }), /invalid range/);
   } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('encode filter: default conversion unchanged; opt-in dither converts through 16-bit RGB / 10-bit YUV with error diffusion', () => {
+  assert.equal(encodeFilter(), 'pad=ceil(iw/2)*2:ceil(ih/2)*2,scale=out_color_matrix=bt709:out_range=tv');
+  const d = encodeFilter({ dither: true });
+  assert.match(d, /format=rgb48le/); assert.match(d, /sws_dither=ed/); assert.match(d, /yuv420p10le/); assert.ok(d.endsWith('format=yuv420p'));
 });

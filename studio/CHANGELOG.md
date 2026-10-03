@@ -5,6 +5,25 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-03 — Film 6: Pixel Plus «بكسل واحد», 30 s Facebook Reels showreel-ad (scope DONE)
+Owner request: a 30 s Reels ad like two supplied UI-morph screen recordings, about Pixel Plus (ads, animation, software), refined Arabic,
+ending "Made by: Mohamed Fawzy Labib", "go all out". One delivery 1080×1920, 30 fps, 30.00 s.
+- **Reference study (measured):** both references have no hard cuts — one container springs between shapes in 0.2–0.27 s with motion blur and
+  blur cross-faded content, a cursor drives each change; both at 120 BPM. Recorded in `TECHNIQUES.md` → "UI-morph showreel grammar".
+- **Film:** `film6/` (BRIEF, LEDGER, production.json, film.js, score.mjs). The logo's blue i-dot is the only hero: portal dive, ad frame morphs,
+  hearts stream, bouncing ball with onion skin and spacing dots, graph-editor curve, dark-mode toggle wipe, code → app, tri-band montage,
+  1,699-pixel logo assembly. Original 120 BPM score with UI foley.
+- **Logo pipeline:** `film6/logo_trace.py` traces the owner's raster logo into per-letter vector outlines (potrace on a 4× upsample, checked by
+  difference overlay), keeps the owner's colours in a fringe-inpainted plate, and samples particle targets; letters render as `<img>` + `clip-path: path()`.
+- **New font:** Alexandria (OFL, Arabic + Latin, variable 100–900) vendored as two woff2 subsets and registered in `lib/composer.html`.
+- **Studio bug fixed:** review evidence crashed with `ENOBUFS` on large text crops of a 1080×1920 frame (`lib/review.mjs` `rawCrop` maxBuffer);
+  regression test fails on the old code. The docs gate now also requires ASSETS rows for woff2 fonts.
+- **New opt-in encode:** `config.dither: true` → `encodeFilter()` in `lib/render.mjs` converts RGB→YUV through rgb48/yuv420p10 with error
+  diffusion. Proven: chroma rings in dark/blue radial glows appear even after a plain RGB→yuv420p conversion (no x264), and vanish with the
+  dithered path in both the CRF 14 master and the 2-pass share copy. Default conversion unchanged (test guards the string), so other films keep their bytes.
+- Correction rounds: 2 of 2 (transitions/sound; banding/legibility). `npm test`: see STATUS.md.
+- Not verified: listening, real-speed human viewing, fresh-reviewer critique, live Facebook overlays and re-encode.
+
 ## 2026-10-02 — Precise forensics tools: exact motion timing, easing curves and measured music (scope DONE)
 Owner request: tools to see motion timing and easing precisely and to understand audio; overcome capability gaps.
 - **Installed** (optional, per `reference/requirements-optional.txt`): OpenCV 4.10 headless, PySceneDetect 0.7 (numpy/scipy/librosa already present). The doctor now lists the importable forensics modules.

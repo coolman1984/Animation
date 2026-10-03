@@ -6,7 +6,8 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { run } from '../lib/render.mjs';
 import { validateEngine } from '../lib/engines.mjs';
-import { reviewSamples, boxContrast, clampCrop } from '../lib/review.mjs';
+import { reviewSamples, boxContrast, clampCrop, rawCrop } from '../lib/review.mjs';
+import { execFileSync } from 'node:child_process';
 import { externalRender } from '../lib/engines.mjs';
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const enabled = process.env.STUDIO_RENDER_TEST === '1';
@@ -67,4 +68,14 @@ const mix = new Bus(4); music.mixInto(mix); sfx.mixInto(mix); writeWav(dir + '/m
     assert.ok(g.every(x => x.ok), JSON.stringify(g)); assert.ok(g.some(x => /NOT CHECKED/.test(x.value)), 'text read-back is declared unavailable, not passed silently');
     assert.equal(em.deliveries.clip4.render.engine, 'ffmpeg-testsrc');
   } finally { for (const d of dirs) rmSync(d, { recursive: true, force: true }); }
+});
+
+test('review crops of full-width copy on a 1080×1920 frame do not overflow the process buffer', () => {
+  const dir = join(ROOT, 'takes', '_test-rawcrop'); mkdirSync(dir, { recursive: true });
+  const file = join(dir, 'tall.mp4');
+  try {
+    execFileSync('ffmpeg', ['-v', 'error', '-y', '-f', 'lavfi', '-i', 'color=c=0x204080:s=1080x1920:d=0.2:r=30', '-pix_fmt', 'yuv420p', file]);
+    const crop = rawCrop(file, 0.05, [0, 0, 1080, 1920], 1080, 1920);
+    assert.equal(crop.buf.length, 1080 * 1920 * 3);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });
