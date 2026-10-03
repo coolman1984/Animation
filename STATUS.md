@@ -2,7 +2,12 @@
 
 Updated: 2026-10-03. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE — Film 6, Pixel Plus «بكسل واحد», 30 s Facebook Reels showreel-ad (owner request 2026-10-03).**
+**Latest scope: DONE — Film 6 knowledge captured: QUALITY_PLAYBOOK.md, lib/uimorph.js, tools/logo_trace.py (owner request 2026-10-03).**
+- Playbook linked from WORKFLOW/SKILLS/CLAUDE.md/film-director; kit extracted from film 6 with 6 unit tests; tracer validated on the owner logo (1,699 particles, check image).
+- Then PR + merge to main as requested.
+- `npm test`: 100 tests, 86 passed, 14 skipped, 0 failed.
+
+**Previous scope: DONE — Film 6, Pixel Plus «بكسل واحد», 30 s Facebook Reels showreel-ad (owner request 2026-10-03).**
 - Source: `studio/film6/` (BRIEF, production.json, film.js, score.mjs, logo_trace.py, LEDGER). ONE delivery: 9:16, 1080×1920, 30 fps, 30.00 s.
 - Final take: `studio/out/film6/take08/` (local, not in git): delivered share copy 13.66 MiB + 29 MB master + poster.
 - Technical gates: all PASS (−13.8 LUFS, TP −2.0, LRA 4.1, 16 text lines inside the safe area, end hold declared). Separate critique pass (builder; no subagent without an owner request) → 2 of 2 correction rounds → fixes checked on the exported mp4s.
@@ -26,6 +31,7 @@ Updated: 2026-10-03. This is the current handoff; historical plans are not a tas
 ## Closed scopes (newest first; evidence in `studio/STATUS_HISTORY.md` and `studio/CHANGELOG.md`)
 | Scope | Result |
 |---|---|
+| Film 6 knowledge: playbook, `lib/uimorph.js`, `tools/logo_trace.py` | DONE, PR to main |
 | Film 6 — Pixel Plus 30 s Facebook Reels showreel-ad | DONE, branch; take08 local, 2 of 2 correction rounds |
 | Precise forensics tools (motion timing, easing, measured music) | DONE, branch |
 | SaaS UI promo reverse-engineered, `lib/uimotion.js` | DONE, branch |

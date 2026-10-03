@@ -5,7 +5,8 @@ Start a film with film-director + its brief/production.json. Read CRAFT_GUIDE.md
 
 | Stage / problem | Skill | Reusable tool / evidence |
 |---|---|---|
-| Route a film | film-director | make.mjs, production.json |
+| Route a film | film-director | make.mjs, production.json, QUALITY_PLAYBOOK.md (method that reached premium) |
+| UI-morph / showreel motion, logo assembly | motion-composer | lib/uimorph.js, tools/logo_trace.py |
 | No concept / direction yet | creative-director, idea-lab | style frames + craft metadata + creative preflight |
 | Brand / source truth | brand-kit, data-honesty | asset roles, source/rights records |
 | Message, script, dialect | storyboard-writer, subtitles-rtl | copyIssues, textTimeline |

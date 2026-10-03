@@ -89,7 +89,7 @@ Use LEDGER.md: time → issue → severity → fix → result. No unresolved blo
 If assets or actual playback are unavailable, explicitly say what remains unverified; never call it premium based only on passing metrics.
 
 ## Reusable craft system
-Use SKILLS.md to load one department; CRAFT_GUIDE.md explains source truth, Egyptian copy, layered staging and music audition.
+QUALITY_PLAYBOOK.md is the distilled method (hero object, measured references, stills → strips → critique, finish checks). Use SKILLS.md to load one department; CRAFT_GUIDE.md explains source truth, Egyptian copy, layered staging and music audition.
 New films add config.production and production.json using templates/production.json. make validates it BEFORE doctor/render,
 checks local assets/timeline/evidence, reports copy warnings and saves review-plan.json in source-film seconds. Legacy films
 remain compatible but show “content preflight unavailable”; migrate when revising them, never silently certify them.

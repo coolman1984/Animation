@@ -86,7 +86,7 @@ Reference facts (observed on stills + numbers; motion/audio not played): dark na
 Taste notes: the reference never uses more than two type families, no frame borders and no confetti; colour = navy + one blue + white, with a single warm icon as accent.
 Counter-case: a calm luxury product should not use the whoosh/orbit energy; the kit is for tech/UI explainers.
 
-## UI-morph showreel grammar (two owner references, measured 2026-10-03; film: `film6/film.js`)
+## UI-morph showreel grammar (two owner references, measured 2026-10-03; film: `film6/film.js`; reusable kit: `lib/uimorph.js`, `tools/logo_trace.py`)
 Reference facts (`reference.mjs timeline/audio` + 30 fps strips): 0 hard cuts in 20 s and 15 s; one black container on warm off-white springs between
 shapes (button → spinner → check → player card → volume pill → toggle …) in 0.2–0.27 s with motion blur; old content blurs out first (≈3 frames),
 new content blurs in staggered (≈5 frames); a cursor causes every change; holds 0.5–1.5 s; both tracks 120 BPM (bar 2.0 s).

@@ -5,7 +5,18 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
-## 2026-10-03 — Film 6: Pixel Plus «بكسل واحد», 30 s Facebook Reels showreel-ad (scope DONE)
+## 2026-10-03 — Film 6 knowledge captured as reusable tools and a quality playbook (scope DONE)
+Owner request: record all experience, ideas, techniques and methods so the project can reuse them and raise quality; then PR and merge.
+- **`QUALITY_PLAYBOOK.md`** (new): the method that reached premium — hero object from the brand, measured reference grammar, brand truth,
+  build order (stills → draft → review → transition strips → critique), motion craft, Arabic type sizes on 9:16, sound without ears, finish checks, ideas bank.
+  Linked from WORKFLOW.md, SKILLS.md, CLAUDE.md and the film-director skill.
+- **`lib/uimorph.js`** (new, pure in t, 6 tests in `test/uimorph.test.mjs`): `morphBox`, `morphBlur`, `swap`, `cursorAt`, `cursorClick`, `gridDots`,
+  `ripple`, `twinkle`, `portal`, `circleWipe`, `coverRadius`, `assembly`, `flight`, `mixHex` — extracted from film 6. Film 6 keeps its own copy (unchanged, already delivered).
+- **`tools/logo_trace.py`** (new): general raster-logo tracer (auto or explicit crop, vector parts with colours, colour plate, particle grid,
+  `logo-check.png`). Validated on the Pixel Plus logo: same 1,699 particles with film 6's crop; auto-crop showed a stray sheet number in the check image.
+- Skills updated: film-director, motion-composer, brand-kit.
+
+ Pixel Plus «بكسل واحد», 30 s Facebook Reels showreel-ad (scope DONE)
 Owner request: a 30 s Reels ad like two supplied UI-morph screen recordings, about Pixel Plus (ads, animation, software), refined Arabic,
 ending "Made by: Mohamed Fawzy Labib", "go all out". One delivery 1080×1920, 30 fps, 30.00 s.
 - **Reference study (measured):** both references have no hard cuts — one container springs between shapes in 0.2–0.27 s with motion blur and
