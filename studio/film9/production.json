@@ -1,0 +1,218 @@
+{
+  "version": 1,
+  "duration": 20,
+  "fps": 30,
+  "audience": "physiotherapy students and interns in Egypt scrolling Facebook, who find neurology hard to memorise",
+  "promise": "NeuroAnara teaches neuro physiotherapy as clinical reasoning: decode the sign, see the function, think clinically",
+  "cta": "تابع الصفحة — follow the page",
+  "direction": "The page's own method as motion on its cream / navy / teal / gold look: a sign → many causes as neural branches → Finding → Meaning → Treatment Direction along an axon → فكّر. اربط. قرّر. → Neuro is decoded (letters decode) → lock-up. Lora (the page's serif look) + Alexandria (Arabic). No music: sound effects only.",
+  "assets": [
+    {
+      "id": "posts",
+      "path": "film9/source",
+      "role": "reference",
+      "rights": "Owner-supplied screenshots of the NeuroAnara page and posts (client material, not in git); copy and look taken from them, no image reused"
+    }
+  ],
+  "sound": {
+    "mode": "original",
+    "bpm": 96,
+    "note": "NO music by owner request: synthesised sound effects only in film9/score.mjs"
+  },
+  "creative": {
+    "viewer": "a PT student or intern",
+    "problem": "neuro feels like memorising lists",
+    "promise": "a way to think from the sign to the decision",
+    "evidence": "the page's own posts: the stroke sit-to-stand case, the eight causes, Finding/Meaning/Treatment Direction, the Round Map motto, the page's taglines",
+    "emotion": "calm curiosity, then clarity",
+    "motif": "neural branches and an axon pulse; decoding",
+    "palette": [
+      "#F7F3EA",
+      "#10264A",
+      "#2F7782",
+      "#C2A15A",
+      "#5A6474"
+    ],
+    "light": "soft cream paper with the page's navy/teal corner waves and gold hairlines",
+    "typography": {
+      "display": "Lora",
+      "text": "Alexandria"
+    },
+    "camera": "locked; diagrams build",
+    "transitions": [
+      "figure parks",
+      "dendrite branch",
+      "axon draw",
+      "type stack",
+      "strike and decode",
+      "star and type rise"
+    ],
+    "motion": "springs, stroke draws, travelling sparks, letter decode",
+    "sound": "effects only: chair, neuron zaps, synapse pings, decoding ticks",
+    "pacing": "one idea per 2.5–4 s",
+    "payoff": "Neuro is decoded → NeuroAnara",
+    "cta": "تابع الصفحة",
+    "styleFrames": {
+      "hook": 2.9,
+      "proof": 9.6,
+      "payoff": 19.5
+    },
+    "proof": {
+      "start": 0,
+      "end": 12
+    }
+  },
+  "shots": [
+    {
+      "id": "sign",
+      "start": 0,
+      "end": 3.9,
+      "purpose": "the sign from the page's stroke post: the patient cannot stand up from the chair; how do I start thinking?",
+      "assetIds": [],
+      "craft": {
+        "scale": "full figure",
+        "camera": "locked",
+        "focal": "the seated patient",
+        "transition": "figure parks",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "sit-to-stand attempts",
+          "type rise"
+        ],
+        "audioCue": "cloth whoosh, chair creak, soft sink x2"
+      },
+      "copy": {
+        "text": "مش قادر يقوم من الكرسي.. أبدأ أفكر إزاي؟",
+        "start": 0.35,
+        "end": 3.45
+      }
+    },
+    {
+      "id": "causes",
+      "start": 3.9,
+      "end": 7.5,
+      "purpose": "same sign, many causes: neural branches from the head to the eight causes listed in the post",
+      "assetIds": [],
+      "craft": {
+        "scale": "small figure + list",
+        "camera": "locked",
+        "focal": "the eight causes",
+        "transition": "dendrite branch",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "branches grow",
+          "chips land"
+        ],
+        "audioCue": "a neuron zap + tick per cause, chime on the banner"
+      },
+      "copy": {
+        "text": "لكن السبب ممكن يكون:",
+        "start": 3.95,
+        "end": 7.0
+      }
+    },
+    {
+      "id": "decode",
+      "start": 7.5,
+      "end": 11.9,
+      "purpose": "the page's method: Finding → Meaning → Treatment Direction, a pulse along an axon lights three synapses",
+      "assetIds": [],
+      "craft": {
+        "scale": "vertical diagram",
+        "camera": "locked",
+        "focal": "the three synapses",
+        "transition": "axon draw",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "pulse travels",
+          "nodes light"
+        ],
+        "audioCue": "axon glide, three rising pings"
+      },
+      "copy": {
+        "text": "من الفحص إلى خطة العلاج",
+        "start": 7.6,
+        "end": 11.55
+      }
+    },
+    {
+      "id": "think",
+      "start": 11.9,
+      "end": 13.7,
+      "purpose": "the page's motto from the Round Map post: فكّر. اربط. قرّر.",
+      "assetIds": [],
+      "craft": {
+        "scale": "big type",
+        "camera": "locked",
+        "focal": "three words",
+        "transition": "type stack",
+        "depthLayers": 1,
+        "primaryMotions": [
+          "type rise"
+        ],
+        "audioCue": "three soft thumps"
+      },
+      "copy": {
+        "text": "فكّر. اربط. قرّر.",
+        "start": 11.95,
+        "end": 13.65
+      }
+    },
+    {
+      "id": "decoded",
+      "start": 13.7,
+      "end": 17.2,
+      "purpose": "the page's line: Neuro is not memorized → Neuro is decoded, letters literally decode",
+      "assetIds": [],
+      "craft": {
+        "scale": "type line",
+        "camera": "locked",
+        "focal": "the word decoded",
+        "transition": "strike and decode",
+        "depthLayers": 1,
+        "primaryMotions": [
+          "strike",
+          "letter decode"
+        ],
+        "audioCue": "swipe, rapid ticks, crystal ping"
+      },
+      "copy": {
+        "text": "Neuro is decoded.",
+        "start": 14.85,
+        "end": 16.9
+      }
+    },
+    {
+      "id": "brand",
+      "start": 17.2,
+      "end": 20,
+      "purpose": "lock-up: NeuroAnara, Where the brain finds light, من العلامة للقرار, the three-part line, Dr. Manar El-sayed Ismail, follow the page",
+      "assetIds": [],
+      "craft": {
+        "scale": "brand resolve",
+        "camera": "locked hold",
+        "focal": "the wordmark",
+        "transition": "star and type rise",
+        "depthLayers": 2,
+        "primaryMotions": [
+          "type rise",
+          "star twinkle"
+        ],
+        "audioCue": "star bells, air whoosh, CTA pop"
+      },
+      "copy": {
+        "text": "من العلامة للقرار",
+        "start": 18.05,
+        "end": 20
+      }
+    }
+  ],
+  "cues": [
+    {
+      "id": "decoded",
+      "t": 15.87,
+      "kind": "reveal",
+      "shot": "decoded"
+    }
+  ]
+}

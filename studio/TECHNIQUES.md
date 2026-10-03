@@ -156,3 +156,8 @@ Rule taken: in a beat-driven UI promo, put every content change on the beat and 
 - **Statements as stations:** a rail along the bottom with numbered, labelled stations; the brand object travels station to station (spring per station, hop + squash on arrival); the visited part fills with the brand gradient and flowing dashes keep the line "running" (also keeps holds alive for `freezedetect`).
 - **Two-column 16:9 layout:** statements right-aligned in x 1000–1800 (RTL), visuals in x 140–880; keep headlines ≤ 84 px so long Arabic lines never cross into the visual column.
 - **Copying a reference's argument, not its claims:** transcribe it (`tools/live.py transcribe`), map each statement to the client's true equivalent, and replace any claim the client cannot make ("and many more") with an honest forward line.
+
+## Calm educational reel without music (2026-10-03; film `film9/`)
+- **Letters that decode:** per character, show `GLYPHS[hash(i, frame)]` until its resolve time (`t0 + i·0.09`), deterministic per frame; strike the old word with a gold bar measured from the word's rect.
+- **Causes as dendrites:** cubic branches from the subject's head to each list chip, drawn just before the chip lands, with a spark travelling the same Bézier.
+- **Effects-only sound:** a very low room tone so silence is never dead, one effect per on-screen event, and `tanh` soft limiting before normalisation (sparse transients overshoot the true-peak ceiling when mastered to −16 LUFS).

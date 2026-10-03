@@ -5,6 +5,14 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-03 — Film 9: NeuroAnara «Decode the Case», 20 s Reels, no music (scope DONE)
+Owner: a 20 s ad for an educational neuro-physiotherapy page, sound effects only, true to its posts, colours and calm scientific spirit.
+- `film9/`: a seated patient fails to stand → dendrites to the eight causes → a pulse along an axon lights Finding / Meaning / Treatment Direction → فكّر. اربط. قرّر. →
+  "Neuro is decoded." with literally decoding letters → lock-up. Cream/navy/teal/gold with the page's corner waves.
+- New font: **Lora** (OFL) vendored for serif wordmarks; composer `@font-face`, ASSETS row.
+- Sound without music: room tone + event effects; tanh soft limiting before normalisation fixed a true-peak overshoot that sparse effects caused at −16 LUFS.
+- take04: all gates PASS. Not verified: listening.
+
 ## 2026-10-03 — Film 8: Pixel Plus formal factory pitch, 25 s 16:9 (scope DONE)
 Owner: same content and order as a supplied promo, formal, for a factory's top management; Pixel Plus's only clients are Samsung Electronics Egypt's TV and mobile plants.
 - Reference transcribed with `tools/live.py` (VAD + Whisper turbo) to get the exact order; mapped statement by statement, "and many more" replaced by «ومصنعكم.. المحطة القادمة».

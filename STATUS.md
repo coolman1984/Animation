@@ -2,7 +2,11 @@
 
 Updated: 2026-10-03. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE — Film 8, Pixel Plus formal factory pitch, 25 s 16:9 (owner request 2026-10-03).**
+**Latest scope: DONE — Film 9, NeuroAnara «Decode the Case», 20 s Reels, no music (owner request 2026-10-03).**
+- `studio/film9/` (BRIEF, production.json, config, film.js, score.mjs = effects only, LEDGER). Final take04 (local): all gates PASS, share 9.8 MB. Lora (OFL) vendored.
+- Not verified: listening, real-speed phone viewing.
+
+**Previous scope: DONE — Film 8, Pixel Plus formal factory pitch, 25 s 16:9 (owner request 2026-10-03).**
 - `studio/film8/` (BRIEF with the reference-order table, production.json, config, film.js, score.mjs, LEDGER). Final take04 (local): all gates PASS, share 13.5 MB.
 - Only the owner's real client (Samsung Electronics Egypt, TV + mobile plants) named, as text; no third-party logos. Not verified: listening, real-screen viewing.
 
@@ -58,6 +62,7 @@ Updated: 2026-10-03. This is the current handoff; historical plans are not a tas
 ## Closed scopes (newest first; evidence in `studio/STATUS_HISTORY.md` and `studio/CHANGELOG.md`)
 | Scope | Result |
 |---|---|
+| Film 9 — NeuroAnara 20 s Reels (no music) | DONE, branch; take04 local |
 | Film 8 — Pixel Plus factory pitch 25 s 16:9 | DONE, branch; take04 local |
 | Film 7 — SANAD Reels ad (25 s, then cut to 15 s on owner feedback) | DONE, branch; take09 local |
 | Live-action toolkit + `live1` study | DONE, PR to main |
