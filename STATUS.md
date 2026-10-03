@@ -2,7 +2,7 @@
 
 Updated: 2026-10-03. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE — Film 9 v2: chair-scene sound rebuilt (owner 2026-10-03).** Heartbeat, breaths, stick-slip creak, seat thump; rest unchanged. take06 all gates PASS. Not verified: listening.
+**Latest scope: DONE — Film 9 v3: chair scene = a low wavering warning bell (owner 2026-10-03; v2 foley rejected).** Rest unchanged. take07 all gates PASS. Not verified: listening.
 
 **Previous scope: DONE — The SANAD/films-6–9 branch merged into main as the house method (owner order 2026-10-03).**
 - `CLAUDE.md`, `QUALITY_PLAYBOOK.md` §0 "Owner taste", `film-director` and `sound-designer` now make this branch's taste, lessons and recipes authoritative for creative work.

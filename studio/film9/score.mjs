@@ -18,44 +18,28 @@ function tone(t, f0, f1, { dur = 0.12, vel = 0.2, p = 0, g = 0.04 } = {}) {
   for (let k = 0; k < dur * 3 * SR; k++) { const tt = k / SR, f = f1 + (f0 - f1) * Math.exp(-tt / g); ph += 2 * Math.PI * f / SR; const s = Math.sin(ph) * Math.min(1, tt / 0.002) * Math.exp(-tt / dur) * vel * 0.35; fx.add(i0 + k, s * gl, s * gr); }
 }
 texture(fx, 0, DUR, { level: 0.02, kind: 'room', seed: 9, fade: 0.8 });
-// A · the sign — expressive, physical sounds (owner: the first version was "very bad and not expressive"):
-// a quiet heartbeat under the struggle, a breath in as he leans forward, a real wooden creak (stick-slip friction),
-// the body dropping back onto the seat with a felt thump and a rattle of the chair legs, a tired breath out.
-function noiseBand(t, dur, f0, f1, vel, { q = 1.2, p = 0, attack = 0.4, seed = 1 } = {}) { // breath: band-passed noise with a moving centre
-  const i0 = Math.round(t * SR), len = Math.round(dur * SR), [gl, gr] = pan(p); let st = { x1: 0, x2: 0, y1: 0, y2: 0 }, r = seed * 9301 + 49297;
+// A · the sign — owner direction: no human or chair sounds at all. A low, wavering warning bell, as if the case itself says
+// "I have a problem and I'm worried": inharmonic bell partials, each doubled slightly out of tune so they beat (the waver),
+// a slow vibrato and tremolo, tolled on the start and on each failed attempt; under it a faint uneasy hum that beats at 1.6 Hz.
+function alarmBell(t, f, vel = 0.3, { decay = 2.2, p = 0 } = {}) {
+  const i0 = Math.round(t * SR), len = Math.round(decay * 2.4 * SR), [gl, gr] = pan(p);
+  const parts = [[1, 1, 1], [2.0, 0.45, 0.6], [2.76, 0.3, 0.45], [5.4, 0.12, 0.2]];
   for (let k = 0; k < len; k++) {
-    const u = k / len, f = f0 * Math.pow(f1 / f0, u), w = 2 * Math.PI * f / SR, c = Math.cos(w), sn = Math.sin(w), a = sn / (2 * q);
-    r = (r * 1103515245 + 12345) & 0x7fffffff; const x = r / 0x3fffffff - 1;
-    const y = (a * x - a * st.x2 + 2 * c * st.y1 - (1 - a) * st.y2) / (1 + a); st = { x2: st.x1, x1: x, y2: st.y1, y1: y };
-    const env = Math.pow(Math.min(1, u / attack), 1.5) * Math.pow(1 - u, 1.3); fx.add(i0 + k, y * env * vel * gl, y * env * vel * gr);
+    const x = k / SR, vib = 1 + 0.004 * Math.sin(2 * Math.PI * 5.2 * x), trem = 1 - 0.35 * (0.5 + 0.5 * Math.sin(2 * Math.PI * 6.3 * x));
+    let v = 0;
+    for (const [m, amp, d] of parts) { const ff = f * m * vib; v += amp * (Math.sin(2 * Math.PI * ff * x) + Math.sin(2 * Math.PI * ff * 1.006 * x)) * 0.5 * Math.exp(-x / (decay * d)); }
+    v *= Math.min(1, x / 0.004) * trem * vel * 0.3; fx.add(i0 + k, v * gl, v * gr);
   }
 }
-function creak(t, dur, { vel = 0.5, f = 620, rate0 = 28, rate1 = 55, p = 0 } = {}) { // stick-slip: a train of tiny clicks ringing a wooden resonance
-  let tt = t, k = 0;
-  while (tt < t + dur) {
-    const u = (tt - t) / dur, rate = rate0 + (rate1 - rate0) * Math.sin(Math.PI * u), env = Math.sin(Math.PI * u) ** 0.7;
-    const i0 = Math.round(tt * SR), ff = f * (1 + 0.08 * Math.sin(k * 1.7)), [gl, gr] = pan(p);
-    for (let j = 0; j < SR * 0.025; j++) { const x = j / SR, v = Math.sin(2 * Math.PI * ff * x) * Math.exp(-x / 0.006) + 0.4 * Math.sin(2 * Math.PI * ff * 2.31 * x) * Math.exp(-x / 0.003); fx.add(i0 + j, v * env * vel * 0.3 * gl, v * env * vel * 0.3 * gr); }
-    tt += 1 / rate * (0.85 + 0.3 * ((k * 0.618) % 1)); k++;
-  }
+function unease(t0, t1, f = 98, vel = 0.05) { // a faint hum that beats (two sines 1.6 Hz apart), swelling and fading
+  const i0 = Math.round(t0 * SR), len = Math.round((t1 - t0) * SR);
+  for (let k = 0; k < len; k++) { const x = k / SR, u = k / len, env = Math.min(1, u / 0.15) * Math.min(1, (1 - u) / 0.2); const v = (Math.sin(2 * Math.PI * f * x) + Math.sin(2 * Math.PI * (f + 1.6) * x) + 0.3 * Math.sin(2 * Math.PI * f * 2 * x)) * env * vel; fx.add(i0 + k, v, v); }
 }
-function thump(t, vel = 0.5) { // a body landing on a seat: low felt thud
-  const i0 = Math.round(t * SR); let ph = 0;
-  for (let k = 0; k < SR * 0.35; k++) { const x = k / SR, f = 55 + 70 * Math.exp(-x / 0.03); ph += 2 * Math.PI * f / SR; const v = Math.sin(ph) * Math.exp(-x / 0.09) * Math.min(1, x / 0.004) * vel * 0.5; fx.add(i0 + k, v, v); }
-  noiseHit(fx, t, { dur: 0.06, vel: vel * 0.25, bp: 350, q: 0.8, seed: Math.round(t * 100), attack: 0.003 });
-}
-function heart(t, vel = 0.2) { for (const [dt, g] of [[0, 1], [0.16, 0.65]]) { const i0 = Math.round((t + dt) * SR); let ph = 0; for (let k = 0; k < SR * 0.18; k++) { const x = k / SR, f = 48 + 20 * Math.exp(-x / 0.02); ph += 2 * Math.PI * f / SR; const v = Math.sin(ph) * Math.exp(-x / 0.05) * Math.min(1, x / 0.005) * vel * g; fx.add(i0 + k, v, v); } } }
-for (let t = 0.25; t < 3.7; t += 0.82) heart(t, 0.11 + 0.03 * Math.min(1, t / 2.5));                     // a heartbeat that quickens a little with the effort
-[[0.7, 1.7, 0], [2.0, 3.0, 1]].forEach(([up, back, i]) => {
-  noiseBand(up, 0.55, 500, 1400, 0.032 + 0.01 * i, { q: 1.4, attack: 0.7, seed: 11 + i });                // breath in, gathering effort
-  creak(up + 0.12, 0.42 + 0.08 * i, { vel: 0.3 + 0.08 * i, f: 560 + 60 * i, p: -0.2 });                 // the chair creaks as weight shifts forward
-  creak(back - 0.22, 0.2, { vel: 0.25, f: 480, rate0: 40, rate1: 70, p: -0.2 });                         // a short creak as he gives up
-  thump(back, 0.28 + 0.05 * i);                                                                            // he drops back onto the seat
-  [0.03, 0.075].forEach((d, j) => noiseHit(fx, back + d, { dur: 0.012, vel: 0.07, bp: 1800 - j * 400, q: 6, seed: 70 + j + i * 5 })); // chair legs knock
-  noiseBand(back + 0.08, 0.7, 1100, 380, 0.028 + 0.006 * i, { q: 1.1, attack: 0.15, seed: 21 + i });       // a tired breath out
-});
-noiseBand(2.55, 0.5, 900, 2200, 0.015, { q: 2.5, attack: 0.5, seed: 31 });                              // the question tag appears: a soft air
-whooshBy(fx, 3.95, { dur: 0.6, vel: 0.06, direction: 'lr', low: 250, high: 1800, seed: 6 });              // the figure steps back
+unease(0.1, 3.95, 98, 0.016);
+alarmBell(0.3, 196, 0.11, { decay: 2.0 });             // the case announces itself
+alarmBell(1.7, 185, 0.12, { decay: 2.0, p: -0.15 });   // first failed attempt: the bell again, a little lower
+alarmBell(3.0, 175, 0.14, { decay: 2.4, p: 0.15 });    // second failure: lower and longer — the worry grows
+whooshBy(fx, 3.95, { dur: 0.6, vel: 0.05, direction: 'lr', low: 250, high: 1800, seed: 6 }); // the figure steps back
 // B · causes branch out like dendrites
 for (let i = 0; i < 8; i++) { const t0 = 4.2 + i * 0.22; glide(t0 - 0.28, 0.32, 500 + i * 40, 1500 + i * 90, 0.035, 0.4); click(fx, t0, { vel: 0.1, bright: 0.85, p: 0.4 }); bell(fx, t0 + 0.02, 81 + (i % 4) * 2, 0.04, { decay: 0.5, p: 0.4 }); }
 uiConfirm(fx, 6.25, { vel: 0.16, notes: [69, 76] });                                                       // "understand why the movement failed"

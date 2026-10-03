@@ -8,6 +8,7 @@ together with `WORKFLOW.md` (process authority) and `AUTONOMOUS_FILM.md` (owner 
 - **Music:** Western, with energy, a real beat and one catchy hook that returns in every chapter, locked to the cuts (tempo from the edit grid).
   A soft, "safe" bed was rejected as "very bad and ugly" twice. Calm/premium briefs still get a beat and a hook (film 7), only lower in energy.
   If he says "no music", use effects only: one effect per on-screen event, a very low room tone, soft-limit peaks (film 9).
+- **Sound for a feeling:** he prefers a symbolic sound that states the emotion (a low wavering warning bell = "I have a problem and I'm worried") over literal foley (breaths, creaks, heartbeats were rejected in film 9).
 - **Logos:** show the client's logo **whole** (pop-in, blur-resolve, particle burst into the finished mark). Never build it slowly from traced
   pieces — film 7's shield/ribbon/arrow build was "very ugly" and was cut. Trace logos only to render them crisp, not to dismantle them.
 - **Honesty is a feature:** copy only what the client said or showed; name real clients as text (no third-party logo art); replace claims the
