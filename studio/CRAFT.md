@@ -53,6 +53,13 @@ Timeless craft only. Dated technology and trend notes go to `TECH_RADAR.md`, nev
 36. **Banding can come from the colour conversion, not the encoder:** dark saturated radial glows stepped into chroma rings after a plain RGB→yuv420p conversion; a dither layer in the picture did not help; error-diffused conversion via 10-bit (`config.dither`) did. Check dark gradients with a levels-boosted crop of the exported file.
 37. **Line boxes, not glyphs, trip the overlap gate:** big Arabic headlines with line-height 1.35 overlapped their second line by 4–17 px of empty box; line-height 1.12/1.2 fixed it without moving a glyph.
 
+## Film 7 — SANAD 25 s Reels ad (2026-10-03)
+43. **Turn the brand's name into the story, and its logo's own parts into the chapters:** سند = support → weights and a rising ground; shield / ribbon / arrow = trust / partnership / growth, so the logo is *built* by the argument instead of being shown at the end.
+44. **A logo's own cut-outs can make its parts look broken when shown one by one:** the ribbon's white halo cuts the shield sides, so the shield alone read as a broken outline. Stroke a bridge for the hidden stretch until the covering part arrives, and keep the halo (a white stroke under each overlapping part).
+45. **The overlap gate reads a word's own opacity, not its parent's:** fade the words (not only the card that carries them) when an object leaves the safe band, or the gate keeps flagging text that is visually gone.
+46. **A logo assembled from traced pieces can look worse than the logo itself:** the owner rejected the shield/ribbon/arrow build (seams, a broken-looking shield, 10 s of construction). Default to showing a client logo whole (pop-in, blur-resolve) and spend the motion on the story around it.
+47. **Without music, sound must carry the rhythm and the loudness:** every beat of the edit needs its own effect, a room tone fills the gaps, and peaks need soft limiting because sparse transients are what the loudness normaliser lifts.
+
 ## Live-action toolkit (2026-10-03)
 38. **Analyse once, render from cached data:** MediaPipe's face landmarker is non-deterministic in VIDEO mode; run IMAGE mode per frame, smooth with a 1€ filter and store JSON — the render reads the pack and stays deterministic.
 39. **Offline editing can look ahead:** forward-backward smoothing gives a reframing camera with zero lag (it moves with the subject, not after him), reset at every cut; a dead zone removes micro pans.

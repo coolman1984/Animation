@@ -1,0 +1,265 @@
+{
+  "version": 1,
+  "duration": 25,
+  "fps": 30,
+  "audience": "the top management of an Egyptian factory, in a meeting room, watching the opening of a Pixel Plus presentation",
+  "promise": "Pixel Plus builds ads, animation and software from inside real factory work — today for Samsung Electronics Egypt's TV and mobile plants — and your factory can be next",
+  "cta": "ومصنعكم.. المحطة القادمة — the presenter continues live; no contact details on screen",
+  "direction": "A production line (rail) along the bottom: the brand's blue pixel travels station to station like a work-piece; every statement of the owner's reference order is a station. Blueprint line-art on deep navy, white formal Arabic (Alexandria) + Space Mono labels, Pixel Plus blue. 96 BPM original score with a machine pulse.",
+  "assets": [
+    {
+      "id": "logo",
+      "path": "film6/plates",
+      "role": "logo",
+      "rights": "Pixel Plus logo traced in film 6 from the owner's file; rendered here as a white version with the brand-blue dot and plus"
+    },
+    {
+      "id": "ref",
+      "path": "film8/source/reference.mp4",
+      "role": "reference",
+      "rights": "Owner-supplied Facebook screen recording (a third party's diploma promo); used only for the order of statements, nothing copied"
+    }
+  ],
+  "sound": {
+    "mode": "original",
+    "bpm": 96,
+    "note": "Synthesised in film8/score.mjs; no samples"
+  },
+  "creative": {
+    "viewer": "a plant director and managers judging a supplier in a formal meeting",
+    "problem": "suppliers pitch theory and templates; managers want people who understand the line",
+    "promise": "solutions built from inside real factory work",
+    "evidence": "one real current client named by the owner: Samsung Electronics Egypt (TV plant, mobile plant); no logos, numbers or other clients invented",
+    "emotion": "respect, clarity, curiosity",
+    "motif": "a production line with stations; the work-piece pixel",
+    "palette": [
+      "#070B14",
+      "#0E1A33",
+      "#0A66FF",
+      "#18B6FF",
+      "#FFFFFF"
+    ],
+    "light": "deep navy blueprint with a slow blue glow",
+    "typography": {
+      "display": "Alexandria",
+      "text": "Space Mono"
+    },
+    "camera": "locked frame; the work-piece moves",
+    "transitions": [
+      "line draw",
+      "particle assembly",
+      "scan and rebuild",
+      "braid to one",
+      "card slide",
+      "scan pings",
+      "station arrival to logo"
+    ],
+    "motion": "springs, stroke draws, pixel assembly",
+    "sound": "96 BPM machine pulse, ostinato, hook from 10.0, resolve on C",
+    "pacing": "one statement per station, 2.2–4 s holds",
+    "payoff": "your factory is the next station; logo lock-up",
+    "cta": "ومصنعكم.. المحطة القادمة",
+    "styleFrames": {
+      "hook": 3.0,
+      "proof": 16.2,
+      "payoff": 24.0
+    },
+    "proof": {
+      "start": 0,
+      "end": 12
+    }
+  },
+  "shots": [
+    {
+      "id": "experience",
+      "start": 0,
+      "end": 5,
+      "purpose": "who we work with (reference order 1): the team that works with Samsung Electronics Egypt; blueprint of a TV plant and a mobile plant",
+      "assetIds": [],
+      "craft": {
+        "scale": "wide blueprint + statement",
+        "camera": "locked, grid drift",
+        "focal": "the client's name",
+        "transition": "line draw",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "blueprint draw",
+          "type rise"
+        ],
+        "audioCue": "machine pulse and tick; station click 0.4"
+      },
+      "copy": {
+        "text": "من الفريق الذي يعمل مع سامسونج إلكترونيكس مصر",
+        "start": 0.6,
+        "end": 4.5
+      }
+    },
+    {
+      "id": "identity",
+      "start": 5,
+      "end": 7.5,
+      "purpose": "who we are (reference order 2: the product name): the work-piece pixel bursts into the Pixel Plus logo",
+      "assetIds": [
+        "logo"
+      ],
+      "craft": {
+        "scale": "brand resolve",
+        "camera": "locked",
+        "focal": "the logo",
+        "transition": "particle assembly",
+        "depthLayers": 2,
+        "primaryMotions": [
+          "particle assembly",
+          "plus spin"
+        ],
+        "audioCue": "riser into 5.0, pixel shimmer, plus/dot pings"
+      },
+      "copy": {
+        "text": "إعلانات · أنيميشن · برمجيات",
+        "start": 6.35,
+        "end": 7.3
+      }
+    },
+    {
+      "id": "method",
+      "start": 7.5,
+      "end": 12.5,
+      "purpose": "reference order 3: not ready-made tools — built from the real production work; template tiles scanned and rejected, pixels build a custom screen",
+      "assetIds": [],
+      "craft": {
+        "scale": "medium graphic grid",
+        "camera": "locked",
+        "focal": "the tiles, then the pixel screen",
+        "transition": "scan and rebuild",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "scan beam",
+          "pixel build"
+        ],
+        "audioCue": "scan sweep, low drops, snapping clicks"
+      },
+      "copy": {
+        "text": "بل بُنيت من واقع خطوط الإنتاج",
+        "start": 10.1,
+        "end": 12.3
+      }
+    },
+    {
+      "id": "partnership",
+      "start": 12.5,
+      "end": 15,
+      "purpose": "reference order 4: hand in hand with manufacturing teams; two strands braid into one line",
+      "assetIds": [],
+      "craft": {
+        "scale": "wide line graphic",
+        "camera": "locked",
+        "focal": "two strands",
+        "transition": "braid to one",
+        "depthLayers": 2,
+        "primaryMotions": [
+          "strand braid",
+          "type rise"
+        ],
+        "audioCue": "tonal glide"
+      },
+      "copy": {
+        "text": "نعمل يدًا بيد مع فِرق التصنيع",
+        "start": 12.6,
+        "end": 14.85
+      }
+    },
+    {
+      "id": "clients",
+      "start": 15,
+      "end": 17.5,
+      "purpose": "reference order 5 (the logo wall), honestly: our clients today — Samsung Electronics Egypt, TV plant and mobile plant (name as text, no third-party logo art)",
+      "assetIds": [],
+      "craft": {
+        "scale": "two cards + statement",
+        "camera": "locked",
+        "focal": "the two client cards",
+        "transition": "card slide",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "cards slide",
+          "type rise"
+        ],
+        "audioCue": "two whooshes"
+      },
+      "copy": {
+        "text": "عملاؤنا اليوم سامسونج إلكترونيكس مصر",
+        "start": 15.1,
+        "end": 17.3
+      }
+    },
+    {
+      "id": "floor",
+      "start": 17.5,
+      "end": 20.2,
+      "purpose": "reference order 6: never theory — we go onto the factory floor and understand the challenges; a reticle scans the blueprint",
+      "assetIds": [],
+      "craft": {
+        "scale": "wide blueprint",
+        "camera": "reticle scan",
+        "focal": "the problem points",
+        "transition": "scan pings",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "reticle scan",
+          "pings"
+        ],
+        "audioCue": "three pings 18.6/19.2/19.8"
+      },
+      "copy": {
+        "text": "ندخل معكم أرض المصنع",
+        "start": 18.0,
+        "end": 20.0
+      }
+    },
+    {
+      "id": "next",
+      "start": 20.2,
+      "end": 25,
+      "purpose": "instead of 'and many more': your factory is the next station; logo lock-up with the brand line",
+      "assetIds": [
+        "logo"
+      ],
+      "craft": {
+        "scale": "brand resolve",
+        "camera": "locked hold",
+        "focal": "the next station, then the logo",
+        "transition": "station arrival to logo",
+        "depthLayers": 2,
+        "primaryMotions": [
+          "type rise",
+          "logo return"
+        ],
+        "audioCue": "riser, impact 21.95, final C"
+      },
+      "copy": {
+        "text": "نصنع الفرق.. بكسل ببكسل",
+        "start": 22.65,
+        "end": 25
+      }
+    }
+  ],
+  "cues": [
+    {
+      "id": "logo",
+      "t": 5.0,
+      "kind": "reveal",
+      "shot": "identity"
+    },
+    {
+      "id": "end",
+      "t": 21.95,
+      "kind": "reveal",
+      "shot": "next",
+      "sound": {
+        "type": "impact",
+        "vel": 0.6,
+        "weight": 0.6
+      }
+    }
+  ]
+}

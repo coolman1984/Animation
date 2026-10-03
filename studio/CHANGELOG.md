@@ -5,15 +5,50 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-03 — House method: films 6–9 branch merged into main as the authority (scope DONE)
+Owner: this branch's experience, techniques and ideas must dominate the project so he can use it from main.
+- New `QUALITY_PLAYBOOK.md` §0 "Owner taste" (music, logos, honesty, language, film shape, placement, references), referenced first from `CLAUDE.md`, `film-director`, `sound-designer`.
+- Merged origin/main (platform v1, Windows port, render stability, voice department kept). Number clash: main's WIP `film7` (3-min Pixel Plus presentation) → `film10`; SANAD stays `film7`.
+- Known: `platform.test.mjs` worker-planning test fails on this container on main too (machine-dependent).
+
+## 2026-10-03 — Film 9: NeuroAnara «Decode the Case», 20 s Reels, no music (scope DONE)
+Owner: a 20 s ad for an educational neuro-physiotherapy page, sound effects only, true to its posts, colours and calm scientific spirit.
+- `film9/`: a seated patient fails to stand → dendrites to the eight causes → a pulse along an axon lights Finding / Meaning / Treatment Direction → فكّر. اربط. قرّر. →
+  "Neuro is decoded." with literally decoding letters → lock-up. Cream/navy/teal/gold with the page's corner waves.
+- New font: **Lora** (OFL) vendored for serif wordmarks; composer `@font-face`, ASSETS row.
+- Sound without music: room tone + event effects; tanh soft limiting before normalisation fixed a true-peak overshoot that sparse effects caused at −16 LUFS.
+- take04: all gates PASS. Not verified: listening.
+
+## 2026-10-03 — Film 8: Pixel Plus formal factory pitch, 25 s 16:9 (scope DONE)
+Owner: same content and order as a supplied promo, formal, for a factory's top management; Pixel Plus's only clients are Samsung Electronics Egypt's TV and mobile plants.
+- Reference transcribed with `tools/live.py` (VAD + Whisper turbo) to get the exact order; mapped statement by statement, "and many more" replaced by «ومصنعكم.. المحطة القادمة».
+- `film8/`: production-line rail with seven stations, the brand pixel as the work-piece, blueprint factory, template-scan → pixel-built screen, braided strands, client cards (name as text only), reticle on the floor, logo lock-up (white letters, blue dot/plus).
+- take04: all gates PASS (−16 LUFS for room playback). Not verified: listening, viewing on the real screen.
+
+## 2026-10-03 — Film 7 revision: logo build cut, 15 s (scope DONE)
+Owner: the logo-building part was "very ugly"; keep the logo entering ready with the text under it, shorten. The 10 s build was removed; the finished logo pops in at 7.5;
+the score is composed on the long timeline and spliced on the bar line. Delivery `reels15`; take09 all gates PASS. Not verified: listening.
+
+## 2026-10-03 — Film 7: SANAD «معاك سند», 25 s Reels ad (scope DONE)
+Owner request: a premium, calm, motivating 25 s ad for SANAD Business Advisory that plays on the client's emotional and psychological needs, shown as a motion-designer showreel ("go all out").
+No placement named → studio default for social video: 1080×1920 @ 30 fps, one delivery.
+- **Idea:** the name means *support*. A founder's growth line is dragged down by four weights (accounts · team · sales · decisions); the ground rises under the line like a dawn; the brand's
+  icon is built from its three meanings (shield = trust, infinity ribbon = partnership, arrow = growth); the four weights return as four calm service rows; the lock-up lands with the brand's own tagline.
+- **New:** `film7/` (BRIEF, production.json, config, film.js, score.mjs, `icon_trace.py`, LEDGER). `icon_trace.py` splits a raster logo into colour pieces (navy/gold/green components, potrace, the owner's pixels as colour plate).
+  Original 96 BPM score (heartbeat + four thuds → breath → E7→C deceptive resolution → groove with a returning hook → lift on the arrow → arrival on the logo).
+- **Techniques:** ground-rises-along-the-line wipe (clip polygon from the line), outline-to-fill with a blueprint underlay, stroked bridges where a logo's halo cuts a shape, path draw by clip polygon with a pen of light, white sticker halos under overlapping logo parts.
+- take08: all gates PASS after 2 of 2 correction rounds. Not verified: listening, real-speed human viewing, a fresh reviewer, live Meta overlays.
+- Brand conflicts reported to the owner: three different icons and two descriptors across the boards (see BRIEF).
+
 ## 2026-10-03 — Render stability: memory-sized workers, orphan reaping, CDP deadlines, resume, safe build command (scope DONE)
-Owner: "fix the problem that keeps hanging and closing this session all the time". Two film7 renders had crashed the host application.
+Owner: "fix the problem that keeps hanging and closing this session all the time". Two film10 (then film7) renders had crashed the host application.
 - Cause found by measurement: Windows commit limit (15.7 GB RAM + a fixed 2 GB page file) with ~1.7–3 GB free; six 1080p SwiftShader Chrome workers exhausted it → native OOM in node, host app killed; each crash left 32 orphan Chrome processes (1.9 GB) and one hung node (no CDP deadline).
 - `lib/platform.mjs`: `memoryBudget()` (free RAM + Windows commit free via one CIM call, page-file facts), `plannedWorkers()` (3 GB reserve, per-worker model, `STUDIO_WORKERS`).
 - `lib/procs.mjs` (new): browser registry, `reap()`, `orphans()`, `killTree()`. `lib/cdp.mjs`: registers every launch, reaps at first launch, kills on process exit, per-request deadline (90 s, `STUDIO_CDP_TIMEOUT`), 45 s page load, abort on socket close/browser exit, safe abandoned-screenshot retries.
 - `lib/render.mjs` `video()`: workers capped by the planner (logged), resume from complete slices of a crashed run with the same key, slices kept on failure, `workers/reusedFrames/headroomGB` in the stats.
 - `make.mjs`: `takes/<film>/build.log` (all lines, crash-safe), memory line + page-file note at start, `resumeKey`. `studio.mjs build <film>` (reap → headroom → child make → `build-full.log` → exit code) and `studio.mjs cleanup`. Doctor rows: memory headroom with page-file advice, orphan browsers, workers for a 1080p 3D film now.
-- film7: the 3D chapter is `lazy: true` (built on first use). Proven byte-identical when rendered alone; 1 px × 1 level after another frame (known raster history).
-- Verified: syntax of all modules; fast tests 11/12 (the 12th was the docs gate for the new module, fixed by this entry); `cleanup` ran; planner on this machine → 1 worker (headroom 2.96 GB); lazy-vs-eager pixel comparison. Not verified yet: a complete film7 render through the new path (running next).
+- film10 (then film7): the 3D chapter is `lazy: true` (built on first use). Proven byte-identical when rendered alone; 1 px × 1 level after another frame (known raster history).
+- Verified: syntax of all modules; fast tests 11/12 (the 12th was the docs gate for the new module, fixed by this entry); `cleanup` ran; planner on this machine → 1 worker (headroom 2.96 GB); lazy-vs-eager pixel comparison. Not verified yet: a complete film10 (then film7) render through the new path (running next).
 
 ## 2026-10-03 — Browser attach mode, colour management, playback review, voice & sound department (scope DONE)
 Owner request: decide the Chrome-launcher question without breaking anything; add colour management and a playback review screen; build

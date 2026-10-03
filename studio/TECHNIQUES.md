@@ -195,3 +195,23 @@ node reference.mjs audio <pack|video> [--range=a:b]                            #
 | Dropdown expand | 0.10 s, `out5`-type, 64 px |
 | UI wall | continuous slow drift 9.58–11.44 s (the only long moving span), exit at 11.44 s |
 Rule taken: in a beat-driven UI promo, put every content change on the beat and every secondary element on the half beat; keep entries ≤ 0.2 s with an expo/quint ease-out.
+
+## Calm premium brand film: night → dawn (2026-10-03; film `film7/`)
+- **Ground rises along the line:** one line function `lineY(x, t)` drives the drawn line, the objects riding it and the ivory world's clip polygon (`clip-path: polygon()` of the region below the line, bottom edge first, then the line); chips follow with tilt = slope, lift and fade by words.
+- **Weights on a line:** per-weight spring × Gaussian bump (`118·spr(t,tk,.6,.3)·exp(-((x-xk)/185)²)`) gives overshoot and a shared sag; chips fall with ease-in over 0.36 s, land with squash anchored at the bottom.
+- **Outline-to-fill:** SVG `pathLength=1` + dash offset draws the outline; a faint full blueprint underlay first (so early fragments read as construction), fill fades in 0.3 s, halves lock with a spring.
+- **Path draw by clip polygon:** offset the dense centre line ±w along the normal, add round caps, set `clip-path: path()` on the group; nonzero fill unions the self-crossing at the infinity's crossing. Pen of light = a radial glow at the head.
+- **Logo pieces by colour:** `film7/icon_trace.py` (class masks → components → potrace); overlapping parts keep their white halo as a stroked underlay.
+- **Keeping holds alive without decoration:** two large soft glows orbiting slowly (amplitude 150 px, ω 0.55–0.8) are enough for `freezedetect`; no particles needed.
+- **Score:** story-timed groove (96 BPM): E7 → C (deceptive resolution) on the dawn, a 0.15 s cut of every bus + a 0.5 s breath before it, one hook voiced per chord (`HOOK[chord]`) so any chord order stays coherent.
+- **Cutting a section without re-authoring:** render the scene on its long timeline with `t < cut ? t : t + skip`, compose the score on the long timeline too and splice it on a bar line (equal-power 20 ms crossfade), mapping cue times back (`film7/score.mjs`).
+
+## Formal pitch film: the production-line rail (2026-10-03; film `film8/`)
+- **Statements as stations:** a rail along the bottom with numbered, labelled stations; the brand object travels station to station (spring per station, hop + squash on arrival); the visited part fills with the brand gradient and flowing dashes keep the line "running" (also keeps holds alive for `freezedetect`).
+- **Two-column 16:9 layout:** statements right-aligned in x 1000–1800 (RTL), visuals in x 140–880; keep headlines ≤ 84 px so long Arabic lines never cross into the visual column.
+- **Copying a reference's argument, not its claims:** transcribe it (`tools/live.py transcribe`), map each statement to the client's true equivalent, and replace any claim the client cannot make ("and many more") with an honest forward line.
+
+## Calm educational reel without music (2026-10-03; film `film9/`)
+- **Letters that decode:** per character, show `GLYPHS[hash(i, frame)]` until its resolve time (`t0 + i·0.09`), deterministic per frame; strike the old word with a gold bar measured from the word's rect.
+- **Causes as dendrites:** cubic branches from the subject's head to each list chip, drawn just before the chip lands, with a spark travelling the same Bézier.
+- **Effects-only sound:** a very low room tone so silence is never dead, one effect per on-screen event, and `tanh` soft limiting before normalisation (sparse transients overshoot the true-peak ceiling when mastered to −16 LUFS).

@@ -2,15 +2,35 @@
 
 Updated: 2026-10-03. This is the current handoff; historical plans are not a task queue.
 
-**Current scope: IN PROGRESS — Film 7, Pixel Plus company presentation, 3:00 YouTube 1920×1080 (owner request 2026-10-03: light theme, classy Arabic, elegant low Western music, Samsung Electronics Egypt year of work, projects focus, "GO ALL OUT").**
-- Source `studio/film7/` (BRIEF, production.json, timing.js shared clock, film.js nine chapters incl. a real-3D factory chapter, score.mjs original 80 BPM piano/harp/strings at −18 LUFS, LEDGER). Logo traced from the owner's file (13 parts, 1,699 particles).
-- Stills reviewed in five batches; builder fixes and an art-direction pass are in LEDGER.md. Full-length draft render: in progress through `node studio.mjs build film7 --range=0:180` (1 worker: see below). Next: watch the draft, correction round, review build with sound, final.
+**Latest scope: DONE — The SANAD/films-6–9 branch merged into main as the house method (owner order 2026-10-03).**
+- `CLAUDE.md`, `QUALITY_PLAYBOOK.md` §0 "Owner taste", `film-director` and `sound-designer` now make this branch's taste, lessons and recipes authoritative for creative work.
+- Merge kept main's platform work (studio.mjs, Windows port, render stability, voice department). Main's unfinished 3-min Pixel Plus presentation was renumbered `film7` → `film10` (SANAD keeps `film7`).
+- `npm test` after the merge: 114 tests, 100 pass, 13 skipped, 1 fail — `platform.test.mjs` worker-planning expectation; it fails identically on main alone (machine-dependent memory/CPU), not caused by the merge.
+
+**Previous scope: DONE — Film 9, NeuroAnara «Decode the Case», 20 s Reels, no music (owner request 2026-10-03).**
+- `studio/film9/` (BRIEF, production.json, config, film.js, score.mjs = effects only, LEDGER). Final take04 (local): all gates PASS, share 9.8 MB. Lora (OFL) vendored.
+- Not verified: listening, real-speed phone viewing.
+
+**Previous scope: DONE — Film 8, Pixel Plus formal factory pitch, 25 s 16:9 (owner request 2026-10-03).**
+- `studio/film8/` (BRIEF with the reference-order table, production.json, config, film.js, score.mjs, LEDGER). Final take04 (local): all gates PASS, share 13.5 MB.
+- Only the owner's real client (Samsung Electronics Egypt, TV + mobile plants) named, as text; no third-party logos. Not verified: listening, real-screen viewing.
+
+**Previous scope: DONE — Film 7 revision: logo-building section removed, 15 s (owner 2026-10-03: "the logo build is very ugly").**
+- Finished logo now pops in whole at 7.5 over the service rows; lock-up 10–15. Score spliced on the bar line. Final take09 (local): all gates PASS, share 9.64 MB. Not verified: listening.
+
+**Previous scope: DONE — Film 7, SANAD «معاك سند», 25 s Reels ad (owner request 2026-10-03).**
+- Source: `studio/film7/` (BRIEF, production.json, config, film.js, score.mjs, icon_trace.py, LEDGER). ONE delivery: 9:16, 1080×1920, 30 fps, 25.00 s (no placement named → studio default).
+- Final take: `studio/out/film7/take08/` (local, not in git): share copy 11.61 MB + master + poster. All technical gates PASS (−13.9 LUFS, TP −3.4, LRA 3.3, 24 text lines in the safe band); 2 of 2 correction rounds used.
+- Not verified: listening to the score (measured: 95.94 BPM, C major), real-speed viewing on a phone, a fresh reviewer, live Meta overlays/re-encode. Brand conflicts (3 icons, 2 descriptors) are listed in the BRIEF for the owner.
+**Parallel scope (other branch): IN PROGRESS — Film 10 (was film 7 on that branch), Pixel Plus company presentation, 3:00 YouTube 1920×1080 (owner request 2026-10-03: light theme, classy Arabic, elegant low Western music, Samsung Electronics Egypt year of work, projects focus, "GO ALL OUT").**
+- Source `studio/film10/` (BRIEF, production.json, timing.js shared clock, film.js nine chapters incl. a real-3D factory chapter, score.mjs original 80 BPM piano/harp/strings at −18 LUFS, LEDGER). Logo traced from the owner's file (13 parts, 1,699 particles).
+- Stills reviewed in five batches; builder fixes and an art-direction pass are in LEDGER.md. Full-length draft render: in progress through `node studio.mjs build film10 --range=0:180` (1 worker: see below). Next: watch the draft, correction round, review build with sound, final.
 
 **Latest scope: DONE — Render stability after two renders crashed the host session (owner order 2026-10-03: "fix the problem that keeps hanging and closing this session").**
 - Cause: Windows commit exhaustion (fixed 2 GB page file; ~2–3 GB commit free) with six 1080p SwiftShader Chrome workers, plus 32 orphan Chrome processes and a hung node left by each crash.
 - Fixes: memory-sized workers (`plannedWorkers`), browser registry + orphan reaping (`lib/procs.mjs`, `studio.mjs cleanup`), CDP deadlines and abort-on-exit, resume from complete slices, crash-safe build logs, `studio.mjs build` as the only way to render long films, lazy 3D chapter in film7. Details: `studio/TECHNIQUES.md` → "Memory, crashes and hangs".
 - On this machine today: 1 render worker. The owner can raise it to 3–4 by setting the Windows page file to system-managed (doctor row "Memory headroom").
-- Verified: syntax, fast tests, cleanup, planner decision, lazy-vs-eager pixels. Not verified: a complete render through the new path (the film7 draft is the first).
+- Verified: syntax, fast tests, cleanup, planner decision, lazy-vs-eager pixels. Not verified: a complete render through the new path (the film10 (ex-film7) draft is the first).
 
 **Previous scope: DONE — Browser attach mode, colour management, playback review, voice & sound department (owner request 2026-10-03).**
 - **Browser:** the default stays private headless Chrome. `STUDIO_CDP_URL` attaches to a launcher-started Chrome through an isolated context; verified it never closes the owner's browser or tabs. One film = one mode.
@@ -108,6 +128,9 @@ Reviewed a 225-file code snapshot, reproduced server/validator/OTIO defects, res
 
 | Scope | Result |
 |---|---|
+| Film 9 — NeuroAnara 20 s Reels (no music) | DONE, branch; take04 local |
+| Film 8 — Pixel Plus factory pitch 25 s 16:9 | DONE, branch; take04 local |
+| Film 7 — SANAD Reels ad (25 s, then cut to 15 s on owner feedback) | DONE, branch; take09 local |
 | Engineering audit and October 2026 technology report | DONE; root Markdown report |
 | Browser attach mode, colour, review player, voice & sound department | DONE, local commit |
 | Studio platform v1 (registry, router, Three/Pixi, scout) + audit fixes | DONE, local commit |

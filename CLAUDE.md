@@ -4,6 +4,12 @@ Read `STATUS.md` first for current scope, verification evidence and the finite c
 Update it when a requested scope closes. Completed work and deferred ideas are not an automatic task queue.
 At most two correction rounds per requested scope: then record DONE or BLOCKED and stop as specified there.
 
+**House method — the authority for creative work (owner order, 2026-10-03):** the owner chose the method, taste and lessons of
+films 6–9 (Pixel Plus showreel-ad, SANAD, the Pixel Plus factory pitch, NeuroAnara) as the studio's standard. For every video request,
+before any other creative guide, read `studio/QUALITY_PLAYBOOK.md` §0 "Owner taste" and §1–8, then `studio/CRAFT.md` lessons 35–47 and the
+matching recipes in `studio/TECHNIQUES.md` (sections dated 2026-10-03). Where an older guide or a general rule disagrees on taste, music,
+logos, copy or honesty, the house method wins; engineering rules (testing policy, render rule, gates) still apply as written.
+
 This repo is a code-driven film studio. Everything lives in `studio/` (start with `studio/WORKFLOW.md` and `studio/SKILLS.md`).
 Front door: `node studio/studio.mjs` (`caps`, `new`, `route`, `setup`, `doctor`). Architecture, the capability registry and maturity
 rules: `studio/PLATFORM.md` + `studio/capabilities.json`. Speech, narration, transcripts, dubbing and the final mix: skill `voice-director` / `studio/VOICE_STUDIO.md`.
