@@ -5,6 +5,16 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-03 — Render stability: memory-sized workers, orphan reaping, CDP deadlines, resume, safe build command (scope DONE)
+Owner: "fix the problem that keeps hanging and closing this session all the time". Two film7 renders had crashed the host application.
+- Cause found by measurement: Windows commit limit (15.7 GB RAM + a fixed 2 GB page file) with ~1.7–3 GB free; six 1080p SwiftShader Chrome workers exhausted it → native OOM in node, host app killed; each crash left 32 orphan Chrome processes (1.9 GB) and one hung node (no CDP deadline).
+- `lib/platform.mjs`: `memoryBudget()` (free RAM + Windows commit free via one CIM call, page-file facts), `plannedWorkers()` (3 GB reserve, per-worker model, `STUDIO_WORKERS`).
+- `lib/procs.mjs` (new): browser registry, `reap()`, `orphans()`, `killTree()`. `lib/cdp.mjs`: registers every launch, reaps at first launch, kills on process exit, per-request deadline (90 s, `STUDIO_CDP_TIMEOUT`), 45 s page load, abort on socket close/browser exit, safe abandoned-screenshot retries.
+- `lib/render.mjs` `video()`: workers capped by the planner (logged), resume from complete slices of a crashed run with the same key, slices kept on failure, `workers/reusedFrames/headroomGB` in the stats.
+- `make.mjs`: `takes/<film>/build.log` (all lines, crash-safe), memory line + page-file note at start, `resumeKey`. `studio.mjs build <film>` (reap → headroom → child make → `build-full.log` → exit code) and `studio.mjs cleanup`. Doctor rows: memory headroom with page-file advice, orphan browsers, workers for a 1080p 3D film now.
+- film7: the 3D chapter is `lazy: true` (built on first use). Proven byte-identical when rendered alone; 1 px × 1 level after another frame (known raster history).
+- Verified: syntax of all modules; fast tests 11/12 (the 12th was the docs gate for the new module, fixed by this entry); `cleanup` ran; planner on this machine → 1 worker (headroom 2.96 GB); lazy-vs-eager pixel comparison. Not verified yet: a complete film7 render through the new path (running next).
+
 ## 2026-10-03 — Browser attach mode, colour management, playback review, voice & sound department (scope DONE)
 Owner request: decide the Chrome-launcher question without breaking anything; add colour management and a playback review screen; build
 a first-class Arabic/English voice, transcript and sound studio.

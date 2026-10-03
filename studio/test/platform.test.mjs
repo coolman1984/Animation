@@ -4,9 +4,33 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { isMain, slash, browserCandidates, PYTHON, devNull } from '../lib/platform.mjs';
+import { isMain, slash, browserCandidates, PYTHON, devNull, plannedWorkers } from '../lib/platform.mjs';
+import { tmpdir } from 'node:os';
+import { mkdtempSync, rmSync, existsSync } from 'node:fs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+
+test('render workers are sized by memory headroom, never by the request alone', () => {
+  const b = (headroomGB) => ({ headroomGB, freeGB: headroomGB, commitFreeGB: headroomGB });
+  assert.equal(plannedWorkers({ requested: 6, w: 1920, h: 1080, gpu: true, budget: b(1.7) }).workers, 1, 'the crash case: 1.7 GB headroom gets one worker, with low:true');
+  assert.equal(plannedWorkers({ requested: 6, w: 1920, h: 1080, gpu: true, budget: b(1.7) }).low, true);
+  assert.equal(plannedWorkers({ requested: 6, w: 1920, h: 1080, gpu: true, budget: b(7.2) }).workers, 4, '7.2 GB: (7.2 − 3) / ~1.03 ≈ 4');
+  const roomy = plannedWorkers({ requested: 4, w: 1080, h: 1920, gpu: false, budget: b(40) });
+  assert.ok(roomy.workers <= 4 && roomy.workers >= 1, 'never more than requested; capped by cores − 1');
+});
+
+test('process registry: entries whose launching node is dead are reaped; live ones are kept', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'procs-')), file = join(dir, 'procs.json');
+  process.env.STUDIO_PROCS_FILE = file;
+  try {
+    const procs = await import('../lib/procs.mjs?' + Date.now());
+    procs.register({ pid: 999999991, profile: join(dir, 'p1'), kind: 'chrome' });        // parent = this test (alive), pid dead
+    assert.deepEqual(procs.orphans(), [], 'a dead pid is not an orphan, just gone');
+    const killed = procs.reap();
+    assert.deepEqual(killed, [], 'nothing alive to kill');
+    assert.equal(JSON.parse((await import('node:fs')).readFileSync(file, 'utf8')).length, 0, 'dead entries are dropped');
+  } finally { delete process.env.STUDIO_PROCS_FILE; rmSync(dir, { recursive: true, force: true }); assert.equal(existsSync(dir), false); }
+});
 
 test('platform helpers: main-module check, slashes, browser list, python, null device', () => {
   const saved = process.argv[1];

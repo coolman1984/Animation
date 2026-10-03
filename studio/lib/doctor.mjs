@@ -5,7 +5,8 @@ import { existsSync, mkdirSync, writeFileSync, readFileSync, readdirSync, mkdtem
 import { cpus, totalmem, freemem, tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { WINDOWS, PYTHON, isMain, browserCandidates, onPath } from './platform.mjs';
+import { WINDOWS, PYTHON, isMain, browserCandidates, onPath, memoryBudget, plannedWorkers } from './platform.mjs';
+import { orphans } from './procs.mjs';
 import { shutdown } from './cdp.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -115,6 +116,7 @@ export async function doctor({ quiet = false, optional = true } = {}) {
   const probe = attached ? await probeAttached(2) : chromium ? await probeChromium(chromium, 2) : { ok: false, error: 'no chromium' };
   const chromiumVersion = probe.version || (chromium && !WINDOWS ? (run(chromium, ['--version']) || '').trim() : null);
   const f = optional ? fonts() : { count: 0, arabic: [], bundled: [] };
+  const mem = optional ? memoryBudget() : null, orph = orphans().length;
   let df = null;
   try { const s = statfsSync(ROOT); df = `${Math.floor((s.bavail * s.bsize) / 2 ** 30)}G`; } catch {}
   const report = {
@@ -130,9 +132,11 @@ export async function doctor({ quiet = false, optional = true } = {}) {
     forensics: optional && (run(PYTHON, ['-c', "import importlib\nfor m in ('numpy','scipy','cv2','librosa','scenedetect'):\n  try: importlib.import_module(m); print(m, end=' ')\n  except Exception: pass"]) || '').trim() || null,
     // Faithful raster-logo tracing (tools/logo_trace.py).
     logo: optional && run(PYTHON, ['-c', 'import potrace, PIL, cv2']) !== null,
-    machine: { cores: cpus().length, ramGB: +(totalmem() / 2 ** 30).toFixed(1), freeRamGB: +(freemem() / 2 ** 30).toFixed(1), diskFree: df || null },
+    machine: { cores: cpus().length, ramGB: +(totalmem() / 2 ** 30).toFixed(1), freeRamGB: +(freemem() / 2 ** 30).toFixed(1), diskFree: df || null,
+      ...(mem ? { headroomGB: mem.headroomGB, commitFreeGB: mem.commitFreeGB, commitLimitGB: mem.commitLimitGB, pagefileMB: mem.pagefileMB, pagefileAuto: mem.pagefileAuto } : {}), orphans: orph },
     fonts: f,
   };
+  const plan1080 = mem ? plannedWorkers({ requested: 4, w: 1920, h: 1080, gpu: true, budget: mem }).workers : Math.max(1, Math.min(4, cpus().length - 1));
   const scaleOk = probe.ok && probe.deviceWidth === probe.cssWidth * probe.scale;
   const rows = [
     ['Node >= 22 + WebSocket', report.node.ok, report.node.version],
@@ -146,8 +150,10 @@ export async function doctor({ quiet = false, optional = true } = {}) {
     ['GIF/WebP preview', !!(caps?.filters.palettegen && caps?.encoders.libwebp), ''],
     ['GPU encoder (usable)', Object.values(caps?.gpu || {}).some(Boolean), Object.entries(caps?.gpu || {}).filter(([, v]) => v).map(([k]) => k).join(',') || 'none -> CPU x264'],
     ['Arabic-capable fonts', f.arabic.length > 0 || f.bundled.length > 0, `${f.arabic.slice(0, 4).join(', ')}${f.bundled.length ? ` + bundled ${f.bundled.length}` : ''}`],
-    ['CPU cores', report.machine.cores >= 2, `${report.machine.cores} -> ${Math.max(1, Math.min(4, report.machine.cores - 0))} render workers`],
+    ['CPU cores', report.machine.cores >= 2, `${report.machine.cores} -> ${plan1080} render workers for a 1080p 3D film right now`],
     ['RAM', report.machine.ramGB >= 4, `${report.machine.ramGB} GB`],
+    ['Memory headroom', !mem || mem.headroomGB >= 4, mem ? `${mem.headroomGB} GB usable${mem.commitFreeGB !== null ? ` (commit free ${mem.commitFreeGB} of ${mem.commitLimitGB} GB; page file ${mem.pagefileMB} MB ${mem.pagefileAuto ? 'system-managed' : 'FIXED -> set it to system-managed for more render workers'})` : ''}` : 'not checked in build mode'],
+    ['Orphan render browsers', !orph, orph ? `${orph} left by a crashed run -> node studio.mjs cleanup` : 'none'],
     ['Disk free', true, report.machine.diskFree],
     ['Python (optional)', true, report.python || 'none'],
     ['Live-action modules (optional)', true, report.live ? `${report.live}${/mediapipe/.test(report.live) && /sherpa_onnx/.test(report.live) ? '' : '  (pip install -r tools/requirements-live.txt)'}` : `none  (pip install -r tools/requirements-live.txt; ${PYTHON} tools/live.py models)`],

@@ -48,4 +48,10 @@ Read the first frame's width from the PNG/JPEG header (`imageWidth`) and **refus
 
 Capture reliability: app-capture closes its server on browser-start failure and client-close errors. cdp launch retries a transient startup failure once; never retry a verification mismatch or invent capture completion. Use the original failure evidence if the second startup fails.
 
+**Hang-proof and crash-proof (2026-10-03):** every CDP request has a deadline (90 s, `STUDIO_CDP_TIMEOUT`), `goto` 45 s, and a
+closed socket or exited browser rejects all pending calls (`client.abort`). Every launched browser is registered in
+`takes/.studio-procs.json` (lib/procs.mjs); the next launch reaps orphans of dead runs, `process.on('exit')` kills this run's. Heavy
+film chapters can be `lazy: true` (built on first frame) so only the worker that reaches them pays for WebGL. Render workers are
+sized by `plannedWorkers()` (memory headroom), not by cores.
+
 **Live footage pages (2026-10-03):** decode frames with `fetch` → `createImageBitmap` (a detached `<img>.decode()` can wait forever in headless capture); a film's `render()` may return a promise and the composer awaits it. Never stack many CSS `drop-shadow` filters on a full-frame layer — software capture froze `Page.captureScreenshot` for > 90 s; draw strokes on canvas. `screenshot()` in `lib/cdp.mjs` retries a rare unanswered capture.

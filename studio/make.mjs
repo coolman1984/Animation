@@ -1,7 +1,7 @@
 // One-command builds: a short draft by default, one review, or all final deliveries.
 // See WORKFLOW.md for profiles, targeted ranges, cache dependencies and artistic acceptance.
 // Each run writes a new numbered take in out/<film>/takeNN — nothing is overwritten.
-import { mkdirSync, readdirSync, writeFileSync, copyFileSync, readFileSync, existsSync } from 'node:fs';
+import { mkdirSync, readdirSync, writeFileSync, copyFileSync, readFileSync, existsSync, appendFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildOptions, frameRange } from './lib/build-options.mjs';
@@ -14,6 +14,7 @@ import { loadProduction, reviewTimes } from './lib/production.mjs';
 import { reviewEvidence, aspectCompare } from './lib/review.mjs';
 import { loadMusicMap } from './lib/musicmap.mjs';
 import { externalRender, validateEngine } from './lib/engines.mjs';
+import { memoryBudget } from './lib/platform.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 // Films live in <name>/ or examples/<name>/; output file names use the last path part.
@@ -35,7 +36,10 @@ if (shotFlag) {
 let options;
 try { options = buildOptions(cfg, flags); } catch (error) { console.error(error.message); process.exit(2); }
 const { profile, selected, range, workers, settings } = options;
-const log = (...a) => console.log(`[${new Date().toISOString().slice(11, 19)}]`, ...a);
+// Every line also goes to takes/<film>/build.log (appended once the folder exists), so a crashed run still leaves its story.
+let logFile = null; const logBuffer = [];
+const say = (line) => { console.log(line); if (logFile) { try { appendFileSync(logFile, line + '\n'); } catch {} } else logBuffer.push(line); };
+const log = (...a) => say(`[${new Date().toISOString().slice(11, 19)}] ${a.join(' ')}`);
 const started = performance.now();
 // Fail on missing inputs/contradictory content before launching browsers or synthesizing a score.
 const production = loadProduction(ROOT, cfg, { final: profile === 'final' });
@@ -55,6 +59,11 @@ await cached(join(ROOT, 'takes', filmName, 'syntax.cache.json'), fingerprint(ROO
 
 const TAKES = join(ROOT, 'takes', filmName);
 mkdirSync(TAKES, { recursive: true });
+logFile = join(TAKES, 'build.log'); writeFileSync(logFile, `${new Date().toISOString()} ${process.argv.slice(2).join(' ')}\n${logBuffer.join('\n')}\n`);
+// Memory decides the worker count (lib/platform.mjs): say so up front, with the one fix the owner can make.
+const mem = memoryBudget();
+log(`memory: ${mem.headroomGB} GB usable (RAM free ${mem.freeGB} of ${mem.totalGB} GB${mem.commitFreeGB !== null ? `, commit free ${mem.commitFreeGB} of ${mem.commitLimitGB} GB, page file ${mem.pagefileMB} MB ${mem.pagefileAuto ? 'system-managed' : 'FIXED'}` : ''})`);
+if (mem.commitFreeGB !== null && !mem.pagefileAuto && mem.pagefileMB < 8192) log('note: a fixed small page file limits render workers; set the Windows page file to system-managed for faster builds');
 // Score imports can live outside the film folder: conservative studio inputs keep reuse safe.
 const audioAssets = (production.plan?.assets || []).filter(a => ['music', 'sfx'].includes(a.role)).map(a => a.path);
 const visualAssets = (production.plan?.assets || []).filter(a => !['music', 'sfx', 'reference'].includes(a.role)).map(a => a.path);
@@ -118,7 +127,7 @@ for (const d of selected) {
   const reused = await cached(silent + '.cache.json', key, [silent], async () => {
     renderStats = external
       ? await externalRender(cfg.engine, { ...renderSettings, out: silent, root: ROOT, profile })
-      : await video({ ...renderSettings, workers, film: join(ROOT, cfg.film), out: silent });
+      : await video({ ...renderSettings, workers, film: join(ROOT, cfg.film), out: silent, resumeKey: key, log: say });
     log(`  ${renderStats.frames} frames in ${renderStats.seconds.toFixed(1)} s`);
   }, log);
   if (profile === 'draft') {
@@ -182,8 +191,8 @@ for (const d of selected) {
     darkSpans: (d.segments ? [] : (d.darkSpans || cfg.darkSpans || [])).map(([a, b]) => [a - (range?.[0] || 0), b - (range?.[0] || 0)]) });
   report.deliveries[d.name] = { file, ...m, cached: reused, textCached, audioCached,
     seconds: (performance.now() - deliveryStarted) / 1000, render: renderStats, range, gates: g };
-  console.log(`\n  ${d.name}`);
-  for (const x of g) { console.log(`   ${x.unchecked ? 'UNCHK' : x.ok ? 'PASS' : 'FAIL'}  ${x.name.padEnd(36)} ${x.value}`); allOk &&= x.ok; if (x.unchecked) unchecked.push(`${d.name}: ${x.name}`); }
+  say(`\n  ${d.name}`);
+  for (const x of g) { say(`   ${x.unchecked ? 'UNCHK' : x.ok ? 'PASS' : 'FAIL'}  ${x.name.padEnd(36)} ${x.value}`); allOk &&= x.ok; if (x.unchecked) unchecked.push(`${d.name}: ${x.name}`); }
   // Evidence for LOOKING at the export: frames at cuts/copy/camera peaks, strips, crops, advisory notes.
   log(`review evidence ${d.name}`);
   const offset = range?.[0] || 0, sv = shifted(offset, production.plan, text, range?.[1]);
@@ -194,14 +203,14 @@ for (const d of selected) {
     sfxStem: offset || d.segments ? null : join(TAKES, 'sfx.wav'), cues: sv.plan?.cues });
   report.deliveries[d.name].review = { dir: evidenceDir, notes: ev.notes, camera: ev.camera?.max ?? null };
   if (!d.segments && !offset) reviewed.push({ name: d.name, file });
-  for (const n of ev.notes) console.log(`   NOTE  ${n}`);
+  for (const n of ev.notes) say(`   NOTE  ${n}`);
   // Colour legal range from the same measurement pass: advisory (web players accept it; broadcast does not).
   if (m.range) {
     report.deliveries[d.name].colour = m.range;
     const out = Math.max(m.range.below16, m.range.above235);
-    if (out) console.log(`   NOTE  colour: luma leaves 16–235 on up to ${out}/${m.range.frames} frames (Y ${m.range.minY}–${m.range.maxY}); fine for social/web, grade down for broadcast`);
+    if (out) say(`   NOTE  colour: luma leaves 16–235 on up to ${out}/${m.range.frames} frames (Y ${m.range.minY}–${m.range.maxY}); fine for social/web, grade down for broadcast`);
   }
-  console.log(`   LOOK  ${join(evidenceDir, 'index.html')}`);
+  say(`   LOOK  ${join(evidenceDir, 'index.html')}`);
 }
 if (reviewed.length > 1) {
   const times = production.plan?.creative?.styleFrames ? Object.values(production.plan.creative.styleFrames) : [0.25, 0.5, 0.75].map(f => f * Math.min(...selected.map(d => d.duration)));

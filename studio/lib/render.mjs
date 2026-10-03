@@ -2,7 +2,7 @@
 // Each worker = its own Chromium. Frames go as PNG straight into ffmpeg (x264, bt709, yuv420p),
 // slices are joined without re-encoding.
 import { spawn } from 'node:child_process';
-import { mkdirSync, writeFileSync, rmSync, existsSync, readdirSync } from 'node:fs';
+import { mkdirSync, writeFileSync, rmSync, existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, dirname, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { cpus } from 'node:os';
@@ -10,7 +10,7 @@ import { once } from 'node:events';
 import { frameRange, PROFILES } from './build-options.mjs';
 import { launch, imageWidth, settleCapture, screenshot } from './cdp.mjs';
 import { serve } from './serve.mjs';
-import { isMain, slash } from './platform.mjs';
+import { isMain, slash, memoryBudget, plannedWorkers } from './platform.mjs';
 
 const STUDIO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -129,31 +129,52 @@ export function encodeFilter({ dither = false, lut } = {}) {
     : `${pad},scale=out_color_matrix=bt709:out_range=tv`;
 }
 
+// Frames actually stored in a slice file (ffprobe packet count): a crashed run leaves complete and partial slices behind.
+async function frameCount(file) {
+  try { const { out } = await run('ffprobe', ['-v', 'error', '-select_streams', 'v:0', '-count_packets', '-show_entries', 'stream=nb_read_packets', '-of', 'csv=p=0', file]); return +out.trim() || 0; }
+  catch { return 0; }
+}
+
 // Full render in parallel slices → out.mp4 (video only).
+// workers is a REQUEST: the count actually used is capped by memory headroom (plannedWorkers; STUDIO_WORKERS forces it).
+// resumeKey: content key of this render (make.mjs); when the previous attempt crashed with the same key, its complete
+// slices are reused and only the missing ones are rendered. Slices are deleted only after a successful join.
 export async function video({ film, out, w = 1080, h = 1350, variant, segments, fadeOut,
   workers = Math.min(4, cpus().length), crf = 14, preset = 'slow', t0 = 0, t1,
-  fps: fpsOverride, scale = 1, format = 'png', quality = 95, gpu = false, dither = false, lut }) {
+  fps: fpsOverride, scale = 1, format = 'png', quality = 95, gpu = false, dither = false, lut, resumeKey = null, log = (m) => console.log(m) }) {
   if (!Number.isInteger(workers) || workers < 1 || workers > 16 || !Number.isFinite(scale) || scale <= 0 || scale > 2)
     throw new Error('invalid workers or capture scale');
   if (!['png', 'jpeg'].includes(format)) throw new Error('invalid capture format');
   const srv = await serve(STUDIO);
-  const tmp = out + '.slices';
-  rmSync(tmp, { recursive: true, force: true }); mkdirSync(tmp, { recursive: true });
+  const tmp = out + '.slices', keyFile = join(tmp, 'key.json');
   try {
     const probe = await openFilm(srv.port, film, { w, h, variant, segments, fadeOut, scale, gpu });
     const info = probe.info;
     await probe.client.close();
     const fps = fpsOverride ?? info.fps, end = t1 ?? info.duration;
     const { first, last, frames: total } = frameRange(t0, end, info.duration, fps);
-    const count = Math.min(workers, total), per = Math.ceil(total / count);
+    const plan = plannedWorkers({ requested: workers, w, h, scale, gpu }), budget = memoryBudget();
+    if (plan.workers !== workers || plan.low) log(`  workers ${workers} → ${plan.workers}: memory headroom ${budget.headroomGB} GB (RAM free ${budget.freeGB}${budget.commitFreeGB !== null ? `, commit free ${budget.commitFreeGB}` : ''} GB), ~${plan.perWorkerGB} GB per worker${plan.low ? '  LOW: close other apps or enlarge the Windows page file' : ''}${plan.forced ? ' (forced by STUDIO_WORKERS)' : ''}`);
+    const count = Math.min(plan.workers, total), per = Math.ceil(total / count);
+    // Resume only when the previous attempt was the same render (same content key, slice layout and fps).
+    const stamp = { key: resumeKey, count, fps, first, last };
+    let previous = null; try { previous = JSON.parse(readFileSync(keyFile, 'utf8')); } catch {}
+    const resume = !!resumeKey && !!previous && JSON.stringify(previous) === JSON.stringify(stamp);
+    if (!resume) rmSync(tmp, { recursive: true, force: true });
+    mkdirSync(tmp, { recursive: true }); writeFileSync(keyFile, JSON.stringify(stamp));
     const captureWidth = Math.round(w * scale), captureHeight = Math.round(h * scale);
     const outputWidth = Math.ceil(captureWidth / 2) * 2, outputHeight = Math.ceil(captureHeight / 2) * 2;
-    const started = Date.now(); let done = 0;
+    const started = Date.now(); let done = 0, reused = 0;
     const jobs = Array.from({ length: count }, async (_, k) => {
       const a = first + k * per, b = Math.min(last, a + per);
       if (a >= b) return null;
-      const { client } = await openFilm(srv.port, film, { w, h, variant, segments, fadeOut, scale, gpu });
       const file = join(tmp, `s${String(k).padStart(2, '0')}.mp4`);
+      if (resume && existsSync(file)) {
+        const n = await frameCount(file);
+        if (n === b - a) { done += n; reused += n; log(`  slice ${k}: ${n} frames reused from the crashed run`); return file; }
+        rmSync(file, { force: true });
+      }
+      const { client } = await openFilm(srv.port, film, { w, h, variant, segments, fadeOut, scale, gpu });
       const ff = spawn('ffmpeg', ['-v', 'error', '-y', '-f', 'image2pipe', '-c:v', format === 'png' ? 'png' : 'mjpeg', '-framerate', String(fps), '-i', '-',
         '-c:v', 'libx264', '-threads', '1', '-preset', preset, '-crf', String(crf), '-pix_fmt', 'yuv420p',
         '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv',
@@ -196,8 +217,9 @@ export async function video({ film, out, w = 1080, h = 1350, variant, segments, 
     process.stdout.write('\n');
     writeFileSync(join(tmp, 'list.txt'), files.map(f => `file '${slash(f).replaceAll("'", "'\\''")}'`).join('\n'));
     await run('ffmpeg', ['-v', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', join(tmp, 'list.txt'), '-c', 'copy', '-movflags', '+faststart', out]);
-    return { frames: total, fps, width: outputWidth, height: outputHeight, range: [first / fps, last / fps], seconds: (Date.now() - started) / 1000 };
-  } finally { srv.close(); rmSync(tmp, { recursive: true, force: true }); }
+    rmSync(tmp, { recursive: true, force: true }); // only after a successful join: a failed run keeps its slices for resume
+    return { frames: total, fps, width: outputWidth, height: outputHeight, range: [first / fps, last / fps], seconds: (Date.now() - started) / 1000, workers: count, workersRequested: workers, reusedFrames: reused, headroomGB: budget.headroomGB };
+  } finally { srv.close(); }
 }
 
 if (isMain(import.meta.url)) {

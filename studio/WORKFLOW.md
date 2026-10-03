@@ -55,6 +55,7 @@ node make.mjs film2 --profile=review --only=reels15 # full selected delivery, no
 node make.mjs film2 --profile=final                # all deliveries + full technical gates + extras
 node make.mjs film2 --profile=final --only=hero60   # final quality for one delivery
 node make.mjs film2 --range=0:3 --workers=2         # compare 1/2/4 workers on the same short range
+node studio.mjs build film2 --profile=final        # LONG renders go through build: memory-sized workers, orphan reaping, resume, takes/film2/build-full.log
 ```
 
 | Profile | Capture | Output fps | Encoder | Work performed |

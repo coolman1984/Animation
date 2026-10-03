@@ -2,7 +2,17 @@
 
 Updated: 2026-10-03. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE — Browser attach mode, colour management, playback review, voice & sound department (owner request 2026-10-03).**
+**Current scope: IN PROGRESS — Film 7, Pixel Plus company presentation, 3:00 YouTube 1920×1080 (owner request 2026-10-03: light theme, classy Arabic, elegant low Western music, Samsung Electronics Egypt year of work, projects focus, "GO ALL OUT").**
+- Source `studio/film7/` (BRIEF, production.json, timing.js shared clock, film.js nine chapters incl. a real-3D factory chapter, score.mjs original 80 BPM piano/harp/strings at −18 LUFS, LEDGER). Logo traced from the owner's file (13 parts, 1,699 particles).
+- Stills reviewed in five batches; builder fixes and an art-direction pass are in LEDGER.md. Full-length draft render: in progress through `node studio.mjs build film7 --range=0:180` (1 worker: see below). Next: watch the draft, correction round, review build with sound, final.
+
+**Latest scope: DONE — Render stability after two renders crashed the host session (owner order 2026-10-03: "fix the problem that keeps hanging and closing this session").**
+- Cause: Windows commit exhaustion (fixed 2 GB page file; ~2–3 GB commit free) with six 1080p SwiftShader Chrome workers, plus 32 orphan Chrome processes and a hung node left by each crash.
+- Fixes: memory-sized workers (`plannedWorkers`), browser registry + orphan reaping (`lib/procs.mjs`, `studio.mjs cleanup`), CDP deadlines and abort-on-exit, resume from complete slices, crash-safe build logs, `studio.mjs build` as the only way to render long films, lazy 3D chapter in film7. Details: `studio/TECHNIQUES.md` → "Memory, crashes and hangs".
+- On this machine today: 1 render worker. The owner can raise it to 3–4 by setting the Windows page file to system-managed (doctor row "Memory headroom").
+- Verified: syntax, fast tests, cleanup, planner decision, lazy-vs-eager pixels. Not verified: a complete render through the new path (the film7 draft is the first).
+
+**Previous scope: DONE — Browser attach mode, colour management, playback review, voice & sound department (owner request 2026-10-03).**
 - **Browser:** the default stays private headless Chrome. `STUDIO_CDP_URL` attaches to a launcher-started Chrome through an isolated context; verified it never closes the owner's browser or tabs. One film = one mode.
 - **Colour:** `node studio.mjs color check|scopes|range`, `config.lut`, `tools/ocio_bake.py`; scopes appear in every review gallery. Export accuracy: ΔE mean 0.70 (0.54 with dither).
 - **Review:** `node studio.mjs review <film>` opens the playback player: frame steps, timeline, waveform, A/B, timed notes, approval bound to the file hash.

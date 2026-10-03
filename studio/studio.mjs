@@ -9,17 +9,19 @@
 //   node studio.mjs review <film | out/<film>/takeNN>     playback review: frame steps, A/B, timed notes, hash-bound approval
 //   node studio.mjs voice [status | say <text> --lang=ar | script <film>]   voice studio (VOICE_STUDIO.md)
 //   node studio.mjs transcript <pack>  ·  mixcheck <audio|video>  ·  color check|scopes|range  ·  sounds [category]
+//   node studio.mjs build <film> [make flags]   the safe way to render: reaps orphans, sizes workers to memory, logs everything to takes/<film>/build-full.log
+//   node studio.mjs cleanup                     kill browsers left by crashed runs, remove their temp profiles, show memory headroom
 // Films are then built with make.mjs (WORKFLOW.md). Registry: capabilities.json. Architecture: PLATFORM.md.
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 import { loadRegistry, detect, route, STUDIO } from './lib/capabilities.mjs';
-import { PYTHON, WINDOWS, isMain } from './lib/platform.mjs';
+import { PYTHON, WINDOWS, isMain, memoryBudget } from './lib/platform.mjs';
 
 const PLACEMENTS = {
   reels: { w: 1080, h: 1920, safe: [65, 269, 1015, 1248], note: 'Facebook/Instagram Reels, YouTube Shorts (commonly published Meta safe band)' },
-  youtube: { w: 1920, h: 1080, safe: [96, 54, 1824, 1026], note: 'normal YouTube video (5 % margins)' },
+  youtube: { w: 1920, h: 1080, safe: [96, 54, 1824, 1026], note: 'normal YouTube video (5 % margins)', share: false }, // YouTube re-encodes uploads: deliver the master
   feed: { w: 1080, h: 1350, safe: [54, 68, 1026, 1282], note: 'Facebook/Instagram portrait feed (5 % margins)' },
   square: { w: 1080, h: 1080, safe: [54, 54, 1026, 1026], note: 'square post (5 % margins)' },
 };
@@ -92,9 +94,9 @@ export default {
   score: '${name}/score.mjs',
   production: '${name}/production.json',
   ownerRequest: { delivery: '${delivery}', w: ${place.w}, h: ${place.h}, duration: ${duration}, fps: ${fps} }, // AUTONOMOUS_FILM.md
-  w: ${place.w}, h: ${place.h}, fps: ${fps}, lufs: -14, tp: -1.5, shareMB: 14,
+  w: ${place.w}, h: ${place.h}, fps: ${fps}, lufs: -14, tp: -1.5,
   preview: { delivery: '${delivery}', range: [0, ${Math.min(12, duration)}] },
-  deliveries: [{ name: '${delivery}', duration: ${duration}, safe: ${JSON.stringify(place.safe)}, shareMB: 14, poster: ${Math.max(0, duration - 2)} }],
+  deliveries: [{ name: '${delivery}', duration: ${duration}, safe: ${JSON.stringify(place.safe)}${place.share === false ? '' : ', shareMB: 14'}, poster: ${Math.max(0, duration - 2)} }],
   thumbs: [], holds: [],
 };
 `);
@@ -170,6 +172,41 @@ async function colorCmd([sub, video, t], opt) {
 }
 
 // Playback review: serve out/<film>/ and open the newest take's player (or the given take folder).
+// Kill browsers whose node died, remove stale temp profiles (never a live run's), report memory headroom.
+async function cleanupCmd() {
+  const { reap, liveEntries } = await import('./lib/procs.mjs');
+  const { readdirSync, rmSync } = await import('node:fs'); const { tmpdir } = await import('node:os');
+  const killed = reap({ log: console.log });
+  const keep = new Set(liveEntries().map((e) => e.profile));
+  let removed = 0;
+  for (const d of readdirSync(tmpdir())) { const p = join(tmpdir(), d); if (/^(studio-chrome-|doctor-)/.test(d) && !keep.has(p)) { try { rmSync(p, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 }); removed++; } catch {} } }
+  const mb = memoryBudget({ refresh: true });
+  console.log(`orphan browsers killed: ${killed.length} · temp profiles removed: ${removed} · live studio browsers: ${keep.size}`);
+  console.log(`memory headroom now ${mb.headroomGB} GB (RAM free ${mb.freeGB} GB${mb.commitFreeGB !== null ? `, commit free ${mb.commitFreeGB} GB, page file ${mb.pagefileMB} MB ${mb.pagefileAuto ? 'system-managed' : 'FIXED'}` : ''})`);
+}
+// The safe way to render: orphans reaped, memory reported, make.mjs run as a child with EVERYTHING (including a native crash
+// message) written to takes/<film>/build-full.log, exit code passed through. Workers are capped by memory inside render.mjs.
+async function buildCmd(args) {
+  const film = args.find((a) => !a.startsWith('--'));
+  if (!film) { console.error('usage: node studio.mjs build <film> [--profile=draft|review|final] [--range=a:b] [--only=…] [--workers=n]'); process.exit(2); }
+  const { reap } = await import('./lib/procs.mjs');
+  const { createWriteStream, mkdirSync: mk } = await import('node:fs');
+  const { spawn } = await import('node:child_process');
+  reap({ log: console.log });
+  const mb = memoryBudget();
+  console.log(`memory headroom ${mb.headroomGB} GB${mb.commitFreeGB !== null ? ` (commit free ${mb.commitFreeGB} GB, page file ${mb.pagefileMB} MB ${mb.pagefileAuto ? 'system-managed' : 'FIXED'})` : ''}`);
+  mk(join(STUDIO, 'takes', film), { recursive: true });
+  const logPath = join(STUDIO, 'takes', film, 'build-full.log'), out = createWriteStream(logPath);
+  out.write(`${new Date().toISOString()} node make.mjs ${args.join(' ')}\n`);
+  const child = spawn(process.execPath, ['make.mjs', ...args], { cwd: STUDIO, stdio: ['ignore', 'pipe', 'pipe'] });
+  const tee = (chunk) => { process.stdout.write(chunk); out.write(chunk); };
+  child.stdout.on('data', tee); child.stderr.on('data', tee);
+  const code = await new Promise((res) => child.on('close', (c, sig) => res(c ?? `signal ${sig}`)));
+  out.end(`\n[exit ${code}]\n`);
+  console.log(`\nbuild exit ${code} · full log: ${logPath}`);
+  if (code !== 0) { reap({ log: console.log }); console.log('the run failed: fix the cause and run the same build again; finished slices are reused (resume)'); }
+  process.exitCode = code === 0 ? 0 : 1;
+}
 async function reviewCmd(target, opt) {
   const { readdirSync, statSync } = await import('node:fs');
   const { dirname, basename, resolve } = await import('node:path');
@@ -200,6 +237,8 @@ if (isMain(import.meta.url)) {
   else if (cmd === 'transcript') await transcriptCmd(args[0], flags(args));
   else if (cmd === 'mixcheck') { const { mixCheck } = await import('./lib/mixcheck.mjs'); console.log(JSON.stringify(await mixCheck(args[0]), null, 2)); }
   else if (cmd === 'color') await colorCmd(args.filter(a => !a.startsWith('--')), flags(args));
+  else if (cmd === 'build') await buildCmd(args);
+  else if (cmd === 'cleanup') await cleanupCmd();
   else if (cmd === 'sounds') { const { searchSounds } = await import('./lib/sounds.mjs'); for (const s of searchSounds(args[0] || '')) console.log(`${pad(s.id, 20)}${pad(s.category, 11)}${pad(s.kind, 7)}${s.use}  [${s.rights}]`); }
   else console.log(readFileSync(new URL(import.meta.url), 'utf8').split('\n').slice(1, 12).map(l => l.replace(/^\/\/ ?/, '')).join('\n'));
 }

@@ -29,6 +29,10 @@ verify a code change. Check an edit with the one relevant test file (`node --tes
 `--test-name-pattern`) or one direct command; `npm test` (= quick suite) is the most you run routinely. Slow suites and
 real builds run ONLY while producing a real video the owner asked for, once, before delivery. Never re-run a slow suite to "confirm".
 On this Windows machine every process launch costs ~1 s, so even "small" commands add up: batch work.
+**Rendering rule:** run every film render through `node studio/studio.mjs build <film> …` in the background. It sizes workers to real memory
+headroom (this machine's fixed page file allows 1 worker today), reaps browsers left by crashes, resumes finished slices and logs everything to
+`takes/<film>/build-full.log`. Never pass `--workers` above the planner; never run a second render or another browser job while one is running:
+memory exhaustion here kills the host session too.
 
 Documentation is part of done: when a scope closes, update `STATUS.md`, `studio/CHANGELOG.md`, `studio/CRAFT.md`, `studio/TECHNIQUES.md`,
 `studio/ASSETS.md`, the film's `LEDGER.md` and every skill whose advice changed, in the same commit. `npm test` (`test/docs.test.mjs`) checks the checkable parts.

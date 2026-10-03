@@ -31,6 +31,12 @@ live-action, logo-tracer and forensics module lists.
 - pip may be slow/blocked — the studio needs no Python.
 - Chromium: never `playwright install`; use the pre-installed one.
 
+## Memory and crashes (2026-10-03)
+Rows "Memory headroom" (free RAM vs Windows commit free; says FIXED when the page file is fixed and small: the owner's one-time
+fix is a system-managed page file) and "Orphan render browsers" (left by a crashed run → `node studio.mjs cleanup`). "CPU cores"
+now shows the workers a 1080p 3D film gets RIGHT NOW from `plannedWorkers()`. Long renders: `node studio.mjs build <film> …`
+(see TECHNIQUES.md → "Memory, crashes and hangs"). Never size workers by cores alone.
+
 ## Checklist
 1. Run doctor. 2. All required OK. 3. Scale gate OK. 4. Workers = min(4, cores). 5. Disk ≥ 5 GB free for a 60 s 1080p film (frames are piped, but masters are ~200 MB).
 6. Fonts vendored. 7. GPU only if test-encode passes. 8. Network not needed for builds. 9. doctor.json saved. 10. Note limits in BRIEF.
