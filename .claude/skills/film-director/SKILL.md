@@ -12,7 +12,7 @@ If a reference film is supplied, invoke reference-reverse-engineer via SKILLS.md
 
 1. Record viewer, real evidence, one promise, CTA, duration/placements and asset limitations. Owner-authorized work proceeds without repeated approval.
 2. If concept is open, load creative-director. Compare at most three genuinely different directions; pick one. Three style frames: hook, proof, payoff. Fill shot craft metadata before expensive motion.
-3. New films use production.json (studio/templates/production.json) referenced by config.production. Share shot times with picture and sound.
+3. Start a new film with `node studio/studio.mjs new <film> --placement=reels|youtube|feed|square --duration=N` (writes config with ownerRequest, production.json, film.js, score.mjs, BRIEF, LEDGER). Share shot times with picture and sound. Give every shot `craft.layers` (e.g. ["text","particles:20000","3d"]) and run `node studio/studio.mjs route <film>`: it picks the most mature installed engine per layer (studio/PLATFORM.md). Prefer CORE/PRODUCTION engines; an EXPERIMENTAL engine needs a reason in the craft block.
 4. Prepare only needed assets/layers. Use animation-lab/camera-director when needed, not all skills.
 5. Run production preflight first; creative repetition/overload findings are warnings to inspect, not taste scores. Then build one 8–12s proof with one real transition. Draft is silent; review profile is required to judge sound.
 6. Expand, then fix changed ranges plus entry/exit. Final build uses `node make.mjs <film> --profile=final`.

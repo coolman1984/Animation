@@ -1,5 +1,7 @@
 # CRAFT — what the studio has learned (short, specific, with numbers)
 
+Timeless craft only. Dated technology and trend notes go to `TECH_RADAR.md`, never here (PLATFORM.md → knowledge layers).
+
 ## Film 2 — BALACONBAR 60 s Facebook ad (2026-10-01)
 1. **Brand by frame 1 for free:** open on the product that carries the logo (cup at 1.5×) — no logo card needed; ABCD's "brand ≤ 5 s" is met at 0.0 s.
 2. **Match-cut isolation** (fade world, keep the product pixel-locked) is the cheapest premium transition: 0.45 s, no new asset.

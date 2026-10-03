@@ -21,4 +21,14 @@ Check backward seeking and worker-independent frames. QA changed intervals plus 
 
 **Product-UI promos:** `lib/uimotion.js` (tilted 3-D cards, typewriter + caret, headline stack that dims older lines, orbiting/scattering icons, UI wall with travelling spotlights, pulse ring); study `examples/ui-motion-study`; whoosh = `zoomContinuation`. Arabic types by word, never by letter.
 
+**Choosing the engine per layer (2026-10-03):** run `node studio/studio.mjs route <film>`. DOM/SVG for type and UI (Arabic read-back needs `.line/.word`). Canvas 2D (`lib/particles.js`) up to ~3,000 particles. PixiJS for tens of thousands. WebGL shaders (`lib/gpu.js`) for procedural fields. Three.js for real 3D objects and orbiting cameras. All of them stack in one composer page: one clock, one compositor. Vendored engines import by name (`import * as THREE from 'three'`, `'three/addons/…'`, `'pixi.js'`; composer import map) after `node studio/studio.mjs setup gpu`, and need `config.gpu: true` (software WebGL).
+
+Determinism contract for GPU engines:
+- No ticker or animation loop: Pixi uses `autoStart: false` + `app.render()` in `render(t)`; Three uses `renderer.render()` in `render(t)`.
+- Set `preserveDrawingBuffer: true` and pixel ratio 1.
+- Compute the pose from t only.
+- Use a gradient-plane contact shadow instead of shadow maps.
+
+Templates: `examples/three-study`, `examples/pixi-study`.
+
 **UI-morph container (film 6, `studio/TECHNIQUES.md` → UI-morph showreel grammar):** one element whose w/h/radius/x/y are each a `springTrack` of keyed targets, CSS blur from its own speed, content blurred out/in around each morph, a cursor causing every change; portal dive, circle wipe from an object, dark-mode toggle wipe, pixel assembly of a traced logo. Reusable, tested: `lib/uimorph.js` (`morphBox`, `morphBlur`, `swap`, `cursorAt`, `cursorClick`, `ripple`, `twinkle`, `gridDots`, `portal`, `circleWipe`, `assembly`, `flight`, `mixHex`).

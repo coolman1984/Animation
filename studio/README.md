@@ -6,6 +6,7 @@ For the architecture, code contracts and findings from the Windows checkout, rea
 
 ```bash
 cd studio
+node studio.mjs                             # front door: caps | new | route | setup | doctor (PLATFORM.md)
 node lib/doctor.mjs                         # check Chromium, ffmpeg, fonts (Linux, Windows, macOS — see TECHNIQUES.md "Cross-platform")
 node film2/plates.mjs                       # prepare owner-supplied photos once
 node make.mjs film2                         # quick 12-second silent draft, one version

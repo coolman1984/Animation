@@ -82,7 +82,8 @@ export function gates(m, brief) {
   const badBlack = m.black.filter(b => !((b.start <= 0.05 && b.end <= 0.1) || b.start >= m.probe.duration - (brief.fadeOut || 0) - 0.1
     || darkOk.some(([a, z]) => b.start >= a - 0.1 && b.end <= z + 0.1)));
   add('no black frames mid-film', badBlack.length === 0, badBlack.length ? JSON.stringify(badBlack) : darkOk.length && m.black.length ? `ok (${m.black.length} declared dark spans)` : 'ok');
-  if (m.text?.unavailable) add('text read-back', true, `NOT CHECKED — ${m.text.unavailable}; inspect copy manually`);
+  // Not a pass: `unchecked` keeps it visible; make.mjs prints UNCHK and the final verdict names it (audit B10).
+  if (m.text?.unavailable) { add('text read-back', true, `NOT CHECKED — ${m.text.unavailable}; inspect copy manually`); g.at(-1).unchecked = true; }
   else if (m.text) add('text inside safe area, no overlaps', m.text.issues.length === 0, m.text.issues.length ? `${m.text.issues.length} issues, first: ${JSON.stringify(m.text.issues[0])}` : `${m.text.lines.length} lines checked every 0.1 s`);
   if (m.share) add(`share copy ≤ ${brief.shareMB} MB`, m.share.sizeMB <= brief.shareMB, `${m.share.sizeMB} MB`);
   return g;

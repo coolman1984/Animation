@@ -35,6 +35,15 @@ Your film may use none of them; they are tools, not a house style.
 - **Exact slice timescales** (`lib/render.mjs`): worker slices are written with `-video_track_timescale` and `-movie_timescale` = fps × 1000. With B-frames (review/final) the edit list is stored in the movie timescale, 1000 by default, so each slice lost up to 1 ms and every join shifted later frames (FFmpeg 9: 15 frames probed 30.039 fps). Now 60/60 frames sit on the 1/fps grid with 4 workers.
 - **Seek 1 ms early for stills** (`ss()` in `lib/review.mjs`, `stillAt` in `lib/finish.mjs`): input `-ss` returns the first frame with pts ≥ target, and `t.toFixed(4)` can land just past a frame (3.9667 > 3.96667). For the last frame that decoded nothing: JPEG output failed with a misleading "Non full-range YUV" error, PNG output exited 0 without writing a file.
 
+## GPU engines in the composer (2026-10-03; studies `examples/three-study`, `examples/pixi-study`)
+- **Install and import:** `node studio.mjs setup gpu` pins Three.js 0.186.1 and PixiJS 8.22.0 into `vendor/` (git-ignored). The composer import map lets films write `import * as THREE from 'three'`, `'three/addons/…'`, `'pixi.js'`. Three's addons import the bare name `three`, so a relative path alone fails.
+- **Determinism:** no ticker or animation loop.
+  - Three: build the scene in `init`; in `render(t)`, set poses and camera from t, then call `renderer.render()`.
+  - Pixi: `await app.init({ autoStart: false, preference: 'webgl', preserveDrawingBuffer: true, resolution: 1 })`, then `parts.update(); app.render()` per frame.
+  - Proof: the same frame from two separate browser runs gave identical PNG hashes for both studies.
+- **Look on software WebGL:** use a PMREM `RoomEnvironment` for metal/glossy products and ACES tone mapping with sRGB output. A radial-gradient plane gives the contact shadow (shadow maps are costly and noisy on SwiftShader). PixiJS handles 20,000 `Particle`s in one `ParticleContainer` with `dynamicProperties: { position, color }`.
+- **Framing:** the first three-study frame put the title over the bottle. Moving the camera from 7 to 9.5 and looking 0.8 lower freed the copy band. Check framing on stills before motion, as usual.
+
 ## Cross-platform (Linux CI + the owner's Windows machine, 2026-10-03)
 All OS differences live in `lib/platform.mjs`; `test/platform.test.mjs` fails on a regression.
 - **Browser:** `STUDIO_CHROMIUM`, else Linux paths, Windows Chrome/Edge under Program Files / LocalAppData, macOS Chrome. Get the version from DevTools `/json/version`: on Windows `chrome.exe --version` opens a window.

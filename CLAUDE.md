@@ -5,6 +5,8 @@ Update it when a requested scope closes. Completed work and deferred ideas are n
 At most two correction rounds per requested scope: then record DONE or BLOCKED and stop as specified there.
 
 This repo is a code-driven film studio. Everything lives in `studio/` (start with `studio/WORKFLOW.md` and `studio/SKILLS.md`).
+Front door: `node studio/studio.mjs` (`caps`, `new`, `route`, `setup`, `doctor`). Architecture, the capability registry and maturity
+rules: `studio/PLATFORM.md` + `studio/capabilities.json`. New tools follow learn → adapt → integrate (skill `technology-scout`, dated `studio/TECH_RADAR.md`).
 The skill library is in `.claude/skills/` — read `film-director` first for any video request.
 Never commit `studio/takes/` or `studio/out/`. Owner speaks Egyptian Arabic and is not technical:
 reports go conclusion-first, simple words.

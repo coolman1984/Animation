@@ -3,8 +3,13 @@
 Current operating policy: WORKFLOW.md. Do not load every skill or the historical master prompt.
 Start a film with film-director + its brief/production.json. Read CRAFT_GUIDE.md only for the current craft decision.
 
+Architecture and engine choice: PLATFORM.md. Before choosing an engine run `node studio.mjs route <film>` (capability registry: capabilities.json).
+
 | Stage / problem | Skill | Reusable tool / evidence |
 |---|---|---|
+| Which engine for a layer? What is installed? | — | `node studio.mjs caps` / `route`; capabilities.json; PLATFORM.md |
+| Browser 3D (Three.js) / 20k+ particles (PixiJS) | motion-composer, camera-director | examples/three-study, examples/pixi-study (EXPERIMENTAL; config.gpu: true) |
+| New tool or trend: worth adding? | technology-scout | TECH_RADAR.md (dated), LEARN / ADAPT / INTEGRATE |
 | Route a film | film-director | make.mjs, production.json, QUALITY_PLAYBOOK.md (method that reached premium) |
 | UI-morph / showreel motion, logo assembly | motion-composer | lib/uimorph.js, tools/logo_trace.py |
 | No concept / direction yet | creative-director, idea-lab | style frames + craft metadata + creative preflight |

@@ -67,8 +67,11 @@ export async function mux(video, audio, out) {
 }
 
 export async function shareCopy(master, out, { targetMB = 27, duration, audioKbps = 160 } = {}) {
+  // targetMB is MiB (2^20 bytes), matching probe().sizeMB. Refuse budgets that cannot hold audio + a usable picture (audit B12).
+  if (!(Number.isFinite(duration) && duration > 0) || !(Number.isFinite(targetMB) && targetMB > 0)) throw new Error(`shareCopy needs a positive duration and size (got ${duration} s, ${targetMB} MiB)`);
   const totalKbps = (targetMB * 0.97 * 8 * 1024 * 1024) / duration / 1000;
   const v = Math.floor(totalKbps - audioKbps);
+  if (v < 300) throw new Error(`share budget ${targetMB} MiB for ${duration.toFixed(1)} s leaves ${v} kb/s of video (minimum 300); raise shareMB`);
   const log = out + '.2pass';
   const common = ['-c:v', 'libx264', '-preset', 'slow', '-b:v', `${v}k`, '-maxrate', `${Math.round(v * 1.6)}k`, '-bufsize', `${v * 2}k`, '-pix_fmt', 'yuv420p', '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-passlogfile', log];
   await run('ffmpeg', ['-v', 'error', '-y', '-i', master, ...common, '-pass', '1', '-an', '-f', 'mp4', devNull]);

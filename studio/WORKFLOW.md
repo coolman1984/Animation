@@ -11,6 +11,10 @@ with evidence and a concrete next action; stop without delivering an unverified 
 ## Autonomous delivery (owner instruction, takes precedence)
 Read AUTONOMOUS_FILM.md. The owner asks for a video and placement; the agent chooses, analyses, authors all internal files, reviews and renders autonomously. Any “approved direction” below means agent acceptance, not a pause for the owner. New configs declare ownerRequest; final exports only that delivery. Return one finished video link.
 
+## Engines and tools
+Start films with `node studio.mjs new`; choose engines per layer with `node studio.mjs route <film>`. Install tool packs only when a film needs them
+(`node studio.mjs setup <profile>`). Architecture and maturity rules: PLATFORM.md.
+
 ## Testing policy (owner order, 2026-10-03)
 Never run the slow suites (`npm run test:render`, `npm run test:all`) or extra builds to confirm a code change. Verify it with
 the one relevant test file or one direct command; `npm test` is the quick suite. Slow checks belong only to producing a real

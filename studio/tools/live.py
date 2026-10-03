@@ -78,14 +78,14 @@ def cmd_models(pos, o):
         d = os.path.join(MODELS, ASR[asr])
         if not os.path.isdir(d):
             tmp = d + '.tar.bz2'; log('download', ASR[asr], '(hundreds of MB)'); urllib.request.urlretrieve(ASR_URL.format(ASR[asr]), tmp)
-            with tarfile.open(tmp) as tf: tf.extractall(MODELS)
+            with tarfile.open(tmp) as tf: tf.extractall(MODELS, filter='data')
             os.remove(tmp)
         log('ok', ASR[asr])
     if o.get('tts'):
         d = os.path.join(MODELS, TTS[0])
         if not os.path.isdir(d):
             tmp = d + '.tar.bz2'; urllib.request.urlretrieve(TTS[1], tmp)
-            with tarfile.open(tmp) as tf: tf.extractall(MODELS)
+            with tarfile.open(tmp) as tf: tf.extractall(MODELS, filter='data')
             os.remove(tmp)
         log('ok', TTS[0])
 

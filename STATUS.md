@@ -2,7 +2,23 @@
 
 Updated: 2026-10-03. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE — Windows port, speed-ups and testing policy (owner request 2026-10-03: "fix and improve", "make tests shorter", "never run slow tests unless producing a real video").**
+**Latest scope: DONE — Studio platform v1 + audit fixes (owner request 2026-10-03: apply the platform vision, artistic forensics and the audit report, keep it simple).**
+- Front door `studio/studio.mjs` (`caps`, `new`, `route`, `setup`, `doctor`). Capability registry `studio/capabilities.json` (25 entries, maturity CORE → LEARN, setup profiles, graduation rule) via `lib/capabilities.mjs`. Architecture `studio/PLATFORM.md`. Per-shot `craft.layers` drive the engine router.
+- New engines: Three.js 0.186.1 and PixiJS 8.22.0, vendored by `setup gpu` and imported by name through the composer import map. Both are EXPERIMENTAL after studies (`examples/three-study`, `examples/pixi-study`) rendered identical PNG hashes in separate runs and were inspected. OpenColorIO/OpenImageIO/OpenEXR are installed (PLANNED, no adapter yet).
+- Research department: skill `technology-scout` + dated `studio/TECH_RADAR.md`. Craft and trends are kept apart.
+- Artistic forensics (5 layers, 20-section Artistic DNA) was already implemented (`ARTISTIC_FORENSICS.md`); it is now linked from PLATFORM.md.
+- Audit fixes (each with a test in `test/audit-fixes.test.mjs`):
+  - B01/B02: preview-server traversal and malformed URLs.
+  - B03/B04: validator crashes.
+  - B10: an unchecked text gate now shows UNCHK and is listed in the verdict.
+  - B11: `poster: 0`.
+  - B12: impossible share budgets.
+  - R08: safe tar extraction.
+  - app-capture no longer launches `chrome --version` (it opened a window on Windows).
+- Verification: fast targeted tests only (testing policy) — 25/25 in 6 s, plus study renders and `new`/`route` smoke checks. Not verified: a full slow suite or a real film with the new engines (deferred to the next real video).
+- Open question for the owner: the audit (B09) mentions a Chrome-launcher policy that forbids direct Chrome/Edge launches. The studio launches a private headless Chrome per render; it was not changed, pending the owner's answer.
+
+**Previous scope: DONE — Windows port, speed-ups and testing policy (owner request 2026-10-03: "fix and improve", "make tests shorter", "never run slow tests unless producing a real video").**
 - The studio now runs on the owner's Windows machine. A real showreel draft rendered with the installed Chrome (frame checked, Arabic shaped correctly). All OS differences are in `studio/lib/platform.mjs`, guarded by `test/platform.test.mjs`. Details: `studio/TECHNIQUES.md` "Cross-platform".
 - Cross-platform bugs fixed:
   - Worker joins drifted up to 1 ms each (B-frame edit lists in a 1000 timescale).
@@ -63,6 +79,7 @@ Reviewed a 225-file code snapshot, reproduced server/validator/OTIO defects, res
 | Scope | Result |
 |---|---|
 | Engineering audit and October 2026 technology report | DONE; root Markdown report |
+| Studio platform v1 (registry, router, Three/Pixi, scout) + audit fixes | DONE, local commit |
 | Windows port, speed-ups, testing policy | DONE, local commit |
 | Deep app study (APP_MAP.md) | DONE, local commit |
 | Live-action toolkit + `live1` study | DONE, PR to main |

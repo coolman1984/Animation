@@ -102,6 +102,7 @@ These describe the interfaces, not confirmed Windows render commands. The shot I
 | Specialist engines | `lib/engines.mjs`: a command adapter for silent picture; native audio, export and QA remain in the studio |
 | Live action | `tools/live.py`, `lib/footage.js`, `lib/edl.mjs`, `lib/dialogue.mjs`: analysis packs, compositing, edits, captions and voice/music mixing |
 | Reference lab | `reference.mjs`, `reference/`: bounded ingestion, measurements, visual interpretation, neutral studies and matched comparisons |
+| Platform (2026-10-03) | `studio.mjs`, `capabilities.json`, `lib/capabilities.mjs`, `PLATFORM.md`: capability registry, engine router per `craft.layers`, setup profiles, starter films; Three.js/PixiJS via `vendor/` + composer import map |
 
 External engines are adapters, not installed HyperFrames or Remotion implementations. They must write picture at the required size, fps and duration. Segments and fades are currently rejected for external rendering. Native DOM text read-back is unavailable there and explicitly reported as unchecked.
 

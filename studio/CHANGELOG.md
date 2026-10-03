@@ -5,6 +5,29 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-03 — Studio platform v1 + audit fixes (scope DONE)
+Owner request: apply the "visual production operating system" vision (capability registry, router, universal scene, setup profiles,
+maturity, visual lab, technology scout, knowledge layers), the deep artistic forensics brief and the audit report — simple for the agent.
+- `studio.mjs` front door: `caps`, `new` (starter film per placement), `route` (engine per `craft.layers`), `setup <profile>`, `doctor`.
+- `capabilities.json` + `lib/capabilities.mjs`:
+  - 25 capabilities with checks, profiles, serves/limits, licences and maturity.
+  - `loadRegistry` refuses EXPERIMENTAL and above without a study.
+  - `detect` uses at most one python launch.
+  - `route` picks the most mature ready engine within its limits and names the missing better one or the planned one.
+- Universal scene kept simple: shots declare `craft.layers` (validated against `layerTypes`). The composer page is the single compositor; outside renders enter as footage or external-engine picture (PLATFORM.md).
+- Three.js 0.186.1 + PixiJS 8.22.0 vendored (`setup gpu`, git-ignored) with a composer import map. Studies `examples/three-study` (metallic bottle, PMREM light, orbit) and `examples/pixi-study` (20,000 particles) are deterministic across runs and visually checked → EXPERIMENTAL.
+- `setup color` installed OpenColorIO 2.6.0, OpenImageIO, OpenEXR (PLANNED; no adapter).
+- `technology-scout` skill and `TECH_RADAR.md` (dated). PLATFORM.md defines departments → skills, the graduation rule, learn/adapt/integrate and the knowledge layers. CRAFT.md is now marked timeless.
+- Audit fixes:
+  - B01/B02: serve containment by path components and 400 on malformed escapes.
+  - B03/B04: total validators.
+  - B10: `unchecked` gates (UNCHK, listed in `measure.json` and the verdict).
+  - B11: `poster: 0`.
+  - B12: share budget validation, MiB documented.
+  - R08: tar `filter='data'`.
+  - app-capture version via CDP.
+- Tests: new `test/audit-fixes.test.mjs`, `test/capabilities.test.mjs`; the targeted run passed 25/25 in 6 s. Not run: slow suites (policy). Pending owner decision: the audit's B09 browser-launcher policy.
+
 ## 2026-10-03 — Engineering audit and technology report (scope DONE)
 Owner request: find bugs, problems, missing capabilities, useful GitHub projects, and current studio technologies; write a full root Markdown report.
 - Added `../STUDIO_AUDIT_AND_TECHNOLOGY_REPORT_2026-10-03.md`: prioritized findings, reproduced evidence, missing tools, project/license/hardware comparisons, verified releases through October 3, and an ordered implementation roadmap.

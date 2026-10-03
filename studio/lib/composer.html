@@ -25,6 +25,12 @@
 </head>
 <body>
 <div id="stage"></div>
+<!-- Vendored engines (node studio.mjs setup gpu; see capabilities.json): films import them by name. -->
+<script type="importmap">{ "imports": {
+  "three": "/vendor/node_modules/three/build/three.module.js",
+  "three/addons/": "/vendor/node_modules/three/examples/jsm/",
+  "pixi.js": "/vendor/node_modules/pixi.js/dist/pixi.mjs"
+} }</script>
 <script type="module">
   // Generic composer: ?film=<module path>&w=&h=&variant=
   // Exposes window.ready (fonts + images decoded) and window.renderAt(t, frame) — pure in t.

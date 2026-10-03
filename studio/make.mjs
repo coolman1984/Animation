@@ -86,6 +86,7 @@ if (production.plan) writeFileSync(join(OUT, 'review-plan.json'), JSON.stringify
   note: 'Inspect selected-delivery cut joins separately. Samples do not replace motion/audio playback.'
 }, null, 2));
 let allOk = true;
+const unchecked = []; // checks that could not run: listed in the verdict, never silently counted as passed
 // Optional music map (production.musicMap): musical descriptions of cuts/moments in the review gallery.
 let music = null;
 if (production.plan?.musicMap && existsSync(join(ROOT, production.plan.musicMap))) {
@@ -173,14 +174,14 @@ for (const d of selected) {
     await shareCopy(file, share, { targetMB: d.shareMB, duration: m.probe.duration });
     m.share = await probe(share);
   }
-  if (profile === 'final' && d.poster) await stillAt(file, d.poster, join(OUT, `poster-${d.name}.jpg`));
+  if (profile === 'final' && Number.isFinite(d.poster)) await stillAt(file, d.poster, join(OUT, `poster-${d.name}.jpg`)); // poster: 0 is valid (audit B11)
   if (profile === 'final' && d.name === 'bumper6') await webpPreview(file, join(OUT, `${label}-bumper6-preview.webp`));
   const g = gates(m, { w: dw, h: dh, duration: range ? range[1] - range[0] : d.duration, fps: settings.fps, lufs: cfg.lufs, tp: cfg.tp, fadeOut: range ? Math.max(0, range[1] - (d.duration - (d.fadeOut || 0))) : (d.fadeOut || 0), shareMB: d.shareMB || cfg.shareMB, holds: (d.holds || (d.segments ? [] : cfg.holds) || []).map(([a, b]) => [a - (range?.[0] || 0), b - (range?.[0] || 0)]),
     darkSpans: (d.segments ? [] : (d.darkSpans || cfg.darkSpans || [])).map(([a, b]) => [a - (range?.[0] || 0), b - (range?.[0] || 0)]) });
   report.deliveries[d.name] = { file, ...m, cached: reused, textCached, audioCached,
     seconds: (performance.now() - deliveryStarted) / 1000, render: renderStats, range, gates: g };
   console.log(`\n  ${d.name}`);
-  for (const x of g) { console.log(`   ${x.ok ? 'PASS' : 'FAIL'}  ${x.name.padEnd(36)} ${x.value}`); allOk &&= x.ok; }
+  for (const x of g) { console.log(`   ${x.unchecked ? 'UNCHK' : x.ok ? 'PASS' : 'FAIL'}  ${x.name.padEnd(36)} ${x.value}`); allOk &&= x.ok; if (x.unchecked) unchecked.push(`${d.name}: ${x.name}`); }
   // Evidence for LOOKING at the export: frames at cuts/copy/camera peaks, strips, crops, advisory notes.
   log(`review evidence ${d.name}`);
   const offset = range?.[0] || 0, sv = shifted(offset, production.plan, text, range?.[1]);
@@ -200,7 +201,9 @@ if (reviewed.length > 1) {
   log('aspect comparison', report.aspectCompare);
 }
 report.seconds = (performance.now() - started) / 1000;
+report.unchecked = unchecked;
 writeFileSync(join(OUT, 'measure.json'), JSON.stringify(report, (k, v) => (k === 'lines' || k === 'samples' ? undefined : v), 2));
 log(`build ${report.seconds.toFixed(1)}s; score ${profile === 'draft' ? 'skipped' : scoreCached ? 'reused' : 'built'}`);
 log(allOk ? (profile === 'final' ? 'TECHNICAL GATES PASSED — ARTISTIC REVIEW REQUIRED' : 'PREVIEW CHECKS PASSED — NOT A FINAL DELIVERY') : 'SOME GATES FAILED', OUT);
+if (unchecked.length) log(`UNCHECKED (inspect manually before delivery): ${unchecked.join('; ')}`);
 process.exit(allOk ? 0 : 1);
