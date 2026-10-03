@@ -11,7 +11,8 @@ export function validateCues(plan, { maxPerWindow = 3, window = 4, minGap = 0.25
   const cues = plan?.cues;
   if (cues === undefined) return { errors, warnings };
   if (!Array.isArray(cues)) return { errors: ['cues must be an array'], warnings };
-  const ids = new Set(), shots = new Map((plan.shots || []).map(s => [s.id, s]));
+  // Malformed shots are reported by validateProduction; here only valid shot objects are mapped (audit B04).
+  const ids = new Set(), shots = new Map((Array.isArray(plan.shots) ? plan.shots : []).filter(s => s && typeof s === 'object' && s.id).map(s => [s.id, s]));
   let last = -Infinity;
   for (const c of cues) {
     const id = c?.id || '(unnamed cue)';

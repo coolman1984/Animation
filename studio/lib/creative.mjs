@@ -1,6 +1,8 @@
 // Creative-plan diagnostics. Warning signals only, never a taste score.
 
+import REGISTRY from '../capabilities.json' with { type: 'json' };
 const filled = v => typeof v === 'string' && v.trim().length > 0;
+const LAYER = /^[a-z0-9-]+(:\d+)?$/;
 
 function runLength(shots, getter) {
   const runs = []; let start = 0, value;
@@ -75,6 +77,9 @@ export function validateCraft(craft, id = '(unnamed shot)') {
     errors.push(`${id}: craft.primaryMotions must be an array of nonempty strings`);
   if (craft.depthLayers !== undefined && (!Number.isInteger(craft.depthLayers) || craft.depthLayers < 1 || craft.depthLayers > 12))
     errors.push(`${id}: craft.depthLayers must be an integer 1..12`);
+  // layers: what the shot contains, e.g. ["text", "particles:4000", "3d"]; `node studio.mjs route <film>` picks an engine per layer.
+  if (craft.layers !== undefined && (!Array.isArray(craft.layers) || craft.layers.some(l => typeof l !== 'string' || !LAYER.test(l) || !REGISTRY.layerTypes.includes(l.split(':')[0]))))
+    errors.push(`${id}: craft.layers must be layer types (${REGISTRY.layerTypes.join(', ')}) with an optional :count`);
   return errors;
 }
 
@@ -94,7 +99,7 @@ export function validateCreative(plan) {
   if (missing.length) warnings.push(`creative direction is missing: ${missing.join(', ')}`);
   if (c.palette !== undefined && (!Array.isArray(c.palette) || c.palette.some(x => !HEX.test(x)))) errors.push('creative.palette must be an array of #rrggbb colours');
   if (Array.isArray(c.palette) && c.palette.length > 6) warnings.push(`palette has ${c.palette.length} colours; a directed palette is usually 3–5`);
-  if (c.typography !== undefined && (typeof c.typography !== 'object' || !filled(c.typography.display))) errors.push('creative.typography needs at least a display font');
+  if (c.typography !== undefined && (!c.typography || typeof c.typography !== 'object' || Array.isArray(c.typography) || !filled(c.typography.display))) errors.push('creative.typography needs at least a display font');
   if (c.transitions !== undefined && (!Array.isArray(c.transitions) || c.transitions.some(x => !filled(x)))) errors.push('creative.transitions must be an array of names');
   const d = plan.duration;
   if (c.styleFrames !== undefined) {

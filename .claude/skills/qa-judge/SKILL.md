@@ -22,3 +22,5 @@ Fix blocker/major issues, then verify only affected evidence. Two failed attempt
 **Our own exports can be measured too:** `node reference.mjs timeline <our.mp4>` shows dead spans and cut rhythm; `audio` checks that hits land on the grid.
 
 **Finish check for dark/blue gradients (film 6):** extract the frame from the exported master AND the share copy, crop the glow, boost levels (`-level 0%,18%`); rings at a 5.5× boost that are faintly visible at 1:1 are a finish defect — fix with `config.dither`, not with picture-side noise.
+
+**Review tools (2026-10-03):** watch the export in the playback player (`node studio.mjs review <film>`: frame stepping, shot/cue timeline, waveform, A/B takes, timed notes; approval is bound to the file's SHA-256 and voids when the file changes). Colour: scopes in every review gallery, `node studio.mjs color check` (export ΔE), legal range note in make. Sound: `node studio.mjs mixcheck`.

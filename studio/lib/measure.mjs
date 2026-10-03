@@ -35,6 +35,30 @@ export async function black(file) {
   return [...err.matchAll(/black_start:([\d.]+) black_end:([\d.]+)/g)].map((m) => ({ start: +m[1], end: +m[2] }));
 }
 
+// loudness + frozen + black in ONE decode (same filters and parsing as the three functions above; one launch instead of
+// three, each ~1 s on Windows). Files without audio fall back to the separate picture measurements.
+export async function measureAll(file, { minDur = 1.0 } = {}) {
+  const p = await probe(file);
+  if (!p.acodec) return { probe: p, loud: null, frozen: await frozen(file, { minDur }), black: await black(file) };
+  const { err } = await run('ffmpeg', ['-hide_banner', '-nostats', '-i', file, '-filter_complex',
+    `[0:v]split=3[a][b][c];[a]scale=180:-2,gblur=sigma=2,freezedetect=n=-58dB:d=${minDur}[fz];[b]blackdetect=d=0.05:pix_th=0.08[bk];[c]signalstats,metadata=print[ss];[0:a]ebur128=peak=true[ld]`,
+    '-map', '[fz]', '-f', 'null', '-', '-map', '[bk]', '-f', 'null', '-', '-map', '[ss]', '-f', 'null', '-', '-map', '[ld]', '-f', 'null', '-']);
+  // Colour legal range (advisory for web; lib/color.mjs legalRange is the standalone version).
+  const nums = (re) => [...err.matchAll(re)].map((m) => +m[1]);
+  const ymin = nums(/YMIN=([\d.]+)/g), ymax = nums(/YMAX=([\d.]+)/g), sat = nums(/SATMAX=([\d.]+)/g);
+  const range = ymin.length ? { frames: ymin.length, below16: ymin.filter((v) => v < 16).length, above235: ymax.filter((v) => v > 235).length, minY: Math.min(...ymin), maxY: Math.max(...ymax), maxSat: Math.max(...sat) } : null;
+  const sum = err.slice(err.lastIndexOf('Summary:'));
+  const num = (re) => { const m = sum.match(re); return m ? +m[1] : null; };
+  const starts = [...err.matchAll(/freeze_start: ([\d.]+)/g)].map((m) => +m[1]), ends = [...err.matchAll(/freeze_end: ([\d.]+)/g)].map((m) => +m[1]);
+  return {
+    probe: p,
+    loud: { I: num(/I:\s+(-?[\d.]+) LUFS/), LRA: num(/LRA:\s+(-?[\d.]+) LU/), TP: num(/Peak:\s+(-?[\d.]+) dBFS/) },
+    frozen: starts.map((s, i) => ({ start: s, end: ends[i] ?? null })),
+    black: [...err.matchAll(/black_start:([\d.]+) black_end:([\d.]+)/g)].map((m) => ({ start: +m[1], end: +m[2] })),
+    range,
+  };
+}
+
 export async function contactSheet(file, out, { every = 2.5, cols = 6, width = 270 } = {}) {
   await run('ffmpeg', ['-v', 'error', '-y', '-i', file, '-vf', `fps=1/${every},scale=${width}:-2,tile=${cols}x4:padding=4:color=0x202020`, '-frames:v', '1', out]);
   return out;
@@ -46,7 +70,9 @@ export function gates(m, brief) {
   add('plays (probe)', m.probe.width > 0 && m.probe.duration > 0, `${m.probe.width}x${m.probe.height} ${m.probe.fps}fps ${m.probe.vcodec}/${m.probe.acodec}`);
   add('size = brief', m.probe.width === brief.w && m.probe.height === brief.h, `${m.probe.width}x${m.probe.height}`);
   if (brief.fps) add('frame rate = brief', Math.abs(m.probe.fps - brief.fps) < 0.01, `${m.probe.fps} fps`);
-  add('duration within ±10 %', Math.abs(m.probe.duration - brief.duration) <= brief.duration * 0.1, `${m.probe.duration.toFixed(2)} s`);
+  // One frame plus one AAC packet (~21 ms at 48 kHz) of container slack; the old ±10 % let a 30 s film be 3 s off.
+  const slack = (brief.fps ? 1 / brief.fps : 1 / 30) + 0.03;
+  add(`duration = brief (±${(slack * 1000).toFixed(0)} ms)`, Math.abs(m.probe.duration - brief.duration) <= slack, `${m.probe.duration.toFixed(3)} s (brief ${brief.duration} s)`);
   if (m.loud) {
     add(`loudness ${brief.lufs} LUFS ±1`, Number.isFinite(m.loud.I) && Math.abs(m.loud.I - brief.lufs) <= 1, `${m.loud.I} LUFS`);
     add(`true peak ≤ ${brief.tp ?? -1.5} dBTP (+0.2 tol)`, Number.isFinite(m.loud.TP) && m.loud.TP <= (brief.tp ?? -1.5) + 0.2, `${m.loud.TP} dBTP`);
@@ -61,7 +87,8 @@ export function gates(m, brief) {
   const badBlack = m.black.filter(b => !((b.start <= 0.05 && b.end <= 0.1) || b.start >= m.probe.duration - (brief.fadeOut || 0) - 0.1
     || darkOk.some(([a, z]) => b.start >= a - 0.1 && b.end <= z + 0.1)));
   add('no black frames mid-film', badBlack.length === 0, badBlack.length ? JSON.stringify(badBlack) : darkOk.length && m.black.length ? `ok (${m.black.length} declared dark spans)` : 'ok');
-  if (m.text?.unavailable) add('text read-back', true, `NOT CHECKED — ${m.text.unavailable}; inspect copy manually`);
+  // Not a pass: `unchecked` keeps it visible; make.mjs prints UNCHK and the final verdict names it (audit B10).
+  if (m.text?.unavailable) { add('text read-back', true, `NOT CHECKED — ${m.text.unavailable}; inspect copy manually`); g.at(-1).unchecked = true; }
   else if (m.text) add('text inside safe area, no overlaps', m.text.issues.length === 0, m.text.issues.length ? `${m.text.issues.length} issues, first: ${JSON.stringify(m.text.issues[0])}` : `${m.text.lines.length} lines checked every 0.1 s`);
   if (m.share) add(`share copy ≤ ${brief.shareMB} MB`, m.share.sizeMB <= brief.shareMB, `${m.share.sizeMB} MB`);
   return g;

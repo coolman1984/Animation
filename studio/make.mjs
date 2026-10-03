@@ -1,19 +1,20 @@
 // One-command builds: a short draft by default, one review, or all final deliveries.
 // See WORKFLOW.md for profiles, targeted ranges, cache dependencies and artistic acceptance.
 // Each run writes a new numbered take in out/<film>/takeNN — nothing is overwritten.
-import { mkdirSync, readdirSync, writeFileSync, copyFileSync, readFileSync, existsSync } from 'node:fs';
+import { mkdirSync, readdirSync, writeFileSync, copyFileSync, readFileSync, existsSync, appendFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildOptions, frameRange } from './lib/build-options.mjs';
 import { fingerprint, cached } from './lib/cache.mjs';
-import { doctor } from './lib/doctor.mjs';
+import { buildCheck } from './lib/doctor.mjs';
 import { run, video, textTimeline } from './lib/render.mjs';
-import { probe, loudness, frozen, black, contactSheet, gates } from './lib/measure.mjs';
+import { probe, loudness, measureAll, contactSheet, gates } from './lib/measure.mjs';
 import { assembleAudio, masterAudio, mux, shareCopy, captions, stillAt, webpPreview } from './lib/finish.mjs';
 import { loadProduction, reviewTimes } from './lib/production.mjs';
 import { reviewEvidence, aspectCompare } from './lib/review.mjs';
 import { loadMusicMap } from './lib/musicmap.mjs';
 import { externalRender, validateEngine } from './lib/engines.mjs';
+import { memoryBudget } from './lib/platform.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 // Films live in <name>/ or examples/<name>/; output file names use the last path part.
@@ -35,7 +36,10 @@ if (shotFlag) {
 let options;
 try { options = buildOptions(cfg, flags); } catch (error) { console.error(error.message); process.exit(2); }
 const { profile, selected, range, workers, settings } = options;
-const log = (...a) => console.log(`[${new Date().toISOString().slice(11, 19)}]`, ...a);
+// Every line also goes to takes/<film>/build.log (appended once the folder exists), so a crashed run still leaves its story.
+let logFile = null; const logBuffer = [];
+const say = (line) => { console.log(line); if (logFile) { try { appendFileSync(logFile, line + '\n'); } catch {} } else logBuffer.push(line); };
+const log = (...a) => say(`[${new Date().toISOString().slice(11, 19)}] ${a.join(' ')}`);
 const started = performance.now();
 // Fail on missing inputs/contradictory content before launching browsers or synthesizing a score.
 const production = loadProduction(ROOT, cfg, { final: profile === 'final' });
@@ -44,13 +48,22 @@ production.errors.push(...validateEngine(cfg.engine));
 const external = cfg.engine?.type === 'external';
 if (production.errors.length) { console.error(production.errors.join('\n')); process.exit(1); }
 
-// 0. Tools + syntax.
-const doc = await doctor({ quiet: true });
+// 0. Tools + syntax. Both are reused while their inputs are unchanged: every process launch costs ~1 s on Windows.
+const doc = await buildCheck();
 if (!doc.ok) { console.error('doctor failed — run node lib/doctor.mjs'); process.exit(1); }
-for (const f of [...(external ? [] : [cfg.film]), cfg.score, 'lib/motion.js', 'lib/render.mjs', 'lib/audio.mjs']) await run('node', ['--check', join(ROOT, f)]);
+const syntaxFiles = [...(external ? [] : [cfg.film]), cfg.score, 'lib/motion.js', 'lib/render.mjs', 'lib/audio.mjs'];
+// One node process parses every module (vm.SourceTextModule: syntax only, nothing is linked or run) instead of one --check each.
+const PARSE = "const vm=require('node:vm'),fs=require('node:fs');for(const f of process.argv.slice(1)){try{new vm.SourceTextModule(fs.readFileSync(f,'utf8'),{identifier:f})}catch(e){console.error(f+': '+e.message);process.exitCode=1}}";
+await cached(join(ROOT, 'takes', filmName, 'syntax.cache.json'), fingerprint(ROOT, syntaxFiles, { node: process.version }), [],
+  () => run(process.execPath, ['--experimental-vm-modules', '--no-warnings', '-e', PARSE, ...syntaxFiles.map(f => join(ROOT, f))]), () => {});
 
 const TAKES = join(ROOT, 'takes', filmName);
 mkdirSync(TAKES, { recursive: true });
+logFile = join(TAKES, 'build.log'); writeFileSync(logFile, `${new Date().toISOString()} ${process.argv.slice(2).join(' ')}\n${logBuffer.join('\n')}\n`);
+// Memory decides the worker count (lib/platform.mjs): say so up front, with the one fix the owner can make.
+const mem = memoryBudget();
+log(`memory: ${mem.headroomGB} GB usable (RAM free ${mem.freeGB} of ${mem.totalGB} GB${mem.commitFreeGB !== null ? `, commit free ${mem.commitFreeGB} of ${mem.commitLimitGB} GB, page file ${mem.pagefileMB} MB ${mem.pagefileAuto ? 'system-managed' : 'FIXED'}` : ''})`);
+if (mem.commitFreeGB !== null && !mem.pagefileAuto && mem.pagefileMB < 8192) log('note: a fixed small page file limits render workers; set the Windows page file to system-managed for faster builds');
 // Score imports can live outside the film folder: conservative studio inputs keep reuse safe.
 const audioAssets = (production.plan?.assets || []).filter(a => ['music', 'sfx'].includes(a.role)).map(a => a.path);
 const visualAssets = (production.plan?.assets || []).filter(a => !['music', 'sfx', 'reference'].includes(a.role)).map(a => a.path);
@@ -71,8 +84,10 @@ log('take', OUT);
 
 // Picture cache includes local imported code, fonts and images, not just their mtimes.
 // A sound-only edit leaves silent video reusable. Config values are hashed per artifact.
-const pictureInputs = [filmName, 'lib', 'assets', ...(cfg.production ? [cfg.production] : []), ...visualAssets, ...(cfg.cacheInputs || []), ...(cfg.engine?.inputs || [])];
-const pictureKey = fingerprint(ROOT, pictureInputs, { chromium: doc.chromium.version, engine: cfg.engine ?? 'native' }, [cfg.score, ...audioAssets]);
+const pictureInputs = [filmName, 'lib', 'assets', ...(cfg.production ? [cfg.production] : []), ...(cfg.lut ? [cfg.lut] : []), ...visualAssets, ...(cfg.cacheInputs || []), ...(cfg.engine?.inputs || [])];
+// Browser session mode is part of the key: an attached launcher browser and the private headless one rasterise slightly
+// differently (measured 42 dB PSNR), so one film's frames must never mix modes.
+const pictureKey = fingerprint(ROOT, pictureInputs, { chromium: doc.chromium.version, engine: cfg.engine ?? 'native', session: process.env.STUDIO_CDP_URL ? 'attach' : 'private' }, [cfg.score, ...audioAssets]);
 
 const report = { film: filmName, take: n, profile, final: profile === 'final', at: new Date().toISOString(),
   content: { available: !!production.plan, warnings: production.warnings }, scoreCached, deliveries: {} };
@@ -82,6 +97,7 @@ if (production.plan) writeFileSync(join(OUT, 'review-plan.json'), JSON.stringify
   note: 'Inspect selected-delivery cut joins separately. Samples do not replace motion/audio playback.'
 }, null, 2));
 let allOk = true;
+const unchecked = []; // checks that could not run: listed in the verdict, never silently counted as passed
 // Optional music map (production.musicMap): musical descriptions of cuts/moments in the review gallery.
 let music = null;
 if (production.plan?.musicMap && existsSync(join(ROOT, production.plan.musicMap))) {
@@ -103,7 +119,7 @@ const reviewed = [];
 for (const d of selected) {
   const deliveryStarted = performance.now();
   const dw = d.w || cfg.w, dh = d.h || cfg.h;
-  const renderSettings = { ...settings, w: dw, h: dh, variant: d.variant, segments: d.segments, fadeOut: d.fadeOut, t0: range?.[0] ?? 0, t1: range?.[1] ?? d.duration, ...(cfg.gpu ? { gpu: true } : {}), ...(cfg.dither ? { dither: true } : {}) };
+  const renderSettings = { ...settings, w: dw, h: dh, variant: d.variant, segments: d.segments, fadeOut: d.fadeOut, t0: range?.[0] ?? 0, t1: range?.[1] ?? d.duration, ...(cfg.gpu ? { gpu: true } : {}), ...(cfg.dither ? { dither: true } : {}), ...(cfg.lut ? { lut: join(ROOT, cfg.lut) } : {}) };
   const key = fingerprint(ROOT, [], { pictureKey, ...renderSettings });
   const silent = join(TAKES, `${d.name}-${profile}-video.mp4`);
   let renderStats;
@@ -111,7 +127,7 @@ for (const d of selected) {
   const reused = await cached(silent + '.cache.json', key, [silent], async () => {
     renderStats = external
       ? await externalRender(cfg.engine, { ...renderSettings, out: silent, root: ROOT, profile })
-      : await video({ ...renderSettings, workers, film: join(ROOT, cfg.film), out: silent });
+      : await video({ ...renderSettings, workers, film: join(ROOT, cfg.film), out: silent, resumeKey: key, log: say });
     log(`  ${renderStats.frames} frames in ${renderStats.seconds.toFixed(1)} s`);
   }, log);
   if (profile === 'draft') {
@@ -146,7 +162,7 @@ for (const d of selected) {
   }, log);
   const file = join(OUT, `${label}-${d.name}${profile === 'review' ? '-REVIEW' : ''}-${dw}x${dh}.mp4`);
   await mux(silent, master, file);
-  const m = { probe: await probe(file), loud: await loudness(file), frozen: await frozen(file), black: await black(file), text };
+  const m = { ...(await measureAll(file)), text };
   if (profile === 'final' && d.name === 'hero60') {
     log('share copy');
     const share = join(OUT, `${label}-${d.name}-share-${cfg.shareMB}MB.mp4`);
@@ -169,14 +185,14 @@ for (const d of selected) {
     await shareCopy(file, share, { targetMB: d.shareMB, duration: m.probe.duration });
     m.share = await probe(share);
   }
-  if (profile === 'final' && d.poster) await stillAt(file, d.poster, join(OUT, `poster-${d.name}.jpg`));
+  if (profile === 'final' && Number.isFinite(d.poster)) await stillAt(file, d.poster, join(OUT, `poster-${d.name}.jpg`)); // poster: 0 is valid (audit B11)
   if (profile === 'final' && d.name === 'bumper6') await webpPreview(file, join(OUT, `${label}-bumper6-preview.webp`));
   const g = gates(m, { w: dw, h: dh, duration: range ? range[1] - range[0] : d.duration, fps: settings.fps, lufs: cfg.lufs, tp: cfg.tp, fadeOut: range ? Math.max(0, range[1] - (d.duration - (d.fadeOut || 0))) : (d.fadeOut || 0), shareMB: d.shareMB || cfg.shareMB, holds: (d.holds || (d.segments ? [] : cfg.holds) || []).map(([a, b]) => [a - (range?.[0] || 0), b - (range?.[0] || 0)]),
     darkSpans: (d.segments ? [] : (d.darkSpans || cfg.darkSpans || [])).map(([a, b]) => [a - (range?.[0] || 0), b - (range?.[0] || 0)]) });
   report.deliveries[d.name] = { file, ...m, cached: reused, textCached, audioCached,
     seconds: (performance.now() - deliveryStarted) / 1000, render: renderStats, range, gates: g };
-  console.log(`\n  ${d.name}`);
-  for (const x of g) { console.log(`   ${x.ok ? 'PASS' : 'FAIL'}  ${x.name.padEnd(36)} ${x.value}`); allOk &&= x.ok; }
+  say(`\n  ${d.name}`);
+  for (const x of g) { say(`   ${x.unchecked ? 'UNCHK' : x.ok ? 'PASS' : 'FAIL'}  ${x.name.padEnd(36)} ${x.value}`); allOk &&= x.ok; if (x.unchecked) unchecked.push(`${d.name}: ${x.name}`); }
   // Evidence for LOOKING at the export: frames at cuts/copy/camera peaks, strips, crops, advisory notes.
   log(`review evidence ${d.name}`);
   const offset = range?.[0] || 0, sv = shifted(offset, production.plan, text, range?.[1]);
@@ -187,8 +203,14 @@ for (const d of selected) {
     sfxStem: offset || d.segments ? null : join(TAKES, 'sfx.wav'), cues: sv.plan?.cues });
   report.deliveries[d.name].review = { dir: evidenceDir, notes: ev.notes, camera: ev.camera?.max ?? null };
   if (!d.segments && !offset) reviewed.push({ name: d.name, file });
-  for (const n of ev.notes) console.log(`   NOTE  ${n}`);
-  console.log(`   LOOK  ${join(evidenceDir, 'index.html')}`);
+  for (const n of ev.notes) say(`   NOTE  ${n}`);
+  // Colour legal range from the same measurement pass: advisory (web players accept it; broadcast does not).
+  if (m.range) {
+    report.deliveries[d.name].colour = m.range;
+    const out = Math.max(m.range.below16, m.range.above235);
+    if (out) say(`   NOTE  colour: luma leaves 16–235 on up to ${out}/${m.range.frames} frames (Y ${m.range.minY}–${m.range.maxY}); fine for social/web, grade down for broadcast`);
+  }
+  say(`   LOOK  ${join(evidenceDir, 'index.html')}`);
 }
 if (reviewed.length > 1) {
   const times = production.plan?.creative?.styleFrames ? Object.values(production.plan.creative.styleFrames) : [0.25, 0.5, 0.75].map(f => f * Math.min(...selected.map(d => d.duration)));
@@ -196,7 +218,9 @@ if (reviewed.length > 1) {
   log('aspect comparison', report.aspectCompare);
 }
 report.seconds = (performance.now() - started) / 1000;
+report.unchecked = unchecked;
 writeFileSync(join(OUT, 'measure.json'), JSON.stringify(report, (k, v) => (k === 'lines' || k === 'samples' ? undefined : v), 2));
 log(`build ${report.seconds.toFixed(1)}s; score ${profile === 'draft' ? 'skipped' : scoreCached ? 'reused' : 'built'}`);
 log(allOk ? (profile === 'final' ? 'TECHNICAL GATES PASSED — ARTISTIC REVIEW REQUIRED' : 'PREVIEW CHECKS PASSED — NOT A FINAL DELIVERY') : 'SOME GATES FAILED', OUT);
+if (unchecked.length) log(`UNCHECKED (inspect manually before delivery): ${unchecked.join('; ')}`);
 process.exit(allOk ? 0 : 1);

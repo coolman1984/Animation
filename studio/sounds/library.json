@@ -1,0 +1,19 @@
+{
+  "about": "Sound library (lib/sounds.mjs). One catalogue for music, impacts, whooshes, risers, foley, ambience, UI sounds, textures and room tones. Every entry records source and rights. `synth` entries are generated in code (lib/sfx.mjs, lib/audio.mjs): original, no licence needed, deterministic. `file` entries point to recordings under studio/assets/audio/ (git-ignored; client/licensed material stays local) and MUST carry licence, source URL or owner, and permitted use. Search: node studio.mjs sounds [category|word].",
+  "categories": ["music", "impact", "whoosh", "riser", "foley", "ambience", "ui", "texture", "room-tone", "voice"],
+  "entries": [
+    { "id": "impact", "category": "impact", "kind": "synth", "generator": "lib/sfx.mjs impact", "use": "a decisive arrival: hero lands, title slams, drop", "rights": "original synthesis, no licence needed" },
+    { "id": "soft-hit", "category": "impact", "kind": "synth", "generator": "lib/sfx.mjs softHit", "use": "a gentle confirmation: product settles, copy lands", "rights": "original synthesis, no licence needed" },
+    { "id": "whoosh", "category": "whoosh", "kind": "synth", "generator": "lib/sfx.mjs whooshBy", "use": "something passes the lens; peaks on the cue", "rights": "original synthesis, no licence needed" },
+    { "id": "riser", "category": "riser", "kind": "synth", "generator": "lib/sfx.mjs riser", "use": "tension that ends exactly on the cue", "rights": "original synthesis, no licence needed" },
+    { "id": "sweep", "category": "whoosh", "kind": "synth", "generator": "lib/sfx.mjs sweep", "use": "light/graphic sweep, quick transition", "rights": "original synthesis, no licence needed" },
+    { "id": "ui-confirm", "category": "ui", "kind": "synth", "generator": "lib/sfx.mjs uiConfirm", "use": "a real interface action succeeding", "rights": "original synthesis, no licence needed" },
+    { "id": "click", "category": "foley", "kind": "synth", "generator": "lib/sfx.mjs click", "use": "mechanical contact: cap, switch, tap", "rights": "original synthesis, no licence needed" },
+    { "id": "mechanical", "category": "foley", "kind": "synth", "generator": "lib/sfx.mjs mechanical", "use": "a device moving for a duration", "rights": "original synthesis, no licence needed" },
+    { "id": "room-tone", "category": "room-tone", "kind": "synth", "generator": "lib/sfx.mjs texture (kind: room)", "use": "air bed under a scene; fills jump-cut gaps so silence never drops to digital zero", "rights": "original synthesis, no licence needed" },
+    { "id": "texture-air", "category": "texture", "kind": "synth", "generator": "lib/sfx.mjs texture", "use": "subtle movement bed for held frames", "rights": "original synthesis, no licence needed" },
+    { "id": "pad", "category": "music", "kind": "synth", "generator": "lib/audio.mjs pad", "use": "chord bed (score.mjs)", "rights": "original synthesis, no licence needed" },
+    { "id": "pluck-bell-rhodes", "category": "music", "kind": "synth", "generator": "lib/audio.mjs pluck / bell / rhodes", "use": "melodic voices for original scores", "rights": "original synthesis, no licence needed" },
+    { "id": "kick-noise", "category": "music", "kind": "synth", "generator": "lib/audio.mjs kick / noiseHit", "use": "drums: kick, claps, hats (noiseHit with filters)", "rights": "original synthesis, no licence needed" }
+  ]
+}

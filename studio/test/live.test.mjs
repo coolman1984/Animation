@@ -7,6 +7,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { keepRanges, cutWords, timeline, sourceTime, punchIns, zoomAt, pageCaptions, wordState, cutSfx, toOTIO, FILLERS_AR } from '../lib/edl.mjs';
 import { polish, duck, stitch, mixGraph, render } from '../lib/dialogue.mjs';
+import { PYTHON } from '../lib/platform.mjs';
 
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const near = (a, b, e, m) => assert.ok(Math.abs(a - b) <= e, `${m}: ${a} vs ${b}`);
@@ -47,7 +48,7 @@ test('OTIO export is valid otio_json with frame-accurate source ranges', () => {
   assert.equal(doc.OTIO_SCHEMA, 'Timeline.1'); assert.equal(doc.tracks.children.length, 2);
   const c = doc.tracks.children[0].children[1]; assert.equal(c.OTIO_SCHEMA, 'Clip.2');
   assert.deepEqual([c.source_range.start_time.value, c.source_range.duration.value], [150, 45]);
-  const py = spawnSync('python3', ['-c', 'import sys,opentimelineio as o;t=o.adapters.read_from_string(sys.stdin.read(),"otio_json");print(len(t.video_tracks()[0]), t.duration().to_seconds())'], { input: JSON.stringify(doc), encoding: 'utf8' });
+  const py = spawnSync(PYTHON, ['-c', 'import sys,opentimelineio as o;t=o.adapters.read_from_string(sys.stdin.read(),"otio_json");print(len(t.video_tracks()[0]), t.duration().to_seconds())'], { input: JSON.stringify(doc), encoding: 'utf8' });
   if (py.status === 0) assert.equal(py.stdout.trim(), '2 3.5'); // parsed by the reference OpenTimelineIO library when installed
 });
 
@@ -98,7 +99,7 @@ test('footage sandwich in Chromium: person cutout over behind-graphics, exact fr
 
 const py = process.env.LIVE_PYTHON_TEST === '1';
 test('live.py word timing on speech with known word edges (optional: models + TTS voice)', { skip: !py, timeout: 300000 }, () => {
-  const r = spawnSync('python3', [join(ROOT, 'test', 'fixture', 'live_words.py')], { encoding: 'utf8' });
+  const r = spawnSync(PYTHON, [join(ROOT, 'test', 'fixture', 'live_words.py')], { encoding: 'utf8' });
   assert.equal(r.status, 0, r.stderr); const m = JSON.parse(r.stdout.trim().split('\n').pop());
   assert.ok(m.median <= 0.08, `median word-edge error ${m.median}s`); assert.ok(m.inside >= m.n - 3, `${m.inside}/${m.n} word centres inside the true word`);
 });

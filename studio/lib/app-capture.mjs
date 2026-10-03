@@ -5,9 +5,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { launch, settleCapture } from './cdp.mjs';
-import { findChromium } from './doctor.mjs';
 import { serve } from './serve.mjs';
-import { execFileSync } from 'node:child_process';
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -28,7 +26,9 @@ export async function captureApp({ steps, outDir, viewport = { w: 390, h: 844, s
   let client;
   try { client=await runtime.launch({ width: viewport.w, height: viewport.h, scale: viewport.scale || 1 }); }
   catch(error){srv?.close();throw error;}
-  const state = { label, viewport, chromium: (() => { try { return execFileSync(findChromium(), ['--version'], { encoding: 'utf8' }).trim(); } catch { return null; } })(),
+  // Version from the running session: `chrome.exe --version` opens a browser window on Windows.
+  const version = await client.send('Browser.getVersion').then(v => v.product).catch(() => client.eval('navigator.userAgent').catch(() => null));
+  const state = { label, viewport, chromium: version,
     values: {}, verified: [], shots: {}, log: [] };
   const t0 = Date.now(), log = (event, detail) => state.log.push({ ms: Date.now() - t0, event, ...detail });
   const q = sel => typeof sel === 'string' ? `document.querySelector(${JSON.stringify(sel)})`

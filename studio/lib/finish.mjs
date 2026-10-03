@@ -3,6 +3,7 @@
 import { writeFileSync, readFileSync, rmSync } from 'node:fs';
 import { run } from './render.mjs';
 import { loudness, probe } from './measure.mjs';
+import { devNull } from './platform.mjs';
 
 // Cut at exact picture times. 20ms edge fades suppress clicks; these are NOT overlap crossfades.
 // True crossfades would shorten the output unless handles were added to each picture edit.
@@ -66,11 +67,14 @@ export async function mux(video, audio, out) {
 }
 
 export async function shareCopy(master, out, { targetMB = 27, duration, audioKbps = 160 } = {}) {
+  // targetMB is MiB (2^20 bytes), matching probe().sizeMB. Refuse budgets that cannot hold audio + a usable picture (audit B12).
+  if (!(Number.isFinite(duration) && duration > 0) || !(Number.isFinite(targetMB) && targetMB > 0)) throw new Error(`shareCopy needs a positive duration and size (got ${duration} s, ${targetMB} MiB)`);
   const totalKbps = (targetMB * 0.97 * 8 * 1024 * 1024) / duration / 1000;
   const v = Math.floor(totalKbps - audioKbps);
+  if (v < 300) throw new Error(`share budget ${targetMB} MiB for ${duration.toFixed(1)} s leaves ${v} kb/s of video (minimum 300); raise shareMB`);
   const log = out + '.2pass';
   const common = ['-c:v', 'libx264', '-preset', 'slow', '-b:v', `${v}k`, '-maxrate', `${Math.round(v * 1.6)}k`, '-bufsize', `${v * 2}k`, '-pix_fmt', 'yuv420p', '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-passlogfile', log];
-  await run('ffmpeg', ['-v', 'error', '-y', '-i', master, ...common, '-pass', '1', '-an', '-f', 'mp4', '/dev/null']);
+  await run('ffmpeg', ['-v', 'error', '-y', '-i', master, ...common, '-pass', '1', '-an', '-f', 'mp4', devNull]);
   await run('ffmpeg', ['-v', 'error', '-y', '-i', master, ...common, '-pass', '2', '-c:a', 'aac', '-b:a', `${audioKbps}k`, '-movflags', '+faststart', out]);
   for (const ext of ['-0.log', '-0.log.mbtree']) rmSync(log + ext, { force: true });
   return { videoKbps: v };
@@ -89,7 +93,8 @@ export function captions(lines, base, { translate } = {}) {
 }
 
 export async function stillAt(video, t, out) {
-  await run('ffmpeg', ['-v', 'error', '-y', '-ss', String(t), '-i', video, '-frames:v', '1', '-q:v', '2', out]);
+  // 1 ms early: a time just past the last frame's pts would decode no frame (see review.mjs ss()).
+  await run('ffmpeg', ['-v', 'error', '-y', '-ss', Math.max(0, t - 0.001).toFixed(4), '-i', video, '-frames:v', '1', '-q:v', '2', out]);
   return out;
 }
 

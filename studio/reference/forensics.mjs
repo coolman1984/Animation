@@ -9,6 +9,7 @@ import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { join, resolve, basename } from 'node:path';
 import { spawn } from 'node:child_process';
 import { STUDIO } from './common.mjs';
+import { PYTHON } from '../lib/platform.mjs';
 
 const TOOLS = join(STUDIO, 'tools');
 function run(py, args, timeout = 600000) {
@@ -29,7 +30,7 @@ export function mediaOf(target, packDir) {
   const media = resolve(target); if (!existsSync(media)) throw new Error('media not found: ' + target);
   return { media, out: resolve(`forensics-${basename(media).replace(/\W+/g, '_')}`) };
 }
-export async function forensics(cmd, target, packDir, { range, roi, crop, ref, python = 'python3' } = {}) {
+export async function forensics(cmd, target, packDir, { range, roi, crop, ref, python = PYTHON } = {}) {
   const { media, out } = mediaOf(target, packDir); mkdirSync(out, { recursive: true });
   const r = range ? ['--start', String(range[0]), '--end', String(range[1])] : [];
   const c = crop ? ['--crop', crop] : [];

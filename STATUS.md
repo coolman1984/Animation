@@ -2,7 +2,12 @@
 
 Updated: 2026-10-03. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE — Film 9, NeuroAnara «Decode the Case», 20 s Reels, no music (owner request 2026-10-03).**
+**Latest scope: DONE — The SANAD/films-6–9 branch merged into main as the house method (owner order 2026-10-03).**
+- `CLAUDE.md`, `QUALITY_PLAYBOOK.md` §0 "Owner taste", `film-director` and `sound-designer` now make this branch's taste, lessons and recipes authoritative for creative work.
+- Merge kept main's platform work (studio.mjs, Windows port, render stability, voice department). Main's unfinished 3-min Pixel Plus presentation was renumbered `film7` → `film10` (SANAD keeps `film7`).
+- `npm test` after the merge: 114 tests, 100 pass, 13 skipped, 1 fail — `platform.test.mjs` worker-planning expectation; it fails identically on main alone (machine-dependent memory/CPU), not caused by the merge.
+
+**Previous scope: DONE — Film 9, NeuroAnara «Decode the Case», 20 s Reels, no music (owner request 2026-10-03).**
 - `studio/film9/` (BRIEF, production.json, config, film.js, score.mjs = effects only, LEDGER). Final take04 (local): all gates PASS, share 9.8 MB. Lora (OFL) vendored.
 - Not verified: listening, real-speed phone viewing.
 
@@ -17,6 +22,63 @@ Updated: 2026-10-03. This is the current handoff; historical plans are not a tas
 - Source: `studio/film7/` (BRIEF, production.json, config, film.js, score.mjs, icon_trace.py, LEDGER). ONE delivery: 9:16, 1080×1920, 30 fps, 25.00 s (no placement named → studio default).
 - Final take: `studio/out/film7/take08/` (local, not in git): share copy 11.61 MB + master + poster. All technical gates PASS (−13.9 LUFS, TP −3.4, LRA 3.3, 24 text lines in the safe band); 2 of 2 correction rounds used.
 - Not verified: listening to the score (measured: 95.94 BPM, C major), real-speed viewing on a phone, a fresh reviewer, live Meta overlays/re-encode. Brand conflicts (3 icons, 2 descriptors) are listed in the BRIEF for the owner.
+**Parallel scope (other branch): IN PROGRESS — Film 10 (was film 7 on that branch), Pixel Plus company presentation, 3:00 YouTube 1920×1080 (owner request 2026-10-03: light theme, classy Arabic, elegant low Western music, Samsung Electronics Egypt year of work, projects focus, "GO ALL OUT").**
+- Source `studio/film10/` (BRIEF, production.json, timing.js shared clock, film.js nine chapters incl. a real-3D factory chapter, score.mjs original 80 BPM piano/harp/strings at −18 LUFS, LEDGER). Logo traced from the owner's file (13 parts, 1,699 particles).
+- Stills reviewed in five batches; builder fixes and an art-direction pass are in LEDGER.md. Full-length draft render: in progress through `node studio.mjs build film10 --range=0:180` (1 worker: see below). Next: watch the draft, correction round, review build with sound, final.
+
+**Latest scope: DONE — Render stability after two renders crashed the host session (owner order 2026-10-03: "fix the problem that keeps hanging and closing this session").**
+- Cause: Windows commit exhaustion (fixed 2 GB page file; ~2–3 GB commit free) with six 1080p SwiftShader Chrome workers, plus 32 orphan Chrome processes and a hung node left by each crash.
+- Fixes: memory-sized workers (`plannedWorkers`), browser registry + orphan reaping (`lib/procs.mjs`, `studio.mjs cleanup`), CDP deadlines and abort-on-exit, resume from complete slices, crash-safe build logs, `studio.mjs build` as the only way to render long films, lazy 3D chapter in film7. Details: `studio/TECHNIQUES.md` → "Memory, crashes and hangs".
+- On this machine today: 1 render worker. The owner can raise it to 3–4 by setting the Windows page file to system-managed (doctor row "Memory headroom").
+- Verified: syntax, fast tests, cleanup, planner decision, lazy-vs-eager pixels. Not verified: a complete render through the new path (the film10 (ex-film7) draft is the first).
+
+**Previous scope: DONE — Browser attach mode, colour management, playback review, voice & sound department (owner request 2026-10-03).**
+- **Browser:** the default stays private headless Chrome. `STUDIO_CDP_URL` attaches to a launcher-started Chrome through an isolated context; verified it never closes the owner's browser or tabs. One film = one mode.
+- **Colour:** `node studio.mjs color check|scopes|range`, `config.lut`, `tools/ocio_bake.py`; scopes appear in every review gallery. Export accuracy: ΔE mean 0.70 (0.54 with dither).
+- **Review:** `node studio.mjs review <film>` opens the playback player: frame steps, timeline, waveform, A/B, timed notes, approval bound to the file hash.
+- **Voice & sound:**
+  - Department guide `studio/VOICE_STUDIO.md`, skill `voice-director`.
+  - Offline speech models downloaded (Whisper turbo, Piper, Silero via PyPI, diarization models).
+  - Commands: `studio.mjs voice|transcript|mixcheck|sounds`.
+- **Verification:** fast tests 30/30 in 6 s, plus the targeted real runs listed in CHANGELOG.
+- **Not verified:** cloud voices (need API keys), listening judgement, attach mode with the owner's actual launcher.
+- **To enable a production voice:** set `AZURE_SPEECH_KEY` + `AZURE_SPEECH_REGION` (native Egyptian), or `OPENAI_API_KEY` / `ELEVENLABS_API_KEY`, then run `node studio.mjs voice status`.
+
+**Previous scope: DONE — Studio platform v1 + audit fixes (owner request 2026-10-03: apply the platform vision, artistic forensics and the audit report, keep it simple).**
+- Front door `studio/studio.mjs` (`caps`, `new`, `route`, `setup`, `doctor`). Capability registry `studio/capabilities.json` (25 entries, maturity CORE → LEARN, setup profiles, graduation rule) via `lib/capabilities.mjs`. Architecture `studio/PLATFORM.md`. Per-shot `craft.layers` drive the engine router.
+- New engines: Three.js 0.186.1 and PixiJS 8.22.0, vendored by `setup gpu` and imported by name through the composer import map. Both are EXPERIMENTAL after studies (`examples/three-study`, `examples/pixi-study`) rendered identical PNG hashes in separate runs and were inspected. OpenColorIO/OpenImageIO/OpenEXR are installed (PLANNED, no adapter yet).
+- Research department: skill `technology-scout` + dated `studio/TECH_RADAR.md`. Craft and trends are kept apart.
+- Artistic forensics (5 layers, 20-section Artistic DNA) was already implemented (`ARTISTIC_FORENSICS.md`); it is now linked from PLATFORM.md.
+- Audit fixes (each with a test in `test/audit-fixes.test.mjs`):
+  - B01/B02: preview-server traversal and malformed URLs.
+  - B03/B04: validator crashes.
+  - B10: an unchecked text gate now shows UNCHK and is listed in the verdict.
+  - B11: `poster: 0`.
+  - B12: impossible share budgets.
+  - R08: safe tar extraction.
+  - app-capture no longer launches `chrome --version` (it opened a window on Windows).
+- Verification: fast targeted tests only (testing policy) — 25/25 in 6 s, plus study renders and `new`/`route` smoke checks. Not verified: a full slow suite or a real film with the new engines (deferred to the next real video).
+- Open question for the owner: the audit (B09) mentions a Chrome-launcher policy that forbids direct Chrome/Edge launches. The studio launches a private headless Chrome per render; it was not changed, pending the owner's answer.
+
+**Previous scope: DONE — Windows port, speed-ups and testing policy (owner request 2026-10-03: "fix and improve", "make tests shorter", "never run slow tests unless producing a real video").**
+- The studio now runs on the owner's Windows machine. A real showreel draft rendered with the installed Chrome (frame checked, Arabic shaped correctly). All OS differences are in `studio/lib/platform.mjs`, guarded by `test/platform.test.mjs`. Details: `studio/TECHNIQUES.md` "Cross-platform".
+- Cross-platform bugs fixed:
+  - Worker joins drifted up to 1 ms each (B-frame edit lists in a 1000 timescale).
+  - The last-frame still returned nothing (silent PNG failure).
+  - Chromium shutdown orphaned profiles (69 folders / 746 MB removed) and stalled node ~17 s.
+  - Python tools crashed on non-ASCII output.
+  - `rm`/`mv`/`/dev/null`/FFmpeg glob/Fontconfig failures.
+- Duration gate tightened from ±10 % to one frame + 30 ms.
+- Speed: the cause was ~1 s per process launch on this machine. A fresh 4 s review build went from 61 launches / 78 s to 24 / 46 s (one-decode review evidence, one-pass measurements, reused tool check, one-process syntax check).
+- Optional tools installed on this PC: forensics + live-action Python packages (one OpenCV) and the logo tracer. Live-action ML models (~1.4 GB) were NOT downloaded.
+- Testing policy: written in `CLAUDE.md`, `studio/WORKFLOW.md` and `studio/README.md`. `npm test` = quick suite, `test:all` = CI unit suite, `test:render` only while producing a real video.
+- Verification:
+  - Last complete `test:render` run, before the speed-ups and policy: 112 tests, 108 passed, 0 failed, 2 cancelled by time-outs (evidence/pipeline builds on this slow-launch machine).
+  - After the speed-ups: targeted checks only — combined measurements identical to the separate ones on a clip with black + frozen spans; review images inspected; 60/60 frames on the grid with 4 workers.
+  - A further full run was stopped at the owner's order (40 passed; 2 time-outs under 3-file concurrency, which was dropped).
+- Not verified: a complete slow suite after the speed-ups (deferred to the next real video production by policy); listening; GitHub CI.
+
+**Previous scope: DONE — Deep app study on the owner's Windows checkout (owner request 2026-10-03).** Map: `studio/APP_MAP.md`; its portability findings were fixed in the scope above.
 
 **Previous scope: DONE — film6 (Pixel Plus ad) music v2 (owner 2026-10-03: the ugly-music note meant this film).**
 - `film6/score.mjs`: energetic 120 BPM dance-pop with one recurring hook, pumping chords, builds into each drop; foley unchanged.
@@ -26,7 +88,7 @@ Updated: 2026-10-03. This is the current handoff; historical plans are not a tas
 - `live1/score.mjs`: 133⅓ BPM tech-pop bed locked to the cuts (bar = 1.8 s), hook, tape-stop on the freeze, drop on unfreeze; voice still ducked.
 - take04 final: all gates PASS; measured tempo 132.86 BPM. Not verified: listening.
 
-**Previous scope: DONE — Live-action toolkit: research + offline tools for real footage of real people (owner request 2026-10-03).**
+**Earlier scope: DONE — Live-action toolkit: research + offline tools for real footage of real people (owner request 2026-10-03).**
 - `studio/LIVE_ACTION.md` (research with sources, techniques, roadmap, limits); `tools/live.py` (VAD, Whisper turbo, script word alignment, MediaPipe mattes, face/pose anchors, free space, 9:16 reframe, preview, scratch TTS); `lib/edl.mjs`, `lib/dialogue.mjs`, `lib/footage.js`; skill `live-action-editor`.
 - Proof `studio/live1/` (12 s 9:16, CC BY 4.0 footage): all gates PASS on take03 (local); measured word timing median 0.03 s; ducking > 4 dB under speech.
 - Capture robustness: async film render awaited, `screenshot()` retry, canvas outline (CSS drop-shadow stack froze capture).
@@ -60,11 +122,20 @@ Updated: 2026-10-03. This is the current handoff; historical plans are not a tas
 - `npm test`: 90 tests, 76 passed, 14 optional skipped, 0 failed; real-browser examples test 4/4.
 
 ## Closed scopes (newest first; evidence in `studio/STATUS_HISTORY.md` and `studio/CHANGELOG.md`)
+
+**Audit report scope: DONE (2026-10-03).** Root report: `STUDIO_AUDIT_AND_TECHNOLOGY_REPORT_2026-10-03.md`.
+Reviewed a 225-file code snapshot, reproduced server/validator/OTIO defects, researched studio technologies through October 3, and documented priorities, licenses and hardware limits. Snapshot tests: 112 total, 91 passed, 4 failed, 1 cancelled, 16 skipped; one failure was snapshot font setup, corrected by a 5/5 documentation check. Later current platform/documentation checks passed 7/7 and the corrected audio analyzer passed 1/1. The isolated snapshot reference test still timed out at 120 seconds. Browser rendering and advanced model workflows remain unverified. Report local links and formatting were checked. Concurrent implementation edits are outside this completed report scope.
+
 | Scope | Result |
 |---|---|
 | Film 9 — NeuroAnara 20 s Reels (no music) | DONE, branch; take04 local |
 | Film 8 — Pixel Plus factory pitch 25 s 16:9 | DONE, branch; take04 local |
 | Film 7 — SANAD Reels ad (25 s, then cut to 15 s on owner feedback) | DONE, branch; take09 local |
+| Engineering audit and October 2026 technology report | DONE; root Markdown report |
+| Browser attach mode, colour, review player, voice & sound department | DONE, local commit |
+| Studio platform v1 (registry, router, Three/Pixi, scout) + audit fixes | DONE, local commit |
+| Windows port, speed-ups, testing policy | DONE, local commit |
+| Deep app study (APP_MAP.md) | DONE, local commit |
 | Live-action toolkit + `live1` study | DONE, PR to main |
 | Film 6 knowledge: playbook, `lib/uimorph.js`, `tools/logo_trace.py` | DONE, PR #15 merged |
 | Film 6 — Pixel Plus 30 s Facebook Reels showreel-ad | DONE, branch; take08 local, 2 of 2 correction rounds |

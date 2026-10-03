@@ -1,6 +1,7 @@
 """Optional OpenCV LK/RANSAC forensics; no physical-camera or depth certainty from pixels."""
 import argparse, json, math
 from pathlib import Path
+import sys as _sys; [s.reconfigure(encoding='utf-8') for s in (_sys.stdout, _sys.stderr)]  # Windows pipes default to cp1252; Arabic/≈ output crashed
 
 def analyze(path, duration, cuts, fps=6):
     import cv2

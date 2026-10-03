@@ -4,6 +4,21 @@ Distilled from film 6 (Pixel Plus, 30 s Reels, 2026-10-03) and the films before 
 together with `WORKFLOW.md` (process authority) and `AUTONOMOUS_FILM.md` (owner policy). Recipes with numbers live in
 `TECHNIQUES.md`; one-line lessons in `CRAFT.md`. This file is the *why and in what order*. Guidance, not a new gate.
 
+## 0. Owner taste — learned from his own feedback (authoritative; read first)
+- **Music:** Western, with energy, a real beat and one catchy hook that returns in every chapter, locked to the cuts (tempo from the edit grid).
+  A soft, "safe" bed was rejected as "very bad and ugly" twice. Calm/premium briefs still get a beat and a hook (film 7), only lower in energy.
+  If he says "no music", use effects only: one effect per on-screen event, a very low room tone, soft-limit peaks (film 9).
+- **Logos:** show the client's logo **whole** (pop-in, blur-resolve, particle burst into the finished mark). Never build it slowly from traced
+  pieces — film 7's shield/ribbon/arrow build was "very ugly" and was cut. Trace logos only to render them crisp, not to dismantle them.
+- **Honesty is a feature:** copy only what the client said or showed; name real clients as text (no third-party logo art); replace claims the
+  client cannot make with an honest forward line ("ومصنعكم.. المحطة القادمة"). List brand conflicts across his boards in the BRIEF.
+- **Language:** ads in natural Egyptian Arabic; formal pitches (factories, top management) in Modern Standard Arabic; Latin taglines kept as the brand writes them.
+- **Shape of every film:** a hook in the first 2 s that names the viewer's problem → the brand's own idea as motion (its name, its method, its
+  posts) → one clean payoff with the logo and one action. One idea per bar; never a montage of effects.
+- **Placement:** Reels 9:16 when nothing is named; 16:9 for a meeting-room screen; one delivery, one finished link, an Egyptian conclusion-first
+  report that says plainly what was not listened to or not seen at real speed.
+- **When he sends a reference:** keep its order and argument, transcribe it if it speaks (`tools/live.py`), never copy its artwork or claims.
+
 ## 1. Concept: find the one hero
 - **Look inside the brand for the hero object.** Film 6 used the logo's blue i-dot as the only protagonist. Every scene is that
   object doing a job (button, ad frame, ball, toggle knob, the logo dot again). Result: every transition has a cause and the payoff writes itself.

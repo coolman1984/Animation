@@ -11,6 +11,15 @@ with evidence and a concrete next action; stop without delivering an unverified 
 ## Autonomous delivery (owner instruction, takes precedence)
 Read AUTONOMOUS_FILM.md. The owner asks for a video and placement; the agent chooses, analyses, authors all internal files, reviews and renders autonomously. Any “approved direction” below means agent acceptance, not a pause for the owner. New configs declare ownerRequest; final exports only that delivery. Return one finished video link.
 
+## Engines and tools
+Start films with `node studio.mjs new`; choose engines per layer with `node studio.mjs route <film>`. Install tool packs only when a film needs them
+(`node studio.mjs setup <profile>`). Architecture and maturity rules: PLATFORM.md.
+
+## Testing policy (owner order, 2026-10-03)
+Never run the slow suites (`npm run test:render`, `npm run test:all`) or extra builds to confirm a code change. Verify it with
+the one relevant test file or one direct command; `npm test` is the quick suite. Slow checks belong only to producing a real
+video the owner asked for, once, before delivery. The film's own draft/review/final builds below are production, not testing.
+
 ## Model effort and context budget
 - Start routine implementation, variations and local fixes at **medium** effort.
 - Use **high** for the initial art direction, difficult composition decisions and the final visual critique.
@@ -46,6 +55,7 @@ node make.mjs film2 --profile=review --only=reels15 # full selected delivery, no
 node make.mjs film2 --profile=final                # all deliveries + full technical gates + extras
 node make.mjs film2 --profile=final --only=hero60   # final quality for one delivery
 node make.mjs film2 --range=0:3 --workers=2         # compare 1/2/4 workers on the same short range
+node studio.mjs build film2 --profile=final        # LONG renders go through build: memory-sized workers, orphan reaping, resume, takes/film2/build-full.log
 ```
 
 | Profile | Capture | Output fps | Encoder | Work performed |

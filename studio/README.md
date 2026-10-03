@@ -1,19 +1,24 @@
 # Studio — code-driven video, animation & editing
 
 Start with the [current status](../STATUS.md), [WORKFLOW.md](WORKFLOW.md) and the [department index](SKILLS.md).
+For the architecture, code contracts and findings from the Windows checkout, read [APP_MAP.md](APP_MAP.md).
 [CRAFT_GUIDE.md](CRAFT_GUIDE.md) covers directing, natural Egyptian copy, source truth, layered staging and music audition.
 
 ```bash
 cd studio
-node lib/doctor.mjs                         # check Chromium, ffmpeg, fonts
+node studio.mjs                             # front door: caps | new | route | setup | doctor | review | voice | transcript | mixcheck | color | sounds (PLATFORM.md, VOICE_STUDIO.md)
+node lib/doctor.mjs                         # check Chromium, ffmpeg, fonts (Linux, Windows, macOS — see TECHNIQUES.md "Cross-platform")
 node film2/plates.mjs                       # prepare owner-supplied photos once
 node make.mjs film2                         # quick 12-second silent draft, one version
 node make.mjs film2 --range=24:36            # export a changed interval
 node make.mjs film2 --profile=review         # one full version with sound + technical checks
 node make.mjs film2 --profile=final          # all final versions, extras + full technical QA
-npm test                                   # cache/options/gate regression tests
-npm run test:render                         # real Chromium/ffmpeg integration tests
+npm test                                   # quick suite (skips slow ffmpeg/Python tests) — the routine check
+npm run test:all                            # every unit test incl. slow ffmpeg/Python ones (CI)
+npm run test:render                         # real Chromium/ffmpeg integration (~20 min on Windows) — only when producing a real video
 ```
+Testing policy (owner order): verify a change with its one test file (`node --test test/<file>.test.mjs`); never run the slow
+suites just to confirm a code change. See `../CLAUDE.md`.
 
 Every run writes a new `out/<film>/takeNN/` with `measure.json`. Inspect the actual film before calling it ready.
 Final success means technical gates passed; artistic acceptance is a separate pass in `<film>/LEDGER.md`.

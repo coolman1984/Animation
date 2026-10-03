@@ -24,3 +24,5 @@ recreations/
 # Downloaded ML models (tools/live.py models) and footage packs stay local.
 models/
 __pycache__/
+# Pinned browser engines (node studio.mjs setup gpu) are reinstalled, not committed.
+vendor/

@@ -12,7 +12,14 @@ Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `s
 ## Launch flags that matter
 `--headless=new --no-sandbox --disable-gpu --hide-scrollbars --force-color-profile=srgb --font-render-hinting=none`
 `--force-device-scale-factor=N --window-size=W,H --disable-background-timer-throttling --disable-renderer-backgrounding`
-Plus `Emulation.setDeviceMetricsOverride` with the same scale. Chromium: `/opt/pw-browsers/chromium` (doctor finds it).
+Plus `Emulation.setDeviceMetricsOverride` with the same scale. Chromium: `STUDIO_CHROMIUM`, `/opt/pw-browsers/chromium` on
+Linux, installed Chrome/Edge on Windows (doctor finds it via `lib/platform.mjs`). Each launch uses a throwaway headless profile,
+so the owner's own Chrome windows and profile are untouched.
+**Attach mode (2026-10-03):** with `STUDIO_CDP_URL=http://127.0.0.1:<port>`, `launch()` connects to a Chrome started by an approved launcher (`--remote-debugging-port`).
+- It opens an isolated browser context with `Target.createBrowserContext` and `Target.createTarget`, and turns on focus emulation.
+- `close()` disposes only that context. The browser and the owner's tabs are never touched (verified).
+- Launch flags cannot be applied in this mode.
+- Pixels differ from private mode (42 dB), so one film = one mode; the make picture cache keys on the mode. Page URLs use forward slashes (`slash()`), never Windows `\`.
 
 ## Device-scale gate (mandatory)
 Read the first frame's width from the PNG/JPEG header (`imageWidth`) and **refuse to continue** unless
@@ -40,5 +47,11 @@ Read the first frame's width from the PNG/JPEG header (`imageWidth`) and **refus
 **settleCapture:** the first screenshot after load can be torn (lower tiles from an older raster) with heavy filter layers; `settleCapture(client)` in lib/cdp.mjs captures until two consecutive shots match. Also round fractional viewports (337.5 → 338) before CDP, and avoid will-change/rest transforms (raster history changes pixels with seek order).
 
 Capture reliability: app-capture closes its server on browser-start failure and client-close errors. cdp launch retries a transient startup failure once; never retry a verification mismatch or invent capture completion. Use the original failure evidence if the second startup fails.
+
+**Hang-proof and crash-proof (2026-10-03):** every CDP request has a deadline (90 s, `STUDIO_CDP_TIMEOUT`), `goto` 45 s, and a
+closed socket or exited browser rejects all pending calls (`client.abort`). Every launched browser is registered in
+`takes/.studio-procs.json` (lib/procs.mjs); the next launch reaps orphans of dead runs, `process.on('exit')` kills this run's. Heavy
+film chapters can be `lazy: true` (built on first frame) so only the worker that reaches them pays for WebGL. Render workers are
+sized by `plannedWorkers()` (memory headroom), not by cores.
 
 **Live footage pages (2026-10-03):** decode frames with `fetch` → `createImageBitmap` (a detached `<img>.decode()` can wait forever in headless capture); a film's `render()` may return a promise and the composer awaits it. Never stack many CSS `drop-shadow` filters on a full-frame layer — software capture froze `Page.captureScreenshot` for > 90 s; draw strokes on canvas. `screenshot()` in `lib/cdp.mjs` retries a rare unanswered capture.

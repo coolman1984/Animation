@@ -5,9 +5,26 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { findChromium } from './doctor.mjs';
+import { register, unregister, reap } from './procs.mjs';
+
+// Every browser we launch is tracked: reaped if an earlier node died (procs.mjs), killed if THIS node exits for any reason
+// that still runs exit handlers. A native fatal error (out of memory) skips exit handlers: the registry covers that case.
+const live = new Set();
+let reaped = false;
+process.on('exit', () => { for (const p of live) { try { p.kill('SIGKILL'); } catch {} } });
+// A hung or dead Chromium must become an error, never a silent wait: a render once hung for hours on a dead worker.
+export const CDP_TIMEOUT = Math.max(5000, +(process.env.STUDIO_CDP_TIMEOUT || 90000));
+
+// Browser session modes (one switch, nothing else changes):
+//  - private (default): the studio starts its own headless Chrome with a throwaway profile per worker and closes it.
+//  - attach: STUDIO_CDP_URL=http://127.0.0.1:<port> points at a Chrome that an approved launcher already started with
+//    --remote-debugging-port. The studio opens an isolated browser context (own cookies/storage) per worker, renders,
+//    then disposes ONLY that context. It never starts, kills or reconfigures the owner's browser.
+export const sessionMode = () => (process.env.STUDIO_CDP_URL ? 'attach' : 'private');
 
 // One bounded retry for transient startup failures, never for navigation/render/verification errors.
 export async function launch(options = {}) {
+  if (sessionMode() === 'attach') return attach(options);
   try { return await launchOnce(options); }
   catch(error){
     if(!/Chromium did not start|Chromium exited/.test(error.message))throw error;
@@ -19,6 +36,7 @@ export async function launch(options = {}) {
 async function launchOnce({ width = 1280, height = 720, scale = 1, headless = true, extraArgs = [] } = {}) {
   const bin = findChromium();
   if (!bin) throw new Error('Chromium not found (run the doctor)');
+  if (!reaped) { reaped = true; try { reap({ log: (m) => console.warn(m) }); } catch {} }
   const profile = mkdtempSync(join(tmpdir(), 'studio-chrome-'));
   const args = [
     headless ? '--headless=new' : '',
@@ -31,6 +49,8 @@ async function launchOnce({ width = 1280, height = 720, scale = 1, headless = tr
     `--user-data-dir=${profile}`, ...extraArgs, 'about:blank',
   ].filter(Boolean);
   const proc = spawn(bin, args, { stdio: ['ignore', 'ignore', 'pipe'] });
+  live.add(proc); try { register({ pid: proc.pid, profile, kind: 'chrome' }); } catch {}
+  proc.once('exit', () => { live.delete(proc); try { unregister(proc.pid); } catch {} });
   let wsUrl;
   try {
     wsUrl = await new Promise((res, rej) => {
@@ -45,16 +65,17 @@ async function launchOnce({ width = 1280, height = 720, scale = 1, headless = tr
       proc.on('exit', (code, signal) => { clearTimeout(t); rej(new Error(`Chromium exited ${code ?? signal}: ${buf.slice(-1500)}`)); });
     });
   } catch (error) {
-    proc.kill('SIGKILL'); proc.stderr.destroy(); rmSync(profile, { recursive: true, force: true }); throw error;
+    proc.kill('SIGKILL'); proc.stderr.destroy(); try { rmSync(profile, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 }); } catch {} throw error;
   }
   const port = new URL(wsUrl).port;
   const targets = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
   const page = targets.find((t) => t.type === 'page');
   const client = await connect(page.webSocketDebuggerUrl);
+  client.proc = proc;
+  proc.once('exit', (code, signal) => client.abort(new Error(`Chromium exited (${code ?? signal}) during the session: crash or out of memory`)));
   client.close = async () => {
     try { client.ws.close(); } catch {}
-    proc.kill('SIGKILL');
-    try { rmSync(profile, { recursive: true, force: true }); } catch {}
+    await shutdown(proc, wsUrl, profile);
   };
   await client.send('Page.enable');
   await client.send('Runtime.enable');
@@ -62,28 +83,83 @@ async function launchOnce({ width = 1280, height = 720, scale = 1, headless = tr
   return client;
 }
 
-export async function connect(url) {
+async function attach({ width = 1280, height = 720, scale = 1, extraArgs = [] } = {}) {
+  const base = process.env.STUDIO_CDP_URL.replace(/\/+$/, '');
+  let info;
+  try { info = await (await fetch(`${base}/json/version`)).json(); }
+  catch (error) { throw new Error(`attach mode: no Chrome DevTools endpoint at ${base} (start Chrome through the approved launcher with --remote-debugging-port, or unset STUDIO_CDP_URL for private mode): ${error.message}`); }
+  if (extraArgs.length) console.warn('attach mode: launch flags (e.g. SwiftShader for config.gpu) cannot be applied to an existing browser; WebGL uses that browser\'s own GPU settings');
+  const browser = await connect(info.webSocketDebuggerUrl);
+  let browserContextId;
+  try {
+    ({ browserContextId } = await browser.send('Target.createBrowserContext', { disposeOnDetach: true }));
+    const { targetId } = await browser.send('Target.createTarget', { url: 'about:blank', browserContextId, newWindow: true });
+    const client = await connect(info.webSocketDebuggerUrl.replace(/\/devtools\/browser\/.*$/, `/devtools/page/${targetId}`));
+    client.version = info.Browser;
+    client.close = async () => {
+      try { client.ws.close(); } catch {}
+      try { await browser.send('Target.disposeBrowserContext', { browserContextId }); } catch {}
+      try { browser.ws.close(); } catch {}
+    };
+    await client.send('Page.enable');
+    await client.send('Runtime.enable');
+    await client.send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: scale, mobile: false });
+    // A visible browser may keep our window in the background: emulate focus so it keeps producing frames.
+    await client.send('Emulation.setFocusEmulationEnabled', { enabled: true }).catch(() => {});
+    return client;
+  } catch (error) {
+    if (browserContextId) await browser.send('Target.disposeBrowserContext', { browserContextId }).catch(() => {});
+    try { browser.ws.close(); } catch {}
+    throw error;
+  }
+}
+
+// Close Chromium and remove its throwaway profile. A bare kill leaves helper processes holding the profile (and our stderr
+// pipe) for seconds: on Windows the profile delete failed silently (69 leftover profiles, 746 MB in one day) and node
+// waited ~17 s for the pipe. Ask the browser to quit, wait for the exit, then delete with retries.
+export async function shutdown(proc, wsUrl, profile) {
+  const exited = proc.exitCode !== null || proc.signalCode !== null ? Promise.resolve() : new Promise((r) => proc.once('exit', r));
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  try {
+    const ws = new WebSocket(wsUrl);
+    await Promise.race([new Promise((r, j) => { ws.onopen = r; ws.onerror = j; }), wait(1000)]);
+    if (ws.readyState === 1) ws.send(JSON.stringify({ id: 1, method: 'Browser.close' }));
+    await Promise.race([exited, wait(3000)]);
+    try { ws.close(); } catch {}
+  } catch {}
+  if (proc.exitCode === null && proc.signalCode === null) { proc.kill('SIGKILL'); await Promise.race([exited, wait(2000)]); }
+  proc.stderr?.destroy();
+  live.delete(proc); try { unregister(proc.pid); } catch {}
+  try { rmSync(profile, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 }); } catch {}
+}
+
+export async function connect(url, { timeout = CDP_TIMEOUT } = {}) {
   const ws = new WebSocket(url);
   await new Promise((r, j) => { ws.onopen = r; ws.onerror = () => j(new Error('CDP connect failed')); });
   let id = 0;
   const pending = new Map();
   const listeners = new Map();
+  const settle = (i) => { const p = pending.get(i); if (p) { clearTimeout(p.timer); pending.delete(i); } return p; };
+  // Reject everything in flight (socket closed, browser exited): callers get an error instead of waiting forever.
+  const abort = (error) => { for (const i of [...pending.keys()]) settle(i).rej(error); };
   ws.onmessage = (ev) => {
     const m = JSON.parse(ev.data);
     if (m.id && pending.has(m.id)) {
-      const { res, rej, method } = pending.get(m.id);
-      pending.delete(m.id);
+      const { res, rej, method } = settle(m.id);
       m.error ? rej(new Error(`${method}: ${m.error.message}`)) : res(m.result);
     } else if (m.method) {
       for (const fn of listeners.get(m.method) || []) fn(m.params);
     }
   };
+  ws.onclose = () => abort(new Error('CDP connection closed (browser gone)'));
+  ws.onerror = () => abort(new Error('CDP connection error'));
   const client = {
-    ws,
+    ws, abort,
     send: (method, params = {}) => new Promise((res, rej) => {
       const i = ++id;
-      pending.set(i, { res, rej, method });
-      ws.send(JSON.stringify({ id: i, method, params }));
+      const timer = setTimeout(() => { if (pending.delete(i)) rej(new Error(`${method} timed out after ${Math.round(timeout / 1000)} s: the browser hung or ran out of memory`)); }, timeout);
+      pending.set(i, { res, rej, method, timer });
+      try { ws.send(JSON.stringify({ id: i, method, params })); } catch (error) { settle(i); rej(error); }
     }),
     on: (method, fn) => { if (!listeners.has(method)) listeners.set(method, []); listeners.get(method).push(fn); },
     once: (method) => new Promise((r) => {
@@ -95,10 +171,11 @@ export async function connect(url) {
       if (r.exceptionDetails) throw new Error(`eval: ${r.exceptionDetails.exception?.description || r.exceptionDetails.text}`);
       return r.result.value;
     },
-    async goto(url) {
+    async goto(url, { timeout: t = 45000 } = {}) {
       const loaded = client.once('Page.loadEventFired');
       await client.send('Page.navigate', { url });
-      await loaded;
+      let timer;
+      await Promise.race([loaded, new Promise((_, rej) => { timer = setTimeout(() => rej(new Error(`page load timed out after ${t / 1000} s: ${url}`)), t); })]).finally(() => clearTimeout(timer));
     },
     async png(clip) {
       const r = await client.send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false, ...(clip ? { clip } : {}) });
@@ -116,7 +193,10 @@ export async function connect(url) {
 // abandoned request is ignored. Pixels are unaffected: the same page state is captured.
 export async function screenshot(client, params = { format: 'png' }, { timeout = 4000, tries = 4 } = {}) {
   for (let i = 0; i < tries; i++) {
-    const r = await Promise.race([client.send('Page.captureScreenshot', params), new Promise((res) => setTimeout(() => res(null), timeout))]);
+    const ask = client.send('Page.captureScreenshot', params);
+    ask.catch(() => {}); // an abandoned request may later time out or be aborted: never an unhandled rejection
+    let timer;
+    const r = await Promise.race([ask, new Promise((res) => { timer = setTimeout(() => res(null), timeout); })]).finally(() => clearTimeout(timer));
     if (r) return r;
   }
   throw new Error(`Page.captureScreenshot did not answer after ${tries} tries`);

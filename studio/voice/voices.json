@@ -1,0 +1,27 @@
+{
+  "about": "Voice registry (lib/voice.mjs). Every voice used in a film needs an entry: provider, voiceId, language, dialect, source, rights, commercial (cleared for paid/social delivery?), ownership, consent, quality (draft|good|production). Cloned voices need clone:true + consent {granted, by, date, scope}; the studio refuses them otherwise and never clones a voice from arbitrary footage. Check the provider's current terms before commercial use; entries below record what is known on 2026-10-03.",
+  "voices": [
+    { "id": "hoda-ar-eg", "provider": "windows", "voiceId": "Microsoft Hoda", "locale": "ar-EG", "language": "ar", "dialect": "egyptian", "source": "Windows built-in speech voice (ar-EG)",
+      "rights": "Windows built-in voice: drafts, timing and internal review only; not cleared here for commercial videos", "commercial": false, "ownership": "Microsoft", "consent": "n/a (stock synthetic voice)", "quality": "draft",
+      "notes": "Offline, instant. Robotic: never deliver. Good for animatics and timing the edit." },
+    { "id": "david-en-us", "provider": "windows", "voiceId": "Microsoft David Desktop", "locale": "en-US", "language": "en", "dialect": "us", "source": "Windows built-in speech voice (en-US)",
+      "rights": "Windows built-in voice: drafts only", "commercial": false, "ownership": "Microsoft", "consent": "n/a (stock synthetic voice)", "quality": "draft", "notes": "Offline English draft voice." },
+    { "id": "zira-en-us", "provider": "windows", "voiceId": "Microsoft Zira Desktop", "locale": "en-US", "language": "en", "dialect": "us", "source": "Windows built-in speech voice (en-US)",
+      "rights": "Windows built-in voice: drafts only", "commercial": false, "ownership": "Microsoft", "consent": "n/a (stock synthetic voice)", "quality": "draft", "notes": "Offline English draft voice (female)." },
+    { "id": "kareem-ar-jo", "provider": "local", "voiceId": "vits-piper-ar_JO-kareem-medium", "language": "ar", "dialect": "levantine", "source": "Piper ar_JO-kareem via sherpa-onnx (python tools/live.py models --tts=1)",
+      "rights": "Open Piper voice; see the model card before commercial use; scratch/timing voice in this studio", "commercial": false, "ownership": "model authors", "consent": "n/a (published TTS model)", "quality": "draft", "notes": "Offline, deterministic. Jordanian accent." },
+    { "id": "openai-coral", "provider": "openai", "voiceId": "coral", "model": "gpt-4o-mini-tts", "language": "ar", "dialect": "msa", "source": "OpenAI Audio API built-in voice",
+      "rights": "OpenAI API output; usage policies require disclosing that the voice is AI-generated", "commercial": true, "ownership": "OpenAI (output owned by the user per terms)", "consent": "n/a (built-in voice)", "quality": "good",
+      "notes": "Instructions steer accent/tone (direct().instructions); verify Egyptian dialect by listening." },
+    { "id": "openai-coral-en", "provider": "openai", "voiceId": "coral", "model": "gpt-4o-mini-tts", "language": "en", "dialect": "us", "source": "OpenAI Audio API built-in voice",
+      "rights": "OpenAI API output; disclose AI voice", "commercial": true, "ownership": "OpenAI (output owned by the user per terms)", "consent": "n/a (built-in voice)", "quality": "production", "notes": "Expressive English via instructions." },
+    { "id": "azure-salma-ar-eg", "provider": "azure", "voiceId": "ar-EG-SalmaNeural", "locale": "ar-EG", "language": "ar", "dialect": "egyptian", "source": "Azure AI Speech neural voice",
+      "rights": "Azure Speech output under the subscription terms", "commercial": true, "ownership": "Microsoft (output usable per Azure terms)", "consent": "n/a (built-in voice)", "quality": "production",
+      "notes": "Native Egyptian female voice; SSML prosody/breaks/emphasis." },
+    { "id": "azure-shakir-ar-eg", "provider": "azure", "voiceId": "ar-EG-ShakirNeural", "locale": "ar-EG", "language": "ar", "dialect": "egyptian", "source": "Azure AI Speech neural voice",
+      "rights": "Azure Speech output under the subscription terms", "commercial": true, "ownership": "Microsoft (output usable per Azure terms)", "consent": "n/a (built-in voice)", "quality": "production", "notes": "Native Egyptian male voice." },
+    { "id": "elevenlabs-account-voice", "provider": "elevenlabs", "voiceId": "REPLACE_WITH_VOICE_ID_FROM_YOUR_ACCOUNT", "model": "eleven_multilingual_v2", "language": "ar", "dialect": "egyptian", "source": "ElevenLabs voice library / account voice",
+      "rights": "Per the ElevenLabs plan of the account (paid plans include commercial use)", "commercial": false, "ownership": "per voice licence", "consent": "library voice terms", "quality": "production",
+      "notes": "Set voiceId and commercial:true only after checking the plan and the voice's licence." }
+  ]
+}

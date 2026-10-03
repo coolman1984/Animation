@@ -31,6 +31,59 @@ Your film may use none of them; they are tools, not a house style.
 - **No raster history:** avoid `will-change` and rest transforms; they make seek order change pixels (≤ 1 level on ≤ 3 % of pixels is tolerated in the determinism test).
 - **Fractional viewports** (337.5 px) must be `Math.round`-ed before CDP.
 - **Read-back for graphic type:** kinetic type drawn as graphics is not tracked by text read-back (0 lines is expected); check it with frames instead.
+- **Duration gate is frame-accurate** (`lib/measure.mjs`): |probe − brief| ≤ 1/fps + 30 ms (one AAC packet of container slack). The old ±10 % let a 30 s film be 3 s off.
+- **Exact slice timescales** (`lib/render.mjs`): worker slices are written with `-video_track_timescale` and `-movie_timescale` = fps × 1000. With B-frames (review/final) the edit list is stored in the movie timescale, 1000 by default, so each slice lost up to 1 ms and every join shifted later frames (FFmpeg 9: 15 frames probed 30.039 fps). Now 60/60 frames sit on the 1/fps grid with 4 workers.
+- **Seek 1 ms early for stills** (`ss()` in `lib/review.mjs`, `stillAt` in `lib/finish.mjs`): input `-ss` returns the first frame with pts ≥ target, and `t.toFixed(4)` can land just past a frame (3.9667 > 3.96667). For the last frame that decoded nothing: JPEG output failed with a misleading "Non full-range YUV" error, PNG output exited 0 without writing a file.
+
+## GPU engines in the composer (2026-10-03; studies `examples/three-study`, `examples/pixi-study`)
+- **Install and import:** `node studio.mjs setup gpu` pins Three.js 0.186.1 and PixiJS 8.22.0 into `vendor/` (git-ignored). The composer import map lets films write `import * as THREE from 'three'`, `'three/addons/…'`, `'pixi.js'`. Three's addons import the bare name `three`, so a relative path alone fails.
+- **Determinism:** no ticker or animation loop.
+  - Three: build the scene in `init`; in `render(t)`, set poses and camera from t, then call `renderer.render()`.
+  - Pixi: `await app.init({ autoStart: false, preference: 'webgl', preserveDrawingBuffer: true, resolution: 1 })`, then `parts.update(); app.render()` per frame.
+  - Proof: the same frame from two separate browser runs gave identical PNG hashes for both studies.
+- **Look on software WebGL:** use a PMREM `RoomEnvironment` for metal/glossy products and ACES tone mapping with sRGB output. A radial-gradient plane gives the contact shadow (shadow maps are costly and noisy on SwiftShader). PixiJS handles 20,000 `Particle`s in one `ParticleContainer` with `dynamicProperties: { position, color }`.
+- **Framing:** the first three-study frame put the title over the bottle. Moving the camera from 7 to 9.5 and looking 0.8 lower freed the copy band. Check framing on stills before motion, as usual.
+
+## Colour, review, voice (2026-10-03)
+- **Colour round-trip:** a 24-patch chart is encoded with the film's exact `encodeFilter`, x264 at CRF 14, then decoded with BT.709/tv.
+  - Result: ΔE76 mean 0.70 / max 1.22, and 0.54 / 1.07 with `dither`. Under 1 is invisible.
+  - Re-run `node studio.mjs color check` after any encoder change.
+- **LUT in FFmpeg on Windows:** `lut3d=file='D\:/path with spaces/x.cube'`. Use forward slashes, escape the drive colon, and quote the path.
+- **OCIO without config files:** `ocio://studio-config-latest` (OCIO 2.6) bakes `.cube` LUTs, e.g. ACEScg → "sRGB - Texture".
+- **One launch for many scopes or measurements:** use a `select=eq(n\,N)` branch per moment. `measureAll` adds a `signalstats` branch for legal range.
+  - `metadata=print` with several `key=` options keeps only the LAST key: print everything and parse it.
+- **Review player:** a `<video>` needs HTTP Range to seek frame by frame (`lib/review-server.mjs`).
+  - Seek to `(n + 0.5)/fps` so the shown frame is exactly n, and display the floor frame.
+  - Approval stores the file's SHA-256; a re-export voids it.
+- **Windows TTS:** OneCore voices (Microsoft Hoda ar-EG) are visible only from PowerShell 7 (`pwsh`). In Windows PowerShell 5 a failed `SelectVoice` silently fell back to an English voice that rendered Arabic as 0.3 s of silence.
+  - Set `$ErrorActionPreference='Stop'`.
+  - Make SSML `xml:lang` the voice's locale (`ar-EG`).
+  - Never use `prosody rate="0%"`: it dragged a 3 s line to 9.5 s. Use "default" or a signed percentage.
+- **Mixed-language ASR:** Whisper picks one language per decode. Decode each VAD phrase separately with `language=''` and the English sentence inside Arabic speech survives.
+- **Mono check baseline:** identical L/R measures exactly 3 LU lower when folded to mono, so only warn beyond 4.5 LU.
+- **Blocked downloads:** if `raw.githubusercontent.com` is blocked, take the same file from the project's PyPI wheel (`pip download <pkg> --no-deps`, then unzip the one file).
+
+## Memory, crashes and hangs (2026-10-03, after two renders killed the host session)
+- **Commit, not RAM, is the limit on Windows.** 15.7 GB RAM but a FIXED 2 GB page file → commit limit 17.7 GB; with the host app, the owner's Chrome and services committed, only ~1.7–3 GB remained. Six Chrome workers (1080p, SwiftShader) exhausted it: node died with a native out-of-memory stack and the host application was killed too. `memoryBudget()` (lib/platform.mjs) reads free RAM AND commit free (one PowerShell CIM call); headroom = the smaller one.
+- **Workers are sized, never requested blindly:** `plannedWorkers()` = floor((headroom − 3 GB reserve) / per-worker), per-worker ≈ 0.45 GB + 0.5 GB when `gpu` + 10 frame buffers (1080p 3D ≈ 1.03 GB), capped at cores − 1 and the request. `STUDIO_WORKERS=n` forces. make logs the decision and `measure.json` records `render.workers`.
+- **Orphans:** every launched browser is registered in `takes/.studio-procs.json` (lib/procs.mjs: pid, parent, profile). The next launch reaps entries whose node is dead (`taskkill /T /F` on Windows, profile removed); a `process.on('exit')` hook kills this run's browsers. `node studio.mjs cleanup` does it on demand and reports headroom. Measured leftovers before this: 32 Chrome processes, 1.9 GB, one hung node.
+- **Hangs become errors:** every CDP request has a deadline (90 s, `STUDIO_CDP_TIMEOUT`), page loads 45 s, and a closed socket or an exited browser rejects everything in flight. Abandoned screenshot retries carry a `.catch` so a late timeout is never an unhandled rejection.
+- **Resume:** slices (`<out>.slices/sNN.mp4`) survive a failed run; `key.json` holds {content key, worker count, fps, range}. The next run with the same key reuses complete slices (ffprobe packet count) and renders only the missing ones. Slices are deleted only after a successful join.
+- **Lazy chapters:** a scene with `lazy: true` builds itself on its first frame (film7's 3D chapter: WebGL renderer, PMREM, geometry ≈ 0.5 GB), so workers whose slice never reaches it pay nothing. Proven: 79.5 s rendered alone under lazy init is byte-identical to the eager render; rendered after another frame it differs by 1 pixel × 1 level (PSNR 116 dB), the known raster-history tolerance.
+- **One way to render long films:** `node studio.mjs build <film> [make flags]` reaps orphans, prints headroom, runs make.mjs as a child and tees EVERYTHING (including a native crash message that make itself can never log) into `takes/<film>/build-full.log`; make also keeps `takes/<film>/build.log`. Never again a `Select-Object -Last N` on a render: it dropped the crash reason.
+- **The owner's one-time fix:** set the Windows page file to system-managed (or ≥ 16 GB). The doctor's "Memory headroom" row says FIXED while it is not; with it, this machine can run 3–4 workers instead of 1.
+
+## Cross-platform (Linux CI + the owner's Windows machine, 2026-10-03)
+All OS differences live in `lib/platform.mjs`; `test/platform.test.mjs` fails on a regression.
+- **Browser:** `STUDIO_CHROMIUM`, else Linux paths, Windows Chrome/Edge under Program Files / LocalAppData, macOS Chrome. Get the version from DevTools `/json/version`: on Windows `chrome.exe --version` opens a window.
+- **Closing Chromium** (`shutdown()` in `lib/cdp.mjs`): send `Browser.close` on the browser websocket, wait for the exit, then delete the profile with `maxRetries`. A bare kill left helper processes holding the profile and our stderr pipe: 69 orphaned profiles (746 MB) in one day and a ~17 s wait before node could exit.
+- **Builds run a lighter doctor** (`doctor({ optional: false })` from `make.mjs`): no Python imports, no GPU test-encodes, no `takes/doctor.json` overwrite. The first frame's width gate in `render.mjs` still enforces the device scale. A build's tool check went from 31 s to about 10 s here; each `ffmpeg`/`ffprobe` spawn costs about 1.1 s on this machine.
+- **Main-module check:** `isMain(import.meta.url)` (`pathToFileURL`), never the raw `` `file://${process.argv[1]}` ``: on Windows with spaces in the path the CLI body silently did nothing.
+- **Python:** `PYTHON` = `STUDIO_PYTHON`, else `python` on Windows (`python3` is the Microsoft Store stub), else `python3`. Python tools reconfigure stdout/stderr to UTF-8 and open text files with `encoding='utf-8'`: Windows defaults to cp1252, and `≈` or Arabic crashed `audio_deep.py`.
+- **FFmpeg:** `os.devNull` for the first pass of a two-pass encode. Use a concat list, not `-pattern_type glob` (Windows builds lack glob). Give `drawtext` an explicit `fontfile=` (Windows builds have no Fontconfig configuration, and the process crashed). Use forward slashes in concat lists and page URLs (`slash()`).
+- **Files:** `node:fs` (`rmSync`, `renameSync`), never `execFileSync('rm'|'mv')`. Use `statfsSync` instead of `df`.
+- **Test env:** `npm run test:render` loads `test/render.env` with `node --env-file`, not the POSIX `VAR=1 cmd` syntax.
+- **One OpenCV package per Python environment:** mediapipe brings `opencv-contrib-python`. Installing `opencv-python-headless` and `opencv-python` as well overwrites the shared `cv2` folder.
 
 ## Review recipes (cheap and effective)
 - Extract the acceptance frames **from the exported mp4**, not from the preview path: `ffmpeg -ss T -i master.mp4 -frames:v 1 f.png`, then a strip with `hstack`/`tile`.
@@ -67,7 +120,8 @@ Owner-facing workflow: AUTONOMOUS_FILM.md — one natural-language request, agen
 Capture startup reliability: create the server, launch inside cleanup protection, close the server even on startup/client-close failure. cdp.mjs permits one bounded retry only for transient Chromium startup failures, never for failed product verification.
 
 ## Tooling speed without quality loss
-- **Bounded pool for independent extractions** (`pool()` in `lib/review.mjs`): N separate ffmpeg processes, each writing its own file, results kept in input order. Same bytes, less wall time (evidence 104 s → 71 s). Seeking a CRF 14 master is the cost, not the decode of one frame.
+- **One decode, many images** (`grab()` in `lib/review.mjs`, 2026-10-03): every review still, strip frame, crop, raw contrast/thumbnail buffer and the contact sheet come from one `split` → `select=eq(n\,N),setpts=0,…` graph. Strips hstack their own branches, so a frame may repeat. Long graphs are chunked to stay under the Windows command-line limit. This replaced the earlier `pool()` of one ffmpeg launch per image (39 launches for a 4 s clip). Review evidence went from 23 s to 4 s on the owner's machine.
+- **Process launches are the cost on Windows:** even `cmd /c exit` takes 0.8 s here, and node, python and ffmpeg each take 0.9–1.4 s. Count them with an `--import` preload that wraps `child_process` (NODE_OPTIONS) before optimising anything else. A fresh 4 s review build went from 61 launches / 78 s to 24 / 46 s, using `grab()`, `measureAll()` (loudness + freeze + black in one pass, numbers identical) and `buildCheck()`, plus a one-process `vm.SourceTextModule` syntax check reused while the files are unchanged.
 - **Onsets from frame 0:** an opening impact is a real onset; local-max windows clamp at the start instead of skipping frames.
 
 ## Product-UI promo grammar (learned from a 15 s SaaS promo, 2026-10-02; kit: `lib/uimotion.js`)

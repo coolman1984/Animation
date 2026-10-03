@@ -24,3 +24,5 @@ records which text lines are visible (opacity > 0.5) → start/end per line. No 
 6. Shaping intact (view a 1:1 crop). 7. Punctuation spacing. 8. EN map complete. 9. SRT + VTT both. 10. Files in the take folder.
 
 **Word-timed karaoke captions (2026-10-03):** words from `tools/live.py align` (script) or `transcribe` (Whisper segments) → `pageCaptions()` in `lib/edl.mjs` (1–4 words, break at pauses/punctuation, pages never overlap) → `wordState()` drives past/now/next styling. Show a page exactly from its first word (a pre-roll overlaps the previous page).
+
+**Canonical transcript (2026-10-03):** spoken-word captions come from `lib/transcript.mjs` (`node studio.mjs transcript <pack>`): SRT (RTL embedding per line), WebVTT, ASS, TXT, JSON, bilingual SRT from a translation layer; `coverage()` must be complete before calling a bilingual file English-ready. Composition text still comes from the DOM read-back (`captions()` in lib/finish.mjs).

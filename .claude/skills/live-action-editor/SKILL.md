@@ -13,3 +13,5 @@ Operating policy: `studio/WORKFLOW.md`; full guide, research and sources: `studi
 6. Sound with `lib/dialogue.mjs`: `polish()` the voice, `duck()` the music 8–12 dB under it, `stitch()` jump-cut audio with 10 ms fades; master to -14 LUFS via make.
 7. Gates as usual; declare end holds; inspect transitions on 30 fps strips of the export.
 Rules: outlines/strokes are drawn on canvas (`draw({ outline })`) — never chained CSS drop-shadows on full-frame layers (froze capture). A scratch TTS voice is never presented as a client's voice. Real people need their consent/rights recorded in ASSETS.md and production.json.
+
+**Speech upgrades (2026-10-03):** `tools/live.py diarize` (who speaks when) and `transcribe --lang=auto` (per-phrase language: mixed Arabic/English). Convert to the canonical transcript (`lib/transcript.mjs`) for captions, translation layers, fillers/repeats/cut points; never add words a speaker did not say. Department: `voice-director`.

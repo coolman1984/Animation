@@ -6,16 +6,18 @@ description: Route a film from a concise brief through one proof clip to verifie
 Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `studio/SKILLS.md`.
 
 
+**House method first (owner order 2026-10-03):** read `studio/QUALITY_PLAYBOOK.md` §0 "Owner taste" before choosing a direction, music or logo treatment; it overrides older taste advice.
+
 Read studio/WORKFLOW.md first, then studio/QUALITY_PLAYBOOK.md (one hero object, measured references, stills → strips → critique, finish checks); studio/SKILLS.md routes optional departments. Do not re-read the historical prompt.
 
 If a reference film is supplied, invoke reference-reverse-engineer via SKILLS.md before inferring its techniques. If the film uses real footage of people, load live-action-editor (studio/LIVE_ACTION.md). Do not load the reference lab for ordinary films.
 
 1. Record viewer, real evidence, one promise, CTA, duration/placements and asset limitations. Owner-authorized work proceeds without repeated approval.
 2. If concept is open, load creative-director. Compare at most three genuinely different directions; pick one. Three style frames: hook, proof, payoff. Fill shot craft metadata before expensive motion.
-3. New films use production.json (studio/templates/production.json) referenced by config.production. Share shot times with picture and sound.
+3. Start a new film with `node studio/studio.mjs new <film> --placement=reels|youtube|feed|square --duration=N` (writes config with ownerRequest, production.json, film.js, score.mjs, BRIEF, LEDGER). Share shot times with picture and sound. Give every shot `craft.layers` (e.g. ["text","particles:20000","3d"]) and run `node studio/studio.mjs route <film>`: it picks the most mature installed engine per layer (studio/PLATFORM.md). Prefer CORE/PRODUCTION engines; an EXPERIMENTAL engine needs a reason in the craft block.
 4. Prepare only needed assets/layers. Use animation-lab/camera-director when needed, not all skills.
 5. Run production preflight first; creative repetition/overload findings are warnings to inspect, not taste scores. Then build one 8–12s proof with one real transition. Draft is silent; review profile is required to judge sound.
-6. Expand, then fix changed ranges plus entry/exit. Final build uses `node make.mjs <film> --profile=final`.
+6. Expand, then fix changed ranges plus entry/exit. Render long builds through `node studio/studio.mjs build <film> --profile=review|final` in the background (memory-sized workers, orphan reaping, resume, full log in `takes/<film>/build-full.log`); never a second render or browser job in parallel.
 7. One separate final critique: frames + actual motion/audio playback, brief and ledger. A fresh reviewer is preferred when available.
 8. Close blocker/major findings and report verified output plus any limitation. No unbounded review loops.
 

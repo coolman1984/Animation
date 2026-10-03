@@ -22,3 +22,7 @@ If playback/listening isn't available, label music selection unverified instead 
 **Film 5 additions:** darbuka maqsum on an eighth grid, D-hijaz arps/pads, `lpSweep()` time-varying low-pass (radio opening into the drop, tape spinning down), dotted-eighth stabs for cards, ping-pong stabs, accelerating snare roll; never duplicate a cue-sheet impact in the score (identical seeds double the level).
 
 **Dialogue films (2026-10-03):** `lib/dialogue.mjs` — `polish()` (high-pass → afftdn/arnndn → de-ess → compressor; denoise before compression), `duck()` (sidechaincompress keyed by the voice; pad the voice with `apad` to the film length or the ducked music ends with the voice), `stitch()` for jump-cut audio with 10 ms fades. Music 8–12 dB under speech. See `studio/LIVE_ACTION.md` §3.
+
+**Voice & sound department (2026-10-03):** narration, transcripts, dubbing, ducking and mix QA live in skill `voice-director` / `studio/VOICE_STUDIO.md`. Sound library with rights: `studio/sounds/library.json` (`node studio.mjs sounds <category>`). Before delivery: `node studio.mjs mixcheck <mix>` (clipping, mono fold-down, phone speaker, phase).
+
+**Owner taste (2026-10-03, authoritative):** default to Western music with energy, a real beat and one returning hook locked to the cuts; soft beds were rejected twice. "No music" means effects only + low room tone + soft-limited peaks (film 9). See `studio/QUALITY_PLAYBOOK.md` §0.

@@ -5,6 +5,12 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-03 — House method: films 6–9 branch merged into main as the authority (scope DONE)
+Owner: this branch's experience, techniques and ideas must dominate the project so he can use it from main.
+- New `QUALITY_PLAYBOOK.md` §0 "Owner taste" (music, logos, honesty, language, film shape, placement, references), referenced first from `CLAUDE.md`, `film-director`, `sound-designer`.
+- Merged origin/main (platform v1, Windows port, render stability, voice department kept). Number clash: main's WIP `film7` (3-min Pixel Plus presentation) → `film10`; SANAD stays `film7`.
+- Known: `platform.test.mjs` worker-planning test fails on this container on main too (machine-dependent).
+
 ## 2026-10-03 — Film 9: NeuroAnara «Decode the Case», 20 s Reels, no music (scope DONE)
 Owner: a 20 s ad for an educational neuro-physiotherapy page, sound effects only, true to its posts, colours and calm scientific spirit.
 - `film9/`: a seated patient fails to stand → dendrites to the eight causes → a pulse along an axon lights Finding / Meaning / Treatment Direction → فكّر. اربط. قرّر. →
@@ -34,6 +40,104 @@ No placement named → studio default for social video: 1080×1920 @ 30 fps, one
 - take08: all gates PASS after 2 of 2 correction rounds. Not verified: listening, real-speed human viewing, a fresh reviewer, live Meta overlays.
 - Brand conflicts reported to the owner: three different icons and two descriptors across the boards (see BRIEF).
 
+## 2026-10-03 — Render stability: memory-sized workers, orphan reaping, CDP deadlines, resume, safe build command (scope DONE)
+Owner: "fix the problem that keeps hanging and closing this session all the time". Two film10 (then film7) renders had crashed the host application.
+- Cause found by measurement: Windows commit limit (15.7 GB RAM + a fixed 2 GB page file) with ~1.7–3 GB free; six 1080p SwiftShader Chrome workers exhausted it → native OOM in node, host app killed; each crash left 32 orphan Chrome processes (1.9 GB) and one hung node (no CDP deadline).
+- `lib/platform.mjs`: `memoryBudget()` (free RAM + Windows commit free via one CIM call, page-file facts), `plannedWorkers()` (3 GB reserve, per-worker model, `STUDIO_WORKERS`).
+- `lib/procs.mjs` (new): browser registry, `reap()`, `orphans()`, `killTree()`. `lib/cdp.mjs`: registers every launch, reaps at first launch, kills on process exit, per-request deadline (90 s, `STUDIO_CDP_TIMEOUT`), 45 s page load, abort on socket close/browser exit, safe abandoned-screenshot retries.
+- `lib/render.mjs` `video()`: workers capped by the planner (logged), resume from complete slices of a crashed run with the same key, slices kept on failure, `workers/reusedFrames/headroomGB` in the stats.
+- `make.mjs`: `takes/<film>/build.log` (all lines, crash-safe), memory line + page-file note at start, `resumeKey`. `studio.mjs build <film>` (reap → headroom → child make → `build-full.log` → exit code) and `studio.mjs cleanup`. Doctor rows: memory headroom with page-file advice, orphan browsers, workers for a 1080p 3D film now.
+- film10 (then film7): the 3D chapter is `lazy: true` (built on first use). Proven byte-identical when rendered alone; 1 px × 1 level after another frame (known raster history).
+- Verified: syntax of all modules; fast tests 11/12 (the 12th was the docs gate for the new module, fixed by this entry); `cleanup` ran; planner on this machine → 1 worker (headroom 2.96 GB); lazy-vs-eager pixel comparison. Not verified yet: a complete film10 (then film7) render through the new path (running next).
+
+## 2026-10-03 — Browser attach mode, colour management, playback review, voice & sound department (scope DONE)
+Owner request: decide the Chrome-launcher question without breaking anything; add colour management and a playback review screen; build
+a first-class Arabic/English voice, transcript and sound studio.
+- **Browser:** private headless Chrome stays the default.
+  - New attach mode (`STUDIO_CDP_URL`) uses an isolated context in a launcher-started Chrome and never starts or kills it. Verified: renders work, owner tabs survive, the context is disposed.
+  - Pixels differ between modes by 42 dB, so the picture cache keys on the mode. The doctor supports both modes.
+- **Colour:** `lib/color.mjs`:
+  - ΔE chart round-trip through the real encoder: mean 0.70, or 0.54 with dither.
+  - Scopes for several moments in one launch.
+  - Legal range, also folded into `measureAll`.
+  - `config.lut` grade via `lut3d`.
+  - `tools/ocio_bake.py` (OCIO 2.6 built-in config).
+  - Every review gallery shows scopes; make prints a legal-range note.
+- **Review:**
+  - `lib/review-player.html` is written next to every review gallery. It offers frame stepping, a shot/copy/cue timeline, a waveform, A/B takes, timed notes and keyboard control.
+  - `lib/review-server.mjs` + `node studio.mjs review <film>` add HTTP Range, notes storage and approval bound to the export's SHA-256 (voided on change).
+- **Voice & sound** (`VOICE_STUDIO.md`, skill `voice-director`):
+  - `tools/live.py`: `diarize` (sherpa-onnx pyannote + ERes2Net), `transcribe --lang=auto` decoding per VAD phrase (mixed Arabic/English), speaker labels per word, `tts --each`, safe model download with a PyPI fallback for the blocked Silero host.
+  - `lib/transcript.mjs`: canonical transcript, translation/adaptation layers + coverage, logged corrections, fillers, repeats, cut points, search, keep-ranges, SRT/VTT/ASS/TXT/JSON/bilingual.
+  - `lib/voice.mjs`:
+    - provider-neutral `generate()` with windows/local/openai/elevenlabs/azure
+    - performance map, pronunciation lexicon (`voice/lexicon.json`) and voice registry with rights and a consent gate (`voice/voices.json`)
+    - film `voice.json` → stems + manifest, `fitToSlot` (±8 % or rewrite), `mixScript` (adelay + ducking)
+  - `lib/mixcheck.mjs`: clipping, mono, phone speaker and phase in one pass. `sounds/library.json` + `lib/sounds.mjs`.
+- **Verified here:**
+  - Windows Hoda ar-EG, David en-US and Piper lines generated (real audio, measured).
+  - The mixed AR/EN test clip transcribed with both languages; diarization separated 2 of 3 voices (two similar synthetic male voices merged).
+  - Bilingual SRT written; voice script placed, mixed and checked; LUT path applied.
+  - Fast tests 30/30 (+2 render-gated skips) in 6 s.
+- **Not verified:** the cloud voice adapters (no keys), a listening judgement of naturalness, attach mode with the owner's real launcher, the player in the owner's own browser session.
+
+## 2026-10-03 — Studio platform v1 + audit fixes (scope DONE)
+Owner request: apply the "visual production operating system" vision (capability registry, router, universal scene, setup profiles,
+maturity, visual lab, technology scout, knowledge layers), the deep artistic forensics brief and the audit report — simple for the agent.
+- `studio.mjs` front door: `caps`, `new` (starter film per placement), `route` (engine per `craft.layers`), `setup <profile>`, `doctor`.
+- `capabilities.json` + `lib/capabilities.mjs`:
+  - 25 capabilities with checks, profiles, serves/limits, licences and maturity.
+  - `loadRegistry` refuses EXPERIMENTAL and above without a study.
+  - `detect` uses at most one python launch.
+  - `route` picks the most mature ready engine within its limits and names the missing better one or the planned one.
+- Universal scene kept simple: shots declare `craft.layers` (validated against `layerTypes`). The composer page is the single compositor; outside renders enter as footage or external-engine picture (PLATFORM.md).
+- Three.js 0.186.1 + PixiJS 8.22.0 vendored (`setup gpu`, git-ignored) with a composer import map. Studies `examples/three-study` (metallic bottle, PMREM light, orbit) and `examples/pixi-study` (20,000 particles) are deterministic across runs and visually checked → EXPERIMENTAL.
+- `setup color` installed OpenColorIO 2.6.0, OpenImageIO, OpenEXR (PLANNED; no adapter).
+- `technology-scout` skill and `TECH_RADAR.md` (dated). PLATFORM.md defines departments → skills, the graduation rule, learn/adapt/integrate and the knowledge layers. CRAFT.md is now marked timeless.
+- Audit fixes:
+  - B01/B02: serve containment by path components and 400 on malformed escapes.
+  - B03/B04: total validators.
+  - B10: `unchecked` gates (UNCHK, listed in `measure.json` and the verdict).
+  - B11: `poster: 0`.
+  - B12: share budget validation, MiB documented.
+  - R08: tar `filter='data'`.
+  - app-capture version via CDP.
+- Tests: new `test/audit-fixes.test.mjs`, `test/capabilities.test.mjs`; the targeted run passed 25/25 in 6 s. Not run: slow suites (policy). Pending owner decision: the audit's B09 browser-launcher policy.
+
+## 2026-10-03 — Engineering audit and technology report (scope DONE)
+Owner request: find bugs, problems, missing capabilities, useful GitHub projects, and current studio technologies; write a full root Markdown report.
+- Added `../STUDIO_AUDIT_AND_TECHNOLOGY_REPORT_2026-10-03.md`: prioritized findings, reproduced evidence, missing tools, project/license/hardware comparisons, verified releases through October 3, and an ordered implementation roadmap.
+- Reviewed a hashed 225-file snapshot and preserved concurrent changes. The report distinguishes snapshot defects from later fixes and records test failures/skips without claiming full certification.
+- Verification: report links/formatting valid; corrected snapshot docs 5/5, current platform/docs 7/7, current audio analyzer 1/1. Isolated snapshot reference integration still cancelled at its 120-second timeout. Browser rendering and advanced model workflows unverified.
+- No production implementation, film, creative recipe, asset or skill advice changed by the report scope. Local evidence remains ignored under `takes/`.
+
+## 2026-10-03 — Windows port, speed-ups and testing policy (scope DONE)
+Owner request: "fix and improve, search for needed tools", then "make tests shorter", then "never run slow tests unless producing a real video".
+- New `lib/platform.mjs` (`isMain`, `PYTHON`, `devNull`, `slash`, `onPath`, `browserCandidates`) + `test/platform.test.mjs`, which also fails on POSIX-only idioms. The doctor finds Windows Chrome/Edge, reads the version from DevTools and measures disk with `statfsSync`.
+- Bugs found by real Windows runs, fixed:
+  - Slice edit lists in a 1000 timescale shifted frames at worker joins (`render.mjs` now uses exact timescales).
+  - A last-frame seek returned no frame (`ss()` 1 ms early in `review.mjs`/`finish.mjs`).
+  - Chromium kill left profiles and a stalled pipe (`shutdown()` in `cdp.mjs`).
+  - Python cp1252 crashes (UTF-8 stdio and files).
+  - `rm`/`mv` shells, `/dev/null`, FFmpeg glob and Fontconfig `drawtext` failures (fixes the 3 reference test failures).
+- Duration gate is frame-accurate (1/fps + 30 ms) instead of ±10 % (+ test). FFmpeg errors now include the command.
+- Speed (each process launch ~1 s here):
+  - `grab()`: one decode for every review image.
+  - `measureAll()`: loudness/freeze/black in one pass, identical numbers.
+  - `buildCheck()`: reused required doctor.
+  - One-process cached syntax check.
+  - Result for a fresh 4 s review build: 61 launches / 78 s → 24 / 46 s.
+- Tools: Python forensics + live-action packages installed locally (one OpenCV: `opencv-contrib-python`), logo tracer (`potracer`, `pillow`); requirements files note the single-OpenCV rule. ML models not downloaded.
+- Testing policy in `../CLAUDE.md`, `WORKFLOW.md`, `README.md`: `npm test` = quick suite, `test:all` (CI) and `test:render` only during real video production. CI unit step now runs `test:all`.
+- Verification: last full render run before the speed-ups 108/112 passed, 0 failed, 2 time-out cancellations; post-change checks targeted (see STATUS). Not verified: a full slow run after the speed-ups, listening, CI.
+
+## 2026-10-03 — Deep app study on Windows (scope DONE)
+Owner request: learn the app deeply after cloning the repository.
+- Added `APP_MAP.md`: current architecture, film contracts, build profiles, source/delivery time, cache ownership, native/external rendering, technical/artistic checks, reference analysis, live-action packs and worked-project map.
+- Verified local plans/delivery selection and ran the existing tests: 109 tests, 87 passed, 3 failed, 19 skipped. All three failures report FFmpeg Fontconfig configuration errors in reference analysis. Local transcript: `takes/app-study-tests.txt`.
+- Recorded Windows browser discovery, CLI URL guards, POSIX commands, missing optional Python tools and intentionally excluded assets. Historical Linux results are distinct from local verification.
+- Updated STATUS and linked the map from README. No application behavior, creative recipe, asset, film ledger or project skill advice changed; no new media/model downloads.
+- Not verified: browser renders, playback/listening, model-backed analysis, complete Windows production or current remote CI. Learning is complete; portability repair was not requested.
 ## 2026-10-03 — film6 (Pixel Plus) music v2: energetic catchy dance-pop (scope DONE)
 The owner's "music very bad and ugly" note was about the Pixel Plus ad. `film6/score.mjs` rewritten on the same 120 BPM grid: 909 kick, off-beat sub,
 pumping supersaw Am–F | C–G, one hook returning in every chapter, builds into each drop, final chorus on the logo; every UI foley event kept.

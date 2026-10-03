@@ -1,5 +1,7 @@
 # CRAFT — what the studio has learned (short, specific, with numbers)
 
+Timeless craft only. Dated technology and trend notes go to `TECH_RADAR.md`, never here (PLATFORM.md → knowledge layers).
+
 ## Film 2 — BALACONBAR 60 s Facebook ad (2026-10-01)
 1. **Brand by frame 1 for free:** open on the product that carries the logo (cup at 1.5×) — no logo card needed; ABCD's "brand ≤ 5 s" is met at 0.0 s.
 2. **Match-cut isolation** (fade world, keep the product pixel-locked) is the cheapest premium transition: 0.45 s, no new asset.
@@ -61,6 +63,11 @@
 ## Live-action toolkit (2026-10-03)
 38. **Analyse once, render from cached data:** MediaPipe's face landmarker is non-deterministic in VIDEO mode; run IMAGE mode per frame, smooth with a 1€ filter and store JSON — the render reads the pack and stays deterministic.
 39. **Offline editing can look ahead:** forward-backward smoothing gives a reframing camera with zero lag (it moves with the subject, not after him), reset at every cut; a dead zone removes micro pans.
+40a. **Windows port (2026-10-03): run the real pipeline, not only the unit tests.** Unit tests passed on Windows while real builds would have failed on missing `rm`/`mv`, `/dev/null`, FFmpeg glob and Fontconfig. Real renders also exposed two cross-platform bugs: B-frame edit lists rounded to 1 ms at every worker join, and a last-frame seek that returned no frame. Measure the gap (`ffprobe` packet pts) before blaming the OS.
+40b. **"Silent success" is the expensive failure:** a PNG still that exits 0 without a file, a profile delete wrapped in `try {}`, a CLI guard that never matches. Each of these looked fine. Add an existence/regression check where a step can fail quietly.
+40d. **When the whole session dies, suspect the machine before the film.** Two renders killed the host app; the film was fine. The cause was Windows commit (RAM + a fixed 2 GB page file) exhausted by six Chrome workers, and each crash left 30+ orphan browsers that starved the next run. Measure headroom, size workers to it, reap orphans at start, and log to a file the crash cannot erase.
+40e. **A hang is a missing deadline.** A render waited for hours on a Chrome that had died. Every request to another process needs a timeout and a "the other side is gone" path; "it will answer eventually" is not a plan.
+40c. **A voice is only checked when it is heard or measured:** the first Arabic draft line "succeeded" with 0.3 s of silence (a hidden voice fallback). Always read back the duration and loudness of generated speech (`volumedetect`) before using it, and listen before calling it natural.
 40. **Headless capture has two traps:** a detached `<img>.decode()` may never resolve (use `createImageBitmap`), and stacked CSS `drop-shadow` filters on a full-frame layer froze screenshots for > 90 s (draw strokes on canvas). Bisect with a skip switch, do not just add retries.
 41. **A bed under a voice still needs a pulse.** "Soft and safe" read as ugly to the owner; ducking already protects the words, so give the music a kick, a hook and a tempo derived from the cut grid, and make edit events musical (freeze = stop, unfreeze = drop).
 42. **One hook, every chapter.** A catchy ad track repeats one short hook and changes only its instrument and energy per chapter (pluck → lead → bells → low saw → full chorus); the loudest section is the logo. If an owner note is ambiguous ("the music"), it usually means the main client film, not a study.
