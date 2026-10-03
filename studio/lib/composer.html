@@ -54,9 +54,10 @@
   window.renderAt = (u, frame) => {
     const t = mapT(u);
     // Re-edited segments preserve both authored time and frame-dependent motion.
-    film.render(t, segs.length ? Math.round(t * (film.fps || 30)) : (frame ?? Math.round(t * (film.fps || 30))));
+    // A film may return a promise from render (live footage frames must be decoded before capture); capture awaits it.
+    const done = film.render(t, segs.length ? Math.round(t * (film.fps || 30)) : (frame ?? Math.round(t * (film.fps || 30))));
     if (fadeOut) { if (!veil.parentNode) stage.appendChild(veil); veil.style.opacity = Math.min(1, Math.max(0, (u - (total - fadeOut)) / fadeOut)).toFixed(4); }
-    return true;
+    return done && typeof done.then === 'function' ? done.then(() => true) : true;
   };
   // Optional: films that expose camera(t) get camera diagnostics and velocity-aware review sampling.
   if (typeof film.camera === 'function') window.cameraAt = (u) => film.camera(mapT(u));
@@ -81,7 +82,7 @@
     await Promise.all([...document.fonts].map((f) => f.load()));
     await Promise.all([...stage.querySelectorAll('img')].map((i) => i.decode().catch(() => { throw new Error('image failed: ' + i.src); })));
     await Promise.all(pending);
-    window.renderAt(0);
+    await window.renderAt(0);
     return { W, H, duration: total, fps: film.fps || 30, fonts: [...document.fonts].filter((f) => f.status === 'loaded').map((f) => f.family) };
   })();
 </script>

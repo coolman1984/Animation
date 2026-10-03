@@ -15,3 +15,5 @@ Cut-downs need a complete hook/proof/CTA, even if that requires a dedicated edit
 assembleAudio uses up to 20ms EDGE FADES, not overlap crossfades; duration remains equal to picture segment lengths.
 It rejects invalid/too-long source ranges. True crossfades need handles and explicit picture timing; don't silently shorten audio.
 Use changed-range previews. At final, listen/watch all joins and the resolution, including the encoded share copy.
+
+**Live-action cuts (2026-10-03):** jump cuts from speech with `keepRanges` (pad ≈ 0.12 s, bridge gaps < 0.35 s, drop slivers < 0.25 s), alternate 1.0/1.12–1.15 punch-ins so cuts read as style, J/L audio offsets 0.2–0.4 s for dialogue flow, freeze-frame intros 1.5–2 s. `studio/LIVE_ACTION.md` §3.

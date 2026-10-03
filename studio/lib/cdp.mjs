@@ -111,10 +111,21 @@ export async function connect(url) {
 // The first screenshot after a page loads can be torn (lower tiles still showing an older raster),
 // measured on Chromium 141 headless with heavy filter layers. Capture until two consecutive
 // screenshots match before any real frame is taken; later captures were verified stable.
+// Page.captureScreenshot can very rarely never answer in headless software mode right after canvas commits (seen with live
+// footage pages: 1 in ~6 captures, the next request answers in ~40 ms). Wait `timeout` ms, then ask again; a late answer to the
+// abandoned request is ignored. Pixels are unaffected: the same page state is captured.
+export async function screenshot(client, params = { format: 'png' }, { timeout = 4000, tries = 4 } = {}) {
+  for (let i = 0; i < tries; i++) {
+    const r = await Promise.race([client.send('Page.captureScreenshot', params), new Promise((res) => setTimeout(() => res(null), timeout))]);
+    if (r) return r;
+  }
+  throw new Error(`Page.captureScreenshot did not answer after ${tries} tries`);
+}
+
 export async function settleCapture(client, { tries = 8, gap = 30 } = {}) {
   let prev;
   for (let i = 0; i < tries; i++) {
-    const shot = (await client.send('Page.captureScreenshot', { format: 'png' })).data;
+    const shot = (await screenshot(client, { format: 'png' })).data;
     if (shot === prev) return i;
     prev = shot; await new Promise(r => setTimeout(r, gap));
   }

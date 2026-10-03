@@ -1,0 +1,9 @@
+# Live-action toolkit (tools/live.py). Then: python3 tools/live.py models [--asr=turbo|base|small] [--tts=1]
+# MediaPipe needs libEGL at import time on Linux (apt-get install -y libegl1).
+mediapipe
+onnxruntime
+sherpa-onnx
+soundfile
+opencv-python-headless
+numpy
+opentimelineio   # optional: validates lib/edl.mjs OTIO exports in the tests

@@ -21,3 +21,6 @@ assets/audio/
 *.aiff
 # Reference reconstruction source/outputs are per-job runtime experiments.
 recreations/
+# Downloaded ML models (tools/live.py models) and footage packs stay local.
+models/
+__pycache__/

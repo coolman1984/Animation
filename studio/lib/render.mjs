@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { cpus } from 'node:os';
 import { once } from 'node:events';
 import { frameRange, PROFILES } from './build-options.mjs';
-import { launch, imageWidth, settleCapture } from './cdp.mjs';
+import { launch, imageWidth, settleCapture, screenshot } from './cdp.mjs';
 import { serve } from './serve.mjs';
 
 const STUDIO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -48,7 +48,7 @@ async function openFilm(port, film, { w, h, variant, segments, fadeOut, scale = 
 
 async function frameAt(client, t, frame, { format = 'png', quality = 95 } = {}) {
   await client.eval(`window.renderAt(${t}, ${frame})`);
-  const r = await client.send('Page.captureScreenshot', { format, captureBeyondViewport: false,
+  const r = await screenshot(client, { format, captureBeyondViewport: false,
     ...(format === 'jpeg' ? { quality } : { optimizeForSpeed: true }) });
   return Buffer.from(r.data, 'base64');
 }

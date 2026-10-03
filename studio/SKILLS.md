@@ -15,6 +15,7 @@ Start a film with film-director + its brief/production.json. Read CRAFT_GUIDE.md
 | Cuts / pacing | edit-rhythm | rhythm.mjs beat/phrase evidence + shot times + reviewTimes |
 | Music / accents | sound-designer | prepareMusic, assembleAudio, masterAudio |
 | Runtime trouble | studio-doctor, cdp-capture | doctor, CDP diagnostics |
+| Real footage of real people (cuts, captions, animation around people, dialogue mix) | live-action-editor | tools/live.py, lib/edl.mjs, lib/footage.js, lib/dialogue.mjs, LIVE_ACTION.md |
 | Real app capture only | screen-actor, studio-clock | recorded actions + verified read-back |
 | Delivery / encoding | platform-delivery, ffmpeg-master | make --profile=final |
 | Final visual critique | qa-judge | exported frames AND motion/audio playback |
