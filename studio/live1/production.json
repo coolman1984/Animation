@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "duration": 12,
+  "fps": 30,
+  "audience": "Internal capability proof for Pixel Plus: shows owners and clients that the studio can edit real footage of real people and animate around them",
+  "promise": "Real footage + motion design in one deterministic pipeline: cutouts, tracking, reframing, karaoke captions, ducked mix",
+  "cta": "None (internal study; the owner decides whether to show it)",
+  "direction": "One real person (CC BY 4.0 sample footage) carried through five live-action techniques: text behind subject, freeze-frame character intro with sticker outline, pixel halo orbiting through the matte sandwich, punch-in jump cut, head breaking out of a card. Brand blue world, Alexandria + Space Mono, scratch Arabic voiceover with word-timed captions, ducked 120 BPM bed.",
+  "assets": [
+    { "id": "footage", "path": "live1/source/face-demographics-walking-and-pause.mp4", "role": "background", "rights": "Intel IoT DevKit sample-videos, CC BY 4.0 (github.com/intel-iot-devkit/sample-videos); attribution recorded in live1/BRIEF.md and ASSETS.md" },
+    { "id": "pack", "path": "live1/plates/pack", "role": "background", "rights": "Derived in code by tools/live.py from the CC BY 4.0 footage and the synthetic voiceover" },
+    { "id": "voice", "path": "live1/plates/pack/voice.wav", "role": "sfx", "rights": "Scratch voiceover synthesised with Piper ar_JO-kareem (sherpa-onnx); placeholder voice, never to be presented as a client's voice" }
+  ],
+  "sound": { "mode": "original", "bpm": 120, "note": "Bed and SFX synthesised in live1/score.mjs; voice polished and the bed ducked under it with lib/dialogue.mjs (ffmpeg sidechaincompress)" },
+  "creative": {
+    "viewer": "a business owner deciding whether this studio can handle their talking-head or product-with-people ad",
+    "problem": "motion-only reels do not prove live-action skills; real footage needs mattes, tracking and an edit",
+    "promise": "real people, cut, captioned and animated around",
+    "evidence": "a real, licensed person-video and the measured analysis pack",
+    "emotion": "surprise at graphics that live inside the shot",
+    "motif": "brand-blue pixels that pass behind and in front of a real person",
+    "palette": ["#0A66FF", "#18B6FF", "#1F2328", "#FFFFFF"],
+    "light": "the footage's own flat office light; the brand world is saturated blue",
+    "typography": { "display": "Alexandria", "text": "Space Mono" },
+    "camera": "auto-reframed crop that follows the subject, punch-ins, freeze push",
+    "transitions": ["freeze", "punch-in", "card shrink"],
+    "motion": "matte sandwich, tracked anchors, sticker outline, karaoke captions",
+    "sound": "120 BPM soft bed ducked under the voice, whoosh/riser/pop on edit events",
+    "pacing": "a new technique every 1.8–3.4 s, readable caption pages",
+    "payoff": "his head breaks out of the card above the title",
+    "cta": "none",
+    "styleFrames": { "hook": 1.6, "proof": 5.8, "payoff": 10.5 },
+    "proof": { "start": 0, "end": 12 }
+  },
+  "shots": [
+    { "id": "walk", "start": 0, "end": 3.2, "purpose": "hook: he walks toward camera through the giant word «حقيقي» (text behind subject), auto-reframed 16:9 → 9:16", "assetIds": ["footage", "pack"],
+      "craft": { "scale": "full figure to medium", "camera": "subject-following crop", "focal": "the walking man", "transition": "cut", "depthLayers": 3, "primaryMotions": ["subject walk", "word rise"], "audioCue": "voice line 1, soft bed" },
+      "copy": { "text": "فيديو حقيقي، وناس حقيقية.", "start": 0.56, "end": 3.2 } },
+    { "id": "freeze", "start": 3.2, "end": 5, "purpose": "freeze-frame character intro: grey world, colour hero with sticker outline, tag pointing at his face", "assetIds": ["footage", "pack"],
+      "craft": { "scale": "medium close", "camera": "slow push on a held frame", "focal": "his face", "transition": "freeze", "depthLayers": 4, "primaryMotions": ["burst", "tag"], "audioCue": "riser into an impact, pop on the tag" } },
+    { "id": "halo", "start": 5, "end": 8.6, "purpose": "brand pixels orbit his head behind and in front of him; a label rides his head; a jump cut is hidden by a punch-in at 6.8", "assetIds": ["footage", "pack"],
+      "craft": { "scale": "medium close to close-up", "camera": "follow crop + punch-in", "focal": "his face", "transition": "punch-in", "depthLayers": 4, "primaryMotions": ["orbit", "label follow"], "audioCue": "whoosh on unfreeze and on the punch-in" },
+      "copy": { "text": "نقص ونرتب ونضيف الحركة حواليهم.", "start": 5, "end": 6.9 } },
+    { "id": "card", "start": 8.6, "end": 12, "purpose": "payoff: the footage shrinks into a card; the cutout is not clipped, so his head breaks out of the frame; title", "assetIds": ["footage", "pack"],
+      "craft": { "scale": "graphic card", "camera": "locked", "focal": "head out of frame + title", "transition": "card shrink", "depthLayers": 3, "primaryMotions": ["card shrink", "type rise"], "audioCue": "whoosh, impact on the title, chime" },
+      "copy": { "text": "فيديو حقيقي + موشن", "start": 9.3, "end": 12 } }
+  ],
+  "cues": [
+    { "id": "freeze", "t": 3.2, "kind": "impact", "shot": "freeze", "sound": { "type": "impact", "vel": 0.6, "weight": 0.6 } },
+    { "id": "title", "t": 9.3, "kind": "reveal", "shot": "card", "sound": { "type": "softHit", "vel": 0.4, "tone": 220 } }
+  ]
+}

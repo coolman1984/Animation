@@ -40,3 +40,5 @@ Read the first frame's width from the PNG/JPEG header (`imageWidth`) and **refus
 **settleCapture:** the first screenshot after load can be torn (lower tiles from an older raster) with heavy filter layers; `settleCapture(client)` in lib/cdp.mjs captures until two consecutive shots match. Also round fractional viewports (337.5 → 338) before CDP, and avoid will-change/rest transforms (raster history changes pixels with seek order).
 
 Capture reliability: app-capture closes its server on browser-start failure and client-close errors. cdp launch retries a transient startup failure once; never retry a verification mismatch or invent capture completion. Use the original failure evidence if the second startup fails.
+
+**Live footage pages (2026-10-03):** decode frames with `fetch` → `createImageBitmap` (a detached `<img>.decode()` can wait forever in headless capture); a film's `render()` may return a promise and the composer awaits it. Never stack many CSS `drop-shadow` filters on a full-frame layer — software capture froze `Page.captureScreenshot` for > 90 s; draw strokes on canvas. `screenshot()` in `lib/cdp.mjs` retries a rare unanswered capture.

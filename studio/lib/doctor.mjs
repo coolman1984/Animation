@@ -111,6 +111,8 @@ export async function doctor({ quiet = false } = {}) {
     ffprobe: !!run('ffprobe', ['-version']),
     python: (run('python3', ['--version']) || '').trim() || null,
     // Precise forensics (tools/motion_curves.py, tools/audio_deep.py): which optional modules are importable.
+    // Live-action toolkit (tools/live.py): segmentation/tracking, VAD, ASR/TTS. Models live in studio/models/ (live.py models).
+    live: (run('python3', ['-c', "import importlib\nfor m in ('mediapipe','onnxruntime','sherpa_onnx','soundfile'):\n  try: importlib.import_module(m); print(m, end=' ')\n  except Exception: pass"]) || '').trim() || null,
     forensics: (run('python3', ['-c', "import importlib\nfor m in ('numpy','scipy','cv2','librosa','scenedetect'):\n  try: importlib.import_module(m); print(m, end=' ')\n  except Exception: pass"]) || '').trim() || null,
     machine: { cores: cpus().length, ramGB: +(totalmem() / 2 ** 30).toFixed(1), freeRamGB: +(freemem() / 2 ** 30).toFixed(1), diskFree: df || null },
     fonts: f,
@@ -132,6 +134,7 @@ export async function doctor({ quiet = false } = {}) {
     ['RAM', report.machine.ramGB >= 4, `${report.machine.ramGB} GB`],
     ['Disk free', true, report.machine.diskFree],
     ['Python (optional)', true, report.python || 'none'],
+    ['Live-action modules (optional)', true, report.live ? `${report.live}${/mediapipe/.test(report.live) && /sherpa_onnx/.test(report.live) ? '' : '  (pip install -r tools/requirements-live.txt)'}` : 'none  (pip install -r tools/requirements-live.txt; python3 tools/live.py models)'],
     ['Forensics modules (optional)', true, report.forensics ? `${report.forensics}${/cv2/.test(report.forensics) && /librosa/.test(report.forensics) ? '' : '  (pip install -r reference/requirements-optional.txt)'}` : 'none'],
   ];
   report.ok = rows.slice(0, 9).every((r) => r[1]);

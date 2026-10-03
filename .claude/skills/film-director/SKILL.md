@@ -8,7 +8,7 @@ Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `s
 
 Read studio/WORKFLOW.md first, then studio/QUALITY_PLAYBOOK.md (one hero object, measured references, stills → strips → critique, finish checks); studio/SKILLS.md routes optional departments. Do not re-read the historical prompt.
 
-If a reference film is supplied, invoke reference-reverse-engineer via SKILLS.md before inferring its techniques. Do not load the reference lab for ordinary films.
+If a reference film is supplied, invoke reference-reverse-engineer via SKILLS.md before inferring its techniques. If the film uses real footage of people, load live-action-editor (studio/LIVE_ACTION.md). Do not load the reference lab for ordinary films.
 
 1. Record viewer, real evidence, one promise, CTA, duration/placements and asset limitations. Owner-authorized work proceeds without repeated approval.
 2. If concept is open, load creative-director. Compare at most three genuinely different directions; pick one. Three style frames: hook, proof, payoff. Fill shot craft metadata before expensive motion.

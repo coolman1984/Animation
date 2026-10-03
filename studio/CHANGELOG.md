@@ -5,7 +5,26 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
-## 2026-10-03 — Film 6 knowledge captured as reusable tools and a quality playbook (scope DONE)
+## 2026-10-03 — Live-action toolkit: real footage of real people, cut, captioned and animated around (scope DONE)
+Owner request: comprehensive research (GitHub + trusted sources) and professional tools for ads with real people who talk and move:
+cutting, animation before/after/around them and in empty space, expressive SFX, every 2026 editing capability.
+- **Research:** `LIVE_ACTION.md` — landscape with sources (SAM 2/2.1, SAM2Long, Grounded SAM 2, MatAnyone 1/2, RVM, MediaPipe, CoTracker3,
+  ProPainter, RIFE, Whisper/WhisperX, sherpa-onnx, Silero VAD, auto-editor, ClipsAI, DeepFilterNet, Demucs, Remotion/Revideo, OpenTimelineIO,
+  2026 short-form trends), the editing techniques as recipes, a 10-item roadmap and the limits.
+- **`tools/live.py`** (offline after `models`): ingest/conform (dup/blend/mci), Silero VAD, Whisper large-v3-turbo transcription (sherpa-onnx),
+  script alignment anchored on micro-pauses (median word-edge error 0.03 s on known-edge speech), scenes, MediaPipe mattes with guided-filter
+  edges, face+pose anchors with identity merge and 1€ smoothing, free-space finder, zero-lag subject-following 9:16 reframe, QA preview, scratch TTS.
+- **`lib/edl.mjs`** (jump cuts, text-based cuts, timeline ↔ source, J/L cuts, punch-ins, caption pages, cut SFX, OTIO export),
+  **`lib/dialogue.mjs`** (voice polish, sidechain ducking, click-free stitches), **`lib/footage.js`** (deterministic footage frames, matte sandwich,
+  anchors, canvas sticker outline). Composer awaits a film's async `render()`.
+- **Capture robustness:** `screenshot()` retry in `lib/cdp.mjs`; root cause of a > 90 s capture freeze found by bisection (12 chained CSS drop-shadows on a full-frame layer).
+- **Study `live1/`** (12 s 9:16 on CC BY 4.0 Intel sample footage): text behind subject, freeze-frame intro, orbit through the matte, punch-in jump cut,
+  head breaking out of a card, karaoke captions, ducked mix. All gates PASS on take03.
+- **New skill** `live-action-editor`; skills updated: film-director, cdp-capture, sound-designer, subtitles-rtl, edit-rhythm. Doctor lists the live modules.
+- Tests: `test/live.test.mjs` (7 unit incl. a real ffmpeg ducking measurement; browser footage-sandwich test; optional Python word-timing test).
+- Not verified: listening; real-speed human viewing; heavy models (SAM 2, MatAnyone, CoTracker, ProPainter, RIFE, DeepFilterNet) — hosts blocked here, roadmap only.
+
+ as reusable tools and a quality playbook (scope DONE)
 Owner request: record all experience, ideas, techniques and methods so the project can reuse them and raise quality; then PR and merge.
 - **`QUALITY_PLAYBOOK.md`** (new): the method that reached premium — hero object from the brand, measured reference grammar, brand truth,
   build order (stills → draft → review → transition strips → critique), motion craft, Arabic type sizes on 9:16, sound without ears, finish checks, ideas bank.

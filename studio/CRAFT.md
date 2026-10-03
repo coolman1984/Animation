@@ -51,7 +51,12 @@
 36. **Banding can come from the colour conversion, not the encoder:** dark saturated radial glows stepped into chroma rings after a plain RGB→yuv420p conversion; a dither layer in the picture did not help; error-diffused conversion via 10-bit (`config.dither`) did. Check dark gradients with a levels-boosted crop of the exported file.
 37. **Line boxes, not glyphs, trip the overlap gate:** big Arabic headlines with line-height 1.35 overlapped their second line by 4–17 px of empty box; line-height 1.12/1.2 fixed it without moving a glyph.
 
-## Principles learned from reference studies
+## Live-action toolkit (2026-10-03)
+38. **Analyse once, render from cached data:** MediaPipe's face landmarker is non-deterministic in VIDEO mode; run IMAGE mode per frame, smooth with a 1€ filter and store JSON — the render reads the pack and stays deterministic.
+39. **Offline editing can look ahead:** forward-backward smoothing gives a reframing camera with zero lag (it moves with the subject, not after him), reset at every cut; a dead zone removes micro pans.
+40. **Headless capture has two traps:** a detached `<img>.decode()` may never resolve (use `createImageBitmap`), and stacked CSS `drop-shadow` filters on a full-frame layer froze screenshots for > 90 s (draw strokes on canvas). Bisect with a skip switch, do not just add retries.
+
+
 Consult `reference/lessons.json` only when its evidence-backed principle is relevant to the current
 craft decision. Learn the timing/composition principle and its counter-case, not reference appearance.
 No required lesson quota or automatic reuse of a prior visual style.

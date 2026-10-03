@@ -107,7 +107,15 @@ Counter-case: the grammar is calm and precise; it is wrong for loud retail promo
 - **`config.dither: true`** for films with dark or saturated slow gradients (radial glows): error-diffused RGB→YUV via 10-bit (`encodeFilter` in `lib/render.mjs`). Same file size; check `crop` + `-level 0%,18%` on the exported master and share copy.
 - **Faithful logo trace:** `film6/logo_trace.py` — coverage from local max of distance-to-white (handles dark, grey and blue strokes alike), potrace at 4×, colour plate with the fringe inpainted, letters as `<img>` + `clip-path: path()` (awaited by `ready`, unlike SVG `<image>`).
 
-## Precise forensics: measure timing, easing and music instead of guessing (2026-10-02)
+## Live action: real people + animation (2026-10-03; full guide `LIVE_ACTION.md`, example `live1/`)
+- **Matte sandwich:** plate canvas → behind layer (words, bursts, far half of an orbit) → cutout canvas (frame × matte alpha) → front layer (near half, labels). Depth split for orbits: `sin(angle) > 0` → front canvas.
+- **Frame break:** clip the plate to a rounded card (`clip-path: inset(... round 48px)`), leave the cutout unclipped, put the card's top edge below the chin → the head pops out with no double image.
+- **Sticker outline:** hard silhouette (alpha ≥ 50 %) tinted white, drawn at 12 offsets of 6–7 px under the person on the same canvas.
+- **Word timing for scripted ads:** VAD groups = sentences (longest gaps), words spread by spoken length (letters + 1.5), boundaries anchored on ≥ 30 ms gaps 22 dB under speech, re-spread between anchors: median 0.03 s.
+- **Ducking:** `sidechaincompress=threshold=0.025:ratio=6:attack=15:release=350` with the voice as key, music −9 dB before; measured > 4 dB extra drop under speech in the test.
+- **Conform 12 → 30 fps:** `minterpolate=fps=30:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1` (smooth, can warp limbs; RIFE is the upgrade); `fps=30` repeats frames honestly.
+
+
 Commands (optional Python: numpy, scipy, OpenCV, librosa — `pip install -r reference/requirements-optional.txt`; the doctor lists them):
 ```bash
 node reference.mjs timeline <pack|video> [--crop=x,y,w,h]                     # moving/still spans, hard cuts, energy chart

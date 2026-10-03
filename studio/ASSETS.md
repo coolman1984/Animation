@@ -23,7 +23,11 @@
 | Film 6 plates (vector outlines, colour plate, particle targets) | `film6/plates/` (by `film6/logo_trace.py`), git-ignored | Derived in code from the owner logo. |
 | Film 6 references | `film6/source/refA.mp4`, `film6/source/refB.mp4`, git-ignored | Owner-supplied X screen recordings; grammar study only, artwork/audio not reused. |
 | Film 6 score | `film6/score.mjs` | Synthesised in code — original, no samples. |
-| Grain, light sweeps, pearls, leaves, window line-art | `lib/motion.js`, `film2/film.js` | Drawn in code |
+| Live 1 footage | `live1/source/face-demographics-walking-and-pause.mp4` (+ head-pose sample), git-ignored | Intel IoT DevKit sample-videos, CC BY 4.0 — attribution "Sample video © Intel Corporation, CC BY 4.0" (github.com/intel-iot-devkit/sample-videos) |
+| Live 1 analysis pack + scratch voice | `live1/plates/pack/`, git-ignored | Derived by `tools/live.py`; voice synthesised by Piper ar_JO-kareem (sherpa-onnx) — placeholder only |
+| Live 1 score | `live1/score.mjs` | Synthesised in code; voice chain/ducking by ffmpeg via `lib/dialogue.mjs` |
+| ML models for `tools/live.py` | `studio/models/` (git-ignored; `live.py models`) | MediaPipe selfie/multiclass segmenter, face/pose/hand landmarkers, magic_touch (Google, Apache 2.0, storage.googleapis.com); Silero VAD (MIT, GitHub); Whisper turbo/base ONNX (MIT, via sherpa-onnx GitHub releases); Piper ar_JO-kareem voice (see its MODEL_CARD; scratch use) |
+ `lib/motion.js`, `film2/film.js` | Drawn in code |
 
 Third-party marks visible in owner photos: the coconut-milk carton carries its maker's brand. The film
 makes no claim of partnership; see `film2/BRIEF.md` §5 (owner decision).
