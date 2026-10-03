@@ -15,6 +15,7 @@ import argparse
 import json
 import sys
 import time
+import sys as _sys; [s.reconfigure(encoding='utf-8') for s in (_sys.stdout, _sys.stderr)]  # Windows pipes default to cp1252; Arabic/≈ output crashed
 
 
 def _norm(x, np):

@@ -5,6 +5,7 @@
 # Needs: pip install potracer pillow opencv-python-headless numpy
 import json, os
 import numpy as np, cv2, potrace
+import sys as _sys; [s.reconfigure(encoding='utf-8') for s in (_sys.stdout, _sys.stderr)]  # Windows pipes default to cp1252; Arabic/≈ output crashed
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC, OUT = os.path.join(HERE, 'source', 'logo.jpg'), os.path.join(HERE, 'plates')
@@ -61,7 +62,7 @@ for c in curves:
         rest = [cc['bbox'] for cc in curves if cc['d'] in letters['i1']['paths']]
         letters['i1']['bbox'] = [min(b[0] for b in rest), min(b[1] for b in rest), max(b[2] for b in rest), max(b[3] for b in rest)]
 for v in letters.values(): v['pathBoxes'] = [next(cc['bbox'] for cc in curves if cc['d'] == p) for p in v['paths']]
-json.dump({'source': 'film6/source/logo.jpg', 'crop': [X0, Y0, X1, Y1], 'colorScale': UP / 2, 'letters': letters}, open(os.path.join(OUT, 'logo.json'), 'w'), indent=1)
+json.dump({'source': 'film6/source/logo.jpg', 'crop': [X0, Y0, X1, Y1], 'colorScale': UP / 2, 'letters': letters}, open(os.path.join(OUT, 'logo.json'), 'w', encoding='utf-8'), indent=1)
 print({k: (len(v['paths']), [round(x) for x in v['bbox']]) for k, v in letters.items()})
 
 # Particle targets for the "pixel by pixel" assembly: one cell per GRID source px where the cell is mostly ink,
@@ -82,7 +83,7 @@ for gy in range(Y0, Y1, GRID):
         cx, cy = gx + GRID / 2, gy + GRID / 2
         b_, g_, r_ = colour[int((cy - Y0) * 2), int((cx - X0) * 2)]
         parts.append([round(cx, 1), round(cy, 1), '#%02x%02x%02x' % (r_, g_, b_), letter_at(cx, cy)])
-data = json.load(open(os.path.join(OUT, 'logo.json')))
+data = json.load(open(os.path.join(OUT, 'logo.json'), encoding='utf-8'))
 data['grid'] = GRID; data['particles'] = parts
-json.dump(data, open(os.path.join(OUT, 'logo.json'), 'w'))
+json.dump(data, open(os.path.join(OUT, 'logo.json'), 'w', encoding='utf-8'))
 print('particles', len(parts))

@@ -17,6 +17,7 @@ import argparse, json, math, sys
 from pathlib import Path
 
 import numpy as np
+import sys as _sys; [s.reconfigure(encoding='utf-8') for s in (_sys.stdout, _sys.stderr)]  # Windows pipes default to cp1252; Arabic/≈ output crashed
 
 def need_cv2():
     try:
@@ -290,7 +291,7 @@ def main():
         moves = segment(rows)
         res = {'video': a.video, 'roi': a.roi, 'crop': a.crop, 'framesDecoded': n, 'tracked': len(rows), 'minScore': min(r['score'] for r in rows), 'moves': moves, 'perFrame': rows,
                'note': 'progress fits are perceptual models of measured pixels; cubic-bezier params plug into lib/kinetics.js cubicBezier, studioSpring into springStep'}
-        (out / 'track.json').write_text(json.dumps(res, indent=1))
+        (out / 'track.json').write_text(json.dumps(res, indent=1), encoding='utf-8')
         t0 = rows[0]['t']
         chart(out / 'track.png', [{'pts': [(r['t'], r['x'] - rows[0]['x']) for r in rows], 'color': (255, 170, 60), 'label': 'dx px'},
                                   {'pts': [(r['t'], r['y'] - rows[0]['y']) for r in rows], 'color': (120, 220, 120), 'label': 'dy px'},
@@ -307,7 +308,7 @@ def main():
             chart(out / f'move{i + 1}.png', ser, f"move {i + 1}: visible {m['start']:.3f}-{m['end']:.3f}s, keyframes {b.get('keyframeStart')}-{b.get('keyframeEnd')}s, overshoot {m['overshootPct']}%", xlabel='s since start')
         print(json.dumps({k: v for k, v in res.items() if k != 'perFrame'} | {'moves': [{k: v for k, v in m.items() if k != 'samples'} for m in moves]}))
     elif a.mode == 'timeline':
-        res = timeline(a.video, crop, out); (out / 'timeline.json').write_text(json.dumps(res, indent=1))
+        res = timeline(a.video, crop, out); (out / 'timeline.json').write_text(json.dumps(res, indent=1), encoding='utf-8')
         print(json.dumps({k: v for k, v in res.items() if k != 'perFrame'}))
     else:
         if a.end is None: raise SystemExit('--end required')

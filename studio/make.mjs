@@ -6,9 +6,9 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildOptions, frameRange } from './lib/build-options.mjs';
 import { fingerprint, cached } from './lib/cache.mjs';
-import { doctor } from './lib/doctor.mjs';
+import { buildCheck } from './lib/doctor.mjs';
 import { run, video, textTimeline } from './lib/render.mjs';
-import { probe, loudness, frozen, black, contactSheet, gates } from './lib/measure.mjs';
+import { probe, loudness, measureAll, contactSheet, gates } from './lib/measure.mjs';
 import { assembleAudio, masterAudio, mux, shareCopy, captions, stillAt, webpPreview } from './lib/finish.mjs';
 import { loadProduction, reviewTimes } from './lib/production.mjs';
 import { reviewEvidence, aspectCompare } from './lib/review.mjs';
@@ -44,10 +44,14 @@ production.errors.push(...validateEngine(cfg.engine));
 const external = cfg.engine?.type === 'external';
 if (production.errors.length) { console.error(production.errors.join('\n')); process.exit(1); }
 
-// 0. Tools + syntax.
-const doc = await doctor({ quiet: true });
+// 0. Tools + syntax. Both are reused while their inputs are unchanged: every process launch costs ~1 s on Windows.
+const doc = await buildCheck();
 if (!doc.ok) { console.error('doctor failed — run node lib/doctor.mjs'); process.exit(1); }
-for (const f of [...(external ? [] : [cfg.film]), cfg.score, 'lib/motion.js', 'lib/render.mjs', 'lib/audio.mjs']) await run('node', ['--check', join(ROOT, f)]);
+const syntaxFiles = [...(external ? [] : [cfg.film]), cfg.score, 'lib/motion.js', 'lib/render.mjs', 'lib/audio.mjs'];
+// One node process parses every module (vm.SourceTextModule: syntax only, nothing is linked or run) instead of one --check each.
+const PARSE = "const vm=require('node:vm'),fs=require('node:fs');for(const f of process.argv.slice(1)){try{new vm.SourceTextModule(fs.readFileSync(f,'utf8'),{identifier:f})}catch(e){console.error(f+': '+e.message);process.exitCode=1}}";
+await cached(join(ROOT, 'takes', filmName, 'syntax.cache.json'), fingerprint(ROOT, syntaxFiles, { node: process.version }), [],
+  () => run(process.execPath, ['--experimental-vm-modules', '--no-warnings', '-e', PARSE, ...syntaxFiles.map(f => join(ROOT, f))]), () => {});
 
 const TAKES = join(ROOT, 'takes', filmName);
 mkdirSync(TAKES, { recursive: true });
@@ -146,7 +150,7 @@ for (const d of selected) {
   }, log);
   const file = join(OUT, `${label}-${d.name}${profile === 'review' ? '-REVIEW' : ''}-${dw}x${dh}.mp4`);
   await mux(silent, master, file);
-  const m = { probe: await probe(file), loud: await loudness(file), frozen: await frozen(file), black: await black(file), text };
+  const m = { ...(await measureAll(file)), text };
   if (profile === 'final' && d.name === 'hero60') {
     log('share copy');
     const share = join(OUT, `${label}-${d.name}-share-${cfg.shareMB}MB.mp4`);

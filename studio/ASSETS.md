@@ -35,3 +35,5 @@ makes no claim of partnership; see `film2/BRIEF.md` §5 (owner decision).
 Artistic-forensics scope adds no media, fonts or soundtrack. artistic-dna.json and original-direction files are private, ignored reference-pack artifacts. New-subject briefs must specify original assets; a reviewed principle is not permission to reuse reference artwork.
 
 Startup cleanup correction imports no assets and never creates a completed capture.json after failed browser launch.
+
+Windows port (2026-10-03) adds no media, fonts or models to the repository. On the owner's machine, only Python packages were installed into the user's Python 3.12, from PyPI: the `reference/requirements-optional.txt` and `tools/requirements-live.txt` sets, `opencv-contrib-python` as the single OpenCV package, and `potracer` + `pillow` for `tools/logo_trace.py`. They are open-source packages under their own licences, nothing is vendored, and the install does not persist into the repository. The live-action ML models (`live.py models`, ~1.4 GB) were NOT downloaded. `drawtext` contact-sheet labels use the vendored Space Mono (OFL), already listed above.

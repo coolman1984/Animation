@@ -6,17 +6,18 @@ import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync, spawnSync } from 'node:child_process';
+import { PYTHON } from '../lib/platform.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const has = mods => spawnSync('python3', ['-c', `import ${mods}`]).status === 0;
+const has = mods => spawnSync(PYTHON, ['-c', `import ${mods}`]).status === 0;
 const near = (a, b, e, m) => assert.ok(Math.abs(a - b) <= e, `${m}: ${a} vs ${b} (±${e})`);
 
 test('motion curves: keyframe timing within one frame, easing family and spring parameters recovered', { skip: !has('cv2, numpy, scipy') && 'OpenCV/SciPy not installed', timeout: 180000 }, () => {
   const dir = mkdtempSync(join(tmpdir(), 'motion-truth-'));
   try {
     const clip = join(dir, 'truth.mp4');
-    execFileSync('python3', [join(ROOT, 'test/fixture/motion-truth.py'), clip]);
-    execFileSync('python3', [join(ROOT, 'tools/motion_curves.py'), 'track', clip, '--roi', '70,150,60,60', '--out', dir], { stdio: 'pipe' });
+    execFileSync(PYTHON, [join(ROOT, 'test/fixture/motion-truth.py'), clip]);
+    execFileSync(PYTHON, [join(ROOT, 'tools/motion_curves.py'), 'track', clip, '--roi', '70,150,60,60', '--out', dir], { stdio: 'pipe' });
     const { moves } = JSON.parse(readFileSync(join(dir, 'track.json'), 'utf8'));
     assert.equal(moves.length, 2, 'two moves');
     const [a, b] = moves, f = 1 / 30;
@@ -34,7 +35,7 @@ test('audio deep: tempo, key, chord changes and the kick pattern of a known trac
   try {
     const { writeTestTrack, TRACK } = await import('./fixture/music-track.mjs');
     const wav = join(dir, 'track.wav'); writeTestTrack(wav);
-    execFileSync('python3', [join(ROOT, 'tools/audio_deep.py'), wav, '--out', dir], { stdio: 'pipe' });
+    execFileSync(PYTHON, [join(ROOT, 'tools/audio_deep.py'), wav, '--out', dir], { stdio: 'pipe' });
     const r = JSON.parse(readFileSync(join(dir, 'audio-deep.json'), 'utf8'));
     near(r.tempoBpm, TRACK.bpm, 1, 'tempo');
     assert.equal(r.key.key, 'A minor', 'key of Am–F–G–Em');

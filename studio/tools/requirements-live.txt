@@ -4,6 +4,6 @@ mediapipe
 onnxruntime
 sherpa-onnx
 soundfile
-opencv-python-headless
+opencv-contrib-python   # mediapipe depends on it; keep ONE OpenCV package (they all share the cv2 folder)
 numpy
 opentimelineio   # optional: validates lib/edl.mjs OTIO exports in the tests

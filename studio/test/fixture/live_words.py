@@ -14,11 +14,11 @@ for l in lines:
         truth.append((t, t + len(a) / sr)); parts += [a, np.zeros(int(sr * 0.06), np.float32)]; t += len(a) / sr + 0.06
     parts.append(np.zeros(int(sr * 0.8), np.float32)); t += 0.8
 P = tempfile.mkdtemp(); sf.write(f'{P}/voice.wav', np.concatenate(parts), sr)
-json.dump({'fps': 30, 'frames': 0, 'w': 0, 'h': 0, 'audio': True}, open(f'{P}/pack.json', 'w')); open(f'{P}/script.txt', 'w').write('\n'.join(lines))
+json.dump({'fps': 30, 'frames': 0, 'w': 0, 'h': 0, 'audio': True}, open(f'{P}/pack.json', 'w', encoding='utf-8')); open(f'{P}/script.txt', 'w', encoding='utf-8').write('\n'.join(lines))
 L = os.path.join(ROOT, 'tools', 'live.py')
-subprocess.run(['python3', L, 'vad', P, f'--wav={P}/voice.wav'], check=True, capture_output=True)
-subprocess.run(['python3', L, 'align', P, f'--script={P}/script.txt'], check=True, capture_output=True)
-words = json.load(open(f'{P}/transcript.json'))['words']
+subprocess.run([sys.executable, L, 'vad', P, f'--wav={P}/voice.wav'], check=True, capture_output=True)
+subprocess.run([sys.executable, L, 'align', P, f'--script={P}/script.txt'], check=True, capture_output=True)
+words = json.load(open(f'{P}/transcript.json', encoding='utf-8'))['words']
 e = [abs(q['start'] - a) for (a, b), q in zip(truth, words)] + [abs(q['end'] - b) for (a, b), q in zip(truth, words)]
 inside = sum(1 for (a, b), q in zip(truth, words) if a <= (q['start'] + q['end']) / 2 <= b)
 print(json.dumps({'median': round(float(np.median(e)), 3), 'mean': round(float(np.mean(e)), 3), 'max': round(float(np.max(e)), 3), 'inside': inside, 'n': len(truth)}))

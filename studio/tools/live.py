@@ -26,6 +26,7 @@ Needs: pip install mediapipe onnxruntime sherpa-onnx soundfile opencv-python-hea
 """
 import json, os, subprocess, sys, math, hashlib, urllib.request, tarfile, shutil
 import numpy as np
+import sys as _sys; [s.reconfigure(encoding='utf-8') for s in (_sys.stdout, _sys.stderr)]  # Windows pipes default to cp1252; Arabic/≈ output crashed
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 MODELS = os.environ.get('STUDIO_MODELS', os.path.join(os.path.dirname(HERE), 'models'))
@@ -53,9 +54,11 @@ def opts(argv):
         else: pos.append(a)
     return pos, o
 def jload(p, default=None):
-    try: return json.load(open(p))
+    try: return json.load(open(p, encoding='utf-8'))
     except FileNotFoundError: return default
-def jsave(p, d): json.dump(d, open(p, 'w'), ensure_ascii=False); return d
+def jsave(p, d):
+    with open(p, 'w', encoding='utf-8') as f: json.dump(d, f, ensure_ascii=False)
+    return d
 def run(cmd): subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
 def model(name):
     p = os.path.join(MODELS, name)

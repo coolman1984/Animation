@@ -45,7 +45,7 @@ async function launchOnce({ width = 1280, height = 720, scale = 1, headless = tr
       proc.on('exit', (code, signal) => { clearTimeout(t); rej(new Error(`Chromium exited ${code ?? signal}: ${buf.slice(-1500)}`)); });
     });
   } catch (error) {
-    proc.kill('SIGKILL'); proc.stderr.destroy(); rmSync(profile, { recursive: true, force: true }); throw error;
+    proc.kill('SIGKILL'); proc.stderr.destroy(); try { rmSync(profile, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 }); } catch {} throw error;
   }
   const port = new URL(wsUrl).port;
   const targets = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
@@ -53,13 +53,30 @@ async function launchOnce({ width = 1280, height = 720, scale = 1, headless = tr
   const client = await connect(page.webSocketDebuggerUrl);
   client.close = async () => {
     try { client.ws.close(); } catch {}
-    proc.kill('SIGKILL');
-    try { rmSync(profile, { recursive: true, force: true }); } catch {}
+    await shutdown(proc, wsUrl, profile);
   };
   await client.send('Page.enable');
   await client.send('Runtime.enable');
   await client.send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: scale, mobile: false });
   return client;
+}
+
+// Close Chromium and remove its throwaway profile. A bare kill leaves helper processes holding the profile (and our stderr
+// pipe) for seconds: on Windows the profile delete failed silently (69 leftover profiles, 746 MB in one day) and node
+// waited ~17 s for the pipe. Ask the browser to quit, wait for the exit, then delete with retries.
+export async function shutdown(proc, wsUrl, profile) {
+  const exited = proc.exitCode !== null || proc.signalCode !== null ? Promise.resolve() : new Promise((r) => proc.once('exit', r));
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  try {
+    const ws = new WebSocket(wsUrl);
+    await Promise.race([new Promise((r, j) => { ws.onopen = r; ws.onerror = j; }), wait(1000)]);
+    if (ws.readyState === 1) ws.send(JSON.stringify({ id: 1, method: 'Browser.close' }));
+    await Promise.race([exited, wait(3000)]);
+    try { ws.close(); } catch {}
+  } catch {}
+  if (proc.exitCode === null && proc.signalCode === null) { proc.kill('SIGKILL'); await Promise.race([exited, wait(2000)]); }
+  proc.stderr?.destroy();
+  try { rmSync(profile, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 }); } catch {}
 }
 
 export async function connect(url) {

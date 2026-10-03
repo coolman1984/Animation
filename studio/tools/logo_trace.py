@@ -13,6 +13,7 @@ Coverage works for dark, grey and saturated strokes alike: distance-to-white div
 """
 import json, os, sys
 import numpy as np, cv2, potrace
+import sys as _sys; [s.reconfigure(encoding='utf-8') for s in (_sys.stdout, _sys.stderr)]  # Windows pipes default to cp1252; Arabic/≈ output crashed
 
 def main(argv):
     if len(argv) < 2: print(__doc__); return 2
@@ -57,7 +58,7 @@ def main(argv):
             cx, cy = gx + grid / 2, gy + grid / 2
             b, g, r = half[min(int((cy - y0) * 2), half.shape[0] - 1), min(int((cx - x0) * 2), half.shape[1] - 1)]
             particles.append([round(cx, 1), round(cy, 1), '#%02x%02x%02x' % (r, g, b)])
-    json.dump({'source': src, 'crop': [int(x0), int(y0), int(x1), int(y1)], 'colorScale': 2, 'parts': parts, 'grid': grid, 'particles': particles}, open(os.path.join(out, 'logo.json'), 'w'))
+    json.dump({'source': src, 'crop': [int(x0), int(y0), int(x1), int(y1)], 'colorScale': 2, 'parts': parts, 'grid': grid, 'particles': particles}, open(os.path.join(out, 'logo.json'), 'w', encoding='utf-8'))
     # check image: filled trace rasterised with OpenCV polylines (curves sampled) vs the source
     mask = np.zeros(ink.shape, np.uint8)
     W2, H2 = (x1 - x0) * up, (y1 - y0) * up

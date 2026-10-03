@@ -5,6 +5,34 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-03 — Windows port, speed-ups and testing policy (scope DONE)
+Owner request: "fix and improve, search for needed tools", then "make tests shorter", then "never run slow tests unless producing a real video".
+- New `lib/platform.mjs` (`isMain`, `PYTHON`, `devNull`, `slash`, `onPath`, `browserCandidates`) + `test/platform.test.mjs`, which also fails on POSIX-only idioms. The doctor finds Windows Chrome/Edge, reads the version from DevTools and measures disk with `statfsSync`.
+- Bugs found by real Windows runs, fixed:
+  - Slice edit lists in a 1000 timescale shifted frames at worker joins (`render.mjs` now uses exact timescales).
+  - A last-frame seek returned no frame (`ss()` 1 ms early in `review.mjs`/`finish.mjs`).
+  - Chromium kill left profiles and a stalled pipe (`shutdown()` in `cdp.mjs`).
+  - Python cp1252 crashes (UTF-8 stdio and files).
+  - `rm`/`mv` shells, `/dev/null`, FFmpeg glob and Fontconfig `drawtext` failures (fixes the 3 reference test failures).
+- Duration gate is frame-accurate (1/fps + 30 ms) instead of ±10 % (+ test). FFmpeg errors now include the command.
+- Speed (each process launch ~1 s here):
+  - `grab()`: one decode for every review image.
+  - `measureAll()`: loudness/freeze/black in one pass, identical numbers.
+  - `buildCheck()`: reused required doctor.
+  - One-process cached syntax check.
+  - Result for a fresh 4 s review build: 61 launches / 78 s → 24 / 46 s.
+- Tools: Python forensics + live-action packages installed locally (one OpenCV: `opencv-contrib-python`), logo tracer (`potracer`, `pillow`); requirements files note the single-OpenCV rule. ML models not downloaded.
+- Testing policy in `../CLAUDE.md`, `WORKFLOW.md`, `README.md`: `npm test` = quick suite, `test:all` (CI) and `test:render` only during real video production. CI unit step now runs `test:all`.
+- Verification: last full render run before the speed-ups 108/112 passed, 0 failed, 2 time-out cancellations; post-change checks targeted (see STATUS). Not verified: a full slow run after the speed-ups, listening, CI.
+
+## 2026-10-03 — Deep app study on Windows (scope DONE)
+Owner request: learn the app deeply after cloning the repository.
+- Added `APP_MAP.md`: current architecture, film contracts, build profiles, source/delivery time, cache ownership, native/external rendering, technical/artistic checks, reference analysis, live-action packs and worked-project map.
+- Verified local plans/delivery selection and ran the existing tests: 109 tests, 87 passed, 3 failed, 19 skipped. All three failures report FFmpeg Fontconfig configuration errors in reference analysis. Local transcript: `takes/app-study-tests.txt`.
+- Recorded Windows browser discovery, CLI URL guards, POSIX commands, missing optional Python tools and intentionally excluded assets. Historical Linux results are distinct from local verification.
+- Updated STATUS and linked the map from README. No application behavior, creative recipe, asset, film ledger or project skill advice changed; no new media/model downloads.
+- Not verified: browser renders, playback/listening, model-backed analysis, complete Windows production or current remote CI. Learning is complete; portability repair was not requested.
+
 ## 2026-10-03 — Live-action toolkit: real footage of real people, cut, captioned and animated around (scope DONE)
 Owner request: comprehensive research (GitHub + trusted sources) and professional tools for ads with real people who talk and move:
 cutting, animation before/after/around them and in empty space, expressive SFX, every 2026 editing capability.

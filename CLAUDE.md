@@ -19,6 +19,13 @@ New films must declare config.production pointing to production.json; use studio
 The shared depth and music tools are opt-in; adopt them deliberately, never claim old scenes were automatically redirected.
 Do not load PROMPT_STUDIO.md or all skills for routine work. Record unknown model/effort names instead of inventing a host setting.
 
+**Testing policy (owner order, 2026-10-03; overrides any other instruction to run test suites):** slow checks cost the owner
+real time and tokens. NEVER run `npm run test:render`, `npm run test:all`, full `make` builds or other multi-minute checks to
+verify a code change. Check an edit with the one relevant test file (`node --test test/<file>.test.mjs`, optionally
+`--test-name-pattern`) or one direct command; `npm test` (= quick suite) is the most you run routinely. Slow suites and
+real builds run ONLY while producing a real video the owner asked for, once, before delivery. Never re-run a slow suite to "confirm".
+On this Windows machine every process launch costs ~1 s, so even "small" commands add up: batch work.
+
 Documentation is part of done: when a scope closes, update `STATUS.md`, `studio/CHANGELOG.md`, `studio/CRAFT.md`, `studio/TECHNIQUES.md`,
 `studio/ASSETS.md`, the film's `LEDGER.md` and every skill whose advice changed, in the same commit. `npm test` (`test/docs.test.mjs`) checks the checkable parts.
 Reusable recipes: `studio/TECHNIQUES.md`. Quality method: `studio/QUALITY_PLAYBOOK.md`. Real footage of people: `studio/LIVE_ACTION.md` (skill live-action-editor). Evolution/log: `studio/CHANGELOG.md`.

@@ -2,7 +2,7 @@
 // what happens in the film (shot boundaries, transitions, copy, camera peaks, musical landings),
 // plus advisory diagnostics. Nothing here scores taste; it makes looking fast and targeted.
 // Output: <dir>/index.html (gallery), review.json, frames/*.jpg, strips/*.jpg, crops/*.png, contact.jpg.
-import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
+import { mkdirSync, writeFileSync, existsSync, rmSync, renameSync, readFileSync } from 'node:fs';
 import { join, basename } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { run } from './render.mjs';
@@ -13,27 +13,36 @@ import { describeTime } from './musicmap.mjs';
 import { cueSync } from './cues.mjs';
 
 const r2 = v => +v.toFixed(2);
+// Input seek target 1 ms early: FFmpeg returns the first frame with pts >= target, and a time rounded to 4 decimals can sit
+// just past its frame (3.9667 > 3.96667), which returned NO frame for the last frame of a film (empty JPEG error, silent PNG).
+const ss = t => Math.max(0, t - 0.001).toFixed(4);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-async function still(video, t, out, { w } = {}) {
-  await run('ffmpeg', ['-v', 'error', '-y', '-ss', t.toFixed(4), '-i', video, '-frames:v', '1', ...(w ? ['-vf', `scale=${w}:-2`] : []), '-q:v', '3', out]);
-  return out;
-}
-// Bounded parallel map: every extraction is an independent ffmpeg process writing its own file, so running
-// several at once changes only wall time, never the output. Order of results = order of items.
-const POOL = 4;
-async function pool(items, fn, n = POOL) {
-  const out = new Array(items.length); let next = 0;
-  await Promise.all(Array.from({ length: Math.min(n, items.length) }, async () => { while (next < items.length) { const i = next++; out[i] = await fn(items[i], i); } }));
-  return out;
-}
-// Horizontal strip of frames at the given times (one ffmpeg call per frame, then hstack).
-async function strip(video, times, out, { h = 240 } = {}) {
-  const tmp = times.map((t, i) => out + `.${i}.jpg`);
-  await pool([...times.entries()], ([i, t]) => run('ffmpeg', ['-v', 'error', '-y', '-ss', Math.max(0, t).toFixed(4), '-i', video, '-frames:v', '1', '-vf', `scale=-2:${h}`, '-q:v', '3', tmp[i]]), 2);
-  await run('ffmpeg', ['-v', 'error', '-y', ...tmp.flatMap(f => ['-i', f]), '-filter_complex', `${tmp.map((_, i) => `[${i}]`).join('')}hstack=inputs=${tmp.length}`, '-q:v', '3', out]);
-  for (const f of tmp) execFileSync('rm', ['-f', f]);
-  return out;
+// ONE decode for many images. Job = { times, vf, out } (one frame per time; several are hstacked, so a strip may repeat a
+// frame) or { all: true, vf, out } (a filter over every frame, e.g. a tiled contact sheet). Each frame is its own select branch
+// of one split. Replaces one ffmpeg launch per image: a 4 s review build made 39 launches at ~1 s each on Windows.
+// `.raw` outputs are rawvideo in the job's pixel format. Long graphs are chunked under the Windows command-line limit.
+async function grab(video, fps, frames, jobs) {
+  const at = t => Math.min(frames - 1, Math.max(0, Math.round(t * fps)));
+  const chunks = [[]]; let size = 0;
+  for (const j of jobs) {
+    const cost = 90 * (j.times?.length || 1) + j.vf.length + 120;
+    if (size + cost > 20000 && chunks.at(-1).length) { chunks.push([]); size = 0; }
+    chunks.at(-1).push(j); size += cost;
+  }
+  for (const chunk of chunks.filter(c => c.length)) {
+    const parts = [], maps = []; let b = 0;
+    chunk.forEach((j, k) => {
+      if (j.all) parts.push(`[s${b++}]${j.vf}[o${k}]`);
+      else {
+        const ins = j.times.map(t => { const i = b++; parts.push(`[s${i}]select=eq(n\\,${at(t)}),setpts=0,${j.vf}[f${i}]`); return `[f${i}]`; });
+        parts.push(ins.length > 1 ? `${ins.join('')}hstack=inputs=${ins.length}[o${k}]` : `${ins[0]}null[o${k}]`);
+      }
+      maps.push('-map', `[o${k}]`, '-frames:v', '1', ...(j.out.endsWith('.raw') ? ['-f', 'rawvideo'] : j.out.endsWith('.jpg') ? ['-q:v', '3'] : []), j.out);
+    });
+    const graph = `[0:v]split=${b}${Array.from({ length: b }, (_, i) => `[s${i}]`).join('')};${parts.join(';')}`;
+    await run('ffmpeg', ['-v', 'error', '-y', '-i', video, '-filter_complex', graph, ...maps]);
+  }
 }
 // Intersection of a box with the frame as integer crop geometry (even-sized minimum 2×2), or null when
 // the box lies wholly outside: off-frame copy is a layout finding to report, never an FFmpeg failure.
@@ -45,7 +54,7 @@ export function clampCrop([x0, y0, x1, y1], vw, vh) {
 // maxBuffer: a full-width copy box on a 1080×1920 frame is several MB of rgb24 (the 1 MB default threw ENOBUFS).
 export function rawCrop(video, t, box, vw, vh) {
   const c = clampCrop(box, vw, vh); if (!c) return null;
-  return { buf: execFileSync('ffmpeg', ['-v', 'error', '-ss', t.toFixed(4), '-i', video, '-frames:v', '1', '-vf', `crop=${c.w}:${c.h}:${c.x}:${c.y},format=rgb24`, '-f', 'rawvideo', '-'], { maxBuffer: 256 * 1024 * 1024 }), ...c };
+  return { buf: execFileSync('ffmpeg', ['-v', 'error', '-ss', ss(t), '-i', video, '-frames:v', '1', '-vf', `crop=${c.w}:${c.h}:${c.x}:${c.y},format=rgb24`, '-f', 'rawvideo', '-'], { maxBuffer: 256 * 1024 * 1024 }), ...c };
 }
 const lum = (r, g, b) => { const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b); };
 
@@ -73,12 +82,6 @@ export async function silences(file, { noise = -50, min = 1 } = {}) {
   return s.map((x, i) => ({ start: r2(Math.max(0, x)), end: e[i] !== undefined ? r2(e[i]) : null }));
 }
 
-// Tiny luma thumbnail (16×9 region-averages) for composition similarity.
-function thumb(video, t, vw, vh) {
-  const gw = 16, gh = Math.max(4, Math.round(16 * vh / vw));
-  const buf = execFileSync('ffmpeg', ['-v', 'error', '-ss', t.toFixed(4), '-i', video, '-frames:v', '1', '-vf', `scale=${gw}:${gh}:flags=area,format=gray`, '-f', 'rawvideo', '-']);
-  const m = buf.reduce((a, b) => a + b, 0) / buf.length; return [...buf].map(v => v - m);
-}
 const corr = (a, b) => { let ab = 0, aa = 0, bb = 0; for (let i = 0; i < a.length; i++) { ab += a[i] * b[i]; aa += a[i] * a[i]; bb += b[i] * b[i]; } return ab / Math.sqrt(aa * bb || 1); };
 
 // Times worth looking at, each with reasons. Source-time plan is used only when timeline = source.
@@ -116,44 +119,52 @@ export async function reviewEvidence({ video, outDir, fps, plan, text, music, ho
   }
   const samples = reviewSamples({ duration, fps, plan, text, camera, music, sourceTimeline });
   for (const s of samples) { s.file = `frames/t${s.t.toFixed(2).padStart(6, '0')}.jpg`; if (music) s.music = describeTime(music, s.t); }
-  await pool(samples, s => still(video, s.t, join(outDir, s.file), { w: Math.min(vw, 720) }));
+  // Every image below comes from ONE decode of the export (grab); the jobs are collected first.
+  const jobs = [], raw = (name) => join(outDir, `.${name}.raw`);
+  for (const s of samples) jobs.push({ times: [s.t], vf: `scale=${Math.min(vw, 720)}:-2`, out: join(outDir, s.file) });
   // Boundary strips (−2f … +2f) and transition motion strips (8 frames across ±0.5 s).
   const strips = [];
   if (plan && sourceTimeline) {
-    const cuts = plan.shots.filter(s => s.start > 0);
-    for (const s of cuts) strips.push({ shot: s.id, t: s.start, boundary: `strips/cut-${s.id}.jpg`, motion: `strips/motion-${s.id}.jpg`, transition: s.craft?.transition || null, music: music ? describeTime(music, s.start) : null });
-    const f = 1 / fps;
-    await pool(cuts, async s => {
-      await strip(video, [-2, -1, 0, 1, 2].map(k => s.start + k * f), join(outDir, `strips/cut-${s.id}.jpg`), { h: 200 });
-      await strip(video, Array.from({ length: 8 }, (_, i) => s.start - 0.5 + i / 7), join(outDir, `strips/motion-${s.id}.jpg`), { h: 160 });
-    }, 2);
+    const cuts = plan.shots.filter(s => s.start > 0), f = 1 / fps;
+    for (const s of cuts) {
+      strips.push({ shot: s.id, t: s.start, boundary: `strips/cut-${s.id}.jpg`, motion: `strips/motion-${s.id}.jpg`, transition: s.craft?.transition || null, music: music ? describeTime(music, s.start) : null });
+      jobs.push({ times: [-2, -1, 0, 1, 2].map(k => s.start + k * f), vf: 'scale=-2:200', out: join(outDir, `strips/cut-${s.id}.jpg`) });
+      jobs.push({ times: Array.from({ length: 8 }, (_, i) => s.start - 0.5 + i / 7), vf: 'scale=-2:160', out: join(outDir, `strips/motion-${s.id}.jpg`) });
+    }
   }
   // 100% crops: centre at each shot's hold, and each line of copy at its readable middle.
-  const crops = [], cs = cropSize || Math.round(Math.min(vw, vh) / 2);
-  await pool((plan && sourceTimeline ? plan.shots : [{ id: 'mid', start: 0, end: duration }]).slice(0, 12), async s => {
+  const cs = cropSize || Math.round(Math.min(vw, vh) / 2);
+  const crops = (plan && sourceTimeline ? plan.shots : [{ id: 'mid', start: 0, end: duration }]).slice(0, 12).map(s => {
     const t = (s.start + s.end) / 2, file = `crops/${s.id}-centre.png`;
-    await run('ffmpeg', ['-v', 'error', '-y', '-ss', t.toFixed(4), '-i', video, '-frames:v', '1', '-vf', `crop=${cs}:${cs}:${Math.round((vw - cs) / 2)}:${Math.round((vh - cs) / 2)}`, join(outDir, file)]);
+    jobs.push({ times: [t], vf: `crop=${cs}:${cs}:${Math.round((vw - cs) / 2)}:${Math.round((vh - cs) / 2)}`, out: join(outDir, file) });
     return { t: r2(t), file, what: `${s.id} centre 100%` };
-  }).then(list => crops.push(...list));
-  // Copy diagnostics: reading time, contrast; crop each line for a sharp look at shaping/edges.
-  const copy = [], copyCrops = [];
-  for (const [i, l] of (text?.lines || []).entries()) {
+  });
+  // Copy diagnostics: reading time, contrast (rgb24 of the box), and a crop for a sharp look at shaping/edges.
+  const copy = (text?.lines || []).map((l, i) => {
     const dur = l.end - l.start, need = readingTime(l.text), row = { text: l.text, start: l.start, end: l.end, seconds: r2(dur), needs: r2(need), readable: dur >= need };
     if (l.box) {
       // mid-span: entrance animations have finished
-      const t = (l.start + l.end) / 2, pad = 12, box = [l.box[0] - pad, l.box[1] - pad, l.box[2] + pad, l.box[3] + pad];
-      const crop = rawCrop(video, t, box, vw, vh);
-      if (!crop) { row.offscreen = true; notes.push(`copy "${l.text}" lies outside the frame at ${r2(t)}s`); copy.push(row); continue; }
-      row.contrast = boxContrast(crop.buf); row.lowContrast = row.contrast < 3;
-      const file = `crops/copy-${i + 1}.png`;
-      copyCrops.push(['-v', 'error', '-y', '-ss', t.toFixed(4), '-i', video, '-frames:v', '1', '-vf', `crop=${crop.w}:${crop.h}:${crop.x}:${crop.y}`, join(outDir, file)]);
-      row.crop = file;
+      const t = (l.start + l.end) / 2, pad = 12, c = clampCrop([l.box[0] - pad, l.box[1] - pad, l.box[2] + pad, l.box[3] + pad], vw, vh);
+      if (!c) { row.offscreen = r2(t); return row; }
+      const vf = `crop=${c.w}:${c.h}:${c.x}:${c.y}`;
+      row.crop = `crops/copy-${i + 1}.png`;
+      jobs.push({ times: [t], vf, out: join(outDir, row.crop) }, { times: [t], vf: `${vf},format=rgb24`, out: raw(`copy-${i}`) });
     }
-    copy.push(row);
-    if (!row.readable) notes.push(`copy "${l.text}" is on screen ${row.seconds}s; reading it needs about ${row.needs}s`);
-    if (row.lowContrast) notes.push(`copy "${l.text}" contrast ≈ ${row.contrast}:1 at ${r2(l.start)}s; check legibility over the image`);
-  }
-  await pool(copyCrops, args => run('ffmpeg', args));
+    return row;
+  });
+  // Tiny luma thumbnails (16×N region averages) for composition similarity between shots.
+  const thumbShots = plan && sourceTimeline && plan.shots.length >= 3 ? plan.shots : [];
+  const gw = 16, gh = Math.max(4, Math.round(16 * vh / vw));
+  thumbShots.forEach((s, i) => jobs.push({ times: [(s.start + s.end) / 2], vf: `scale=${gw}:${gh}:flags=area,format=gray`, out: raw(`thumb-${i}`) }));
+  jobs.push({ all: true, vf: `fps=${Math.max(0.5, 24 / duration).toFixed(3)},scale=${Math.round(vw / Math.max(vw, vh) * 260)}:-2,tile=6x4:padding=4:color=0x202020`, out: join(outDir, 'contact.jpg') });
+  await grab(video, fps, Math.max(1, Math.round(duration * fps)), jobs);
+  const readRaw = (name) => { const file = raw(name), buf = readFileSync(file); rmSync(file, { force: true }); return buf; };
+  copy.forEach((row, i) => {
+    if (row.offscreen !== undefined) { notes.push(`copy "${row.text}" lies outside the frame at ${row.offscreen}s`); row.offscreen = true; return; }
+    if (row.crop) { row.contrast = boxContrast(readRaw(`copy-${i}`)); row.lowContrast = row.contrast < 3; }
+    if (!row.readable) notes.push(`copy "${row.text}" is on screen ${row.seconds}s; reading it needs about ${row.needs}s`);
+    if (row.lowContrast) notes.push(`copy "${row.text}" contrast ≈ ${row.contrast}:1 at ${r2(row.start)}s; check legibility over the image`);
+  });
   // Motion energy: suspicious stillness outside declared holds, and the busiest moments.
   const energy = await motionEnergy(video);
   const still_ = []; let s0 = null;
@@ -166,8 +177,8 @@ export async function reviewEvidence({ video, outDir, fps, plan, text, music, ho
   const busiest = [...energy].sort((a, b) => b.v - a.v).filter((e, i, arr) => arr.findIndex(o => Math.abs(o.t - e.t) < 1) === i).slice(0, 3).map(e => ({ t: r2(e.t), energy: r2(e.v) }));
   // Composition repetition between non-adjacent shots (same framing over and over).
   const repeats = [];
-  if (plan && sourceTimeline && plan.shots.length >= 3) {
-    const th = plan.shots.map(s => thumb(video, (s.start + s.end) / 2, vw, vh));
+  if (thumbShots.length) {
+    const th = thumbShots.map((_, i) => { const buf = readRaw(`thumb-${i}`), m = buf.reduce((a, b) => a + b, 0) / buf.length; return [...buf].map(v => v - m); });
     for (let i = 0; i < th.length; i++) for (let j = i + 2; j < th.length; j++) { const c = corr(th[i], th[j]); if (c > 0.96) repeats.push({ a: plan.shots[i].id, b: plan.shots[j].id, similarity: r2(c) }); }
     for (const r of repeats) notes.push(`shots ${r.a} and ${r.b} have nearly the same composition (${r.similarity}); intentional bookend or repetition?`);
   }
@@ -182,7 +193,6 @@ export async function reviewEvidence({ video, outDir, fps, plan, text, music, ho
     for (const c of sync.filter(c => !c.ok)) notes.push(`cue ${c.id}: sound transient ${c.delta === null ? 'not found' : `${Math.round(c.delta * 1000)} ms off`} from picture time ${c.t}s`);
   }
   for (const e of camera?.events || []) notes.push(`camera ${e.kind} at ${e.t}s: ${e.message}`);
-  await run('ffmpeg', ['-v', 'error', '-y', '-i', video, '-vf', `fps=${Math.max(0.5, 24 / duration).toFixed(3)},scale=${Math.round(vw / Math.max(vw, vh) * 260)}:-2,tile=6x4:padding=4:color=0x202020`, '-frames:v', '1', join(outDir, 'contact.jpg')]);
   const report = { video: basename(video), duration: r2(duration), size: [vw, vh], timeline: sourceTimeline ? 'source = delivery' : 'delivery (cut-down: plan times not applied)',
     samples, strips, crops, copy, camera, stillness: still_, busiest, repeats, silence, sync, notes,
     disclaimer: 'Advisory evidence for a human/AI director. It does not judge taste and does not replace watching and listening to the film.' };
@@ -211,16 +221,16 @@ export async function aspectCompare(videos, times, out, { h = 360 } = {}) {
   for (const [i, t] of times.entries()) {
     const row = `${out}.row${i}.jpg`;
     const tmp = videos.map((v, k) => `${out}.${i}.${k}.jpg`);
-    for (const [k, v] of videos.entries()) await run('ffmpeg', ['-v', 'error', '-y', '-ss', t.toFixed(4), '-i', v, '-frames:v', '1', '-vf', `scale=-2:${h}`, tmp[k]]);
+    for (const [k, v] of videos.entries()) await run('ffmpeg', ['-v', 'error', '-y', '-ss', ss(t), '-i', v, '-frames:v', '1', '-vf', `scale=-2:${h}`, tmp[k]]);
     await run('ffmpeg', ['-v', 'error', '-y', ...tmp.flatMap(f => ['-i', f]), '-filter_complex', `${tmp.map((_, k) => `[${k}]`).join('')}hstack=inputs=${tmp.length}`, row]);
-    for (const f of tmp) execFileSync('rm', ['-f', f]);
+    for (const f of tmp) rmSync(f, { force: true });
     rows.push(row);
   }
-  if (rows.length === 1) execFileSync('mv', [rows[0], out]);
+  if (rows.length === 1) renameSync(rows[0], out);
   else {
     // Rows can differ in width only if inputs differ in count; pad to the widest for vstack.
     await run('ffmpeg', ['-v', 'error', '-y', ...rows.flatMap(f => ['-i', f]), '-filter_complex', `${rows.map((_, k) => `[${k}]`).join('')}vstack=inputs=${rows.length}`, out]);
-    for (const f of rows) execFileSync('rm', ['-f', f]);
+    for (const f of rows) rmSync(f, { force: true });
   }
   return out;
 }

@@ -31,6 +31,21 @@ Your film may use none of them; they are tools, not a house style.
 - **No raster history:** avoid `will-change` and rest transforms; they make seek order change pixels (≤ 1 level on ≤ 3 % of pixels is tolerated in the determinism test).
 - **Fractional viewports** (337.5 px) must be `Math.round`-ed before CDP.
 - **Read-back for graphic type:** kinetic type drawn as graphics is not tracked by text read-back (0 lines is expected); check it with frames instead.
+- **Duration gate is frame-accurate** (`lib/measure.mjs`): |probe − brief| ≤ 1/fps + 30 ms (one AAC packet of container slack). The old ±10 % let a 30 s film be 3 s off.
+- **Exact slice timescales** (`lib/render.mjs`): worker slices are written with `-video_track_timescale` and `-movie_timescale` = fps × 1000. With B-frames (review/final) the edit list is stored in the movie timescale, 1000 by default, so each slice lost up to 1 ms and every join shifted later frames (FFmpeg 9: 15 frames probed 30.039 fps). Now 60/60 frames sit on the 1/fps grid with 4 workers.
+- **Seek 1 ms early for stills** (`ss()` in `lib/review.mjs`, `stillAt` in `lib/finish.mjs`): input `-ss` returns the first frame with pts ≥ target, and `t.toFixed(4)` can land just past a frame (3.9667 > 3.96667). For the last frame that decoded nothing: JPEG output failed with a misleading "Non full-range YUV" error, PNG output exited 0 without writing a file.
+
+## Cross-platform (Linux CI + the owner's Windows machine, 2026-10-03)
+All OS differences live in `lib/platform.mjs`; `test/platform.test.mjs` fails on a regression.
+- **Browser:** `STUDIO_CHROMIUM`, else Linux paths, Windows Chrome/Edge under Program Files / LocalAppData, macOS Chrome. Get the version from DevTools `/json/version`: on Windows `chrome.exe --version` opens a window.
+- **Closing Chromium** (`shutdown()` in `lib/cdp.mjs`): send `Browser.close` on the browser websocket, wait for the exit, then delete the profile with `maxRetries`. A bare kill left helper processes holding the profile and our stderr pipe: 69 orphaned profiles (746 MB) in one day and a ~17 s wait before node could exit.
+- **Builds run a lighter doctor** (`doctor({ optional: false })` from `make.mjs`): no Python imports, no GPU test-encodes, no `takes/doctor.json` overwrite. The first frame's width gate in `render.mjs` still enforces the device scale. A build's tool check went from 31 s to about 10 s here; each `ffmpeg`/`ffprobe` spawn costs about 1.1 s on this machine.
+- **Main-module check:** `isMain(import.meta.url)` (`pathToFileURL`), never the raw `` `file://${process.argv[1]}` ``: on Windows with spaces in the path the CLI body silently did nothing.
+- **Python:** `PYTHON` = `STUDIO_PYTHON`, else `python` on Windows (`python3` is the Microsoft Store stub), else `python3`. Python tools reconfigure stdout/stderr to UTF-8 and open text files with `encoding='utf-8'`: Windows defaults to cp1252, and `≈` or Arabic crashed `audio_deep.py`.
+- **FFmpeg:** `os.devNull` for the first pass of a two-pass encode. Use a concat list, not `-pattern_type glob` (Windows builds lack glob). Give `drawtext` an explicit `fontfile=` (Windows builds have no Fontconfig configuration, and the process crashed). Use forward slashes in concat lists and page URLs (`slash()`).
+- **Files:** `node:fs` (`rmSync`, `renameSync`), never `execFileSync('rm'|'mv')`. Use `statfsSync` instead of `df`.
+- **Test env:** `npm run test:render` loads `test/render.env` with `node --env-file`, not the POSIX `VAR=1 cmd` syntax.
+- **One OpenCV package per Python environment:** mediapipe brings `opencv-contrib-python`. Installing `opencv-python-headless` and `opencv-python` as well overwrites the shared `cv2` folder.
 
 ## Review recipes (cheap and effective)
 - Extract the acceptance frames **from the exported mp4**, not from the preview path: `ffmpeg -ss T -i master.mp4 -frames:v 1 f.png`, then a strip with `hstack`/`tile`.
@@ -67,7 +82,8 @@ Owner-facing workflow: AUTONOMOUS_FILM.md — one natural-language request, agen
 Capture startup reliability: create the server, launch inside cleanup protection, close the server even on startup/client-close failure. cdp.mjs permits one bounded retry only for transient Chromium startup failures, never for failed product verification.
 
 ## Tooling speed without quality loss
-- **Bounded pool for independent extractions** (`pool()` in `lib/review.mjs`): N separate ffmpeg processes, each writing its own file, results kept in input order. Same bytes, less wall time (evidence 104 s → 71 s). Seeking a CRF 14 master is the cost, not the decode of one frame.
+- **One decode, many images** (`grab()` in `lib/review.mjs`, 2026-10-03): every review still, strip frame, crop, raw contrast/thumbnail buffer and the contact sheet come from one `split` → `select=eq(n\,N),setpts=0,…` graph. Strips hstack their own branches, so a frame may repeat. Long graphs are chunked to stay under the Windows command-line limit. This replaced the earlier `pool()` of one ffmpeg launch per image (39 launches for a 4 s clip). Review evidence went from 23 s to 4 s on the owner's machine.
+- **Process launches are the cost on Windows:** even `cmd /c exit` takes 0.8 s here, and node, python and ffmpeg each take 0.9–1.4 s. Count them with an `--import` preload that wraps `child_process` (NODE_OPTIONS) before optimising anything else. A fresh 4 s review build went from 61 launches / 78 s to 24 / 46 s, using `grab()`, `measureAll()` (loudness + freeze + black in one pass, numbers identical) and `buildCheck()`, plus a one-process `vm.SourceTextModule` syntax check reused while the files are unchanged.
 - **Onsets from frame 0:** an opening impact is a real onset; local-max windows clamp at the start instead of skipping frames.
 
 ## Product-UI promo grammar (learned from a 15 s SaaS promo, 2026-10-02; kit: `lib/uimotion.js`)

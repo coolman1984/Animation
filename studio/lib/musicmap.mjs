@@ -9,19 +9,20 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { beatGrid } from './rhythm.mjs';
+import { PYTHON } from './platform.mjs';
 import { run } from './render.mjs';
 
 const TOOL = join(dirname(fileURLToPath(import.meta.url)), '..', 'tools', 'music_analysis.py');
 const r3 = v => +v.toFixed(3);
 
 // ---------- analysis ----------
-export function pythonAvailable(python = 'python3') {
+export function pythonAvailable(python = PYTHON) {
   const r = spawnSync(python, ['-c', 'import numpy, librosa'], { encoding: 'utf8' });
   return r.status === 0;
 }
 
 // Analyze an audio file. engine: 'auto' | 'python' | 'node'. Returns a complete (derived) map.
-export async function analyzeMusic(src, { engine = 'auto', bpmHint, beatsPerBar = 4, python = 'python3', out } = {}) {
+export async function analyzeMusic(src, { engine = 'auto', bpmHint, beatsPerBar = 4, python = PYTHON, out } = {}) {
   if (!existsSync(src)) throw new Error(`music file not found: ${src}`);
   let map;
   if (engine === 'python' || (engine === 'auto' && pythonAvailable(python))) {

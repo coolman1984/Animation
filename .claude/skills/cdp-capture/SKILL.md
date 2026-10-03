@@ -12,7 +12,9 @@ Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `s
 ## Launch flags that matter
 `--headless=new --no-sandbox --disable-gpu --hide-scrollbars --force-color-profile=srgb --font-render-hinting=none`
 `--force-device-scale-factor=N --window-size=W,H --disable-background-timer-throttling --disable-renderer-backgrounding`
-Plus `Emulation.setDeviceMetricsOverride` with the same scale. Chromium: `/opt/pw-browsers/chromium` (doctor finds it).
+Plus `Emulation.setDeviceMetricsOverride` with the same scale. Chromium: `STUDIO_CHROMIUM`, `/opt/pw-browsers/chromium` on
+Linux, installed Chrome/Edge on Windows (doctor finds it via `lib/platform.mjs`). Each launch uses a throwaway headless profile,
+so the owner's own Chrome windows and profile are untouched. Page URLs use forward slashes (`slash()`), never Windows `\`.
 
 ## Device-scale gate (mandatory)
 Read the first frame's width from the PNG/JPEG header (`imageWidth`) and **refuse to continue** unless

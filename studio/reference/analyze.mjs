@@ -9,6 +9,7 @@ import { TECHNIQUE_ATLAS } from './atlas.mjs';
 const PY = join(STUDIO,'tools/reference_motion.py');
 import { scientificSummary } from './summary.mjs';
 import { relationship } from './audiovisual.mjs';
+import { PYTHON } from '../lib/platform.mjs';
 export async function analyze(source, opts={}) {
   const maxFrames=opts.maxFrames??72;
   if(!source)throw new Error("Supply a local video or authorized HTTP(S) source");
@@ -43,7 +44,7 @@ export async function analyze(source, opts={}) {
     if(handle.local){
       const decoded=await decodeMetrics(handle.local,D);cuts=await cutTimes(handle.local);
       if(opts.sceneEngine==='python'){
-        const r=await work(opts.python||'python3',[PY,'scenes',handle.local],{timeout:90000});const d=JSON.parse(r.stdout);if(d.unavailable)throw new Error('Requested PySceneDetect is unavailable');cuts=d.cuts;detection='PySceneDetect AdaptiveDetector';
+        const r=await work(opts.python||PYTHON,[PY,'scenes',handle.local],{timeout:90000});const d=JSON.parse(r.stdout);if(d.unavailable)throw new Error('Requested PySceneDetect is unavailable');cuts=d.cuts;detection='PySceneDetect AdaptiveDetector';
       }
       machine=seriesMetrics(decoded.frames,decoded.times,cuts);machine.measurementFPS=decoded.fps;
     }else{
@@ -61,7 +62,7 @@ export async function analyze(source, opts={}) {
     }}
     const motion={engine:'native-pixel-translation',...machine};
     if(opts.motion!=='none'&&handle.local){
-      try{const r=await work(opts.python||'python3',[PY,'motion',handle.local,'--duration',String(D),'--cuts',JSON.stringify(allCuts)],{timeout:90000});const flow=JSON.parse(r.stdout);if(!flow.unavailable){motion.nativePairs=motion.pairs;Object.assign(motion,flow);motion.samples=machine.samples;}}
+      try{const r=await work(opts.python||PYTHON,[PY,'motion',handle.local,'--duration',String(D),'--cuts',JSON.stringify(allCuts)],{timeout:90000});const flow=JSON.parse(r.stdout);if(!flow.unavailable){motion.nativePairs=motion.pairs;Object.assign(motion,flow);motion.samples=machine.samples;}}
       catch(e){motion.limitations.push('Optional OpenCV unavailable/failed: '+e.message.slice(0,240));if(opts.motion==='python')throw e;}
     }
     const transitions=[];

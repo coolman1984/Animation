@@ -59,6 +59,13 @@ test('final gates retain blockers and allow explicitly declared holds/fades', ()
   assert.equal(gates(hold, brief).every(g => g.ok), false);
   assert.equal(gates(hold, { ...brief, holds: [[58, 60]] }).every(g => g.ok), true);
 });
+test('duration gate is frame-accurate, not ±10 %', () => {
+  const at = duration => gates({ ...measured, probe: { ...measured.probe, duration } }, brief).find(g => g.name.startsWith('duration')).ok;
+  assert.equal(at(60.021), true, 'one AAC packet of container slack');
+  assert.equal(at(59.95), true, 'within one frame');
+  assert.equal(at(60.2), false, 'six frames long fails');
+  assert.equal(at(57), false, 'three seconds short failed only under the old ±10 % gate');
+});
 test('declared dark spans may contain black frames; undeclared black still fails', () => {
   const black = { ...measured, black: [{ start: 0, end: 0.6 }, { start: 12.65, end: 12.72 }] };
   assert.equal(gates(black, brief).every(g => g.ok), false, 'undeclared black fails');

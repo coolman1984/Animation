@@ -16,6 +16,7 @@ Every label is a measured hypothesis with its numbers; musical taste still needs
 import argparse, json, math, subprocess, sys, tempfile
 from pathlib import Path
 import numpy as np
+import sys as _sys; [s.reconfigure(encoding='utf-8') for s in (_sys.stdout, _sys.stderr)]  # Windows pipes default to cp1252; Arabic/≈ output crashed
 
 NOTES = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']
 MAJ = np.array([6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88])
@@ -209,7 +210,7 @@ def main():
     try: plot(r, out / 'audio-deep.png')
     except Exception as e: r['plotError'] = str(e)[:200]
     r.pop('_plot', None)
-    (out / 'audio-deep.json').write_text(json.dumps(r, indent=1)); (out / 'audio-deep.md').write_text(markdown(r))
+    (out / 'audio-deep.json').write_text(json.dumps(r, indent=1), encoding='utf-8'); (out / 'audio-deep.md').write_text(markdown(r), encoding='utf-8')
     print(json.dumps({k: v for k, v in r.items() if k not in ('beats', 'loudnessCurve', 'melody', 'sfxCandidates')}))
 
 if __name__ == '__main__':

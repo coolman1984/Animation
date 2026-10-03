@@ -21,7 +21,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y ffmpeg
       - name: Unit checks
         working-directory: studio
-        run: npm test
+        run: npm run test:all
       - name: Actual browser and encoder checks
         working-directory: studio
         env:

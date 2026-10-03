@@ -2,7 +2,7 @@
 // Each worker = its own Chromium. Frames go as PNG straight into ffmpeg (x264, bt709, yuv420p),
 // slices are joined without re-encoding.
 import { spawn } from 'node:child_process';
-import { mkdirSync, writeFileSync, rmSync, existsSync } from 'node:fs';
+import { mkdirSync, writeFileSync, rmSync, existsSync, readdirSync } from 'node:fs';
 import { join, dirname, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { cpus } from 'node:os';
@@ -10,6 +10,7 @@ import { once } from 'node:events';
 import { frameRange, PROFILES } from './build-options.mjs';
 import { launch, imageWidth, settleCapture, screenshot } from './cdp.mjs';
 import { serve } from './serve.mjs';
+import { isMain, slash } from './platform.mjs';
 
 const STUDIO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -19,7 +20,7 @@ export function run(cmd, args, { input, quiet = true, cwd, env } = {}) {
     let out = '', err = '';
     p.stdout.on('data', (d) => (out += d)); p.stderr.on('data', (d) => (err += d));
     p.on('error', rej);
-    p.on('close', (c) => (c === 0 ? res({ out, err }) : rej(new Error(`${cmd} exited ${c}\n${err.slice(-2000)}${out ? `\n--- stdout tail ---\n${out.slice(-1500)}` : ""}`))));
+    p.on('close', (c) => (c === 0 ? res({ out, err }) : rej(new Error(`${cmd} exited ${c}: ${args.join(' ').slice(0, 400)}\n${err.slice(-2000)}${out ? `\n--- stdout tail ---\n${out.slice(-1500)}` : ""}`))));
     if (input) { p.stdin.end(input); }
   });
 }
@@ -29,7 +30,7 @@ export const GPU_ARGS = ['--use-angle=swiftshader', '--enable-unsafe-swiftshader
 async function openFilm(port, film, { w, h, variant, segments, fadeOut, scale = 1, gpu = false }) {
   const client = await launch({ width: w, height: h, scale, extraArgs: gpu ? GPU_ARGS : [] });
   try {
-    const query = new URLSearchParams({ film: '/' + relative(STUDIO, film), w: String(w), h: String(h), variant: variant || 'hero' });
+    const query = new URLSearchParams({ film: '/' + slash(relative(STUDIO, film)), w: String(w), h: String(h), variant: variant || 'hero' });
     if (segments) query.set('segments', segments);
     if (fadeOut) query.set('fadeOut', String(fadeOut));
     const errors = [];
@@ -70,7 +71,10 @@ export async function stills({ film, times, outDir, w = 1080, h = 1350, variant,
   } finally { await client?.close(); srv.close(); }
   writeFileSync(join(outDir, 'boxes.json'), JSON.stringify(boxes, null, 1));
   const rows = Math.ceil(times.length / sheetCols);
-  await run('ffmpeg', ['-v', 'error', '-y', '-pattern_type', 'glob', '-i', join(outDir, 't*.png'), '-vf', `scale=${Math.round(w / 4)}:-1,tile=${sheetCols}x${rows}:padding=6:color=0x222222`, '-frames:v', '1', join(outDir, 'sheet.png')]);
+  // An explicit list instead of `-pattern_type glob`, which Windows FFmpeg builds do not support.
+  const list = join(outDir, 'sheet-list.txt');
+  writeFileSync(list, readdirSync(outDir).filter(f => /^t.*\.png$/.test(f)).sort().map(f => `file '${slash(join(outDir, f)).replaceAll("'", "'\\''")}'`).join('\n'));
+  await run('ffmpeg', ['-v', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', list, '-vf', `scale=${Math.round(w / 4)}:-1,tile=${sheetCols}x${rows}:padding=6:color=0x222222`, '-frames:v', '1', join(outDir, 'sheet.png')]);
   return { info, boxes };
 }
 
@@ -151,7 +155,10 @@ export async function video({ film, out, w = 1080, h = 1350, variant, segments, 
         '-c:v', 'libx264', '-threads', '1', '-preset', preset, '-crf', String(crf), '-pix_fmt', 'yuv420p',
         '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv',
         '-vf', encodeFilter({ dither }),
-        '-x264-params', 'keyint=60:min-keyint=30', file], { stdio: ['pipe', 'ignore', 'pipe'] });
+        '-x264-params', 'keyint=60:min-keyint=30',
+        // Exact timescales: with B-frames the slice's edit list is written in the MOVIE timescale (1000 by default), so each
+        // slice lost up to 1 ms and every worker join shifted later frames (FFmpeg 9: 15 frames measured 30.039 fps).
+        '-video_track_timescale', String(Math.round(fps) * 1000), '-movie_timescale', String(Math.round(fps) * 1000), file], { stdio: ['pipe', 'ignore', 'pipe'] });
       let ferr = ''; ff.stderr.on('data', d => (ferr += d));
       ff.stdin.on('error', () => {});
       const closed = new Promise((res, rej) => {
@@ -184,13 +191,13 @@ export async function video({ film, out, w = 1080, h = 1350, variant, segments, 
     if (failed) throw failed.reason;
     const files = results.map(r => r.value).filter(Boolean);
     process.stdout.write('\n');
-    writeFileSync(join(tmp, 'list.txt'), files.map(f => `file '${f.replaceAll("'", "'\\''")}'`).join('\n'));
+    writeFileSync(join(tmp, 'list.txt'), files.map(f => `file '${slash(f).replaceAll("'", "'\\''")}'`).join('\n'));
     await run('ffmpeg', ['-v', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', join(tmp, 'list.txt'), '-c', 'copy', '-movflags', '+faststart', out]);
     return { frames: total, fps, width: outputWidth, height: outputHeight, range: [first / fps, last / fps], seconds: (Date.now() - started) / 1000 };
   } finally { srv.close(); rmSync(tmp, { recursive: true, force: true }); }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (isMain(import.meta.url)) {
   const [cmd, film, ...rest] = process.argv.slice(2);
   const opt = Object.fromEntries(rest.map((a) => a.replace(/^--/, '').split('=')));
   const filmPath = resolve(film);

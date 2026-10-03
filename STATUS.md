@@ -2,7 +2,27 @@
 
 Updated: 2026-10-03. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE — Live-action toolkit: research + offline tools for real footage of real people (owner request 2026-10-03).**
+**Latest scope: DONE — Windows port, speed-ups and testing policy (owner request 2026-10-03: "fix and improve", "make tests shorter", "never run slow tests unless producing a real video").**
+- The studio now runs on the owner's Windows machine. A real showreel draft rendered with the installed Chrome (frame checked, Arabic shaped correctly). All OS differences are in `studio/lib/platform.mjs`, guarded by `test/platform.test.mjs`. Details: `studio/TECHNIQUES.md` "Cross-platform".
+- Cross-platform bugs fixed:
+  - Worker joins drifted up to 1 ms each (B-frame edit lists in a 1000 timescale).
+  - The last-frame still returned nothing (silent PNG failure).
+  - Chromium shutdown orphaned profiles (69 folders / 746 MB removed) and stalled node ~17 s.
+  - Python tools crashed on non-ASCII output.
+  - `rm`/`mv`/`/dev/null`/FFmpeg glob/Fontconfig failures.
+- Duration gate tightened from ±10 % to one frame + 30 ms.
+- Speed: the cause was ~1 s per process launch on this machine. A fresh 4 s review build went from 61 launches / 78 s to 24 / 46 s (one-decode review evidence, one-pass measurements, reused tool check, one-process syntax check).
+- Optional tools installed on this PC: forensics + live-action Python packages (one OpenCV) and the logo tracer. Live-action ML models (~1.4 GB) were NOT downloaded.
+- Testing policy: written in `CLAUDE.md`, `studio/WORKFLOW.md` and `studio/README.md`. `npm test` = quick suite, `test:all` = CI unit suite, `test:render` only while producing a real video.
+- Verification:
+  - Last complete `test:render` run, before the speed-ups and policy: 112 tests, 108 passed, 0 failed, 2 cancelled by time-outs (evidence/pipeline builds on this slow-launch machine).
+  - After the speed-ups: targeted checks only — combined measurements identical to the separate ones on a clip with black + frozen spans; review images inspected; 60/60 frames on the grid with 4 workers.
+  - A further full run was stopped at the owner's order (40 passed; 2 time-outs under 3-file concurrency, which was dropped).
+- Not verified: a complete slow suite after the speed-ups (deferred to the next real video production by policy); listening; GitHub CI.
+
+**Previous scope: DONE — Deep app study on the owner's Windows checkout (owner request 2026-10-03).** Map: `studio/APP_MAP.md`; its portability findings were fixed in the scope above.
+
+**Earlier scope: DONE — Live-action toolkit: research + offline tools for real footage of real people (owner request 2026-10-03).**
 - `studio/LIVE_ACTION.md` (research with sources, techniques, roadmap, limits); `tools/live.py` (VAD, Whisper turbo, script word alignment, MediaPipe mattes, face/pose anchors, free space, 9:16 reframe, preview, scratch TTS); `lib/edl.mjs`, `lib/dialogue.mjs`, `lib/footage.js`; skill `live-action-editor`.
 - Proof `studio/live1/` (12 s 9:16, CC BY 4.0 footage): all gates PASS on take03 (local); measured word timing median 0.03 s; ducking > 4 dB under speech.
 - Capture robustness: async film render awaited, `screenshot()` retry, canvas outline (CSS drop-shadow stack froze capture).
@@ -38,6 +58,8 @@ Updated: 2026-10-03. This is the current handoff; historical plans are not a tas
 ## Closed scopes (newest first; evidence in `studio/STATUS_HISTORY.md` and `studio/CHANGELOG.md`)
 | Scope | Result |
 |---|---|
+| Windows port, speed-ups, testing policy | DONE, local commit |
+| Deep app study (APP_MAP.md) | DONE, local commit |
 | Live-action toolkit + `live1` study | DONE, PR to main |
 | Film 6 knowledge: playbook, `lib/uimorph.js`, `tools/logo_trace.py` | DONE, PR #15 merged |
 | Film 6 — Pixel Plus 30 s Facebook Reels showreel-ad | DONE, branch; take08 local, 2 of 2 correction rounds |

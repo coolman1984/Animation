@@ -38,10 +38,12 @@ export async function sheet(files, out, labels = []) {
   if (!files.length) return null;
   mkdirSync(resolve(out, '..'), { recursive: true });
   // Images normalized independently: safe for portrait/landscape; no shell glob or concat injection.
-  const args = files.flatMap(f => ['-i', f]), cells = files.map((_, i) => `[${i}:v]scale=280:190:force_original_aspect_ratio=decrease,pad=280:220:(ow-iw)/2:5:color=0x171c24,setsar=1${labels[i] !== undefined ? `,drawtext=text='${Number(labels[i]).toFixed(3)} s':x=10:y=200:fontsize=14:fontcolor=white` : ''}[v${i}]`);
+  // drawtext gets a bundled font file (relative to the studio, the working directory below): without one FFmpeg asks
+  // Fontconfig, which has no configuration on Windows builds and crashes the process.
+  const args = files.flatMap(f => ['-i', resolve(f)]), cells = files.map((_, i) => `[${i}:v]scale=280:190:force_original_aspect_ratio=decrease,pad=280:220:(ow-iw)/2:5:color=0x171c24,setsar=1${labels[i] !== undefined ? `,drawtext=fontfile=assets/fonts/SpaceMono-Regular.ttf:text='${Number(labels[i]).toFixed(3)} s':x=10:y=200:fontsize=14:fontcolor=white` : ''}[v${i}]`);
   const cols = Math.min(4, files.length), layout = files.map((_, i) => `${i % cols * 280}_${Math.floor(i / cols) * 220}`).join('|');
   const filter = files.length===1?cells[0].replace('[v0]','[o]'):cells.join(';') + ';' + files.map((_, i) => `[v${i}]`).join('') + `xstack=inputs=${files.length}:layout=${layout}:fill=0x171c24[o]`;
-  await work('ffmpeg', ['-v', 'error', '-y', ...args, '-filter_complex_threads', '1', '-filter_complex', filter, '-map', '[o]', '-frames:v', '1', out]);
+  await work('ffmpeg', ['-v', 'error', '-y', ...args, '-filter_complex_threads', '1', '-filter_complex', filter, '-map', '[o]', '-frames:v', '1', resolve(out)], { cwd: STUDIO });
   return out;
 }
 export async function grayOf(file, w = 160, h = 90) { return (await work('ffmpeg', ['-v', 'error', '-i', file, '-vf', `scale=${w}:${h},format=gray`, '-frames:v', '1', '-f', 'rawvideo', '-'])).stdout; }
