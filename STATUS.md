@@ -2,7 +2,11 @@
 
 Updated: 2026-10-03. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE — Live-action toolkit: research + offline tools for real footage of real people (owner request 2026-10-03).**
+**Latest scope: DONE — live1 music v2 (owner 2026-10-03: "music very bad and ugly", wants energetic catchy Western beats).**
+- `live1/score.mjs`: 133⅓ BPM tech-pop bed locked to the cuts (bar = 1.8 s), hook, tape-stop on the freeze, drop on unfreeze; voice still ducked.
+- take04 final: all gates PASS; measured tempo 132.86 BPM. Not verified: listening.
+
+**Previous scope: DONE — Live-action toolkit: research + offline tools for real footage of real people (owner request 2026-10-03).**
 - `studio/LIVE_ACTION.md` (research with sources, techniques, roadmap, limits); `tools/live.py` (VAD, Whisper turbo, script word alignment, MediaPipe mattes, face/pose anchors, free space, 9:16 reframe, preview, scratch TTS); `lib/edl.mjs`, `lib/dialogue.mjs`, `lib/footage.js`; skill `live-action-editor`.
 - Proof `studio/live1/` (12 s 9:16, CC BY 4.0 footage): all gates PASS on take03 (local); measured word timing median 0.03 s; ducking > 4 dB under speech.
 - Capture robustness: async film render awaited, `screenshot()` retry, canvas outline (CSS drop-shadow stack froze capture).

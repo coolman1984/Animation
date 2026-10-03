@@ -55,6 +55,7 @@
 38. **Analyse once, render from cached data:** MediaPipe's face landmarker is non-deterministic in VIDEO mode; run IMAGE mode per frame, smooth with a 1€ filter and store JSON — the render reads the pack and stays deterministic.
 39. **Offline editing can look ahead:** forward-backward smoothing gives a reframing camera with zero lag (it moves with the subject, not after him), reset at every cut; a dead zone removes micro pans.
 40. **Headless capture has two traps:** a detached `<img>.decode()` may never resolve (use `createImageBitmap`), and stacked CSS `drop-shadow` filters on a full-frame layer froze screenshots for > 90 s (draw strokes on canvas). Bisect with a skip switch, do not just add retries.
+41. **A bed under a voice still needs a pulse.** "Soft and safe" read as ugly to the owner; ducking already protects the words, so give the music a kick, a hook and a tempo derived from the cut grid, and make edit events musical (freeze = stop, unfreeze = drop).
 
 
 Consult `reference/lessons.json` only when its evidence-backed principle is relevant to the current

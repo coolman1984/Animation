@@ -113,6 +113,7 @@ Counter-case: the grammar is calm and precise; it is wrong for loud retail promo
 - **Sticker outline:** hard silhouette (alpha ≥ 50 %) tinted white, drawn at 12 offsets of 6–7 px under the person on the same canvas.
 - **Word timing for scripted ads:** VAD groups = sentences (longest gaps), words spread by spoken length (letters + 1.5), boundaries anchored on ≥ 30 ms gaps 22 dB under speech, re-spread between anchors: median 0.03 s.
 - **Ducking:** `sidechaincompress=threshold=0.025:ratio=6:attack=15:release=350` with the voice as key, music −9 dB before; measured > 4 dB extra drop under speech in the test.
+- **Energetic bed fitted to an edit:** pick the tempo from the cut grid (cuts every 1.8 s → bar 1.8 s → 133⅓ BPM) so each scene change is a downbeat; four-on-the-floor + clap 2/4 + 16th hats, supersaw I–vi–IV–V-style loop with sidechain pump, a two-phrase hook (A asks, B answers); a freeze-frame = musical stop (tape-stop stab + riser + snare roll), the unfreeze = the drop (`live1/score.mjs`).
 - **Conform 12 → 30 fps:** `minterpolate=fps=30:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1` (smooth, can warp limbs; RIFE is the upgrade); `fps=30` repeats frames honestly.
 
 

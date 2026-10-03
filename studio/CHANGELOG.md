@@ -5,6 +5,12 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-03 — live1 music v2: energetic Western tech-pop bed locked to the cuts (scope DONE)
+Owner: the soft bed was "very bad and ugly"; wanted Western music with energy, beats and a catchy rhythm that fits the video.
+- `live1/score.mjs` rewritten: 133⅓ BPM (bar = 1.8 s, so every cut lands on a downbeat), 909 kick/clap/hats, supersaw Em–C–G–D with sidechain pump,
+  sub, two-phrase hook; freeze-frame = musical stop (tape-stop + riser + snare roll), drop on unfreeze, stab on the title. Voice still ducked over it.
+- take04 final: all gates PASS; measured tempo 132.86 BPM. Not verified: listening.
+
 ## 2026-10-03 — Live-action toolkit: real footage of real people, cut, captioned and animated around (scope DONE)
 Owner request: comprehensive research (GitHub + trusted sources) and professional tools for ads with real people who talk and move:
 cutting, animation before/after/around them and in empty space, expressive SFX, every 2026 editing capability.

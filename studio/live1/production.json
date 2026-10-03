@@ -5,13 +5,13 @@
   "audience": "Internal capability proof for Pixel Plus: shows owners and clients that the studio can edit real footage of real people and animate around them",
   "promise": "Real footage + motion design in one deterministic pipeline: cutouts, tracking, reframing, karaoke captions, ducked mix",
   "cta": "None (internal study; the owner decides whether to show it)",
-  "direction": "One real person (CC BY 4.0 sample footage) carried through five live-action techniques: text behind subject, freeze-frame character intro with sticker outline, pixel halo orbiting through the matte sandwich, punch-in jump cut, head breaking out of a card. Brand blue world, Alexandria + Space Mono, scratch Arabic voiceover with word-timed captions, ducked 120 BPM bed.",
+  "direction": "One real person (CC BY 4.0 sample footage) carried through five live-action techniques: text behind subject, freeze-frame character intro with sticker outline, pixel halo orbiting through the matte sandwich, punch-in jump cut, head breaking out of a card. Brand blue world, Alexandria + Space Mono, scratch Arabic voiceover with word-timed captions, ducked 133 BPM tech-pop bed.",
   "assets": [
     { "id": "footage", "path": "live1/source/face-demographics-walking-and-pause.mp4", "role": "background", "rights": "Intel IoT DevKit sample-videos, CC BY 4.0 (github.com/intel-iot-devkit/sample-videos); attribution recorded in live1/BRIEF.md and ASSETS.md" },
     { "id": "pack", "path": "live1/plates/pack", "role": "background", "rights": "Derived in code by tools/live.py from the CC BY 4.0 footage and the synthetic voiceover" },
     { "id": "voice", "path": "live1/plates/pack/voice.wav", "role": "sfx", "rights": "Scratch voiceover synthesised with Piper ar_JO-kareem (sherpa-onnx); placeholder voice, never to be presented as a client's voice" }
   ],
-  "sound": { "mode": "original", "bpm": 120, "note": "Bed and SFX synthesised in live1/score.mjs; voice polished and the bed ducked under it with lib/dialogue.mjs (ffmpeg sidechaincompress)" },
+  "sound": { "mode": "original", "bpm": 133.33, "note": "v2 (owner: old bed too soft): energetic Western tech-pop bed, 909 four-on-the-floor, supersaw Em-C-G-D, catchy two-phrase hook, bars locked to the cuts (1.8 s bar = scene grid), freeze = tape-stop + riser, drop on unfreeze. Synthesised in live1/score.mjs; voice polished and the bed ducked under it with lib/dialogue.mjs (ffmpeg sidechaincompress)" },
   "creative": {
     "viewer": "a business owner deciding whether this studio can handle their talking-head or product-with-people ad",
     "problem": "motion-only reels do not prove live-action skills; real footage needs mattes, tracking and an edit",
@@ -25,7 +25,7 @@
     "camera": "auto-reframed crop that follows the subject, punch-ins, freeze push",
     "transitions": ["freeze", "punch-in", "card shrink"],
     "motion": "matte sandwich, tracked anchors, sticker outline, karaoke captions",
-    "sound": "120 BPM soft bed ducked under the voice, whoosh/riser/pop on edit events",
+    "sound": "133 BPM tech-pop bed (four-on-the-floor, hook, sidechain pump) ducked under the voice; tape-stop on the freeze, drop on unfreeze, whoosh/riser/pop on edit events",
     "pacing": "a new technique every 1.8–3.4 s, readable caption pages",
     "payoff": "his head breaks out of the card above the title",
     "cta": "none",
