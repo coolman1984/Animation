@@ -53,8 +53,9 @@ function extrude(parent, text, { size, weight = 900, font = AR, layers = 26, ste
   const mk = (i) => {
     const s = div(g, { left: '0', top: '0', transform: `translate(-50%,-50%) translate3d(0,0,${(-i * step).toFixed(1)}px)`, fontFamily: font, fontSize: px(size), fontWeight: String(weight), lineHeight: '1', whiteSpace: 'nowrap', direction: dir });
     s.textContent = text;
-    if (i === 0) { s.style.backgroundImage = `linear-gradient(180deg, ${front[0]} 10%, ${front[1]} 100%)`; s.style.webkitBackgroundClip = 'text'; s.style.backgroundClip = 'text'; s.style.color = 'transparent'; s.style.filter = glow ? `drop-shadow(0 0 22px ${glow})` : ''; }
-    else { const m = i / layers; s.style.color = `rgb(${[0, 1, 2].map((k) => Math.round(lerp(parseInt(side.slice(1 + 2 * k, 3 + 2 * k), 16), parseInt(sideDark.slice(1 + 2 * k, 3 + 2 * k), 16), m))).join(',')})`; }
+    if (i === 0) { s.style.backgroundImage = `linear-gradient(180deg, ${front[0]} 10%, ${front[1]} 100%)`; s.style.webkitBackgroundClip = 'text'; s.style.backgroundClip = 'text'; s.style.color = 'transparent'; }
+    else { if (i === 1 && glow) s.style.textShadow = `0 0 22px ${glow}, 0 0 44px ${glow}`; // glow on the layer behind the face: a text-shadow, not a drop-shadow filter (a filter forces a costly 3D surface)
+      const m = i / layers; s.style.color = `rgb(${[0, 1, 2].map((k) => Math.round(lerp(parseInt(side.slice(1 + 2 * k, 3 + 2 * k), 16), parseInt(sideDark.slice(1 + 2 * k, 3 + 2 * k), 16), m))).join(',')})`; }
     return s;
   };
   for (let i = layers; i >= 0; i--) mk(i);
@@ -206,9 +207,9 @@ SC.push({ id: 'title', a: CH.title - 0.02, b: CH.flip + 0.2, z: 5, init(root) {
   const mkLetters = (parent, flip) => {
     const g = obj(parent, 10, 10, flip ? { transform: 'scaleY(-1)' } : {});
     const ai = div(g, { left: '0', top: '0', transformStyle: 'preserve-3d' }), x = div(g, { left: '0', top: '0', transformStyle: 'preserve-3d' }), hr = div(g, { left: '0', top: '0', transformStyle: 'preserve-3d' });
-    const A = extrude(ai, 'AI', { size: 560, layers: 34, step: 3.4, front: ['#FFFFFF', '#8FE3FF'], side: '#1A5FEF', sideDark: '#071B66', glow: flip ? null : 'rgba(79,216,255,0.7)' });
-    const X = extrude(x, '×', { size: 460, layers: 28, step: 3.4, front: ['#FFF3A8', '#FFD21F'], side: '#E8A800', sideDark: '#7A4A00', glow: flip ? null : 'rgba(255,210,31,0.7)' });
-    const R = extrude(hr, 'HR', { size: 560, layers: 34, step: 3.4, front: ['#FFFFFF', '#DCE6FF'], side: '#3C58B8', sideDark: '#0B1C5C', glow: flip ? null : 'rgba(255,255,255,0.4)' });
+    const A = extrude(ai, 'AI', { size: 560, layers: flip ? 5 : 20, step: flip ? 23 : 5.8, front: ['#FFFFFF', '#8FE3FF'], side: '#1A5FEF', sideDark: '#071B66', glow: flip ? null : 'rgba(79,216,255,0.7)' });
+    const X = extrude(x, '×', { size: 460, layers: flip ? 4 : 16, step: flip ? 24 : 6, front: ['#FFF3A8', '#FFD21F'], side: '#E8A800', sideDark: '#7A4A00', glow: flip ? null : 'rgba(255,210,31,0.7)' });
+    const R = extrude(hr, 'HR', { size: 560, layers: flip ? 5 : 20, step: flip ? 23 : 5.8, front: ['#FFFFFF', '#DCE6FF'], side: '#3C58B8', sideDark: '#0B1C5C', glow: flip ? null : 'rgba(255,255,255,0.4)' });
     return { g, ai, x, hr };
   };
   const main = mkLetters(stageG, false);
@@ -237,7 +238,7 @@ SC.push({ id: 'title', a: CH.title - 0.02, b: CH.flip + 0.2, z: 5, init(root) {
   const xr = lerp(-540, 0, clamp(xs, 0, 1.1)), xsz = lerp(0.1, 1, clamp(xs, 0, 1.15));
   for (const L of [s.main, s.rl]) L.x.style.transform = T3(0, -40, 60, 0, xr * 1.0 + 12 * Math.sin(t * 2), -30 * Math.sin(t * 1.3) + (1 - clamp(xs)) * 720, xsz);
   s.stageG.style.opacity = sm(CH.title - 0.02, CH.title + 0.05, t).toFixed(3);
-  s.refl.style.opacity = (0.16 * sm(CH.title + 0.2, CH.title + 0.8, t)).toFixed(3);
+  const ro = 0.16 * sm(CH.title + 0.2, CH.title + 0.8, t); s.refl.style.opacity = ro.toFixed(3); s.refl.style.display = ro > 0.002 ? 'block' : 'none'; // the mirrored copy costs a full 3D pass: skip it while invisible
   const out = ioC(ramp(t, CH.flip - 0.12, CH.flip + 0.12));
   s.root.style.opacity = (1 - out).toFixed(3);
   slam(s.sub, t, EV.sub, CH.flip - 0.14, { stagger: 0.06, s0: 1.35, blur: 12, dur: 0.4, outDur: 0.12 });
