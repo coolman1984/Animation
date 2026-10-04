@@ -2,7 +2,9 @@
 
 Updated: 2026-10-04. This is the current handoff; historical plans are not a task queue.
 
-**Latest scope: DONE (delivered on owner's "now") — Film 11, AI × HR workshop showreel, 25 s, 1920×1080 (owner request 2026-10-04).**
+**Latest scope: DONE — Film 11 v2 (owner 2026-10-04: slower, readable, hosts longer, catchier music): 44 s, 120 BPM, 1080p30, take07 delivered. Gates PASS except the text gate (367 kinetic-overshoot/overlap boxes, same cause as v1). Not verified: listening.**
+
+**Previous scope: DONE (delivered on owner's "now") — Film 11, AI × HR workshop showreel, 25 s, 1920×1080 (owner request 2026-10-04).**
 - `studio/film11/` (BRIEF, production.json, config, timing.js shared clock, film.js real CSS 3D, score.mjs 144 BPM, LEDGER). Final take06 (local): 30 fps (owner asked 60, then asked for it immediately; 60 fps renders kept stalling in the heavy 3D title).
 - Gates: size, fps, duration, −14.1 LUFS, TP −4.8, LRA 3.7, no frozen span, no black frames, share 38.8 MB PASS; **text gate FAIL (185 boxes, mostly slammed words measured at their entry overshoot)** — delivered anyway on the owner's order. Visible flaw: "aTraining" spacing. Delivered copy re-encoded to 24 MB for the chat upload limit.
 - Render tool: a stalled capture now reopens the page and continues the slice (`lib/render.mjs`). Not verified: listening, real-speed viewing, a 60 fps export.

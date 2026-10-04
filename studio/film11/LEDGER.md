@@ -15,3 +15,4 @@
 
 Builder look at a 25-frame sheet of the share copy: all chapters read; flip-card labels are small at phone size. Not verified: listening, real-speed viewing, a fresh reviewer. 1 of 2 correction rounds used (render stability).
 | v2 owner note | "client can't read anything; cards too fast, blank mid-turn; hosts' names too short; music catchier" | major | 120 BPM / 44 s; cards 2.5 s, text always on the card, backgrounds per card (base frame hidden); hosts chapter 12–16 + names under the CTA; score rebuilt (house bounce, 3-3-2 hook, 4/8/16/32 snare build) | stills OK at 12.4–20.2, 30, 37.3, 40–44 |
+| take07 | 1920×1080, 30 fps, 44.000 s, −14.1 LUFS, TP −3.0, LRA 3.1, no freeze/black, share 28.4 MB PASS; text gate FAIL 367 (overshoot/overlap of slammed words) | gate | not fixed (same cause as v1; frames look clean on a 22-frame sheet) | delivered |

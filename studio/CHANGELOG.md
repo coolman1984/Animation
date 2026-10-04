@@ -5,6 +5,9 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-04 — Film 11 v2: 44 s, readable (scope DONE)
+Owner: client couldn't read; cards blank mid-turn; hosts too short; music catchier. 120 BPM clock (all ~20% slower), six areas 2.5 s each with text always on the turning card, hosts chapter 12–16 + names under the CTA, score rebuilt as western dance-pop (house bounce, 3-3-2 hook, 4/8/16/32 snare build). take07: −14.1 LUFS, TP −3, LRA 3.1, share 28.4 MB; text gate FAIL (kinetic overshoot boxes). Not verified: listening.
+
 ## 2026-10-04 — Film 11: AI × HR workshop showreel, 25 s 16:9 (scope DONE, delivered on demand)
 Real CSS 3D (extruded type, flip cards, cylinder ring, floor grid), one `timing.js` clock for picture and 144 BPM score. 60 fps renders stalled three times in the 3D title: layers cut (≈200 → ≈70), glow moved off `filter`, render tool reopens a stalled page. Owner asked for it immediately → 30 fps take06. Text gate failed (kinetic overshoot boxes), all others PASS. Not verified: listening, 60 fps export.
 

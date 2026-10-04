@@ -88,3 +88,5 @@ No required lesson quota or automatic reuse of a prior visual style.
 49. **Share one timing file between picture and sound.** Cut, flash, slam and impact times come from the same constants; nothing is nudged by ear afterwards.
 50. **Measure the loudness curve, not only the average:** a short-term LUFS print every 0.3 s found a silent hole an integrated value hid.
 51. **Check text on the exported frames at the biggest overshoot** — spring overshoot on large kinetic words is what hits the safe box first.
+52. **Readable beats slow ones down, not the cut count:** dropping the clock from 144 to 120 BPM slowed every chapter by 20% at once; a card that turns must carry its text through the turn (an empty card reads as a bug), and people on screen deserve their own chapter plus a return at the end.
+53. **Stay with a render until it ends.** Waiting in the background and ending the turn left the owner asking "check"; chain foreground waits (≤ 10 min each) and report the moment the gates print.
