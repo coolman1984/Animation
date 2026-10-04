@@ -5,6 +5,9 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-04 — Film 11: AI × HR workshop showreel, 25 s 16:9 (scope DONE, delivered on demand)
+Real CSS 3D (extruded type, flip cards, cylinder ring, floor grid), one `timing.js` clock for picture and 144 BPM score. 60 fps renders stalled three times in the 3D title: layers cut (≈200 → ≈70), glow moved off `filter`, render tool reopens a stalled page. Owner asked for it immediately → 30 fps take06. Text gate failed (kinetic overshoot boxes), all others PASS. Not verified: listening, 60 fps export.
+
 ## 2026-10-03 — Film 9 v3: the chair scene becomes a low wavering warning bell (scope DONE)
 Owner: no patient sounds at all; a low, wavering alarm-like bell that says "I have a problem and I'm worried". Bell tolled on the start and each failure, lower each time, over a beating hum. take07 all gates PASS. Owner taste recorded in QUALITY_PLAYBOOK §0.
 
