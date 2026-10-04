@@ -43,7 +43,7 @@ export const MODULES = {
   },
   // ---------- title lock-up: left · symbol · right in extruded 3D, orbiting camera, floor reflection ----------
   lockup(ctx, e) {
-    const k = K(ctx) * (ctx.portrait ? 0.62 : 1), [L, M, R] = e.parts, size = (e.size ?? 560) * k, gapX = (e.gap ?? 445) * k;
+    const k = ctx.portrait ? ctx.W / 1920 * 0.95 : K(ctx), [L, M, R] = e.parts, size = (e.size ?? 560) * k, gapX = (e.gap ?? 445) * k;
     const mk = (parent, flip) => {
       const g = obj(parent, 10, 10, flip ? { transform: 'scaleY(-1)' } : {});
       const nodes = [L, M, R].map(() => div(g, { transformStyle: 'preserve-3d' }));
@@ -110,11 +110,11 @@ export const MODULES = {
   // ---------- before/after cards that turn on the beat (text rides the card; never blank) ----------
   cards(ctx, e) {
     const k = K(ctx), B = ctx.brand.colors, P = ctx.portrait, items = e.items;
-    const CW = P ? 940 * k : 1640 * k, CH = P ? 1180 * k : 760 * k, HD = 206 * k;
-    const frame = obj(ctx.cam, CW, CH, { transform: `translate3d(0,${40 * k}px,0)` });
-    const hx = (txt, i, sub) => words(ctx.root, txt, ctx, { size: (sub ? 30 : 52) * k * (P ? 1.1 : 1), weight: sub ? 500 : 900, x: P ? 0.5 : (i ? 0.69 : 0.31), y: P ? (sub ? 0.09 + i * 0.07 : 0.065 + i * 0.07) : (sub ? 0.155 : 0.11), color: sub ? (i ? B.ice : B.muted) : (i ? B.glow : B.warm), z: 9, width: (P ? 900 : 700) * k });
+    const CW = P ? 900 * k : 1640 * k, CH = P ? 960 * k : 760 * k, HD = 206 * k;
+    const FY = (P ? 60 : 40) * k, frame = obj(ctx.cam, CW, CH, { transform: `translate3d(0,${FY}px,0)` });
+    const hx = (txt, i, sub) => words(ctx.root, txt, ctx, { size: (sub ? 30 : 52) * k * (P ? 1.1 : 1), weight: sub ? 500 : 900, x: P ? 0.5 : (i ? 0.69 : 0.31), y: P ? (sub ? 0.183 + i * 0.07 : 0.155 + i * 0.07) : (sub ? 0.155 : 0.11), color: sub ? (i ? B.ice : B.muted) : (i ? B.glow : B.warm), z: 9, width: (P ? 900 : 700) * k });
     const hdr = e.header ? [hx(e.header[0], 0), hx(e.header[1], 1), ...(e.sub ? [hx(e.sub[0], 0, 1), hx(e.sub[1], 1, 1)] : [])] : [];
-    const dots = items.map((_, i) => div(ctx.root, { left: px(ctx.W / 2 - 30 * k * (items.length - 1) + i * 60 * k - 9 * k), top: px(ctx.H - (P ? 300 : 75) * k), width: px(18 * k), height: px(18 * k), borderRadius: '50%', background: 'rgba(255,255,255,0.25)', zIndex: '9' }));
+    const dots = items.map((_, i) => div(ctx.root, { left: px(ctx.W / 2 - 30 * k * (items.length - 1) + i * 60 * k - 9 * k), top: px(ctx.H - (P ? 390 : 75) * k), width: px(18 * k), height: px(18 * k), borderRadius: '50%', background: 'rgba(255,255,255,0.25)', zIndex: '9' }));
     const fsz = (txt, maxW, base, f = 0.56) => Math.min(base, Math.floor(maxW / (Math.max(1, [...txt].length) * f)));
     const sideW = P ? CW : CW / 2, sideH = P ? (CH - HD) / 2 : CH - HD;
     const cards = items.map((a) => {
@@ -125,9 +125,9 @@ export const MODULES = {
       const sub = (parent, text, size, cy, color, weight, dir) => text ? words(parent, text, { ...ctx, safe: [0, 0, sideW, sideH] }, { size: fsz(text, sideW * 0.84, size * k, dir === 'rtl' ? 0.5 : 0.56), weight, cx: sideW / 2, cy, color, width: sideW * 0.86, z: 10, dir }) : null;
       const L = [words(c, a.title, { ...ctx, safe: [0, 0, CW, HD] }, { size: fsz(a.title, CW * 0.9, 76 * k, 0.6), weight: 900, cx: CW / 2, cy: 66 * k, color: '#fff', width: CW * 0.95, lh: 1.05, z: 10 }),
         a.titleAr ? words(c, a.titleAr, { ...ctx, safe: [0, 0, CW, HD] }, { size: 48 * k, weight: 700, cx: CW / 2, cy: 158 * k, color: B.accent, width: CW * 0.95, lh: 1.05, z: 10 }) : null,
-        sub(oS, a.old, 46, sideH * 0.66, '#3A2E18', 700), sub(oS, a.oldAr, 40, sideH * 0.8, '#5B4A28', 600, 'rtl')];
-      const nt = [sub(nS, a.new, 46, sideH * 0.66, '#FFFFFF', 800), sub(nS, a.newAr, 40, sideH * 0.8, B.ice, 600, 'rtl')];
-      const is = Math.min(260 * k, sideH * 0.42), oI = div(oS, { left: px(sideW / 2 - is / 2), top: px(sideH * 0.1), width: px(is), height: px(is) }), nI = div(nS, { left: px(sideW / 2 - is / 2), top: px(sideH * 0.1), width: px(is), height: px(is) });
+        sub(oS, a.old, 46, sideH * (P ? 0.6 : 0.66), '#3A2E18', 700), sub(oS, a.oldAr, 40, sideH * (P ? 0.83 : 0.8), '#5B4A28', 600, 'rtl')];
+      const nt = [sub(nS, a.new, 46, sideH * (P ? 0.6 : 0.66), '#FFFFFF', 800), sub(nS, a.newAr, 40, sideH * (P ? 0.83 : 0.8), B.ice, 600, 'rtl')];
+      const is = Math.min(260 * k, sideH * (P ? 0.36 : 0.42)), oI = div(oS, { left: px(sideW / 2 - is / 2), top: px(sideH * 0.1), width: px(is), height: px(is) }), nI = div(nS, { left: px(sideW / 2 - is / 2), top: px(sideH * 0.1), width: px(is), height: px(is) });
       (a.oldIcons || []).forEach((p) => icon(oI, IC[p] || p, is, '#3A2E18', 3.4)); (a.newIcons || []).forEach((p, j, arr) => icon(nI, IC[p] || p, is, j === arr.length - 1 && j > 0 ? B.accent : B.ice, 3.4));
       const badge = div(nS, { left: px(sideW - 230 * k), top: px(sideH * 0.06), width: px(130 * k), height: px(72 * k), borderRadius: px(36 * k), background: B.accent, color: '#0A1A52', fontFamily: `'${ctx.brand.fonts.display}'`, fontWeight: '900', fontSize: px(44 * k), textAlign: 'center', lineHeight: px(72 * k) }); badge.textContent = e.badge ?? 'AI';
       return { c, L: L.filter(Boolean), nt: nt.filter(Boolean), oI, nI, badge };
@@ -137,7 +137,7 @@ export const MODULES = {
       const inn = ioC(ramp(t, A - 0.18, A + 0.16)), out = ioC(ramp(t, Z - 0.14, Z + 0.14)), idx = clamp(Math.floor((t - st) / step), 0, items.length - 1);
       ctx.root.style.opacity = (inn * (1 - out)).toFixed(3);
       ctx.cam.style.transform = `translate3d(${(-30 + 60 * ramp(t, A, Z)).toFixed(1)}px,0,${lerp(-300, 120, ioC(ramp(t, A - 0.15, Z))).toFixed(1)}px) rotateY(${(-6 + 12 * ramp(t, A, Z)).toFixed(2)}deg)`;
-      frame.style.transform = `translate3d(0,${40 * k}px,0) scale(${lerp(0.4, 1, spr(t, A - 0.15, 0.5, 0.15)).toFixed(3)})`;
+      frame.style.transform = `translate3d(0,${FY}px,0) scale(${lerp(0.4, 1, spr(t, A - 0.15, 0.5, 0.15)).toFixed(3)})`;
       dots.forEach((d, i) => { d.style.background = i <= idx && t >= A ? B.accent : 'rgba(255,255,255,0.25)'; d.style.transform = i === idx ? `scale(${(1.4 + 0.3 * Math.sin(t * 10)).toFixed(2)})` : 'scale(1)'; });
       for (const L of hdr) { L.line.style.display = 'flex'; L.words.forEach((w) => { w.style.opacity = (inn * (1 - out)).toFixed(3); }); }
       cards.forEach((q, i) => {
@@ -146,7 +146,7 @@ export const MODULES = {
         for (const L of [...q.L, ...q.nt]) L.line.style.display = live ? 'flex' : 'none';
         if (!live) return;
         const a = i === 0 ? spr(t, A, 0.55, 0.18) : spr(t, t0 - 0.3, 0.5, 0.18), b = ioC(ramp(t, t1 - 0.3, t1));
-        const rx = lerp(88, 0, clamp(a, 0, 1.05)) - (i < items.length - 1 ? 92 * b : 0), face = clamp((Math.cos(rx * Math.PI / 180) - 0.45) / 0.35); // text fades only while the card is edge-on
+        const rx = lerp(88, 0, clamp(a, 0, 1.05)) - (i < items.length - 1 ? 92 * b : 0), face = clamp((Math.cos(rx * Math.PI / 180) - 0.8) / 0.15) * (1 - clamp(b * 6)); // and leaves early in the exit (the falling card magnifies) // text fades only while the card is edge-on
         q.c.style.transform = `rotateX(${rx.toFixed(2)}deg)`;
         for (const L of q.L) L.words.forEach((w) => { w.style.opacity = face.toFixed(3); w.style.transform = 'none'; });
         const m = ioC(ramp(t, t0 + 0.45, t0 + 0.85));
@@ -208,10 +208,11 @@ export const MODULES = {
   wipes(ctx, e) {
     const k = K(ctx), B = ctx.brand.colors;
     const W = e.items.map((it, i) => {
-      const slab = div(ctx.root, { width: px(ctx.W), height: px(ctx.H), background: col(ctx.brand, it.bg), zIndex: String(20 + i), display: 'none', overflow: 'hidden' });
+      const slab = div(ctx.root, { width: px(ctx.W), height: px(ctx.H), background: col(ctx.brand, it.bg), zIndex: String(20 + i), overflow: 'hidden' });  // built visible so its word can be measured
       div(slab, { width: px(ctx.W), height: px(ctx.H), backgroundImage: `repeating-linear-gradient(115deg, transparent 0 60px, ${it.stripe || 'rgba(255,255,255,0.10)'} 60px 120px)` });
       const L = words(slab, it.text, ctx, { size: (it.size ?? 250) * k, weight: 900, color: col(ctx.brand, it.fg, '#0A1A52'), y: 0.54, z: 3, shadow: '' });
       const is = 260 * k, ib = div(slab, { left: px(ctx.W / 2 - is / 2), top: px(ctx.H * 0.54 - 0.5 * L.fs - is - 40 * k), width: px(is), height: px(is) }); if (it.icon) icon(ib, IC[it.icon] || it.icon, is, col(ctx.brand, it.fg, '#0A1A52'), 3.4);
+      slab.style.display = 'none';
       return { slab, L, ib, a: ctx.T(it.at) };
     });
     return (t) => W.forEach((w, i) => {

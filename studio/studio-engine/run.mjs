@@ -22,7 +22,9 @@ const formats = (opt.format || base.format || 'youtube') === 'both' ? ['youtube'
 const stage = opt.stage || 'final';
 
 // per-format overrides: any element/scene may carry { reel: {...} } or { youtube: {...} }
-const forFormat = (spec, f) => JSON.parse(JSON.stringify(spec), (k, v) => (v && typeof v === 'object' && !Array.isArray(v) && v[f] ? { ...v, ...v[f] } : v));
+const forFormat = (spec, f) => { const o = JSON.parse(JSON.stringify(spec), (k, v) => (v && typeof v === 'object' && !Array.isArray(v) && v[f] ? { ...v, ...v[f] } : v));
+  for (const s of o.scenes) s.elements = (s.elements || []).filter((e) => !e.only || e.only === f);   // "only": "reel" | "youtube"
+  return o; };
 const sh = (cmd, args) => spawnSync(cmd, args, { cwd: STUDIO, encoding: 'utf8', maxBuffer: 1 << 26 });
 const tail = (s, n = 6) => s.trim().split('\n').slice(-n).join('\n');
 let failed = false;
