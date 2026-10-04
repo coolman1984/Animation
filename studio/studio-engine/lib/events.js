@@ -21,6 +21,7 @@ export function eventsOf(spec) {
       const id = e.id || e.type;
       switch (e.type) {
         case 'words': add(T(at(e)), e.style === 'rise' || e.style === 'pop' ? 'tick' : 'slam', e.amp ?? (e.size > 200 ? 1 : 0.7), id); break;
+        case 'cursor': add(T(e.clickAt ?? 4), 'tick', 0.7, id); break;
         case 'stack': (e.lines || []).forEach((l, i) => add(T(l.at ?? at(e) + i * 0.5), 'slam', l.amp ?? 0.7, id)); break;
         case 'extrude': add(T(at(e)), 'impact', 1.2, id); if (e.implodeAt != null) add(T(e.implodeAt), 'implode', 1, id); break;
         case 'lockup': add(T(at(e)), 'impact', 1.4, id); add(T(e.midAt ?? at(e) + 1), 'spin', 0.9, id); break;
@@ -32,7 +33,7 @@ export function eventsOf(spec) {
         case 'pill': add(T(at(e)), 'confirm', 0.5, id); break;
         case 'hosts': add(T(at(e)), 'line', 0.8, id); (e.people || []).forEach((_, i) => add(T(at(e) + 0.5 + i), 'slam', 0.7, id)); add(T(at(e) + 2.5), 'tick', 0.5, id); break;
         case 'sparks': add(T(at(e)), 'sparks', 0.8, id); break;
-        case 'shape': case 'path': case 'icon': if (e.sound) add(T(at(e)), e.sound, 0.5, id); break;
+        case 'shape': case 'path': case 'icon': case 'ribbon': if (e.sound) add(T(at(e)), e.sound, 0.5, id); break;
         default: break;
       }
     }

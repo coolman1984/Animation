@@ -2,7 +2,15 @@
 
 Updated: 2026-10-04.
 
-**Latest scope: DONE — Studio Engine (owner order 2026-10-04): `studio/studio-engine/` — brand kit, 18-module motion library, spec player, score engine (synth or supplied music + voice with auto tempo/word timing), gates (lint, stills, dense text, sync, motion), one command `node studio-engine/run.mjs <film>`. Proof: AI × HR rebuilt from a spec, youtube + reel, every gate PASS, motion 106 % of the hand-coded original. Not verified: Higgsfield assets (MCP not connected), listening. Guide: `studio/studio-engine/STUDIO.md`.** This is the current handoff; historical plans are not a task queue.
+**Latest scope: DONE — FORM / FUNCTION creative engineering showreel (owner 2026-10-04: understand expertly, sync main/latest branch, GO ALL OUT).**
+- Isolated branch `codex/innovation-showreel` contains `origin/main` 28099b7 and latest studio branch 431dbc2. Original dirty checkout preserved; no push/publication.
+- Film source: `studio/studio-engine/films/form-function/` (spec, brand, BRIEF, CASE_STUDY, LEDGER). Eight movements, one procedural ribbon, original interface concept and score; 32 seconds landscape.
+- New reusable ribbon and cursor modules; optional geometric wipe and vignette suppression. Windows asset/output discovery fixes; literal-background contrast; creative metadata forwarding; failed builds cannot reuse an earlier take as the delivery.
+- Mandatory Chrome helper extended with an isolated studio profile/CDP mode, source backup retained locally. Production attached through STUDIO_CDP_URL, one memory-planned worker.
+- Verification: 8 targeted tests passed, 1 optional fixture skipped; 24 stills and dense text zero issues; 8-second proof every gate PASS. Final take02: 32.000 s, 1920x1080, 30 fps; -14 LUFS, TP -7.4 dBTP, LRA 2.1 LU; 11 export gates PASS; dense text zero issues.
+- Separate judging pass: exported contact sheet, boundary strips and full-resolution type/material inspected. No unresolved blocker/major. Listening and real-time human playback remain unverified. Numerical synchronization summary was 0 eligible hard-hit events; no audible-onset validation claimed.
+
+**Previous scope: DONE — Studio Engine (owner order 2026-10-04): `studio/studio-engine/` — brand kit, 18-module motion library, spec player, score engine (synth or supplied music + voice with auto tempo/word timing), gates (lint, stills, dense text, sync, motion), one command `node studio-engine/run.mjs <film>`. Proof: AI × HR rebuilt from a spec, youtube + reel, every gate PASS, motion 106 % of the hand-coded original. Not verified: Higgsfield assets (MCP not connected), listening. Guide: `studio/studio-engine/STUDIO.md`.** This is the current handoff; historical plans are not a task queue.
 
 **Previous scope: DONE — Film 11 v2 (owner 2026-10-04: slower, readable, hosts longer, catchier music): 44 s, 120 BPM, 1080p30, take07 delivered. Gates PASS except the text gate (367 kinetic-overshoot/overlap boxes, same cause as v1). Not verified: listening.**
 

@@ -1,0 +1,55 @@
+{
+  "name": "FORM / FUNCTION",
+  "colors": {
+    "ink": "#202638",
+    "deep": "#28334A",
+    "primary": "#7F63D9",
+    "primaryDark": "#594599",
+    "glow": "#B2A3E8",
+    "ice": "#D2E5E8",
+    "text": "#202638",
+    "accent": "#EB735A",
+    "accentDark": "#AC4736",
+    "warm": "#F0CF7F",
+    "muted": "#647286",
+    "paper": "#E9EFF0"
+  },
+  "fonts": {
+    "display": "Archivo",
+    "text": "Archivo",
+    "label": "Space Mono",
+    "formal": "Archivo"
+  },
+  "rhythm": {
+    "bpm": 120
+  },
+  "export": {
+    "fps": 30,
+    "formats": {
+      "youtube": {
+        "w": 1920,
+        "h": 1080,
+        "safe": [
+          96,
+          54,
+          1824,
+          1026
+        ],
+        "shareMB": 29
+      },
+      "reel": {
+        "w": 1080,
+        "h": 1920,
+        "safe": [
+          60,
+          220,
+          1020,
+          1580
+        ],
+        "shareMB": 29
+      }
+    },
+    "lufs": -14,
+    "tp": -1.5
+  }
+}

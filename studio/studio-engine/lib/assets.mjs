@@ -4,8 +4,9 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync, copyFileSync } from 'node:fs';
 import { join, dirname, extname } from 'node:path';
 import { createHash } from 'node:crypto';
+import { fileURLToPath } from 'node:url';
 
-const LIB = join(dirname(new URL(import.meta.url).pathname), '..', 'assets');
+const LIB = join(dirname(fileURLToPath(import.meta.url)), '..', 'assets');
 const INDEX = join(LIB, 'library.json');
 const load = () => (existsSync(INDEX) ? JSON.parse(readFileSync(INDEX, 'utf8')) : { assets: {} });
 const save = (db) => { mkdirSync(LIB, { recursive: true }); writeFileSync(INDEX, JSON.stringify(db, null, 2)); };

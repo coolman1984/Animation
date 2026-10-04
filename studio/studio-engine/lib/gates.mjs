@@ -7,11 +7,11 @@ import { onsets } from './analyze.mjs';
 const ARABIC = /[؀-ۿ]/, LATIN = /[A-Za-z]{2,}/;
 const lum = (hex) => { const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
 export const contrast = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
-const KNOWN = new Set(['words', 'stack', 'extrude', 'lockup', 'storm', 'slice', 'cards', 'ring', 'pill', 'wipes', 'slab', 'hosts', 'mark', 'sparks', 'shape', 'path', 'icon', 'image']);
+const KNOWN = new Set(['words', 'stack', 'extrude', 'lockup', 'storm', 'slice', 'cards', 'ring', 'pill', 'wipes', 'slab', 'hosts', 'mark', 'sparks', 'shape', 'path', 'icon', 'image', 'ribbon', 'cursor']);
 
 export function lint(spec, brand) {
   const tl = timeline(spec), errors = [], warns = [], B = brand.colors, hex = (c, d) => (c ? (B[c] || c) : d);
-  const bgOf = (s) => (s.bg === 'light' ? '#E8EEF8' : s.bg === 'blue' ? '#0A2A8C' : B.ink);
+  const bgOf = (s) => (/^#[0-9a-f]{6}$/i.test(s.bg || '') ? s.bg : s.bg === 'light' ? '#E8EEF8' : s.bg === 'blue' ? '#0A2A8C' : B.ink);
   tl.scenes.forEach((s, i) => {
     const where = `scene ${s.id}`;
     if (!(s.beats > 0)) errors.push(`${where}: beats must be > 0`);

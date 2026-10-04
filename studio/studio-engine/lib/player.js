@@ -50,7 +50,7 @@ export function makeFilm(spec, brand) {
         return { s, root, cam, ctx, renders, pre: s.pre ?? 0.05, post: s.post ?? 0.22 };
       });
       function findShape(id) { for (const sc of tl.scenes) for (const e of sc.elements || []) if (e.id === id) { const k = Math.min(W, H) / 1080; return { dur: 0.5, geo: { x: (e.x ?? 0.5) * W, y: (e.y ?? 0.5) * H, w: (e.w ?? 200) * k, h: (e.h ?? 200) * k, r: (e.r ?? 0) * k, c: col(brand, e.color, B.primary) } }; } return null; }
-      div(st, { width: px(W), height: px(H), zIndex: '60', pointerEvents: 'none', background: 'radial-gradient(ellipse 85% 85% at 50% 50%, transparent 55%, rgba(0,0,10,0.55) 100%)' });
+      if (spec.vignette !== false) div(st, { width: px(W), height: px(H), zIndex: '60', pointerEvents: 'none', background: 'radial-gradient(ellipse 85% 85% at 50% 50%, transparent 55%, rgba(0,0,10,0.55) 100%)' });
       flash = div(st, { width: px(W), height: px(H), zIndex: '70', background: '#FFFFFF', opacity: '0', pointerEvents: 'none' });
     },
     render(t) {
@@ -67,6 +67,7 @@ export function makeFilm(spec, brand) {
         const on = t >= sc.s.a - sc.pre && t < sc.s.b + sc.post; sc.root.style.display = on ? 'block' : 'none'; if (!on) continue;
         const next = tl.scenes[sc.s.index + 1], fadeOut = sc.s.hold || !next ? 0 : (next.transition === 'cut' || next.transition === 'flash' || next.transition === 'smash' ? 1 : 0.6);
         sc.root.style.opacity = (sm(sc.s.a - sc.pre, sc.s.a + (sc.s.transition === 'fade' ? 0.3 : 0.02), t) * (1 - fadeOut * sm(sc.s.b - 0.05, sc.s.b + sc.post * 0.6, t))).toFixed(3);
+        if (sc.s.transition === 'wipe') sc.root.style.clipPath = `inset(0 ${(100*(1-sm(sc.s.a,sc.s.a+.4,t))).toFixed(2)}% 0 0)`;
         if (sc.s.camera?.drift !== false) sc.cam.style.transform = `translate3d(0,0,${lerp(sc.s.camera?.from ?? 0, sc.s.camera?.to ?? 0, clamp((t - sc.s.a) / (sc.s.b - sc.s.a))).toFixed(1)}px)`;
         for (const r of sc.renders) r(t);
         if (sc.s.breathe) sc.root.style.transform = `scale(${(1 + 0.012 * Math.sin((t - sc.s.a) * 0.9) + 0.02 * ramp(t, sc.s.a + 1.2, sc.s.b)).toFixed(4)})`;

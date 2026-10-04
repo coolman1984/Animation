@@ -90,3 +90,8 @@ No required lesson quota or automatic reuse of a prior visual style.
 51. **Check text on the exported frames at the biggest overshoot** — spring overshoot on large kinetic words is what hits the safe box first.
 52. **Readable beats slow ones down, not the cut count:** dropping the clock from 144 to 120 BPM slowed every chapter by 20% at once; a card that turns must carry its text through the turn (an empty card reads as a bug), and people on screen deserve their own chapter plus a return at the end.
 53. **Stay with a render until it ends.** Waiting in the background and ending the turn left the owner asking "check"; chain foreground waits (≤ 10 min each) and report the moment the gates print.
+
+## FORM / FUNCTION (2026-10-04)
+1. One analytic surface can hold a reel together across different materials, twist counts and a 12-item generative field; hierarchy changes more than ornament.
+2. Font line boxes, not visible glyph height, set stacked-line spacing: 215 px at 0.21-frame intervals overlapped; 185 px at 0.25 intervals passed dense read-back.
+3. Clear outgoing text before a 0.4-second wipe; carry the sculpture through the boundary, then let the new headline land. A pointer click and its target morph share the same spec beat.

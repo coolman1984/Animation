@@ -5,6 +5,9 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-04 — FORM / FUNCTION resume showreel and latest-branch integration (DONE)
+Integrated fixed main/latest snapshots on `codex/innovation-showreel`, preserving unfinished original work. New 32-second landscape spec: one analytic ribbon across kinetic type, sculpture, generative systems, pointer-driven UI and creative-engineering identity. Reusable CPU ribbon and cursor modules, wipe transition and optional vignette, Windows path/listing fixes, correct literal-background contrast, creative/craft forwarding, and no stale delivery report after a failed build. Final take02: 32.000 s, 1920x1080, 30 fps; -14 LUFS, TP -7.4 dBTP, LRA 2.1 LU; 11 export gates PASS; dense text zero issues. Targeted tests 8 pass/1 optional skipped; full-size style frames, dense text and 8-second proof pass; exported-frame judging complete. Listening/real-time human viewing unverified. No external media or affiliations. No public push.
+
 ## 2026-10-04 — Film 11 v2: 44 s, readable (scope DONE)
 Owner: client couldn't read; cards blank mid-turn; hosts too short; music catchier. 120 BPM clock (all ~20% slower), six areas 2.5 s each with text always on the turning card, hosts chapter 12–16 + names under the CTA, score rebuilt as western dance-pop (house bounce, 3-3-2 hook, 4/8/16/32 snare build). take07: −14.1 LUFS, TP −3, LRA 3.1, share 28.4 MB; text gate FAIL (kinetic overshoot boxes). Not verified: listening.
 

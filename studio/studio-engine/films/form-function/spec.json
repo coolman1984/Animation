@@ -1,0 +1,1145 @@
+{
+  "title": "FORM / FUNCTION \u2014 Codex creative engineering showreel",
+  "format": "youtube",
+  "bpm": 120,
+  "fps": 30,
+  "grid": false,
+  "shake": 0,
+  "background": "ink",
+  "music": {
+    "progression": [
+      "Dm",
+      "Bb",
+      "F",
+      "C"
+    ],
+    "final": "F",
+    "hook": "sculpture",
+    "tailBeats": 1
+  },
+  "scenes": [
+    {
+      "id": "form",
+      "beats": 8,
+      "bg": "#E9EFF0",
+      "transition": "cut",
+      "music": "intro",
+      "camera": {
+        "drift": false
+      },
+      "pre": 0,
+      "post": 0.4,
+      "elements": [
+        {
+          "type": "words",
+          "text": "A MOTION DESIGN STUDY",
+          "size": 24,
+          "x": 0.27,
+          "y": 0.2,
+          "color": "muted",
+          "at": 0,
+          "out": 7.2,
+          "font": "label",
+          "weight": 400,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "words",
+          "text": "FORM",
+          "size": 230,
+          "x": 0.29,
+          "y": 0.4,
+          "color": "text",
+          "at": 0,
+          "out": 7.2,
+          "font": "display",
+          "weight": 900,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "words",
+          "text": "/ FUNCTION",
+          "size": 84,
+          "x": 0.3,
+          "y": 0.59,
+          "color": "text",
+          "at": 0,
+          "out": 7.2,
+          "font": "display",
+          "weight": 900,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "ribbon",
+          "color": "primary",
+          "at": 0,
+          "speed": 0.55,
+          "radius": 265,
+          "x": 0.71,
+          "y": 0.52,
+          "twist": 1
+        },
+        {
+          "type": "words",
+          "text": "CREATIVE ENGINEERING / CODEX",
+          "size": 24,
+          "x": 0.3,
+          "y": 0.84,
+          "color": "muted",
+          "at": 0,
+          "out": 7.2,
+          "font": "label",
+          "weight": 400,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        }
+      ],
+      "craft": {
+        "scale": "wide identity",
+        "camera": "locked stage; analytic object rotation",
+        "focal": "form",
+        "transition": "cut",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "ribbon rotation",
+          "type entry"
+        ],
+        "audioCue": "intro",
+        "layers": [
+          "text",
+          "3d"
+        ]
+      }
+    },
+    {
+      "id": "type",
+      "beats": 8,
+      "bg": "#EB735A",
+      "transition": "wipe",
+      "music": "drop",
+      "camera": {
+        "drift": false
+      },
+      "pre": 0,
+      "post": 0,
+      "elements": [
+        {
+          "type": "words",
+          "text": "MAKE",
+          "size": 185,
+          "x": 0.35,
+          "y": 0.25,
+          "color": "ink",
+          "at": 0,
+          "out": 7.8,
+          "font": "display",
+          "weight": 900,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "words",
+          "text": "IT",
+          "size": 185,
+          "x": 0.35,
+          "y": 0.5,
+          "color": "ink",
+          "at": 0.5,
+          "out": 7.8,
+          "font": "display",
+          "weight": 900,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "words",
+          "text": "MOVE.",
+          "size": 185,
+          "x": 0.35,
+          "y": 0.75,
+          "color": "ink",
+          "at": 1,
+          "out": 7.8,
+          "font": "display",
+          "weight": 900,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "ribbon",
+          "color": "warm",
+          "at": 0,
+          "speed": 0.55,
+          "radius": 225,
+          "x": 0.79,
+          "y": 0.52,
+          "twist": 3,
+          "fold": 0.4
+        },
+        {
+          "type": "words",
+          "text": "TYPE WITH INTENT",
+          "size": 24,
+          "x": 0.75,
+          "y": 0.85,
+          "color": "ink",
+          "at": 0,
+          "out": 7.8,
+          "font": "label",
+          "weight": 400,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        }
+      ],
+      "drop": true,
+      "craft": {
+        "scale": "type close-up",
+        "camera": "locked stage; analytic object rotation",
+        "focal": "type",
+        "transition": "wipe",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "ribbon rotation",
+          "type entry"
+        ],
+        "audioCue": "drop",
+        "layers": [
+          "text",
+          "3d"
+        ]
+      }
+    },
+    {
+      "id": "dimension",
+      "beats": 8,
+      "bg": "#28334A",
+      "transition": "cut",
+      "music": "chorus",
+      "camera": {
+        "drift": false
+      },
+      "pre": 0,
+      "post": 0.4,
+      "elements": [
+        {
+          "type": "words",
+          "text": "SCULPTED BY MATHEMATICS",
+          "size": 24,
+          "x": 0.3,
+          "y": 0.2,
+          "color": "ice",
+          "at": 0,
+          "out": 7.2,
+          "font": "label",
+          "weight": 400,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "words",
+          "text": "A NEW",
+          "size": 115,
+          "x": 0.27,
+          "y": 0.4,
+          "color": "ice",
+          "at": 0,
+          "out": 7.2,
+          "font": "display",
+          "weight": 900,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "words",
+          "text": "DIMENSION.",
+          "size": 105,
+          "x": 0.27,
+          "y": 0.55,
+          "color": "ice",
+          "at": 0,
+          "out": 7.2,
+          "font": "display",
+          "weight": 900,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "ribbon",
+          "color": "ice",
+          "at": 0,
+          "speed": 0.55,
+          "radius": 290,
+          "x": 0.71,
+          "y": 0.52,
+          "width": 115,
+          "tilt": 0.45,
+          "fold": 0.3
+        },
+        {
+          "type": "words",
+          "text": "LIGHT / MATERIAL / DEPTH",
+          "size": 24,
+          "x": 0.3,
+          "y": 0.84,
+          "color": "ice",
+          "at": 0,
+          "out": 7.2,
+          "font": "label",
+          "weight": 400,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        }
+      ],
+      "craft": {
+        "scale": "hero sculpture",
+        "camera": "locked stage; analytic object rotation",
+        "focal": "dimension",
+        "transition": "cut",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "ribbon rotation",
+          "type entry"
+        ],
+        "audioCue": "chorus",
+        "layers": [
+          "text",
+          "3d"
+        ]
+      }
+    },
+    {
+      "id": "systems",
+      "beats": 8,
+      "bg": "#F0CF7F",
+      "transition": "wipe",
+      "music": "verse",
+      "camera": {
+        "drift": false
+      },
+      "pre": 0,
+      "post": 0,
+      "elements": [
+        {
+          "type": "words",
+          "text": "ONE RULE. INFINITE VARIATIONS.",
+          "size": 24,
+          "x": 0.25,
+          "y": 0.2,
+          "color": "ink",
+          "at": 0,
+          "out": 7.8,
+          "font": "label",
+          "weight": 400,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "words",
+          "text": "THINK",
+          "size": 130,
+          "x": 0.25,
+          "y": 0.43,
+          "color": "ink",
+          "at": 0,
+          "out": 7.8,
+          "font": "display",
+          "weight": 900,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "words",
+          "text": "IN SYSTEMS.",
+          "size": 100,
+          "x": 0.25,
+          "y": 0.57,
+          "color": "ink",
+          "at": 0,
+          "out": 7.8,
+          "font": "display",
+          "weight": 900,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "ribbon",
+          "color": "accentDark",
+          "at": 0,
+          "speed": 0.55,
+          "radius": 230,
+          "x": 0.71,
+          "y": 0.52,
+          "count": 12,
+          "cols": 4,
+          "itemScale": 0.32,
+          "fieldWidth": 0.53,
+          "fieldHeight": 0.6
+        },
+        {
+          "type": "words",
+          "text": "GENERATIVE DESIGN",
+          "size": 24,
+          "x": 0.25,
+          "y": 0.84,
+          "color": "ink",
+          "at": 0,
+          "out": 7.8,
+          "font": "label",
+          "weight": 400,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        }
+      ],
+      "craft": {
+        "scale": "generative field",
+        "camera": "locked stage; analytic object rotation",
+        "focal": "systems",
+        "transition": "wipe",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "ribbon rotation",
+          "type entry"
+        ],
+        "audioCue": "verse",
+        "layers": [
+          "text",
+          "3d"
+        ]
+      }
+    },
+    {
+      "id": "interface",
+      "beats": 8,
+      "bg": "#E9EFF0",
+      "transition": "cut",
+      "music": "hosts",
+      "camera": {
+        "drift": false
+      },
+      "pre": 0,
+      "post": 0,
+      "elements": [
+        {
+          "type": "words",
+          "text": "INTERFACE MOTION",
+          "size": 24,
+          "x": 0.25,
+          "y": 0.2,
+          "color": "muted",
+          "at": 0,
+          "out": 7.8,
+          "font": "label",
+          "weight": 400,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "words",
+          "text": "FEELS",
+          "size": 145,
+          "x": 0.25,
+          "y": 0.43,
+          "color": "text",
+          "at": 0,
+          "out": 7.8,
+          "font": "display",
+          "weight": 900,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "words",
+          "text": "LIKE MAGIC.",
+          "size": 95,
+          "x": 0.25,
+          "y": 0.58,
+          "color": "text",
+          "at": 0,
+          "out": 7.8,
+          "font": "display",
+          "weight": 900,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "shape",
+          "at": 0,
+          "id": "screen",
+          "x": 0.72,
+          "y": 0.51,
+          "w": 650,
+          "h": 690,
+          "r": 36,
+          "color": "#FFFFFF",
+          "shadow": false
+        },
+        {
+          "type": "shape",
+          "at": 0,
+          "x": 0.72,
+          "y": 0.35,
+          "w": 550,
+          "h": 180,
+          "r": 22,
+          "color": "ice",
+          "shadow": false
+        },
+        {
+          "type": "words",
+          "text": "ORBIT",
+          "size": 64,
+          "x": 0.72,
+          "y": 0.34,
+          "color": "ink",
+          "at": 0.25,
+          "out": 7.8,
+          "font": "display",
+          "weight": 900,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "words",
+          "text": "Motion library",
+          "size": 34,
+          "x": 0.72,
+          "y": 0.48,
+          "color": "ink",
+          "at": 0.5,
+          "out": 7.8,
+          "font": "display",
+          "weight": 600,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "shape",
+          "at": 0,
+          "x": 0.65,
+          "y": 0.62,
+          "w": 180,
+          "h": 150,
+          "r": 22,
+          "color": "primary",
+          "shadow": false,
+          "morph": [
+            {
+              "at": 4,
+              "w": 205,
+              "h": 170,
+              "r": 30,
+              "rot": -5
+            }
+          ]
+        },
+        {
+          "type": "shape",
+          "at": 0,
+          "x": 0.79,
+          "y": 0.62,
+          "w": 180,
+          "h": 150,
+          "r": 22,
+          "color": "accent",
+          "shadow": false
+        },
+        {
+          "type": "words",
+          "text": "Shape",
+          "size": 28,
+          "x": 0.65,
+          "y": 0.675,
+          "color": "#FFFFFF",
+          "at": 1,
+          "out": 7.8,
+          "font": "display",
+          "weight": 500,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35,
+          "on": "primary"
+        },
+        {
+          "type": "words",
+          "text": "Type",
+          "size": 28,
+          "x": 0.79,
+          "y": 0.62,
+          "color": "ink",
+          "at": 1,
+          "out": 7.8,
+          "font": "display",
+          "weight": 500,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "words",
+          "text": "Original interface concept",
+          "size": 23,
+          "x": 0.72,
+          "y": 0.77,
+          "color": "muted",
+          "at": 1,
+          "out": 7.8,
+          "font": "label",
+          "weight": 400,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "words",
+          "text": "DESIGNED TO MAKE SENSE",
+          "size": 24,
+          "x": 0.25,
+          "y": 0.84,
+          "color": "muted",
+          "at": 0,
+          "out": 7.8,
+          "font": "label",
+          "weight": 400,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "ribbon",
+          "color": "ice",
+          "x": 0.65,
+          "y": 0.605,
+          "radius": 42,
+          "width": 17,
+          "shadow": false,
+          "z": 8,
+          "at": 1
+        },
+        {
+          "type": "cursor",
+          "at": 2,
+          "clickAt": 4,
+          "points": [
+            {
+              "at": 2,
+              "x": 0.85,
+              "y": 0.77
+            },
+            {
+              "at": 3.8,
+              "x": 0.65,
+              "y": 0.62
+            },
+            {
+              "at": 5,
+              "x": 0.65,
+              "y": 0.62
+            },
+            {
+              "at": 7,
+              "x": 0.8,
+              "y": 0.82
+            }
+          ]
+        }
+      ],
+      "craft": {
+        "scale": "interface detail",
+        "camera": "locked interface study",
+        "focal": "interface",
+        "transition": "cut",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "cursor gesture",
+          "tile morph"
+        ],
+        "audioCue": "hosts",
+        "layers": [
+          "text",
+          "ui"
+        ]
+      }
+    },
+    {
+      "id": "choreography",
+      "beats": 8,
+      "bg": "#B2A3E8",
+      "transition": "cut",
+      "music": "build",
+      "camera": {
+        "drift": false
+      },
+      "pre": 0,
+      "post": 0,
+      "elements": [
+        {
+          "type": "words",
+          "text": "CHOREOGRAPHY WITH INTENT",
+          "size": 24,
+          "x": 0.28,
+          "y": 0.2,
+          "color": "ink",
+          "at": 0,
+          "out": 7.8,
+          "font": "label",
+          "weight": 400,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "words",
+          "text": "EVERY",
+          "size": 120,
+          "x": 0.28,
+          "y": 0.36,
+          "color": "ink",
+          "at": 0,
+          "out": 7.8,
+          "font": "display",
+          "weight": 900,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "words",
+          "text": "MOVE",
+          "size": 120,
+          "x": 0.28,
+          "y": 0.54,
+          "color": "ink",
+          "at": 0.5,
+          "out": 7.8,
+          "font": "display",
+          "weight": 900,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "words",
+          "text": "MATTERS.",
+          "size": 120,
+          "x": 0.28,
+          "y": 0.72,
+          "color": "ink",
+          "at": 1,
+          "out": 7.8,
+          "font": "display",
+          "weight": 900,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "ribbon",
+          "color": "primaryDark",
+          "at": 0,
+          "speed": 1.1,
+          "radius": 270,
+          "x": 0.71,
+          "y": 0.52,
+          "width": 100,
+          "twist": 5
+        },
+        {
+          "type": "words",
+          "text": "TIMING / WEIGHT / CAUSE",
+          "size": 24,
+          "x": 0.28,
+          "y": 0.84,
+          "color": "ink",
+          "at": 0,
+          "out": 7.8,
+          "font": "label",
+          "weight": 400,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        }
+      ],
+      "craft": {
+        "scale": "choreography study",
+        "camera": "locked stage; analytic object rotation",
+        "focal": "choreography",
+        "transition": "cut",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "ribbon rotation",
+          "type entry"
+        ],
+        "audioCue": "build",
+        "layers": [
+          "text",
+          "3d"
+        ]
+      }
+    },
+    {
+      "id": "collision",
+      "beats": 8,
+      "bg": "#28334A",
+      "transition": "cut",
+      "music": "drop2",
+      "camera": {
+        "drift": false
+      },
+      "pre": 0,
+      "post": 0.4,
+      "elements": [
+        {
+          "type": "ribbon",
+          "color": "accent",
+          "at": 0,
+          "speed": 0.55,
+          "radius": 320,
+          "x": 0.5,
+          "y": 0.5,
+          "width": 125,
+          "twist": 3,
+          "fold": 0.55
+        },
+        {
+          "type": "words",
+          "text": "ART",
+          "size": 155,
+          "x": 0.2,
+          "y": 0.48,
+          "color": "ice",
+          "at": 0,
+          "out": 7.2,
+          "font": "display",
+          "weight": 900,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "words",
+          "text": "+",
+          "size": 140,
+          "x": 0.5,
+          "y": 0.5,
+          "color": "ice",
+          "at": 0,
+          "out": 7.2,
+          "font": "display",
+          "weight": 900,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "words",
+          "text": "CODE",
+          "size": 155,
+          "x": 0.8,
+          "y": 0.48,
+          "color": "ice",
+          "at": 0,
+          "out": 7.2,
+          "font": "display",
+          "weight": 900,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "words",
+          "text": "THE SPACE BETWEEN IS THE WORK",
+          "size": 24,
+          "x": 0.5,
+          "y": 0.84,
+          "color": "ice",
+          "at": 0,
+          "out": 7.2,
+          "font": "label",
+          "weight": 400,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        }
+      ],
+      "drop": true,
+      "craft": {
+        "scale": "wide synthesis",
+        "camera": "locked stage; analytic object rotation",
+        "focal": "collision",
+        "transition": "cut",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "ribbon rotation",
+          "type entry"
+        ],
+        "audioCue": "drop2",
+        "layers": [
+          "text",
+          "3d"
+        ]
+      }
+    },
+    {
+      "id": "resolve",
+      "beats": 8,
+      "bg": "#E9EFF0",
+      "transition": "wipe",
+      "music": "finale",
+      "camera": {
+        "drift": false
+      },
+      "pre": 0,
+      "post": 0,
+      "elements": [
+        {
+          "type": "words",
+          "text": "FORM / FUNCTION",
+          "size": 24,
+          "x": 0.3,
+          "y": 0.2,
+          "color": "muted",
+          "at": 0,
+          "out": 7.8,
+          "font": "label",
+          "weight": 400,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "words",
+          "text": "CODEX",
+          "size": 180,
+          "x": 0.31,
+          "y": 0.42,
+          "color": "text",
+          "at": 0,
+          "out": 7.8,
+          "font": "display",
+          "weight": 900,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "words",
+          "text": "Creative engineering.",
+          "size": 57,
+          "x": 0.31,
+          "y": 0.58,
+          "color": "ink",
+          "at": 0.5,
+          "out": 7.8,
+          "font": "display",
+          "weight": 500,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "words",
+          "text": "CONCEPT / DESIGN / MOTION / SOUND",
+          "size": 24,
+          "x": 0.32,
+          "y": 0.73,
+          "color": "muted",
+          "at": 0,
+          "out": 7.8,
+          "font": "label",
+          "weight": 400,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        },
+        {
+          "type": "ribbon",
+          "color": "primary",
+          "at": 0,
+          "speed": 0.25,
+          "radius": 235,
+          "x": 0.77,
+          "y": 0.52
+        },
+        {
+          "type": "words",
+          "text": "BUILT IN THE ANIMATION STUDIO",
+          "size": 24,
+          "x": 0.34,
+          "y": 0.86,
+          "color": "muted",
+          "at": 0,
+          "out": 7.8,
+          "font": "label",
+          "weight": 400,
+          "style": "rise",
+          "shadow": false,
+          "blur": 14,
+          "dur": 0.55,
+          "amp": 0.35
+        }
+      ],
+      "hold": true,
+      "craft": {
+        "scale": "brand resolve",
+        "camera": "locked stage; analytic object rotation",
+        "focal": "resolve",
+        "transition": "wipe",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "ribbon rotation",
+          "type entry"
+        ],
+        "audioCue": "finale",
+        "layers": [
+          "text",
+          "3d"
+        ]
+      }
+    }
+  ],
+  "audience": "Creative directors and hiring reviewers",
+  "promise": "Original motion design demonstrates creative engineering",
+  "cta": "Remember CODEX: Creative engineering",
+  "direction": "One mathematically sculpted ribbon; mist/slate/iris/salmon/ochre; Archivo and Space Mono; geometric match cuts on a 120 BPM original score",
+  "vignette": false,
+  "creative": {
+    "viewer": "Creative directors and hiring reviewers",
+    "problem": "A resume cannot demonstrate motion craft",
+    "promise": "See creative engineering in the work",
+    "evidence": "Original analytic meshes, typography and a labeled UI concept",
+    "emotion": "Curiosity then clarity",
+    "motif": "A single sculpted ribbon changing roles",
+    "palette": [
+      "#E9EFF0",
+      "#28334A",
+      "#7F63D9",
+      "#B2A3E8",
+      "#EB735A",
+      "#F0CF7F"
+    ],
+    "light": "Per-face directional light and a grounded soft shadow",
+    "typography": {
+      "display": "Archivo",
+      "text": "Archivo / Space Mono labels"
+    },
+    "camera": "Locked editorial stage; sculpture supplies depth and rotation",
+    "transitions": [
+      "geometric wipe",
+      "beat-aligned match cut"
+    ],
+    "motion": "Closed-form rotation, staggered type, cursor-caused tile morph",
+    "sound": "Original 120 BPM melodic house on the shared beat clock",
+    "pacing": "Eight four-second movements; held reading windows",
+    "payoff": "CODEX / Creative engineering",
+    "cta": "Remember the work",
+    "styleFrames": {
+      "hook": 1.8,
+      "proof": 9.8,
+      "payoff": 29.8
+    },
+    "proof": {
+      "start": 0,
+      "end": 8
+    }
+  }
+}

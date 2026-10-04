@@ -2,12 +2,28 @@
 // Tools, not templates: every module exposes timing (beats), geometry, colour roles, motion style and intensity,
 // so two films built from the same modules can look unrelated. Times in a spec are BEATS from the scene start.
 import { clamp, lerp, ramp, hash, px, oE, ioC, ioQ, sm, spr, div, T3, setBlur, obj, words, kinetic, extrude, icon, IC, col, canvas, isArabic, el } from './core.js';
+import { ribbon } from './ribbon.js';
 
 const K = (ctx) => Math.min(ctx.W, ctx.H) / 1080;                       // size unit: px at a 1080 short side
 const tin = (ctx, e, d = 0) => ctx.T(e.at ?? d), tout = (ctx, e) => (e.out != null ? ctx.T(e.out) : ctx.b - 0.12);
 const shadowOf = (e) => (e.shadow === false ? '' : e.shadow || '0 0 40px rgba(0,0,0,0.5)');
 
 export const MODULES = {
+  ribbon,
+  // A deterministic pointer gesture: the spec shares its click beat with the target's morph.
+  cursor(ctx, e) {
+    const k = K(ctx), n = el('svg', { viewBox: '0 0 40 48', style: { position: 'absolute', width: px(40*k), height: px(48*k), zIndex: '15', overflow: 'visible' } }, ctx.root);
+    el('path', { d: 'M3 3 L3 35 L12 27 L20 44 L27 40 L19 24 L32 24 Z', fill: col(ctx.brand,e.color,'#202638'), stroke: '#FFFFFF', 'stroke-width': 2 }, n);
+    const ring = div(ctx.root, { width: px(80*k), height: px(80*k), border: `2px solid ${ctx.brand.colors.primary}`, borderRadius: '50%', zIndex: '14' });
+    const points = e.points.map(p => ({ t:ctx.T(p.at), x:p.x*ctx.W, y:p.y*ctx.H }));
+    return t => {
+      let p = points[0];
+      for(let i=1;i<points.length;i++) { if(t<points[i-1].t) break; const a=points[i-1],b=points[i],u=ioC(ramp(t,a.t,b.t)); p={x:lerp(a.x,b.x,u),y:lerp(a.y,b.y,u)-Math.sin(u*Math.PI)*50*k}; if(t<b.t) break; }
+      const click=ctx.T(e.clickAt??4), q=ramp(t,click,click+.5), dip=1-.16*Math.sin(Math.PI*ramp(t,click,click+.2));
+      n.style.transform=`translate(${p.x}px,${p.y}px) scale(${dip})`; n.style.opacity=sm(ctx.T(e.at??0),ctx.T(e.at??0)+.2,t).toFixed(3);
+      ring.style.transform=`translate(${p.x-40*k}px,${p.y-40*k}px) scale(${.3+q})`; ring.style.opacity=(t>=click?(1-q)*.7:0).toFixed(3);
+    };
+  },
   // ---------- kinetic typography: one line ----------
   words(ctx, e) {
     const L = words(ctx.root, e.text, ctx, { size: e.size * K(ctx), weight: e.weight ?? 900, color: col(ctx.brand, e.color), x: e.x ?? 0.5, y: e.y ?? 0.5, width: e.width && e.width * K(ctx), font: e.font && (ctx.brand.fonts[e.font] || e.font), accent: Object.fromEntries(Object.entries(e.accent || {}).map(([k, v]) => [k, col(ctx.brand, v)])), z: e.z ?? 9, shadow: shadowOf(e) });
