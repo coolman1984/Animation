@@ -53,8 +53,8 @@
       ] },
     { "id": "mega", "beats": 8, "music": "drop2", "drop": true, "transition": "cut", "world": { "tint": 12, "speed": 0.3 },
       "elements": [
-        { "type": "words", "text": "Bigger", "size": 430, "y": 0.37, "at": 0, "out": 3, "s0": 3.0, "blur": 30, "dur": 0.4, "shadow": "0 0 70px rgba(79,216,255,0.6)", "reel": { "size": 300 } },
-        { "type": "words", "text": "Than a Training…", "size": 190, "y": 0.704, "color": "accent", "at": 1, "out": 3, "s0": 2.0, "stagger": 0.09, "reel": { "y": 0.56, "size": 120 } },
+        { "type": "words", "text": "Bigger", "size": 430, "y": 0.345, "at": 0, "out": 3, "s0": 3.0, "blur": 30, "dur": 0.4, "shadow": "0 0 70px rgba(79,216,255,0.6)", "reel": { "size": 300 } },
+        { "type": "words", "text": "Than a Training…", "size": 190, "y": 0.73, "color": "accent", "at": 1, "out": 3, "s0": 2.0, "stagger": 0.09, "reel": { "y": 0.56, "size": 120 } },
         { "type": "wipes", "items": [
           { "at": 3, "bg": "primary", "fg": "#FFFFFF", "text": "مساعد ذكي", "icon": "spark", "size": 250 },
           { "at": 4.5, "bg": "#FFFFFF", "fg": "#0A1A52", "text": "عقل ثاني", "icon": "people", "size": 270, "stripe": "rgba(10,26,82,0.10)" },

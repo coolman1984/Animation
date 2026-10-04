@@ -52,6 +52,8 @@ export function kinetic(L, t, tIn, tOut = 1e9, { style = 'slam', stagger = 0.07,
     else if (style === 'rise') { ty = (1 - k) * 0.6 * L.fs; op = clamp((t - a) / (dur * 0.6)); }
     else if (style === 'pop') { sc = lerp(0.4, 1, k); op = clamp((t - a) / (dur * 0.5)); }
     else op = clamp((t - a) / 0.05);                                      // 'cut'
+    // living type: once landed, a word keeps breathing (tiny scale + float), so a held line is never a still image
+    const live = sm(a + dur, a + dur + 0.4, t) * (1 - out); sc *= 1 + 0.014 * live * Math.sin((t - a) * 2.3 + i * 0.8); ty += live * Math.sin((t - a) * 1.7 + i * 1.3) * 0.022 * L.fs;
     op *= 1 - clamp(out * 4);                                         // below the gate's 0.5 before the exit moves
     w.style.opacity = clamp(op).toFixed(3);
     w.style.transform = `translateY(${(ty - out * 40).toFixed(1)}px) scale(${(sc * (1 + 0.04 * out)).toFixed(4)})`;

@@ -193,12 +193,14 @@ export const MODULES = {
     const k = K(ctx), B = ctx.brand.colors, w = Math.min((e.w ?? 1240) * k, ctx.safe[2] - ctx.safe[0]), h = (e.h ?? 120) * k, X = (e.x ?? 0.5) * ctx.W, Y = (e.y ?? 0.82) * ctx.H;
     const bg = { white: 'linear-gradient(160deg, #FFFFFF, #DCE6FF)', accent: `linear-gradient(90deg, ${B.accentDark}, ${B.accent} 40%, #FFE97A)`, glass: 'rgba(8,24,70,0.7)' }[e.bg || 'white'] || e.bg;
     const box = div(ctx.root, { left: px(X - w / 2), top: px(Y - h / 2), width: px(w), height: px(h), borderRadius: px(h / 2), background: bg, border: e.border ? `4px solid ${col(ctx.brand, e.border)}` : 'none', zIndex: '9', boxShadow: `0 0 70px ${B.glow}99` });
+    const shine = div(box, { width: px(h * 1.6), height: px(h), background: 'linear-gradient(100deg, transparent, rgba(255,255,255,0.55), transparent)', transform: 'skewX(-20deg)', mixBlendMode: 'overlay' }); box.style.overflow = 'hidden';
     const parts = e.parts || [{ text: e.text }], n = parts.length;
     const Ls = parts.map((p, i) => words(ctx.root, p.text, ctx, { size: (p.size ?? e.size ?? 56) * k, weight: 900, color: col(ctx.brand, p.color || e.color, '#0A1A52'), cx: X - w / 2 + w * (i + 0.5) / n, cy: Y, width: w / n * 0.94, z: 10 }));
     const a = tin(ctx, e), o = e.out != null ? ctx.T(e.out) : 1e9;
     return (t) => {
       const p = spr(t, a, 0.55, 0.25), out = ioC(ramp(t, o, o + 0.15));
       box.style.display = t >= a - 0.02 ? 'block' : 'none'; box.style.opacity = (clamp(p * 2) * (1 - out)).toFixed(3); box.style.transform = `scale(${lerp(e.grow === 'x' ? 1 : 0.6, 1, clamp(p, 0, 1.08)).toFixed(3)}) ${e.grow === 'x' ? `scaleX(${lerp(0.1, 1, clamp(p, 0, 1.06)).toFixed(3)})` : ''}`;
+      const sw = ((t - a - 0.3) % 2.2) / 0.9; shine.style.left = px(lerp(-h * 2, w + h, clamp(sw))); shine.style.opacity = sw > 0 && sw < 1 ? '1' : '0';                 // a light sweep every 2.2 s
       Ls.forEach((L, i) => kinetic(L, t, a + 0.1 + 0.1 * i, o, { s0: 1.3, blur: 10, stagger: 0.06, dur: 0.36, outDur: 0.12 }));
     };
   },
