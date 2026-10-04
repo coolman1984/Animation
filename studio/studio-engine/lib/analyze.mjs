@@ -21,8 +21,12 @@ export function onsetEnvelope(x, sr, hop = 0.01) {
 }
 export function onsets(file, { thresh = 0.6, minGap = 0.06 } = {}) {
   const { mono, sr } = decode(file, { sr: 22050, mono: true }), o = onsetEnvelope(mono, sr), hop = 0.01, out = [];
-  const mean = o.reduce((a, b) => a + b, 0) / o.length, sd = Math.sqrt(o.reduce((a, b) => a + (b - mean) ** 2, 0) / o.length), th = mean + thresh * 3 * sd;
-  for (let i = 1; i < o.length - 1; i++) if (o[i] > th && o[i] >= o[i - 1] && o[i] >= o[i + 1] && (!out.length || i * hop - out[out.length - 1] > minGap)) out.push(+(i * hop).toFixed(3));
+  // adaptive threshold: a peak counts when it clears the local (±0.5 s) mean by `thresh` × the local spread
+  const W = 50;
+  for (let i = 1; i < o.length - 1; i++) { if (!(o[i] >= o[i - 1] && o[i] >= o[i + 1])) continue;
+    let s = 0, s2 = 0, n = 0; for (let j = Math.max(0, i - W); j < Math.min(o.length, i + W); j++) { s += o[j]; s2 += o[j] * o[j]; n++; }
+    const m = s / n, sd = Math.sqrt(Math.max(0, s2 / n - m * m));
+    if (o[i] > m + thresh * 2 * sd && o[i] > 0.02 && (!out.length || i * hop - out[out.length - 1] > minGap)) out.push(+(i * hop).toFixed(3)); }
   return out;
 }
 // tempo 70–180 BPM by autocorrelation of the onset envelope, then the beat phase with the most onset energy

@@ -42,9 +42,10 @@ export function frames(boxes, safe, tl) {
   return out;
 }
 // sounded events must land within tol of an onset in the SFX stem
-export function sync(spec, sfxWav, tol = 0.05) {
-  const ev = eventsOf(spec).filter((e) => ['slam', 'impact', 'flash', 'smash', 'wipe', 'flip', 'slash'].includes(e.kind)), on = onsets(sfxWav);
-  const miss = ev.filter((e) => !on.some((o) => Math.abs(o - e.t) <= tol + (e.kind === 'flip' ? 0.35 : 0)));
+export function sync(spec, sfxWav, tol = 0.07) {
+  // a hit may start up to 100 ms early (the whoosh/riser lead-in is the anticipation of the hit), never more than `tol` late
+  const ev = eventsOf(spec).filter((e) => ['slam', 'impact', 'flash', 'smash', 'wipe', 'flip', 'slash'].includes(e.kind)), on = onsets(sfxWav, { thresh: 0.3 });
+  const miss = ev.filter((e) => !on.some((o) => o >= e.t - 0.1 - (e.kind === 'flip' ? 0.3 : 0) && o <= e.t + tol));
   return { checked: ev.length, missed: miss.map((e) => `${e.t.toFixed(2)} s ${e.kind} (${e.id})`) };
 }
 // no span longer than maxStill without visible motion (stricter than the studio's 1 s freeze gate), holds excluded

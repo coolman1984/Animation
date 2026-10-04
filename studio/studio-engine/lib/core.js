@@ -26,7 +26,7 @@ export const obj = (parent, w, h, style = {}) => div(parent, { left: px(-w / 2),
 export function words(parent, text, ctx, { size, weight = 800, color, x = 0.5, y = 0.5, cx, cy, width, font, dir, track = 0, lh = 1.2, accent = {}, z = 8, shadow = '' } = {}) {
   const { W, H, safe, brand } = ctx;
   const d = dir || (isArabic(text) ? 'rtl' : 'ltr');
-  const X = cx ?? x * W, Y = cy ?? y * H, room = Math.min(safe[2] - safe[0], 2 * Math.min(X - safe[0], safe[2] - X)) * 0.95, maxW = Math.min(width ?? room, room); // 5% for camera shake + shell scale
+  const X = cx ?? x * W, Y = cy ?? y * H, room = Math.min(safe[2] - safe[0], 2 * Math.min(X - safe[0], safe[2] - X)) * 0.93, maxW = Math.min(width ?? room, room); // 7% for camera shake + shell scale
   const chars = [...text].length, est = chars * size * (d === 'rtl' ? 0.5 : 0.56);
   const fs = Math.max(18, Math.min(size, size * (maxW / Math.max(1, est))));
   const L = textLine(parent, text, { left: px(X - maxW / 2), top: px(Y - (fs * lh) / 2), width: px(maxW), justifyContent: 'center', fontFamily: `'${font || brand.fonts.display}'`, fontSize: px(fs), fontWeight: String(weight), color: color || brand.colors.text, lineHeight: String(lh), letterSpacing: `${track}em`, direction: d, zIndex: String(z), textShadow: shadow });
@@ -48,11 +48,11 @@ export function kinetic(L, t, tIn, tOut = 1e9, { style = 'slam', stagger = 0.07,
     const a = tIn + i * stagger, e = spr(t, a, dur, 0.28), out = ioC(ramp(t, tOut + i * 0.03, tOut + i * 0.03 + outDur));
     const k = clamp(e, 0, 1.12);
     let sc = 1, ty = 0, op;
-    if (style === 'slam') { sc = lerp(s0, 1, k); const near = clamp(1 - Math.abs(sc - 1) / (0.08 * Math.max(1, s0))); op = Math.min(0.48, clamp((t - a) / dur * 3)) + 0.52 * near; }
+    if (style === 'slam') { sc = lerp(s0, 1, k); const near = clamp(1 - Math.abs(sc - 1) / (0.08 * Math.max(1, s0))); op = Math.min(0.42, clamp((t - a) / dur * 3)) + 0.58 * near * near; }
     else if (style === 'rise') { ty = (1 - k) * 0.6 * L.fs; op = clamp((t - a) / (dur * 0.6)); }
     else if (style === 'pop') { sc = lerp(0.4, 1, k); op = clamp((t - a) / (dur * 0.5)); }
     else op = clamp((t - a) / 0.05);                                      // 'cut'
-    op *= 1 - clamp(out * 2.2);
+    op *= 1 - clamp(out * 4);                                         // below the gate's 0.5 before the exit moves
     w.style.opacity = clamp(op).toFixed(3);
     w.style.transform = `translateY(${(ty - out * 40).toFixed(1)}px) scale(${(sc * (1 + 0.04 * out)).toFixed(4)})`;
     setBlur(w, style === 'slam' ? (1 - clamp(e)) * blur + out * 12 : style === 'rise' ? (1 - clamp(e)) * 6 + out * 8 : out * 8);

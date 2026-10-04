@@ -75,6 +75,13 @@ for (const f of formats) {
   if (r.status !== 0) { console.error('[engine] stills failed:\n' + tail(r.stderr, 12)); failed = true; continue; }
   const fr = frames(JSON.parse(readFileSync(join(SDIR, 'boxes.json'), 'utf8')), fmt.safe, tl);
   say(`stills: ${times.length} frames → ${join(SDIR, 'sheet.png')} · text ${fr.length ? fr.length + ' issue(s)' : 'OK'}`); fr.slice(0, 8).forEach((x) => say('  frame:', x));
+  // dense text pass (every 0.1 s, no screenshots): the same check the final gate runs, done before the expensive render
+  const { textTimeline } = await import('../lib/render.mjs');
+  const TT = await textTimeline({ film: resolve(STUDIO, `studio-engine/${name}/film.js`), w: fmt.w, h: fmt.h, step: 0.1, safeRect: fmt.safe });
+  const byScene = {}; for (const x of TT.issues) { const sc = tl.scenes.find((q) => x.t >= q.a && x.t < q.b)?.id || '?'; (byScene[sc] ||= []).push(x); }
+  say(`text timeline: ${TT.issues.length ? TT.issues.length + ' issue(s) in ' + Object.entries(byScene).map(([k, v]) => `${k} ×${v.length}`).join(', ') : 'OK'}`);
+  for (const [k, v] of Object.entries(byScene)) say(`  ${k}: ${v[0].t} s ${v[0].kind} "${v[0].text.slice(0, 50)}"`);
+  writeFileSync(join(TAKES, 'text-issues.json'), JSON.stringify(TT.issues));
   if (stage === 'stills') continue;
   // 6. preview (one scene or the whole film, draft profile) or the one final render
   const range = opt.scene ? (() => { const s = tl.scenes.find((q) => q.id === opt.scene); if (!s) throw new Error(`no scene ${opt.scene}`); return `${Math.max(0, s.a - 0.3).toFixed(2)}:${Math.min(dur, s.b + 0.3).toFixed(2)}`; })() : `0:${dur}`;

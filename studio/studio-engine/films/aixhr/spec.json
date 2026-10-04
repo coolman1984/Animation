@@ -8,9 +8,9 @@
     { "id": "storm", "beats": 8, "music": "intro", "world": { "speed": 1.4 }, "camera": { "persp": 1400 },
       "elements": [
         { "type": "storm", "count": 38, "texts": ["Reports…", "Follow ups…", "Manual work…", "So many tasks…"] },
-        { "type": "words", "text": "الـ HR", "size": 330, "y": 0.33, "accent": { "1": "accent" }, "at": 0, "out": 7.9, "s0": 2.6, "shadow": "0 0 60px rgba(79,216,255,0.55)", "reel": { "y": 0.3 } },
-        { "type": "words", "text": "بيتغير", "size": 190, "x": 0.713, "y": 0.69, "width": 700, "at": 2, "out": 7.9, "reel": { "x": 0.5, "y": 0.5 } },
-        { "type": "words", "text": "بسرعة…", "size": 190, "x": 0.27, "y": 0.69, "width": 800, "color": "accent", "at": 4, "out": 7.9, "s0": 2.8, "reel": { "x": 0.5, "y": 0.64 } }
+        { "type": "words", "text": "الـ HR", "size": 330, "y": 0.33, "accent": { "1": "accent" }, "at": 0, "out": 7.5, "s0": 2.6, "shadow": "0 0 60px rgba(79,216,255,0.55)", "reel": { "y": 0.3 } },
+        { "type": "words", "text": "بيتغير", "size": 190, "x": 0.713, "y": 0.69, "width": 700, "at": 2, "out": 7.5, "reel": { "x": 0.5, "y": 0.5 } },
+        { "type": "words", "text": "بسرعة…", "size": 190, "x": 0.27, "y": 0.69, "width": 800, "color": "accent", "at": 4, "out": 7.5, "s0": 2.8, "reel": { "x": 0.5, "y": 0.64 } }
       ] },
     { "id": "brain", "beats": 8, "music": "drop", "drop": true, "transition": "flash", "world": { "tint": -10 },
       "elements": [
@@ -64,8 +64,8 @@
       "elements": [
         { "type": "slab", "at": 0, "y": 0.519, "lines": [ { "text": "WORKSHOP", "size": 230, "at": 0.2 }, { "text": "COMING SOON", "size": 138, "at": 1.5 } ], "reel": { "y": 0.46 } },
         { "type": "mark", "parts": ["AI", "×", "HR"], "size": 250, "y": 0.16, "at": 0.4, "reel": { "y": 0.2 } },
-        { "type": "pill", "parts": [ { "text": "I'M INTERESTED", "color": "#1E4FD8" }, { "text": "اكتب في الكومنت" } ], "size": 56, "w": 1240, "h": 120, "y": 0.815, "at": 2.5, "reel": { "y": 0.72, "size": 44 } },
-        { "type": "words", "text": "Ayman Essam × Mohamed Fawzy", "size": 40, "weight": 800, "y": 0.907, "width": 1400, "accent": { "2": "accent" }, "at": 3.5, "s0": 1.4, "blur": 10, "stagger": 0.12, "reel": { "y": 0.8 } },
+        { "type": "pill", "parts": [ { "text": "I'M INTERESTED", "color": "#1E4FD8" }, { "text": "اكتب في الكومنت" } ], "size": 56, "w": 1240, "h": 120, "y": 0.8, "at": 2.5, "reel": { "y": 0.72, "size": 44 } },
+        { "type": "words", "text": "Ayman Essam × Mohamed Fawzy", "size": 40, "weight": 800, "y": 0.893, "width": 1400, "accent": { "2": "accent" }, "at": 3.5, "s0": 1.4, "blur": 10, "stagger": 0.12, "reel": { "y": 0.8 } },
         { "type": "sparks", "at": 0 }
       ] }
   ]

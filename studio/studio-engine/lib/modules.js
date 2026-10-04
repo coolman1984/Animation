@@ -122,9 +122,9 @@ export const MODULES = {
       const oS = div(c, { left: '0', top: px(HD), width: px(sideW), height: px(sideH), background: `linear-gradient(160deg, ${B.paper}, #D8CBAE)`, borderRadius: P ? '0' : `0 0 0 ${30 * k}px` });
       const nS = div(c, { left: px(P ? 0 : sideW), top: px(P ? HD + sideH : HD), width: px(sideW), height: px(sideH), background: `linear-gradient(160deg, #1C58E8, #0A2A8C 70%, #071B66)`, borderRadius: P ? `0 0 ${30 * k}px ${30 * k}px` : `0 0 ${30 * k}px 0`, boxShadow: `0 0 80px ${B.glow}59` });
       div(c, { width: px(CW), height: px(HD), background: 'linear-gradient(90deg, rgba(5,16,60,0.96), rgba(10,44,140,0.96))', borderRadius: `${30 * k}px ${30 * k}px 0 0`, borderBottom: `4px solid ${B.accent}` });
-      const sub = (parent, text, size, cy, color, weight, dir) => text ? words(parent, text, { ...ctx, safe: [0, 0, sideW, sideH] }, { size: fsz(text, sideW * 0.9, size * k, dir === 'rtl' ? 0.5 : 0.56), weight, cx: sideW / 2, cy, color, width: sideW * 0.92, z: 10, dir }) : null;
-      const L = [words(c, a.title, { ...ctx, safe: [0, 0, CW, HD] }, { size: fsz(a.title, CW * 0.9, 76 * k, 0.6), weight: 900, cx: CW / 2, cy: 78 * k, color: '#fff', width: CW * 0.95, z: 10 }),
-        a.titleAr ? words(c, a.titleAr, { ...ctx, safe: [0, 0, CW, HD] }, { size: 48 * k, weight: 700, cx: CW / 2, cy: 152 * k, color: B.accent, width: CW * 0.95, z: 10 }) : null,
+      const sub = (parent, text, size, cy, color, weight, dir) => text ? words(parent, text, { ...ctx, safe: [0, 0, sideW, sideH] }, { size: fsz(text, sideW * 0.84, size * k, dir === 'rtl' ? 0.5 : 0.56), weight, cx: sideW / 2, cy, color, width: sideW * 0.86, z: 10, dir }) : null;
+      const L = [words(c, a.title, { ...ctx, safe: [0, 0, CW, HD] }, { size: fsz(a.title, CW * 0.9, 76 * k, 0.6), weight: 900, cx: CW / 2, cy: 66 * k, color: '#fff', width: CW * 0.95, lh: 1.05, z: 10 }),
+        a.titleAr ? words(c, a.titleAr, { ...ctx, safe: [0, 0, CW, HD] }, { size: 48 * k, weight: 700, cx: CW / 2, cy: 158 * k, color: B.accent, width: CW * 0.95, lh: 1.05, z: 10 }) : null,
         sub(oS, a.old, 46, sideH * 0.66, '#3A2E18', 700), sub(oS, a.oldAr, 40, sideH * 0.8, '#5B4A28', 600, 'rtl')];
       const nt = [sub(nS, a.new, 46, sideH * 0.66, '#FFFFFF', 800), sub(nS, a.newAr, 40, sideH * 0.8, B.ice, 600, 'rtl')];
       const is = Math.min(260 * k, sideH * 0.42), oI = div(oS, { left: px(sideW / 2 - is / 2), top: px(sideH * 0.1), width: px(is), height: px(is) }), nI = div(nS, { left: px(sideW / 2 - is / 2), top: px(sideH * 0.1), width: px(is), height: px(is) });
@@ -146,13 +146,14 @@ export const MODULES = {
         for (const L of [...q.L, ...q.nt]) L.line.style.display = live ? 'flex' : 'none';
         if (!live) return;
         const a = i === 0 ? spr(t, A, 0.55, 0.18) : spr(t, t0 - 0.3, 0.5, 0.18), b = ioC(ramp(t, t1 - 0.3, t1));
-        q.c.style.transform = `rotateX(${(lerp(88, 0, clamp(a, 0, 1.05)) - (i < items.length - 1 ? 92 * b : 0)).toFixed(2)}deg)`;
-        for (const L of q.L) L.words.forEach((w) => { w.style.opacity = '1'; w.style.transform = 'none'; });
+        const rx = lerp(88, 0, clamp(a, 0, 1.05)) - (i < items.length - 1 ? 92 * b : 0), face = clamp((Math.cos(rx * Math.PI / 180) - 0.45) / 0.35); // text fades only while the card is edge-on
+        q.c.style.transform = `rotateX(${rx.toFixed(2)}deg)`;
+        for (const L of q.L) L.words.forEach((w) => { w.style.opacity = face.toFixed(3); w.style.transform = 'none'; });
         const m = ioC(ramp(t, t0 + 0.45, t0 + 0.85));
         q.oI.style.opacity = (1 - 0.55 * m).toFixed(3); q.oI.style.transform = `scale(${(1 - 0.12 * m).toFixed(3)})`;
         q.nI.style.opacity = m.toFixed(3); q.nI.style.transform = `scale(${(0.6 + 0.4 * clamp(spr(t, t0 + 0.45, 0.45, 0.3), 0, 1.2)).toFixed(3)}) rotate(${((1 - m) * -30).toFixed(1)}deg)`;
         q.badge.style.opacity = m.toFixed(3); q.badge.style.transform = `scale(${clamp(spr(t, t0 + 0.6, 0.4, 0.4), 0, 1.3).toFixed(3)})`;
-        for (const L of q.nt) L.words.forEach((w) => { w.style.opacity = m.toFixed(3); w.style.transform = 'none'; });
+        for (const L of q.nt) L.words.forEach((w) => { w.style.opacity = (m * face).toFixed(3); w.style.transform = 'none'; });
       });
     };
   },
