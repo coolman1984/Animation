@@ -1,0 +1,23 @@
+{
+  "title": "Engine demo — morph grammar",
+  "format": "reel",
+  "bpm": 120,
+  "music": { "progression": ["Dm", "Bb", "F", "C"], "final": "F" },
+  "scenes": [
+    { "id": "pulse", "beats": 8, "music": "intro", "grid": true,
+      "elements": [
+        { "type": "shape", "id": "dot", "x": 0.5, "y": 0.5, "w": 120, "h": 120, "r": 60, "color": "accent", "glow": "accent", "at": 0,
+          "morph": [ { "at": 2, "w": 700, "h": 140, "r": 70, "color": "primary" }, { "at": 4, "w": 700, "h": 700, "r": 60, "color": "#0B3FCB" } ], "morphTo": "card" },
+        { "type": "path", "paths": ["clock", "gear", "spark"], "times": [1, 3, 5], "size": 320, "y": 0.5, "stroke": "#FFFFFF", "width": 4 },
+        { "type": "stack", "y": 0.22, "at": 0.5, "lines": [ { "text": "وقتك أغلى", "size": 150 }, { "text": "من الشغل اليدوي", "size": 96, "color": "accent", "at": 1.5 } ] }
+      ] },
+    { "id": "card", "beats": 8, "music": "drop", "drop": true, "transition": "cut",
+      "elements": [
+        { "type": "shape", "id": "card", "x": 0.5, "y": 0.52, "w": 820, "h": 1000, "r": 48, "color": "#0B3FCB", "at": 0, "morph": [ { "at": 6, "w": 900, "h": 160, "r": 80, "color": "accent" } ] },
+        { "type": "icon", "name": "rocket", "y": 0.42, "size": 300, "at": 0.5, "out": 5.5, "color": "#FFFFFF" },
+        { "type": "words", "text": "خلّي الذكاء يشتغل", "size": 110, "y": 0.62, "at": 1, "out": 5.5 },
+        { "type": "words", "text": "ابدأ النهارده", "size": 80, "y": 0.52, "color": "#0A1A52", "at": 6.5, "style": "pop", "shadow": false, "on": "accent" },
+        { "type": "sparks", "at": 0 }
+      ] }
+  ]
+}

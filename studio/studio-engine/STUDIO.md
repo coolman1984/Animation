@@ -37,3 +37,8 @@ Stay with a render until it prints its gates: start it with `nohup … & echo $!
 4. Music: western, a beat and ONE hook that returns; drops on the big scenes (`drop: true`). Logos whole, never assembled.
 5. Gate order: `check` → `stills` (fix until `text OK`) → one final render. A failing gate names its scene: fix that scene in the spec, re-check with `--stage=preview --scene=id`, then final.
 6. Assets: Higgsfield MCP (GPT Image 2.5 / Gemini Omni / ElevenLabs v4) only for what code cannot draw; `assets-todo.json` lists requests → generate once → `registerAsset()`.
+
+## Proof (2026-10-04)
+AI × HR (film 11 v2) rebuilt from `films/aixhr/spec.json` alone: youtube take04 + reel take01 — **every gate PASS** (the hand-coded original failed the text gate with 367 issues),
+sync 30/30 and 31/31 hits on an audible onset, no still span > 0.7 s. Motion energy vs the original at 30 matched timestamps: **106 %** (`compare.mjs`, sheet `compare-aixhr.png`).
+Morph grammar (shape → pill → card across scenes, SVG icon morph) proven in `films/demo`. Spec size: 1 file, ~190 lines, zero code.

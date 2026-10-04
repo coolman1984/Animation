@@ -24,7 +24,7 @@ export function lint(spec, brand) {
       const texts = [e.text, ...(e.lines || []).map((l) => l.text), ...(e.parts || []).map((p) => (typeof p === 'string' ? p : p.text))].filter(Boolean);
       for (const t of texts) { const lat = t.match(/[A-Za-z][A-Za-z&-]*/g) || []; if (e.type !== 'cards' && ARABIC.test(t) && (lat.length > 1 || lat.some((w) => w.length > 4))) warns.push(`${where}: "${t}" mixes Arabic with Latin words — bidi can reorder them; use pill parts or two lines`); }
       if (e.type === 'words') { const vis = ((e.out ?? s.beats) - (e.at ?? 0)) * tl.B, need = Math.max(0.8, [...e.text].length / 17); if (vis < need) warns.push(`${where}: "${e.text}" is readable ${vis.toFixed(1)} s, needs ~${need.toFixed(1)} s`);
-        const c = contrast(hex(e.color, B.text), bgOf(s)); if (c < 3) errors.push(`${where}: "${e.text}" contrast ${c.toFixed(1)}:1 on the scene background`); }
+        const c = contrast(hex(e.color, B.text), e.on ? hex(e.on) : bgOf(s)); /* `on` = what the text sits on */ if (c < 3) errors.push(`${where}: "${e.text}" contrast ${c.toFixed(1)}:1 on the scene background`); }
       if (e.type === 'image' && e.role === 'logo' && (e.w ?? 800) > 0.22 * 1920) warns.push(`${where}: logo wider than 22% of the frame`);
     }
   });
