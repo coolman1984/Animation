@@ -174,7 +174,8 @@ export async function video({ film, out, w = 1080, h = 1350, variant, segments, 
         if (n === b - a) { done += n; reused += n; log(`  slice ${k}: ${n} frames reused from the crashed run`); return file; }
         rmSync(file, { force: true });
       }
-      const { client } = await openFilm(srv.port, film, { w, h, variant, segments, fadeOut, scale, gpu });
+      const open = () => openFilm(srv.port, film, { w, h, variant, segments, fadeOut, scale, gpu });
+      let { client } = await open(), reopened = 0;
       const ff = spawn('ffmpeg', ['-v', 'error', '-y', '-f', 'image2pipe', '-c:v', format === 'png' ? 'png' : 'mjpeg', '-framerate', String(fps), '-i', '-',
         '-c:v', 'libx264', '-threads', '1', '-preset', preset, '-crf', String(crf), '-pix_fmt', 'yuv420p',
         '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv',
@@ -194,7 +195,16 @@ export async function video({ film, out, w = 1080, h = 1350, variant, segments, 
         for (let f = a; f < b; f++) {
           const t = f / fps;
           // A lower preview fps must keep the film's authored frame-dependent motion.
-          const image = await frameAt(client, t, Math.round(t * info.fps), { format, quality });
+          let image;
+          try { image = await frameAt(client, t, Math.round(t * info.fps), { format, quality }); }
+          catch (error) {
+            // A page that has rendered hundreds of heavy 3D frames can stop answering captures (film 11, headless software mode);
+            // frames are pure functions of t, so a fresh page continues the slice with identical pixels.
+            if (!/did not answer/.test(error.message) || reopened >= 3) throw error;
+            reopened++; log(`\n  slice ${k}: capture stalled at frame ${f}; reopening the page (${reopened}/3)`);
+            await client.close().catch(() => {}); ({ client } = await open());
+            image = await frameAt(client, t, Math.round(t * info.fps), { format, quality });
+          }
           if (f === a && imageWidth(image) !== captureWidth) throw new Error(`frame width ${imageWidth(image)} != ${captureWidth}`);
           if (ff.stdin.destroyed) throw new Error('encoder stopped: ' + ferr);
           if (!ff.stdin.write(image)) await once(ff.stdin, 'drain');
