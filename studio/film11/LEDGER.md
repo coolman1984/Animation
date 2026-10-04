@@ -14,3 +14,4 @@
 | take06 | 1920×1080, 30 fps, 25.000 s, −14.1 LUFS, TP −4.8, LRA 3.7, no freeze/black, share 38.8 MB PASS; text gate FAIL 185 (slammed words measured during entry overshoot) | gate | not fixed: delivered on the owner's order; "aTraining" spacing visible | delivered (24 MB re-encode for chat) |
 
 Builder look at a 25-frame sheet of the share copy: all chapters read; flip-card labels are small at phone size. Not verified: listening, real-speed viewing, a fresh reviewer. 1 of 2 correction rounds used (render stability).
+| v2 owner note | "client can't read anything; cards too fast, blank mid-turn; hosts' names too short; music catchier" | major | 120 BPM / 44 s; cards 2.5 s, text always on the card, backgrounds per card (base frame hidden); hosts chapter 12–16 + names under the CTA; score rebuilt (house bounce, 3-3-2 hook, 4/8/16/32 snare build) | stills OK at 12.4–20.2, 30, 37.3, 40–44 |

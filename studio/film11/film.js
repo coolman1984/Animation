@@ -1,11 +1,11 @@
-// Film 11 — AI × HR workshop — 25 s showreel-grade motion graphics, 1920×1080 @ 60 fps, 144 BPM (beat = 25 frames, bar = 100 frames).
+// Film 11 — AI × HR workshop — 44 s showreel-grade motion graphics, 1920×1080 @ 30 fps, 120 BPM (beat = 15 frames, bar = 2 s). v2: slower, readable.
 // One hero: the "×". It starts as the scratch of a storm of paperwork, becomes the multiplier between AI and HR, flips six HR areas from
 // "before" to "with AI", spins a ring of workshop ingredients around itself, and ends as the yellow slab of «WORKSHOP COMING SOON».
 // Real CSS 3D (perspective, extruded type, flip cards, a cylinder ring, a floor grid), one camera per chapter, impact shakes on the beats.
 // Every frame is a closed-form function of t (hash-seeded particles, springs): any frame renders identically in any order.
 import { clamp, lerp, ramp, ease, el, textLine } from '../lib/motion.js';
 import { springStep, hash } from '../lib/kinetics.js';
-import { BEAT, CH, EV } from './timing.js';
+import { BEAT, CH, EV, DUR } from './timing.js';
 
 const C = { ink: '#030818', deep: '#071336', blue: '#1E6BFF', blueD: '#0B3FCB', cyan: '#4FD8FF', ice: '#BFEFFF', white: '#FFFFFF', yellow: '#FFD21F', yellowD: '#E8A800', warm: '#EFE6D2', grey: '#8CA0C8' };
 const AR = "'Alexandria'", MONO = "'Space Mono'";
@@ -92,7 +92,7 @@ const IC = {
 };
 
 // ---------- camera shake on the beats (decaying, deterministic) ----------
-const HITS = [[EV.words1[0], 1], [EV.words1[1], 0.8], [EV.words1[2], 1.1], [EV.flash, 1.6], [EV.slash, 1.0], [EV.title, 1.5], [EV.xspin, 0.9], [CH.flip, 0.8], [CH.ring, 1.0], [CH.mega, 1.2], [EV.wipe1, 1.0], [EV.wipe2, 0.9], [EV.wipe3, 0.9], [CH.end, 1.8], [EV.soon, 1.0]];
+const HITS = [[EV.words1[0], 1], [EV.words1[1], 0.8], [EV.words1[2], 1.1], [EV.flash, 1.6], [EV.slash, 1.0], [EV.title, 1.5], [EV.xspin, 0.9], [CH.hosts, 0.9], [EV.host1, 0.6], [EV.host2, 0.6], [CH.flip, 0.8], [CH.ring, 1.0], [CH.mega, 1.2], [EV.wipe1, 1.0], [EV.wipe2, 0.9], [EV.wipe3, 0.9], [CH.end, 1.8], [EV.soon, 1.0]];
 function shake(t) {
   let x = 0, y = 0, r = 0;
   for (const [t0, a] of HITS) { const tau = t - t0; if (tau < 0 || tau > 0.55) continue; const d = Math.exp(-tau * 9) * a; x += Math.sin(tau * 75 + t0) * 13 * d; y += Math.cos(tau * 83 + t0 * 2) * 11 * d; r += Math.sin(tau * 61) * 0.5 * d; }
@@ -101,7 +101,7 @@ function shake(t) {
 
 // =====================================================================================================
 // WORLD — the dark glass room: radial glow, a perspective floor grid that travels toward the camera, drifting dust
-SC.push({ id: 'world', a: 0, b: 25.1, z: 1, init(root) {
+SC.push({ id: 'world', a: 0, b: DUR + 0.1, z: 1, init(root) {
   const bg = full(root, { background: 'radial-gradient(ellipse 70% 70% at 50% 46%, #14306E 0%, #0A1B4A 38%, #040B22 78%, #02050F 100%)' });
   const hz = div(root, { left: '0', top: '470px', width: px(W), height: '240px', background: 'linear-gradient(180deg, rgba(79,216,255,0), rgba(79,216,255,0.28), rgba(79,216,255,0))', zIndex: '1' });
   const floorP = full(root, { perspective: '700px', perspectiveOrigin: '50% 40%', zIndex: '1', overflow: 'hidden' });
@@ -201,7 +201,7 @@ SC.push({ id: 'brain', a: CH.brain - 0.02, b: CH.title + 0.1, z: 4, init(root) {
 
 // =====================================================================================================
 // 3 · TITLE 6.67–10 — AI × HR in extruded 3D with an orbiting camera, a glossy floor reflection, the subtitle, the two hosts
-SC.push({ id: 'title', a: CH.title - 0.02, b: CH.flip + 0.2, z: 5, init(root) {
+SC.push({ id: 'title', a: CH.title - 0.02, b: CH.hosts + 0.2, z: 5, init(root) {
   const { cam } = rig(root, 1700);
   const stageG = obj(cam, 10, 10, {});
   const mkLetters = (parent, flip) => {
@@ -239,14 +239,53 @@ SC.push({ id: 'title', a: CH.title - 0.02, b: CH.flip + 0.2, z: 5, init(root) {
   for (const L of [s.main, s.rl]) L.x.style.transform = T3(0, -40, 60, 0, xr * 1.0 + 12 * Math.sin(t * 2), -30 * Math.sin(t * 1.3) + (1 - clamp(xs)) * 720, xsz);
   s.stageG.style.opacity = sm(CH.title - 0.02, CH.title + 0.05, t).toFixed(3);
   const ro = 0.16 * sm(CH.title + 0.2, CH.title + 0.8, t); s.refl.style.opacity = ro.toFixed(3); s.refl.style.display = ro > 0.002 ? 'block' : 'none'; // the mirrored copy costs a full 3D pass: skip it while invisible
-  const out = ioC(ramp(t, CH.flip - 0.12, CH.flip + 0.12));
+  const out = ioC(ramp(t, CH.hosts - 0.12, CH.hosts + 0.12));
   s.root.style.opacity = (1 - out).toFixed(3);
-  slam(s.sub, t, EV.sub, CH.flip - 0.14, { stagger: 0.06, s0: 1.35, blur: 12, dur: 0.4, outDur: 0.12 });
+  slam(s.sub, t, EV.sub, CH.hosts - 0.14, { stagger: 0.06, s0: 1.35, blur: 12, dur: 0.4, outDur: 0.12 });
   const pi = spr(t, EV.pill, 0.5, 0.22);
   s.pill.style.opacity = (clamp(pi * 2) * (1 - out)).toFixed(3); s.pill.style.transform = `scaleX(${lerp(0.2, 1, clamp(pi, 0, 1.08)).toFixed(3)})`; s.pill.style.display = t >= EV.pill - 0.02 ? 'block' : 'none';
-  slam(s.pl, t, EV.pill + 0.1, CH.flip - 0.14, { stagger: 0.09, s0: 1.4, blur: 10, outDur: 0.12 });
-  [s.h1, s.h2].forEach((h, i) => { const p = spr(t, EV.hosts + i * 0.12, 0.55, 0.2); h.b.style.display = t >= EV.hosts - 0.02 && t < CH.flip + 0.1 ? 'block' : 'none'; h.b.style.opacity = (clamp(p * 2) * (1 - out)).toFixed(3); h.b.style.transform = `translateX(${((1 - clamp(p)) * (i ? 600 : -600)).toFixed(1)}px)`;
-    for (const L of [h.n, h.r]) { L.line.style.display = h.b.style.display; L.words.forEach((w) => { w.style.opacity = (clamp(p * 2) * (1 - out)).toFixed(3); }); } });
+  slam(s.pl, t, EV.pill + 0.1, CH.hosts - 0.14, { stagger: 0.09, s0: 1.4, blur: 10, outDur: 0.12 });
+  for (const h of [s.h1, s.h2]) { h.b.style.display = 'none'; for (const L of [h.n, h.r]) L.line.style.display = 'none'; } // hosts have their own chapter now
+} });
+
+// =====================================================================================================
+// 3b · HOSTS 12–16 — the two trainers get their own stage: a light line splits the frame, the names stack in big type (as on the poster),
+// HUD rings turn behind each name, the roles draw in under a yellow rule, a light sweep crosses both names; the × links them
+SC.push({ id: 'hosts', a: CH.hosts - 0.05, b: CH.flip + 0.25, z: 5, init(root) {
+  const { cam } = rig(root, 1600);
+  const grp = obj(cam, 10, 10, {});
+  const ringsOf = (x) => [0, 1, 2].map((k) => { const d = 560 - k * 110; return obj(grp, d, d, { left: px(x - d / 2), top: px(30 - d / 2), borderRadius: '50%', border: `${k === 1 ? 3 : 2}px solid transparent`, borderTopColor: k === 1 ? C.yellow : C.cyan, borderLeftColor: k === 2 ? C.cyan : 'transparent', opacity: '0.55' }); });
+  const rL = ringsOf(-470), rR = ringsOf(470);
+  const xg = extrude(grp, '×', { size: 220, layers: 12, step: 4, front: ['#FFF3A8', '#FFD21F'], side: '#E8A800', sideDark: '#7A4A00', glow: 'rgba(255,210,31,0.7)' });
+  const line = div(root, { left: px(960 - 3), top: px(600 - 300), width: '6px', height: '600px', background: `linear-gradient(180deg, rgba(79,216,255,0), ${C.cyan} 30%, #FFFFFF 50%, ${C.cyan} 70%, rgba(79,216,255,0))`, boxShadow: '0 0 30px rgba(79,216,255,0.9)', zIndex: '7', transformOrigin: '50% 50%' });
+  const host = (first, last, role, cx) => {
+    const a = words(root, first, { size: 150, weight: 900, font: AR, dir: 'ltr', cx, cy: 440, width: 800, lh: 1.0, z: 9, shadow: '0 0 40px rgba(30,107,255,0.6)' });
+    const b = words(root, last, { size: 150, weight: 900, font: AR, dir: 'ltr', cx, cy: 595, width: 800, lh: 1.0, z: 9, shadow: '0 0 40px rgba(30,107,255,0.6)' });
+    const rule = div(root, { left: px(cx - 300), top: '705px', width: '600px', height: '6px', borderRadius: '3px', background: C.yellow, boxShadow: '0 0 20px rgba(255,210,31,0.7)', zIndex: '9', transformOrigin: '50% 50%' });
+    const r = words(root, role, { size: 52, weight: 700, font: AR, dir: 'ltr', cx, cy: 772, width: 800, color: C.cyan, z: 9 });
+    return { a, b, rule, r, cx };
+  };
+  const h1 = host('Ayman', 'Essam', 'RBA, PHRi', 480), h2 = host('Mohamed', 'Fawzy', 'AI Automation | Lecturer', 1440);
+  const sweep = div(root, { left: '0', top: '310px', width: '260px', height: '420px', background: 'linear-gradient(100deg, rgba(255,255,255,0), rgba(255,255,255,0.55), rgba(255,255,255,0))', mixBlendMode: 'overlay', zIndex: '10', transform: 'skewX(-18deg)' });
+  S.hosts = { root, cam, grp, rL, rR, xg, line, h1, h2, sweep };
+}, render(t) {
+  const s = S.hosts, u = t - CH.hosts, inn = sm(CH.hosts - 0.05, CH.hosts + 0.15, t), out = ioC(ramp(t, CH.flip - 0.2, CH.flip + 0.1));
+  s.root.style.opacity = (inn * (1 - out)).toFixed(3);
+  s.cam.style.transform = `translate3d(0,0,${(lerp(-200, 80, ioC(clamp(u / 4)))).toFixed(1)}px) rotateY(${(lerp(-10, 8, ioC(clamp(u / 4)))).toFixed(2)}deg) rotateX(${(4 * Math.sin(u * 0.8)).toFixed(2)}deg)`;
+  [s.rL, s.rR].forEach((set, j) => set.forEach((r, k) => { const p = clamp(spr(t, CH.hosts + 0.1 + 0.08 * k + 0.25 * j, 0.6, 0.2), 0, 1.1);
+    r.style.transform = `translate3d(0,0,${(-120 - 60 * k).toFixed(0)}px) rotateZ(${((k % 2 ? -1 : 1) * (t * (40 + 25 * k)) + 200 * (1 - p)).toFixed(1)}deg) scale(${(0.5 + 0.5 * p).toFixed(3)})`; r.style.opacity = (0.55 * clamp(p * 2)).toFixed(3); }));
+  const xp = spr(t, EV.line + 0.2, 0.7, 0.3);
+  s.xg.style.transform = T3(0, 40, 40, 0, (1 - clamp(xp)) * 360 + 10 * Math.sin(t * 2), t * 25, clamp(xp, 0, 1.12) * 0.9); s.xg.style.opacity = clamp(xp * 2).toFixed(3);
+  const lp = ioC(ramp(t, EV.line, EV.line + 0.45));
+  s.line.style.transform = `scaleY(${lp.toFixed(3)})`; s.line.style.opacity = (0.4 + 0.6 * lp * (0.85 + 0.15 * Math.sin(t * 9))).toFixed(3);
+  [s.h1, s.h2].forEach((h, j) => {
+    const t0 = j ? EV.host2 : EV.host1;
+    slam(h.a, t, t0, CH.flip - 0.25, { stagger: 0.1, s0: 1.8, blur: 18, dur: 0.42, outDur: 0.2 });
+    slam(h.b, t, t0 + 0.14, CH.flip - 0.25, { stagger: 0.1, s0: 1.8, blur: 18, dur: 0.42, outDur: 0.2 });
+    const rp = ioC(ramp(t, t0 + 0.35, t0 + 0.75)); h.rule.style.transform = `scaleX(${rp.toFixed(3)})`; h.rule.style.opacity = (rp * (1 - out)).toFixed(3);
+    slam(h.r, t, Math.max(t0 + 0.5, EV.roles - (j ? 0 : 0.25)), CH.flip - 0.25, { stagger: 0.08, s0: 1.3, blur: 10, dur: 0.38, outDur: 0.2 });
+  });
+  const sw = ramp(t, EV.roles + 0.3, EV.roles + 1.3); s.sweep.style.display = sw > 0 && sw < 1 ? 'block' : 'none'; s.sweep.style.left = px(lerp(-300, 1950, ioC(sw)));
 } });
 
 // =====================================================================================================
@@ -265,7 +304,7 @@ SC.push({ id: 'flip', a: CH.flip - 0.2, b: CH.ring + 0.25, z: 6, init(root) {
   const frame = obj(cam, 1640, 760, { transform: 'translate3d(0,40px,0)' });
   const L0 = div(frame, { left: '0', top: '0', width: '820px', height: '760px', background: 'linear-gradient(160deg, #F4EBD9, #D8CBAE)', borderRadius: '30px 0 0 30px', boxShadow: 'inset 0 0 80px rgba(120,90,40,0.25)' });
   const R0 = div(frame, { left: '820px', top: '0', width: '820px', height: '760px', background: 'linear-gradient(160deg, #1C58E8, #0A2A8C 70%, #071B66)', borderRadius: '0 30px 30px 0', boxShadow: '0 0 80px rgba(79,216,255,0.35), inset 0 0 60px rgba(79,216,255,0.25)' });
-  void L0; void R0;
+  L0.style.display = 'none'; R0.style.display = 'none'; // no empty base card: between areas only the turning cards are seen
   const hdr = ['Traditional HR', 'AI-Powered HR'].map((txt, i) => { const L = words(root, txt, { size: 52, weight: 900, font: AR, dir: 'ltr', cy: 118, cx: i ? 1330 : 590, width: 700, color: i ? C.cyan : C.warm, z: 9 }); return L; });
   const sub = ['Keep things running', 'Work Smarter. Create More Impact.'].map((txt, i) => words(root, txt, { size: 30, weight: 500, font: AR, dir: 'ltr', cy: 168, cx: i ? 1330 : 590, width: 760, color: i ? C.ice : C.grey, z: 9 }));
   const chev = el('svg', { viewBox: '0 0 120 60', style: { position: 'absolute', left: px(960 - 60), top: px(60), width: '120px', height: '60px', overflow: 'visible', zIndex: '9' } }, root);
@@ -274,6 +313,8 @@ SC.push({ id: 'flip', a: CH.flip - 0.2, b: CH.ring + 0.25, z: 6, init(root) {
   const fit = (txt, maxW, base, k = 0.56) => Math.min(base, Math.floor(maxW / (Math.max(1, [...txt].length) * k)));
   const cards = AREAS.map((a, i) => {
     const c = div(frame, { left: '0', top: '0', width: '1640px', height: '760px', transformStyle: 'preserve-3d', transformOrigin: '50% 100%' });
+    div(c, { left: '0', top: '0', width: '820px', height: '760px', background: 'linear-gradient(160deg, #F4EBD9, #D8CBAE)', borderRadius: '30px 0 0 30px', boxShadow: 'inset 0 0 80px rgba(120,90,40,0.25)' });
+    div(c, { left: '820px', top: '0', width: '820px', height: '760px', background: 'linear-gradient(160deg, #1C58E8, #0A2A8C 70%, #071B66)', borderRadius: '0 30px 30px 0', boxShadow: '0 0 80px rgba(79,216,255,0.35), inset 0 0 60px rgba(79,216,255,0.25)' });
     div(c, { left: '0', top: '0', width: '1640px', height: '206px', background: 'linear-gradient(90deg, rgba(5,16,60,0.94), rgba(10,44,140,0.94))', borderRadius: '30px 30px 0 0', borderBottom: `4px solid ${C.yellow}` });
     const name = words(c, a.en, { size: fit(a.en, 1500, 76, 0.6), weight: 900, font: AR, dir: 'ltr', cy: 78, cx: 820, width: 1600, color: C.white, z: 10 });
     const nameAr = words(c, a.ar, { size: 48, weight: 700, cy: 152, cx: 820, width: 1600, color: C.yellow, z: 10 });
@@ -289,7 +330,7 @@ SC.push({ id: 'flip', a: CH.flip - 0.2, b: CH.ring + 0.25, z: 6, init(root) {
   });
   S.flip = { root, cam, frame, hdr, sub, chev, cp, dots, cards, L0, R0 };
 }, render(t) {
-  const s = S.flip, u = t - CH.flip, idx = clamp(Math.floor(u / FLIP), 0, AREAS.length - 1);
+  const s = S.flip, u = t - EV.flip0, idx = clamp(Math.floor(u / FLIP), 0, AREAS.length - 1);
   const inn = ioC(ramp(t, CH.flip - 0.18, CH.flip + 0.16)), out = ioC(ramp(t, CH.ring - 0.14, CH.ring + 0.14));
   s.root.style.opacity = (inn * (1 - out)).toFixed(3);
   s.cam.style.transform = `translate3d(${(-30 + 60 * ramp(t, CH.flip, CH.ring)).toFixed(1)}px,0,${(lerp(-300, 120, ioC(ramp(t, CH.flip - 0.15, CH.ring)))).toFixed(1)}px) rotateY(${(-6 + 12 * ramp(t, CH.flip, CH.ring)).toFixed(2)}deg)`;
@@ -298,18 +339,18 @@ SC.push({ id: 'flip', a: CH.flip - 0.2, b: CH.ring + 0.25, z: 6, init(root) {
   s.dots.forEach((d, i) => { d.style.background = i <= idx && t >= CH.flip ? C.yellow : 'rgba(255,255,255,0.25)'; d.style.opacity = (inn * (1 - out)).toFixed(3); d.style.transform = i === idx ? `scale(${(1.4 + 0.3 * Math.sin(t * 10)).toFixed(2)})` : 'scale(1)'; });
   for (const L of [...s.hdr, ...s.sub]) { L.line.style.display = 'flex'; L.words.forEach((w) => { w.style.opacity = (inn * (1 - out)).toFixed(3); }); }
   s.cards.forEach((k, i) => {
-    const t0 = CH.flip + i * FLIP, t1 = t0 + FLIP, live = t >= t0 - 0.02 && t < t1 + 0.02;
+    const t0 = EV.flip0 + i * FLIP, t1 = t0 + FLIP, live = t >= (i ? t0 - 0.32 : CH.flip - 0.2) && t < t1 + 0.02;
     k.c.style.display = live ? 'block' : 'none';
     if (!live) { for (const L of [k.name, k.nameAr, k.ot, k.otA, k.nt, k.ntA]) if (L) L.line.style.display = 'none'; return; }
-    const a = spr(t, t0, 0.42, 0.18), b = ioC(ramp(t, t1 - 0.12, t1 + 0.02)), rx = lerp(88, 0, clamp(a, 0, 1.05)) - (i < AREAS.length - 1 ? 88 * b : 0);
+    const a = i === 0 ? spr(t, CH.flip, 0.55, 0.18) : spr(t, t0 - 0.3, 0.5, 0.18), b = ioC(ramp(t, t1 - 0.3, t1)), rx = lerp(88, 0, clamp(a, 0, 1.05)) - (i < AREAS.length - 1 ? 92 * b : 0);
     k.c.style.transform = `rotateX(${rx.toFixed(2)}deg)`; k.c.style.opacity = (1 - 0.0 * b).toFixed(3);
-    const vis = clamp((a - 0.3) * 3) * (1 - (i < AREAS.length - 1 ? b : 0));
+    const vis = 1;                                                    // never a blank card: the turn itself hides and shows the text
     for (const L of [k.name, k.nameAr, k.ot, k.otA, k.nt, k.ntA]) if (L) { L.line.style.display = 'flex'; L.words.forEach((w) => { w.style.opacity = vis.toFixed(3); w.style.transform = 'none'; }); }
     // the old icon turns into the new one across the beat
-    const m = ioC(ramp(t, t0 + 0.28, t0 + 0.62));
+    const m = ioC(ramp(t, t0 + 0.45, t0 + 0.85));                       // ~0.7 s of the old way alone, then 1.6 s with the AI way
     k.oIc.style.opacity = (1 - 0.55 * m).toFixed(3); k.oIc.style.transform = `scale(${(1 - 0.12 * m).toFixed(3)})`;
-    k.nIc.style.opacity = m.toFixed(3); k.nIc.style.transform = `scale(${(0.6 + 0.4 * clamp(spr(t, t0 + 0.28, 0.45, 0.3), 0, 1.2)).toFixed(3)}) rotate(${((1 - m) * -30).toFixed(1)}deg)`;
-    k.badge.style.opacity = m.toFixed(3); k.badge.style.transform = `scale(${clamp(spr(t, t0 + 0.4, 0.4, 0.4), 0, 1.3).toFixed(3)})`;
+    k.nIc.style.opacity = m.toFixed(3); k.nIc.style.transform = `scale(${(0.6 + 0.4 * clamp(spr(t, t0 + 0.45, 0.45, 0.3), 0, 1.2)).toFixed(3)}) rotate(${((1 - m) * -30).toFixed(1)}deg)`;
+    k.badge.style.opacity = m.toFixed(3); k.badge.style.transform = `scale(${clamp(spr(t, t0 + 0.6, 0.4, 0.4), 0, 1.3).toFixed(3)})`;
     k.nt.line.style.opacity = m.toFixed(3); k.ntA.line.style.opacity = m.toFixed(3);
   });
 } });
@@ -396,7 +437,7 @@ SC.push({ id: 'mega', a: CH.mega - 0.1, b: CH.end + 0.2, z: 8, init(root) {
 
 // =====================================================================================================
 // 7 · END 21.67–25 — the yellow slab smashes in: WORKSHOP / COMING SOON, the × sits between AI and HR, the call to action
-SC.push({ id: 'end', a: CH.end - 0.05, b: 25.1, z: 9, init(root) {
+SC.push({ id: 'end', a: CH.end - 0.05, b: DUR + 0.1, z: 9, init(root) {
   const { cam } = rig(root, 1600);
   const bg = full(root, { background: 'radial-gradient(ellipse 70% 70% at 50% 46%, #1B4BCB 0%, #0A2A8C 45%, #050F3E 100%)', zIndex: '0' }); root.insertBefore(bg, root.firstChild);
   const logo = obj(cam, 10, 10, {});
@@ -410,8 +451,9 @@ SC.push({ id: 'end', a: CH.end - 0.05, b: 25.1, z: 9, init(root) {
   const ctaL = words(root, 'اكتب في الكومنت', { size: 56, weight: 900, color: '#0A1A52', cx: 1270, cy: 880, width: 520, z: 10 });
   const ctaE = words(root, "I'M INTERESTED", { size: 56, weight: 900, color: '#1E4FD8', cx: 690, cy: 880, width: 640, z: 10, dir: 'ltr' });
   div(root, { left: px(960 - 3), top: px(836), width: '6px', height: '88px', background: '#0A1A52', zIndex: '10', opacity: '0.35' });
+  const names = words(root, 'Ayman Essam × Mohamed Fawzy', { size: 40, weight: 800, font: AR, dir: 'ltr', cy: 980, width: 1400, color: '#FFFFFF', accent: { 2: C.yellow }, z: 10, shadow: '0 0 24px rgba(0,0,0,0.6)' });
   const spark = el('canvas', { width: W, height: H, style: { position: 'absolute', left: '0', top: '0', width: px(W), height: px(H), zIndex: '12', pointerEvents: 'none' } }, root);
-  S.end = { root, cam, bg, logo, A, X, R, slab, wk, cs, cta, ctaL, ctaE, sg: spark.getContext('2d') };
+  S.end = { root, cam, bg, logo, A, X, R, slab, wk, cs, cta, ctaL, ctaE, names, sg: spark.getContext('2d') };
 }, render(t) {
   const s = S.end, u = t - CH.end;
   s.bg.style.opacity = sm(CH.end - 0.04, CH.end + 0.02, t).toFixed(3);
@@ -428,17 +470,18 @@ SC.push({ id: 'end', a: CH.end - 0.05, b: 25.1, z: 9, init(root) {
   const cp = spr(t, EV.cta, 0.55, 0.25);
   s.cta.style.opacity = clamp(cp * 2).toFixed(3); s.cta.style.transform = `scale(${lerp(0.6, 1, clamp(cp, 0, 1.08)).toFixed(3)})`; s.cta.style.display = t >= EV.cta - 0.02 ? 'block' : 'none';
   slam(s.ctaL, t, EV.cta + 0.1, 999, { stagger: 0.06, s0: 1.3, blur: 10, dur: 0.36 }); slam(s.ctaE, t, EV.cta + 0.2, 999, { stagger: 0.06, s0: 1.3, blur: 10, dur: 0.36 });
+  slam(s.names, t, EV.names, 999, { stagger: 0.12, s0: 1.4, blur: 10, dur: 0.4 });
   const g = s.sg; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H);
   for (let i = 0; i < 120; i++) { const tau = u - 0.02 - hash(i, 1) * 0.05; if (tau < 0 || tau > 1.6) continue; const a = hash(i, 2) * 6.283, v = 300 + 1500 * hash(i, 3), d = v * (1 - Math.exp(-tau * 3.2)) / 3.2, x = 960 + Math.cos(a) * d, y = 560 + Math.sin(a) * d * 0.7 + 260 * tau * tau;
     g.globalAlpha = Math.max(0, 1 - tau / 1.6); g.fillStyle = i % 3 ? C.yellow : C.ice; const r = 3 + 6 * hash(i, 4); g.fillRect(x - r / 2, y - r / 2, r, r); }
   g.globalAlpha = 1;
   // slow breathing so the final hold is never frozen
-  s.root.style.transform = `scale(${(1 + 0.012 * Math.sin(u * 0.9) + 0.02 * ramp(t, CH.end + 1.2, 25)).toFixed(4)})`;
+  s.root.style.transform = `scale(${(1 + 0.012 * Math.sin(u * 0.9) + 0.02 * ramp(t, CH.end + 1.2, DUR)).toFixed(4)})`;
 } });
 
 // =====================================================================================================
 export default {
-  duration: 25, fps: 60,
+  duration: DUR, fps: 30,
   async init(st, { W: w, H: h }) {
     W = w; H = h; st.style.background = C.ink;
     SH = full(st, { overflow: 'hidden', zIndex: '1' });

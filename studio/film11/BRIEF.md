@@ -1,3 +1,5 @@
+> **Owner revision v2 (2026-10-04):** "the client can't read anything" → 44 s at 120 BPM (everything ~20% slower), six areas 2.5 s each and never blank, a 4 s hosts chapter (12–16) plus the names under the CTA, new catchy western dance-pop score. 30 fps. The clock table below is v1; current times are in `timing.js`.
+
 # BRIEF — Film 11 «AI × HR» · workshop showreel · 25 s · ONE delivery: 1920×1080 @ 60 fps
 
 Owner request 2026-10-04: a 25 s Arabic motion-graphics video "like the strongest showreel in a world-class motion designer's portfolio" for the new course/workshop

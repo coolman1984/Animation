@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "duration": 25,
+  "duration": 44,
   "fps": 30,
   "audience": "HR professionals and managers in the Arab world scrolling social media, who see a new workshop announcement",
   "promise": "AI × HR is a new hands-on workshop that moves HR from traditional practice to AI-powered practice, with practical tools and cases",
@@ -22,7 +22,7 @@
   ],
   "sound": {
     "mode": "original",
-    "bpm": 144,
+    "bpm": 120,
     "note": "Synthesised in film11/score.mjs from the shared timing.js; no samples"
   },
   "creative": {
@@ -55,25 +55,25 @@
       "slab smash"
     ],
     "motion": "springs, extruded 3D type, flips, particle sparks, speed lines",
-    "sound": "144 BPM energetic electronic groove with a returning hook, rising ratchets, impacts on every cut",
+    "sound": "120 BPM western dance-pop: four-on-the-floor, offbeat hats and octave bass, one syncopated 3-3-2 hook in every chapter, snare build into the biggest drop",
     "pacing": "one idea per two bars, rhythm escalating to the smash at 21.7 s",
     "payoff": "WORKSHOP COMING SOON with the AI×HR lock-up and the call to comment",
     "cta": "I'M INTERESTED — اكتب في الكومنت",
     "styleFrames": {
-      "hook": 1.0,
-      "proof": 11.5,
-      "payoff": 24.0
+      "hook": 1.5,
+      "proof": 20.0,
+      "payoff": 43.0
     },
     "proof": {
-      "start": 10.0,
-      "end": 15.0
+      "start": 16,
+      "end": 28
     }
   },
   "shots": [
     {
       "id": "storm",
       "start": 0,
-      "end": 3.333,
+      "end": 4,
       "purpose": "hook: the paperwork storm of old HR, three slammed words",
       "assetIds": [],
       "craft": {
@@ -91,13 +91,13 @@
       "copy": {
         "text": "الـ HR بيتغير بسرعة…",
         "start": 0,
-        "end": 3.333
+        "end": 4
       }
     },
     {
       "id": "brain",
-      "start": 3.333,
-      "end": 6.667,
+      "start": 4,
+      "end": 8,
       "purpose": "the idea: AI as extruded 3D type, «مش بقى مجرد Tool» sliced in half, then the implosion",
       "assetIds": [],
       "craft": {
@@ -115,14 +115,14 @@
       },
       "copy": {
         "text": "والـ AI مش بقى مجرد Tool",
-        "start": 3.333,
-        "end": 6.417
+        "start": 4,
+        "end": 8
       }
     },
     {
       "id": "title",
-      "start": 6.667,
-      "end": 10.0,
+      "start": 8,
+      "end": 12,
       "purpose": "the title: AI × HR, subtitle, the two hosts, the pill «مشروع جديد .. ورشة عمل جديدة»",
       "assetIds": [],
       "craft": {
@@ -140,13 +140,37 @@
       "copy": {
         "text": "مشروع جديد .. ورشة عمل جديدة",
         "start": 9.167,
-        "end": 10.0
+        "end": 12
+      }
+    },
+    {
+      "id": "hosts",
+      "start": 12,
+      "end": 16,
+      "purpose": "the two trainers on their own stage: names stacked big, roles, HUD rings, the × between them",
+      "assetIds": [],
+      "craft": {
+        "scale": "hero type",
+        "camera": "slow dolly and turn",
+        "focal": "the names",
+        "transition": "light line split",
+        "depthLayers": 4,
+        "primaryMotions": [
+          "kinetic type",
+          "rings"
+        ],
+        "audioCue": "glide on the line, impact per name, bells answering the hook"
+      },
+      "copy": {
+        "text": "Ayman Essam · Mohamed Fawzy",
+        "start": 12.25,
+        "end": 16
       }
     },
     {
       "id": "flip",
-      "start": 10.0,
-      "end": 15.0,
+      "start": 16,
+      "end": 32,
       "purpose": "proof of change: six HR areas flip from Traditional HR to AI-Powered HR (poster copy only)",
       "assetIds": [],
       "craft": {
@@ -164,8 +188,8 @@
     },
     {
       "id": "ring",
-      "start": 15.0,
-      "end": 18.333,
+      "start": 32,
+      "end": 36,
       "purpose": "what the workshop contains: six ingredients on a rotating 3D ring",
       "assetIds": [],
       "craft": {
@@ -182,14 +206,14 @@
       },
       "copy": {
         "text": "مش مجرد كلام نظري… تطبيقات وأدوات وحالات عملية للـ HR.",
-        "start": 15.417,
-        "end": 18.333
+        "start": 32,
+        "end": 36
       }
     },
     {
       "id": "mega",
-      "start": 18.333,
-      "end": 21.667,
+      "start": 36,
+      "end": 40,
       "purpose": "the claim: Bigger Than a Training… then three wipes (smart assistant, second brain, report automation)",
       "assetIds": [],
       "craft": {
@@ -206,14 +230,14 @@
       },
       "copy": {
         "text": "Bigger Than a Training… مساعد ذكي · عقل ثاني · أتمتة التقارير",
-        "start": 18.333,
-        "end": 21.667
+        "start": 36,
+        "end": 40
       }
     },
     {
       "id": "end",
-      "start": 21.667,
-      "end": 25,
+      "start": 40,
+      "end": 44,
       "purpose": "payoff and action: WORKSHOP COMING SOON, AI×HR lock-up, CTA pill",
       "assetIds": [],
       "craft": {
@@ -231,45 +255,51 @@
       },
       "copy": {
         "text": "WORKSHOP COMING SOON · I'M INTERESTED · اكتب في الكومنت",
-        "start": 22.5,
-        "end": 25
+        "start": 40,
+        "end": 44
       }
     }
   ],
   "cues": [
     {
       "id": "flash",
-      "t": 3.333,
+      "t": 4,
       "kind": "reveal",
       "shot": "brain"
     },
     {
       "id": "title",
-      "t": 6.667,
+      "t": 8,
       "kind": "reveal",
       "shot": "title"
     },
     {
+      "id": "hosts",
+      "t": 12,
+      "kind": "reveal",
+      "shot": "hosts"
+    },
+    {
       "id": "flip",
-      "t": 10.0,
+      "t": 16,
       "kind": "reveal",
       "shot": "flip"
     },
     {
       "id": "ring",
-      "t": 15.0,
+      "t": 32,
       "kind": "reveal",
       "shot": "ring"
     },
     {
       "id": "mega",
-      "t": 18.333,
+      "t": 36,
       "kind": "reveal",
       "shot": "mega"
     },
     {
       "id": "end",
-      "t": 21.667,
+      "t": 40,
       "kind": "reveal",
       "shot": "end"
     }
