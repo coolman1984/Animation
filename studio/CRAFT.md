@@ -95,3 +95,7 @@ No required lesson quota or automatic reuse of a prior visual style.
 1. One analytic surface can hold a reel together across different materials, twist counts and a 12-item generative field; hierarchy changes more than ornament.
 2. Font line boxes, not visible glyph height, set stacked-line spacing: 215 px at 0.21-frame intervals overlapped; 185 px at 0.25 intervals passed dense read-back.
 3. Clear outgoing text before a 0.4-second wipe; carry the sculpture through the boundary, then let the new headline land. A pointer click and its target morph share the same spec beat.
+
+
+## Production-path review (2026-10-04)
+A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs the outgoing scene beneath it until coverage completes. Morph retargeting starts from the actual current geometry and color and remains independent of render history. A printed failed gate must block delivery. Code regressions establish these contracts; existing exports were not re-rendered. Evidence: CODE_REVIEW_2026-10-04.md.

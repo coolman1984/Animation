@@ -1,0 +1,29 @@
+# Code review and fixes — 2026-10-04
+
+Reviewed the integrated Studio Engine command, clock, player/modules, score, analysis, asset library and gates, plus shared CDP, worker planning, cache and delivery contracts. Changes are on `codex/innovation-showreel`; the original checkout's unfinished edits and media were preserved. This is a focused review of the active production path, not certification of every historical film or optional integration.
+
+| Problem | Fix and evidence |
+|---|---|
+| Text/stills issues and missed synchronization were printed without failing the command | Both text passes block rendering; missed sync or motion blocks delivery. Shared gate policy has regression checks for each failure class. |
+| Missing or undecodable video could appear to pass motion analysis | FFmpeg errors/nonzero status now fail explicitly; diagnostic output is bounded. Verified against a nonexistent video with real FFmpeg. |
+| Successful child exit could select a stale take; string sorting misordered take100 after take99 | Snapshot takes before the build, select a newly created directory numerically, require final measurement with passing gates and one nonempty share MP4. Regression fixtures cover missing, empty and failed outputs. |
+| Invalid CLI inputs could traverse film directories or silently choose an unintended stage | Film names are single safe folder names; flags, stages and FPS are validated. Child-process startup errors now resolve as failure. |
+| Invalid BPM, beats, duration, missing text or malformed arrays crashed or silently corrupted the clock | Clock invariants and structured lint diagnostics precede analysis. Duration must match scene beats; scene IDs are unique. Additional path, cursor, ribbon and numeric checks reject malformed inputs. |
+| Silent SFX-only films wrote NaN WAV samples | Skip limiting/normalization division at zero peak. All samples of all three regression WAVs are verified finite zero. |
+| Onset analysis dropped the first window, including a hit at sample zero | Analyze the first window and boundary peaks; reject zero/nonfinite hops before allocation. |
+| Fresh asset libraries failed to copy; asset IDs/cache filenames could escape the directory | Create the directory first, constrain names, resolve supplied paths from the film folder, reject missing supplied files and duplicate aliases. Test libraries are isolated temporary directories. |
+| Supplied assets reused outdated bytes; empty checks rewrote the registry | Hash supplied contents and cached copies, refresh changes, preserve generated reuse, write the registry atomically only when changed. |
+| Narration reused an unrelated transcript after the voice file changed; Windows used the python3 stub | Content-based transcript cache, absolute live.py path, platform PYTHON, validated duration probe and automatic language detection. Process responses were stubbed; real Whisper/models were not run. |
+| sayAt could match a word in a later scene | Limit matches to the current scene's end and clamp rounded beats. |
+| Intermediate holds incorrectly exempted the end of the entire film | Derive each hold from its own scene end; clamp short-film poster time to zero. |
+| Hard cuts exposed the underlying world on their first frame; wipes lost their backing scene | Cut entry is fully opaque; incoming fades/wipes keep the previous scene until coverage completes. Boundary presentation is tested directly; exported pixels were not regenerated. |
+| Shape morphs reset unspecified geometry, snapped on overlapping retargets and briefly switched to hardcoded blue | Inherit geometry, compute each retarget's actual starting state analytically, interpolate current RGB color. DOM-stub regression tests include seeking backwards. |
+| Nested format overrides discarded camera settings | Recursively merge overrides, filter format-only elements, preserve the source spec. |
+| Supplied media were absent from production dependencies and licensed music lacked its asset reference | Forward media paths, real rights and music license scope into the plan and cache inputs; validate before capture. Missing permissions remain explicit validation errors. |
+| Detected music phase was logged but ignored | Trim a late first beat or pad an early first beat to align it to visual beat zero. `audio.musicOffset` explicitly overrides the detected phase. Filter construction is tested; supplied-track listening is unverified. |
+| STUDIO_WORKERS bypassed memory/request/CPU caps | Treat it as a bounded request, ignore malformed values, validate planner inputs. Fix the existing machine-dependent test expectation to honor the CPU cap. |
+| CDP handshake and endpoint fetches could hang without a deadline; failed page setup leaked private browsers | Bound HTTP/WebSocket startup, validate timeout settings, close failed sockets and clean up private startup failures. Fake socket verifies timeout and closure; real browser startup failure was not injected. |
+
+Verification: seven initial regression tests reproduced their failures before fixes. Final focused run: **37 passed, 2 skipped**, including 17 new review tests, engine/ribbon tests, platform, options/cache and pipeline tests. The skipped fixtures require historical audio and opt-in full rendering. Documentation checks: **5 passed**. Showreel `--stage=check` passes. Syntax and whitespace checks pass. No full video build or slow suite ran.
+
+Limits: sync still checks the documented hard-hit event subset; no eligible events is reported as **UNCHECKED**, not audible alignment proof. Real narration transcription, supplied-track listening, Chrome failure injection and a newly exported film remain unverified. Existing take02 MP4s predate these source fixes and are unchanged. No new media/models/packages were installed; no public push or main-branch mutation was performed.

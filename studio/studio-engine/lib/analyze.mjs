@@ -1,7 +1,11 @@
 // Studio Engine — audio analysis (Node, ffmpeg only): decode, tempo + beat phase, onsets; voice words via tools/live.py.
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync, mkdirSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, readFileSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { PYTHON } from '../../lib/platform.mjs';
+import { fingerprint, cacheHit, saveCache } from '../../lib/cache.mjs';
+const LIVE = fileURLToPath(new URL('../../tools/live.py', import.meta.url));
 
 export function decode(file, { sr = 48000, mono = false, af = null } = {}) {
   const r = spawnSync('ffmpeg', ['-v', 'error', '-i', file, ...(af ? ['-af', af] : []), '-f', 'f32le', '-acodec', 'pcm_f32le', '-ac', mono ? '1' : '2', '-ar', String(sr), '-'], { maxBuffer: 1 << 30 });
@@ -14,16 +18,18 @@ export function decode(file, { sr = 48000, mono = false, af = null } = {}) {
 }
 // onset-strength envelope (positive energy flux) at hop seconds
 export function onsetEnvelope(x, sr, hop = 0.01) {
-  const H = Math.round(sr * hop), n = Math.floor(x.length / H), e = new Float32Array(n), o = new Float32Array(n);
+  const H = Math.round(sr * hop);
+  if (!Number.isFinite(sr) || sr <= 0 || !Number.isFinite(hop) || hop <= 0 || H < 1) throw new Error('onset sample rate and hop must be positive');
+  const n = Math.floor(x.length / H), e = new Float32Array(n), o = new Float32Array(n);
   let prev = 0; for (let i = 0; i < n; i++) { let s = 0; for (let j = 0; j < H; j++) { const v = x[i * H + j]; s += v * v; } e[i] = Math.log1p(1000 * s / H); }
-  for (let i = 1; i < n; i++) { o[i] = Math.max(0, e[i] - prev); prev = e[i] * 0.5 + prev * 0.5; }
+  for (let i = 0; i < n; i++) { o[i] = Math.max(0, e[i] - prev); prev = e[i] * 0.5 + prev * 0.5; }
   return o;
 }
 export function onsets(file, { thresh = 0.6, minGap = 0.06 } = {}) {
   const { mono, sr } = decode(file, { sr: 24000, mono: true }), o = onsetEnvelope(mono, sr), hop = 0.01, out = [];
   // adaptive threshold: a peak counts when it clears the local (±0.5 s) mean by `thresh` × the local spread
   const W = 50;
-  for (let i = 1; i < o.length - 1; i++) { if (!(o[i] >= o[i - 1] && o[i] >= o[i + 1])) continue;
+  for (let i = 0; i < o.length; i++) { if (!(o[i] >= (o[i - 1] ?? 0) && o[i] >= (o[i + 1] ?? 0))) continue;
     let s = 0, s2 = 0, n = 0; for (let j = Math.max(0, i - W); j < Math.min(o.length, i + W); j++) { s += o[j]; s2 += o[j] * o[j]; n++; }
     const m = s / n, sd = Math.sqrt(Math.max(0, s2 / n - m * m));
     if (o[i] > m + thresh * 2 * sd && o[i] > 0.02 && (!out.length || i * hop - out[out.length - 1] > minGap)) out.push(+(i * hop).toFixed(3)); }
@@ -48,18 +54,22 @@ export function tempo(file) {
   return { bpm: +bpm.toFixed(2), offset: +(off > period - 0.05 ? off - period : off).toFixed(3), duration: +(mono.length / sr).toFixed(3) };   // a phase just before the period is beat 0
 }
 // narration → word timings using the studio's offline Whisper (tools/live.py); returns null when the tool is missing
-export function voiceWords(file, packDir) {
+export function voiceWords(file, packDir, { run = spawnSync } = {}) {
   mkdirSync(packDir, { recursive: true });
   const tr = join(packDir, 'transcript.json');
-  if (existsSync(tr)) return JSON.parse(readFileSync(tr, 'utf8'));
+  const manifest = join(packDir, 'transcript-cache.json'), key = fingerprint(dirname(file), [file, LIVE], { python: PYTHON, version: 1 });
+  if (cacheHit(manifest, key, [tr])) return JSON.parse(readFileSync(tr, 'utf8'));
+  rmSync(tr, { force: true });
   // audio-only pack for tools/live.py (its ingest expects video): 16 kHz mono + a minimal pack.json, then VAD + Whisper
-  const a = spawnSync('ffmpeg', ['-v', 'error', '-y', '-i', file, '-vn', '-ac', '1', '-ar', '16000', join(packDir, 'audio16k.wav')]);
+  const a = run('ffmpeg', ['-v', 'error', '-y', '-i', file, '-vn', '-ac', '1', '-ar', '16000', join(packDir, 'audio16k.wav')]);
   if (a.status !== 0) return { error: 'cannot decode the voice file' };
-  const dur = +(spawnSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', file], { encoding: 'utf8' }).stdout.trim() || 0);
+  const probe = run('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', file], { encoding: 'utf8' }), dur = Number(probe.stdout?.trim());
+  if (probe.error || probe.status !== 0 || !Number.isFinite(dur) || dur <= 0) return { error: 'cannot probe the voice duration' };
   writeFileSync(join(packDir, 'pack.json'), JSON.stringify({ source: file, ss: 0, fps: 30, frames: Math.round(dur * 30), w: 0, h: 0, duration: dur, audio: true }));
   for (const step of [['vad', packDir], ['transcribe', packDir]]) {
-    const r = spawnSync('python3', ['tools/live.py', ...step], { encoding: 'utf8' });
+    const r = run(PYTHON, [LIVE, ...step, ...(step[0] === 'transcribe' ? ['--lang=auto'] : [])], { encoding: 'utf8' });
     if (r.status !== 0) return { error: `live.py ${step[0]} failed: ${(r.stderr || '').trim().split('\n').slice(-2).join(' ')}` };
   }
-  return existsSync(tr) ? JSON.parse(readFileSync(tr, 'utf8')) : { error: 'no transcript.json produced' };
+  if (!existsSync(tr)) return { error: 'no transcript.json produced' };
+  const words = JSON.parse(readFileSync(tr, 'utf8')); saveCache(manifest, key, [tr]); return words;
 }

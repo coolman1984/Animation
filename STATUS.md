@@ -2,7 +2,13 @@
 
 Updated: 2026-10-04.
 
-**Latest scope: DONE — FORM / FUNCTION creative engineering showreel (owner 2026-10-04: understand expertly, sync main/latest branch, GO ALL OUT).**
+**Latest scope: DONE — deep production-path code review and fixes (owner 2026-10-04).**
+- Fixed gate propagation/stale delivery, malformed clocks/specs, silent NaN audio, asset traversal/cache handling, narration caching/Windows launcher, scene cuts/morph continuity, format overrides, music phase/media metadata, bounded workers and browser startup deadlines.
+- Evidence: focused checks 37 passed/2 optional fixtures skipped; docs 5 passed; showreel check-only pipeline passes. Seven regression failures reproduced before fixes. Details: `studio/CODE_REVIEW_2026-10-04.md`.
+- Existing take02 exports predate these source fixes; no new full render. Real Whisper, listening and browser failure injection remain unverified. Work stays on the isolated integrated branch; original user edits/media preserved.
+
+
+**Previous scope: DONE — FORM / FUNCTION creative engineering showreel (owner 2026-10-04: understand expertly, sync main/latest branch, GO ALL OUT).**
 - Isolated branch `codex/innovation-showreel` contains `origin/main` 28099b7 and latest studio branch 431dbc2. Original dirty checkout preserved; no push/publication.
 - Film source: `studio/studio-engine/films/form-function/` (spec, brand, BRIEF, CASE_STUDY, LEDGER). Eight movements, one procedural ribbon, original interface concept and score; 32 seconds landscape.
 - New reusable ribbon and cursor modules; optional geometric wipe and vignette suppression. Windows asset/output discovery fixes; literal-background contrast; creative metadata forwarding; failed builds cannot reuse an earlier take as the delivery.

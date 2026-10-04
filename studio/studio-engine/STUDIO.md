@@ -45,3 +45,9 @@ Morph grammar (shape → pill → card across scenes, SVG icon morph) proven in 
 
 ## FORM / FUNCTION extension (2026-10-04)
 New parametric elements: ribbon (analytic depth-sorted CPU surface; twist/material/field variations) and cursor (beat-timed pointer path/click). `transition: "wipe"` and `vignette: false` opt into clean geometric staging. Spec creative/craft metadata enters the generated plan. Windows uses fileURLToPath and readdirSync; literal scene backgrounds are linted. Failed renders cannot present earlier takes as current. Worked example: films/form-function/spec.json; source and verification in its CASE_STUDY.md and LEDGER.md. Use STUDIO_CDP_URL to attach to production Chrome started by the mandatory launcher.
+
+
+## Validation and delivery changes (2026-10-04)
+`--stage=check` fails on missing assets or malformed inputs. Beats/BPM must be positive finite numbers; explicit duration equals summed scene beats; scene IDs are unique. Text/stills errors stop rendering. Final delivery requires a new numeric take, a passing final measurement and a nonempty share MP4; sync/motion failures stop delivery. No eligible hard-hit events reports UNCHECKED. Historical MP4s are never used to hide a failed current run.
+Supplied file paths resolve from the film folder. Assets carry `rights`; audio uses `musicRights`, `licenseScope`, `voiceRights`. These paths enter cache dependencies. `audio.musicOffset` overrides detected phase in seconds: positive trims the opening, negative pads it. Narration cache invalidates when the source changes and uses automatic language detection through platform PYTHON.
+STUDIO_WORKERS is a bounded request. Browser HTTP and handshake startup have deadlines. Hard cuts are opaque at entry; wipes/fades retain the outgoing scene. Morphs inherit unspecified properties and retarget from their actual current state. Deep format overrides retain nested camera settings. Regression evidence and limits: ../CODE_REVIEW_2026-10-04.md.

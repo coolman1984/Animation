@@ -2,10 +2,21 @@
 // A spec is written in beats; this turns it into seconds and lists every audible/visible event of every element,
 // so picture (shake, flashes) and sound (SFX, drops) can never drift apart.
 export function timeline(spec) {
-  const bpm = spec.bpm || 120, B = 60 / bpm;
+  if (!spec || !Array.isArray(spec.scenes) || !spec.scenes.length) throw new Error('spec.scenes must be a nonempty array');
+  const bpm = spec.bpm ?? 120, B = 60 / bpm;
+  if (!Number.isFinite(bpm) || bpm <= 0) throw new Error('bpm must be a finite positive number');
+  if (spec.fps != null && (!Number.isInteger(spec.fps) || spec.fps <= 0 || spec.fps > 120)) throw new Error('fps must be an integer between 1 and 120');
+  const ids = new Set();
+  for (const s of spec.scenes) {
+    if (!s || !Number.isFinite(s.beats) || s.beats <= 0) throw new Error('scene beats must be a finite positive number');
+    if (typeof s.id !== 'string' || !s.id || ids.has(s.id)) throw new Error('scene ids must be nonempty and unique');
+    ids.add(s.id);
+    if (s.elements != null && (!Array.isArray(s.elements) || s.elements.some((e) => !e || typeof e !== 'object'))) throw new Error(`scene ${s.id}: elements must be an array of objects`);
+  }
   let beat = 0;
   const scenes = spec.scenes.map((s, i) => { const a0 = beat; beat += s.beats; return { ...s, index: i, a0, b0: beat, a: a0 * B, b: beat * B }; });
-  const duration = spec.duration || beat * B;
+  const duration = spec.duration ?? beat * B;
+  if (!Number.isFinite(duration) || duration <= 0 || Math.abs(duration - beat * B) > .001) throw new Error('duration must match the scene beats at the specified bpm');
   return { bpm, B, scenes, duration, beats: beat };
 }
 const at = (e, d = 0) => (e.at ?? d);

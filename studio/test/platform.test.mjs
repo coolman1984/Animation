@@ -14,7 +14,8 @@ test('render workers are sized by memory headroom, never by the request alone', 
   const b = (headroomGB) => ({ headroomGB, freeGB: headroomGB, commitFreeGB: headroomGB });
   assert.equal(plannedWorkers({ requested: 6, w: 1920, h: 1080, gpu: true, budget: b(1.7) }).workers, 1, 'the crash case: 1.7 GB headroom gets one worker, with low:true');
   assert.equal(plannedWorkers({ requested: 6, w: 1920, h: 1080, gpu: true, budget: b(1.7) }).low, true);
-  assert.equal(plannedWorkers({ requested: 6, w: 1920, h: 1080, gpu: true, budget: b(7.2) }).workers, 4, '7.2 GB: (7.2 − 3) / ~1.03 ≈ 4');
+  const limited = plannedWorkers({ requested: 6, w: 1920, h: 1080, gpu: true, budget: b(7.2) });
+  assert.equal(limited.workers, Math.min(4, limited.cap), '7.2 GB fits four workers, subject to the CPU cap');
   const roomy = plannedWorkers({ requested: 4, w: 1080, h: 1920, gpu: false, budget: b(40) });
   assert.ok(roomy.workers <= 4 && roomy.workers >= 1, 'never more than requested; capped by cores − 1');
 });

@@ -36,13 +36,15 @@ export function memoryBudget({ refresh = false } = {}) {
   return memo;
 }
 // Render workers the machine can hold: each is a Chromium (+ SwiftShader when gpu) + ~10 frame-sized buffers + an ffmpeg.
-// 1080p with gpu ≈ 1.0 GB. reserveGB stays free for the system and the host application. STUDIO_WORKERS forces a count.
+// 1080p with gpu ≈ 1.0 GB. reserveGB stays free for the system and the host application. STUDIO_WORKERS is a bounded request.
 export function plannedWorkers({ requested = 4, w = 1920, h = 1080, scale = 1, gpu = false, budget = memoryBudget(), reserveGB = 3 } = {}) {
   const perWorkerGB = 0.45 + (gpu ? 0.5 : 0) + (w * scale * h * scale * 4 * 10) / 2 ** 30;
-  const cap = Math.max(1, Math.min(requested, cpus().length - 1));
+  if (![requested, w, h, scale, budget.headroomGB, reserveGB].every(Number.isFinite) || requested < 1 || w <= 0 || h <= 0 || scale <= 0 || reserveGB < 0) throw new Error('invalid render worker budget or dimensions');
+  const cap = Math.max(1, Math.min(Math.floor(requested), cpus().length - 1));
   const fit = Math.floor((budget.headroomGB - reserveGB) / perWorkerGB);
-  const forced = process.env.STUDIO_WORKERS ? Math.max(1, Math.min(16, +process.env.STUDIO_WORKERS)) : null;
-  return { workers: forced || Math.max(1, Math.min(cap, fit)), perWorkerGB: +perWorkerGB.toFixed(2), fit, cap, low: fit < 1, forced: !!forced };
+  const override = Number(process.env.STUDIO_WORKERS);
+  const forced = Number.isInteger(override) && override > 0 ? override : null;
+  return { workers: Math.max(1, Math.min(cap, fit, forced ?? cap)), perWorkerGB: +perWorkerGB.toFixed(2), fit, cap, low: fit < 1, forced: forced !== null };
 }
 
 // Resolve a command on PATH without launching anything (process start costs ~1 s on the owner's Windows machine).

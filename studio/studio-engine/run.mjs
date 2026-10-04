@@ -2,7 +2,7 @@
 // Studio Engine — ONE command: spec → analysis → assets → lint → build package → stills gate → final render → sync/motion gates.
 //   node studio-engine/run.mjs <film> [--format=youtube|reel|both] [--fps=60] [--stage=check|stills|preview|final] [--scene=id]
 // <film> = studio-engine/films/<film>/spec.json. Default fps 30 (brand), default stage final (check + stills + one final render).
-import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { spawnSync, spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -10,44 +10,53 @@ import { timeline } from './lib/events.js';
 import { lint, frames, sync, motion } from './lib/gates.mjs';
 import { tempo, voiceWords } from './lib/analyze.mjs';
 import { resolveAssets } from './lib/assets.mjs';
+import { holdSpans, gateFailures, listTakes, newTake, deliveryVideo } from './lib/pipeline.mjs';
+import { forFormat, mediaAssets, musicDecodeOptions } from './lib/spec.mjs';
+import { validateProduction } from '../lib/production.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url)), STUDIO = resolve(HERE, '..');
 const [film, ...flags] = process.argv.slice(2);
 const opt = Object.fromEntries(flags.map((f) => f.replace(/^--/, '').split('=')));
 if (!film) { console.log('usage: node studio-engine/run.mjs <film> [--format=youtube|reel|both] [--fps=60] [--stage=check|stills|preview|final] [--scene=id]'); process.exit(2); }
+if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(film)) { console.error('film must be a folder name without path separators'); process.exit(2); }
+if (flags.some((flag) => !/^--(format|fps|stage|scene)=.+$/.test(flag)) || (opt.stage && !['check', 'stills', 'preview', 'final'].includes(opt.stage)) || (opt.fps && (!Number.isInteger(+opt.fps) || +opt.fps < 1 || +opt.fps > 120))) { console.error('invalid flag, stage or fps (1..120)'); process.exit(2); }
 const FILM = join(HERE, 'films', film), say = (...a) => console.log(`[engine] ${a.join(' ')}`);
 const brand = JSON.parse(readFileSync(existsSync(join(FILM, 'brand.json')) ? join(FILM, 'brand.json') : join(HERE, 'brand', 'brand.json'), 'utf8'));
 const base = JSON.parse(readFileSync(join(FILM, 'spec.json'), 'utf8'));
+if (!base || typeof base !== 'object' || Array.isArray(base)) { console.error('spec must be an object'); process.exit(2); }
 const formats = (opt.format || base.format || 'youtube') === 'both' ? ['youtube', 'reel'] : [opt.format || base.format || 'youtube'];
 const stage = opt.stage || 'final';
 
 // per-format overrides: any element/scene may carry { reel: {...} } or { youtube: {...} }
-const forFormat = (spec, f) => { const o = JSON.parse(JSON.stringify(spec), (k, v) => (v && typeof v === 'object' && !Array.isArray(v) && v[f] ? { ...v, ...v[f] } : v));
-  for (const s of o.scenes) s.elements = (s.elements || []).filter((e) => !e.only || e.only === f);   // "only": "reel" | "youtube"
-  return o; };
 const sh = (cmd, args) => spawnSync(cmd, args, { cwd: STUDIO, encoding: 'utf8', maxBuffer: 1 << 26 });
-const tail = (s, n = 6) => s.trim().split('\n').slice(-n).join('\n');
+const tail = (s, n = 6) => String(s || '').trim().split('\n').slice(-n).join('\n');
 let failed = false;
 
 for (const f of formats) {
-  const spec = forFormat(base, f); spec.fps = +(opt.fps || spec.fps || brand.export.fps);
+  const spec = forFormat(base, f); spec.fps = +(opt.fps ?? spec.fps ?? brand.export.fps);
   const fmt = brand.export.formats[f]; if (!fmt) { console.error(`unknown format ${f}`); process.exit(2); }
   const name = `b-${film}-${f}`, PKG = join(HERE, name), TAKES = join(STUDIO, 'takes', 'studio-engine', name); mkdirSync(PKG, { recursive: true }); mkdirSync(TAKES, { recursive: true });
   say(`${film} · ${f} ${fmt.w}×${fmt.h} @ ${spec.fps} fps`);
+  const initialSpec = spec.audio?.music && spec.bpm == null ? { ...spec, duration: undefined } : spec;
+  const preliminary = lint(initialSpec, brand);
+  if (preliminary.errors.length) { preliminary.errors.forEach((e) => console.error('[engine] ERROR', e)); failed = true; continue; }
   // 1. audio analysis (only when audio is supplied)
-  if (spec.audio?.music) { const a = tempo(resolve(FILM, spec.audio.music)); spec.audio.music = resolve(FILM, spec.audio.music); spec.bpm = spec.bpm || a.bpm; say(`music: ${a.bpm} BPM, first beat ${a.offset} s, ${a.duration} s`); writeFileSync(join(TAKES, 'tempo.json'), JSON.stringify(a)); }
+  if (spec.audio?.music) { const a = tempo(resolve(FILM, spec.audio.music)); spec.audio.music = resolve(FILM, spec.audio.music); spec.bpm = spec.bpm ?? a.bpm; spec.audio.musicOffset = spec.audio.musicOffset ?? a.offset; musicDecodeOptions(spec.audio.musicOffset); say(`music: ${a.bpm} BPM, first beat ${a.offset} s, ${a.duration} s · aligned offset ${spec.audio.musicOffset} s`); writeFileSync(join(TAKES, 'tempo.json'), JSON.stringify(a)); }
   if (spec.audio?.voice) {
     spec.audio.voice = resolve(FILM, spec.audio.voice);
     const w = voiceWords(spec.audio.voice, join(TAKES, 'voice'));
     if (w?.error) say(`voice timing unavailable (${w.error}); elements with sayAt keep their beats`);
     else { const words = (w.words || w).map((x) => ({ t: x.start ?? x.t, w: (x.w || x.word || x.text || '').trim() })); const tl0 = timeline(spec);
-      for (const s of tl0.scenes) for (const e of spec.scenes[s.index].elements || []) if (e.sayAt) { const hit = words.find((x) => x.w.includes(e.sayAt) && x.t >= s.a - 0.5); if (hit) e.at = Math.max(0, Math.round(((hit.t - s.a) / tl0.B) * 4) / 4); }
+      for (const s of tl0.scenes) for (const e of spec.scenes[s.index].elements || []) if (e.sayAt) { const hit = words.find((x) => x.w.includes(e.sayAt) && x.t >= s.a - 0.5 && x.t < s.b); if (hit) e.at = Math.min(s.beats, Math.max(0, Math.round(((hit.t - s.a) / tl0.B) * 4) / 4)); }
       say(`voice: ${words.length} words aligned`); }
   }
   // 2. assets — cached forever by id; missing ones are listed for the agent to generate once
-  const { ready, todo } = resolveAssets(spec.assets);
-  for (const s of spec.scenes) for (const e of s.elements || []) if (e.asset) e.src = '/' + (ready[e.asset] || '').replace(/\\/g, '/');
-  if (todo.length) { writeFileSync(join(PKG, 'assets-todo.json'), JSON.stringify(todo, null, 2)); say(`${todo.length} asset(s) to generate first → ${join(name, 'assets-todo.json')}`); if (stage !== 'check') { failed = true; continue; } }
+  const { ready, todo } = resolveAssets(spec.assets, { sourceDir: FILM });
+  if (todo.length) { writeFileSync(join(PKG, 'assets-todo.json'), JSON.stringify(todo, null, 2)); say(`${todo.length} asset(s) to generate first → ${join(name, 'assets-todo.json')}`); failed = true; continue; }
+  rmSync(join(PKG, 'assets-todo.json'), { force: true });
+  const missing = spec.scenes.flatMap((s) => (s.elements || []).filter((e) => e.asset && !Object.hasOwn(ready, e.asset)).map((e) => `${s.id}: unknown asset ${e.asset}`));
+  if (missing.length) { missing.forEach((e) => console.error('[engine] ERROR', e)); failed = true; continue; }
+  for (const s of spec.scenes) for (const e of s.elements || []) if (e.asset) e.src = '/' + ready[e.asset].replace(/\\/g, '/');
   // 3. lint
   const L = lint(spec, brand); L.warns.forEach((w) => say('note:', w));
   if (L.errors.length) { L.errors.forEach((e) => console.error('[engine] ERROR', e)); failed = true; continue; }
@@ -56,27 +65,29 @@ for (const f of formats) {
   const js = (o) => `// GENERATED by studio-engine/run.mjs — edit films/${film}/spec.json instead\nexport default ${JSON.stringify(o)};\n`;
   writeFileSync(join(PKG, 'spec.js'), js(spec)); writeFileSync(join(PKG, 'brand.js'), js(brand));
   writeFileSync(join(PKG, 'film.js'), `// GENERATED by studio-engine/run.mjs\nimport spec from './spec.js';\nimport brand from './brand.js';\nimport { makeFilm } from '../lib/player.js';\nexport default makeFilm(spec, brand);\n`);
-  writeFileSync(join(PKG, 'score.mjs'), `// GENERATED by studio-engine/run.mjs\nimport { join, dirname } from 'node:path';\nimport { fileURLToPath } from 'node:url';\nimport spec from './spec.js';\nimport { renderScore } from '../lib/sound.mjs';\nimport { decode } from '../lib/analyze.mjs';\nconst HERE = dirname(fileURLToPath(import.meta.url));\nrenderScore(spec, join(HERE, '..', '..', 'takes', 'studio-engine', '${name}'), { music: spec.audio?.music ? decode(spec.audio.music) : null, voice: spec.audio?.voice ? decode(spec.audio.voice) : null });\n`);
+  writeFileSync(join(PKG, 'score.mjs'), `// GENERATED by studio-engine/run.mjs\nimport { join, dirname } from 'node:path';\nimport { fileURLToPath } from 'node:url';\nimport spec from './spec.js';\nimport { renderScore } from '../lib/sound.mjs';\nimport { decode } from '../lib/analyze.mjs';\nimport { musicDecodeOptions } from '../lib/spec.mjs';\nconst HERE = dirname(fileURLToPath(import.meta.url));\nrenderScore(spec, join(HERE, '..', '..', 'takes', 'studio-engine', '${name}'), { music: spec.audio?.music ? decode(spec.audio.music, musicDecodeOptions(spec.audio.musicOffset)) : null, voice: spec.audio?.voice ? decode(spec.audio.voice) : null });\n`);
   const copyOf = (s) => (s.elements || []).map((e) => e.text || e.lines?.map((l) => l.text).join(' ') || e.parts?.map((p) => p.text || p).join(' ') || e.people?.map((p) => `${p.first} ${p.last}`).join(' · ')).filter(Boolean)[0];
   const production = { version: 1, duration: dur, fps: spec.fps, audience: spec.audience || 'social viewers', promise: spec.promise || spec.title, cta: spec.cta || 'see end card', direction: spec.direction || 'Studio Engine film: see spec.json',
-    assets: [{ id: 'spec', path: `studio-engine/films/${film}/spec.json`, role: 'reference', rights: 'studio-authored spec' }], sound: { mode: spec.audio?.music ? 'licensed' : 'original', bpm: tl.bpm, note: 'studio-engine/lib/sound.mjs' },
-    shots: tl.scenes.map((s) => ({ id: s.id, start: +s.a.toFixed(3), end: +s.b.toFixed(3), purpose: s.purpose || s.id, assetIds: [], craft: { scale: 'designed', camera: s.camera?.move || 'rig', focal: s.id, transition: s.transition || 'cut', depthLayers: 3, primaryMotions: (s.elements || []).slice(0, 2).map((e) => e.type), audioCue: s.music || 'groove' }, ...(copyOf(s) ? { copy: { text: copyOf(s), start: +s.a.toFixed(3), end: +s.b.toFixed(3) } } : {}) })),
+    assets: [{ id: 'spec', path: `studio-engine/films/${film}/spec.json`, role: 'reference', rights: 'studio-authored spec' }, ...mediaAssets(spec, ready)], sound: { mode: spec.audio?.music ? 'licensed' : 'original', ...(spec.audio?.music ? { assetId: 'supplied-music', licenseScope: spec.audio.licenseScope || '' } : {}), bpm: tl.bpm, note: 'studio-engine/lib/sound.mjs' },
+    shots: tl.scenes.map((s) => ({ id: s.id, start: +s.a.toFixed(3), end: +s.b.toFixed(3), purpose: s.purpose || s.id, assetIds: [...new Set((s.elements || []).map((e) => e.asset).filter(Boolean))], craft: { scale: 'designed', camera: s.camera?.move || 'rig', focal: s.id, transition: s.transition || 'cut', depthLayers: 3, primaryMotions: (s.elements || []).slice(0, 2).map((e) => e.type), audioCue: s.music || 'groove' }, ...(copyOf(s) ? { copy: { text: copyOf(s), start: +s.a.toFixed(3), end: +s.b.toFixed(3) } } : {}) })),
     cues: tl.scenes.map((s) => ({ id: s.id, t: +s.a.toFixed(3), kind: 'reveal', shot: s.id })) };
   if (spec.creative) production.creative = spec.creative;
   production.shots.forEach((shot, i) => { if (tl.scenes[i].craft) shot.craft = { ...shot.craft, ...tl.scenes[i].craft }; });
   writeFileSync(join(PKG, 'production.json'), JSON.stringify(production, null, 2));
-  const holds = tl.scenes.filter((s) => s.hold).map((s) => [+(dur - Math.min(1.4, s.b - s.a)).toFixed(2), dur]);
+  const planCheck = validateProduction(production, { root: STUDIO, final: stage === 'final' });
+  if (planCheck.errors.length) { planCheck.errors.forEach((e) => console.error('[engine] ERROR', e)); failed = true; continue; }
+  const holds = holdSpans(tl);
   writeFileSync(join(PKG, 'config.mjs'), `// GENERATED by studio-engine/run.mjs\nexport default ${JSON.stringify({ title: spec.title, film: `studio-engine/${name}/film.js`, score: `studio-engine/${name}/score.mjs`, production: `studio-engine/${name}/production.json`,
     ownerRequest: { delivery: f, w: fmt.w, h: fmt.h, duration: dur, fps: spec.fps }, w: fmt.w, h: fmt.h, fps: spec.fps, lufs: brand.export.lufs, tp: brand.export.tp, shareMB: fmt.shareMB, dither: true,
-    preview: { delivery: f, range: [0, Math.min(8, dur)] }, cacheInputs: ['studio-engine/lib', 'studio-engine/brand', `studio-engine/films/${film}`],
-    deliveries: [{ name: f, duration: dur, safe: fmt.safe, shareMB: fmt.shareMB, poster: +(dur - 1).toFixed(2), holds }], thumbs: [], holds: [] }, null, 2)};\n`);
+    preview: { delivery: f, range: [0, Math.min(8, dur)] }, cacheInputs: ['studio-engine/lib', 'studio-engine/brand', `studio-engine/films/${film}`, ...production.assets.map((a) => a.path)],
+    deliveries: [{ name: f, duration: dur, safe: fmt.safe, shareMB: fmt.shareMB, poster: +Math.max(0, dur - 1).toFixed(2), holds }], thumbs: [], holds: [] }, null, 2)};\n`);
   say(`package ${name}: ${tl.scenes.length} scenes, ${dur} s, ${tl.bpm} BPM`);
   if (stage === 'check') continue;
   // 5. stills gate: key frames of every scene + every transition, at full size
   const times = [...new Set(tl.scenes.flatMap((s) => [s.a + 0.15, s.a + (s.b - s.a) * 0.45, s.b - 0.25]).map((t) => +Math.min(dur - 0.05, Math.max(0.05, t)).toFixed(2)))];
   const SDIR = join(TAKES, 'stills');
   const r = sh('node', ['lib/render.mjs', 'stills', `studio-engine/${name}/film.js`, `--times=${times.join(',')}`, `--w=${fmt.w}`, `--h=${fmt.h}`, `--out=${SDIR}`]);
-  if (r.status !== 0) { console.error('[engine] stills failed:\n' + tail(r.stderr, 12)); failed = true; continue; }
+  if (r.error || r.status !== 0) { console.error('[engine] stills failed:\n' + tail(r.error?.message || r.stderr, 12)); failed = true; continue; }
   const fr = frames(JSON.parse(readFileSync(join(SDIR, 'boxes.json'), 'utf8')), fmt.safe, tl);
   say(`stills: ${times.length} frames → ${join(SDIR, 'sheet.png')} · text ${fr.length ? fr.length + ' issue(s)' : 'OK'}`); fr.slice(0, 8).forEach((x) => say('  frame:', x));
   // dense text pass (every 0.1 s, no screenshots): the same check the final gate runs, done before the expensive render
@@ -86,22 +97,27 @@ for (const f of formats) {
   say(`text timeline: ${TT.issues.length ? TT.issues.length + ' issue(s) in ' + Object.entries(byScene).map(([k, v]) => `${k} ×${v.length}`).join(', ') : 'OK'}`);
   for (const [k, v] of Object.entries(byScene)) say(`  ${k}: ${v[0].t} s ${v[0].kind} "${v[0].text.slice(0, 50)}"`);
   writeFileSync(join(TAKES, 'text-issues.json'), JSON.stringify(TT.issues));
+  if (gateFailures({ frames: fr, text: TT.issues }).length) { failed = true; say('text gates failed; fix the named scenes before rendering'); continue; }
   if (stage === 'stills') continue;
   // 6. preview (one scene or the whole film, draft profile) or the one final render
   const range = opt.scene ? (() => { const s = tl.scenes.find((q) => q.id === opt.scene); if (!s) throw new Error(`no scene ${opt.scene}`); return `${Math.max(0, s.a - 0.3).toFixed(2)}:${Math.min(dur, s.b + 0.3).toFixed(2)}`; })() : `0:${dur}`;
   const args = ['studio.mjs', 'build', `studio-engine/${name}`, stage === 'preview' ? '--profile=draft' : '--profile=final', ...(stage === 'preview' ? [`--range=${range}`] : [])];
   say(`render: node ${args.join(' ')}`);
-  const code = await new Promise((res) => { const p = spawn('node', args, { cwd: STUDIO, stdio: ['ignore', 'pipe', 'pipe'] }); let buf = ''; const keep = (d) => { buf = (buf + d).slice(-20000); }; p.stdout.on('data', keep); p.stderr.on('data', keep); p.on('close', (c) => { console.log(tail(buf.replace(/\r/g, '\n').split('\n').filter((l) => /PASS|FAIL|UNCHK|exit|error|Error|take/.test(l)).join('\n'), 16)); res(c); }); });
+  const outBase = join(STUDIO, 'out', 'studio-engine', name), before = listTakes(outBase);
+  const code = await new Promise((res) => { const p = spawn('node', args, { cwd: STUDIO, stdio: ['ignore', 'pipe', 'pipe'] }); let buf = ''; const keep = (d) => { buf = (buf + d).slice(-20000); }; p.stdout.on('data', keep); p.stderr.on('data', keep); p.on('error', (error) => { console.error('[engine] build could not start:', error.message); res(1); }); p.on('close', (c) => { console.log(tail(buf.replace(/\r/g, '\n').split('\n').filter((l) => /PASS|FAIL|UNCHK|exit|error|Error|take/.test(l)).join('\n'), 16)); res(c); }); });
   if (code !== 0) { failed = true; say('build failed; no prior take is treated as this delivery'); continue; }
-  const outBase = join(STUDIO, 'out', 'studio-engine', name); const takes = existsSync(outBase) ? readdirSync(outBase).filter((x) => x.startsWith('take')).sort() : [];
-  const take = takes.length ? join(outBase, takes[takes.length - 1]) : null;
-  if (stage === 'final' && take) {
-    const video = readdirSync(take).find((x) => x.includes('-share-')), sfx = join(TAKES, 'sfx.wav');
-    const sy = existsSync(sfx) ? sync(spec, sfx) : { checked: 0, missed: [] }, mo = video ? motion(join(take, video), tl, { holds }) : [];
-    say(`sync: ${sy.checked - sy.missed.length}/${sy.checked} events on an audible onset${sy.missed.length ? ' · missed: ' + sy.missed.slice(0, 5).join('; ') : ''}`);
+  let take;
+  try { take = newTake(outBase, before); } catch (error) { failed = true; say(error.message); continue; }
+  if (stage === 'final') {
+    try {
+    const video = deliveryVideo(take, f), sfx = join(TAKES, 'sfx.wav');
+    if (!existsSync(sfx)) throw new Error('SFX stem missing; sync cannot be checked');
+    const sy = sync(spec, sfx), mo = motion(video, tl, { holds });
+    say(sy.checked ? `sync: ${sy.checked - sy.missed.length}/${sy.checked} events on an audible onset${sy.missed.length ? ' · missed: ' + sy.missed.slice(0, 5).join('; ') : ''}` : 'sync: UNCHECKED — no eligible hard-hit events');
     say(`motion: ${mo.length ? mo.join('; ') : 'no still span > 0.7 s'}`);
-    say(`deliverable: ${video ? join(take, video) : '(none)'}`);
-    if (code !== 0 || mo.length) failed = true;
-  } else if (code !== 0) failed = true;
+    if (gateFailures({ sync: sy, motion: mo }).length) { failed = true; say('delivery rejected by sync/motion gates'); }
+    else say(`deliverable: ${video}`);
+    } catch (error) { failed = true; say(`delivery rejected: ${error.message}`); }
+  }
 }
 process.exit(failed ? 1 : 0);

@@ -13,7 +13,12 @@ const live = new Set();
 let reaped = false;
 process.on('exit', () => { for (const p of live) { try { p.kill('SIGKILL'); } catch {} } });
 // A hung or dead Chromium must become an error, never a silent wait: a render once hung for hours on a dead worker.
-export const CDP_TIMEOUT = Math.max(5000, +(process.env.STUDIO_CDP_TIMEOUT || 90000));
+export const CDP_TIMEOUT = Number.isFinite(+process.env.STUDIO_CDP_TIMEOUT) && +process.env.STUDIO_CDP_TIMEOUT > 0 ? Math.max(5000, +process.env.STUDIO_CDP_TIMEOUT) : 90000;
+const fetchJSON = async (url) => {
+  const response = await fetch(url, { signal: AbortSignal.timeout(CDP_TIMEOUT) });
+  if (!response.ok) throw new Error(`CDP endpoint returned HTTP ${response.status}`);
+  return response.json();
+};
 
 // Browser session modes (one switch, nothing else changes):
 //  - private (default): the studio starts its own headless Chrome with a throwaway profile per worker and closes it.
@@ -68,25 +73,33 @@ async function launchOnce({ width = 1280, height = 720, scale = 1, headless = tr
     proc.kill('SIGKILL'); proc.stderr.destroy(); try { rmSync(profile, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 }); } catch {} throw error;
   }
   const port = new URL(wsUrl).port;
-  const targets = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
-  const page = targets.find((t) => t.type === 'page');
-  const client = await connect(page.webSocketDebuggerUrl);
-  client.proc = proc;
-  proc.once('exit', (code, signal) => client.abort(new Error(`Chromium exited (${code ?? signal}) during the session: crash or out of memory`)));
-  client.close = async () => {
-    try { client.ws.close(); } catch {}
+  let client;
+  try {
+    const targets = await fetchJSON(`http://127.0.0.1:${port}/json/list`);
+    const page = targets.find((t) => t.type === 'page');
+    if (!page?.webSocketDebuggerUrl) throw new Error('Chrome did not expose a page target');
+    client = await connect(page.webSocketDebuggerUrl);
+    client.proc = proc;
+    proc.once('exit', (code, signal) => client.abort(new Error(`Chromium exited (${code ?? signal}) during the session: crash or out of memory`)));
+    client.close = async () => {
+      try { client.ws.close(); } catch {}
+      await shutdown(proc, wsUrl, profile);
+    };
+    await client.send('Page.enable');
+    await client.send('Runtime.enable');
+    await client.send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: scale, mobile: false });
+    return client;
+  } catch (error) {
+    try { client?.ws.close(); } catch {}
     await shutdown(proc, wsUrl, profile);
-  };
-  await client.send('Page.enable');
-  await client.send('Runtime.enable');
-  await client.send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: scale, mobile: false });
-  return client;
+    throw error;
+  }
 }
 
 async function attach({ width = 1280, height = 720, scale = 1, extraArgs = [] } = {}) {
   const base = process.env.STUDIO_CDP_URL.replace(/\/+$/, '');
   let info;
-  try { info = await (await fetch(`${base}/json/version`)).json(); }
+  try { info = await fetchJSON(`${base}/json/version`); }
   catch (error) { throw new Error(`attach mode: no Chrome DevTools endpoint at ${base} (start Chrome through the approved launcher with --remote-debugging-port, or unset STUDIO_CDP_URL for private mode): ${error.message}`); }
   if (extraArgs.length) console.warn('attach mode: launch flags (e.g. SwiftShader for config.gpu) cannot be applied to an existing browser; WebGL uses that browser\'s own GPU settings');
   const browser = await connect(info.webSocketDebuggerUrl);
@@ -134,8 +147,18 @@ export async function shutdown(proc, wsUrl, profile) {
 }
 
 export async function connect(url, { timeout = CDP_TIMEOUT } = {}) {
+  if (!Number.isFinite(timeout) || timeout <= 0) throw new Error('CDP timeout must be positive');
   const ws = new WebSocket(url);
-  await new Promise((r, j) => { ws.onopen = r; ws.onerror = () => j(new Error('CDP connect failed')); });
+  await new Promise((res, rej) => {
+    const finish = (error) => {
+      clearTimeout(timer); ws.onopen = ws.onerror = ws.onclose = null;
+      if (error) { try { ws.close(); } catch {} rej(error); } else res();
+    };
+    const timer = setTimeout(() => finish(new Error(`CDP connect timed out after ${timeout} ms`)), timeout);
+    ws.onopen = () => finish();
+    ws.onerror = () => finish(new Error('CDP connect failed'));
+    ws.onclose = () => finish(new Error('CDP connection closed during handshake'));
+  });
   let id = 0;
   const pending = new Map();
   const listeners = new Map();

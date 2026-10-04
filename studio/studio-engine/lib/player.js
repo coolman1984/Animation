@@ -10,6 +10,19 @@ const BG = {
   ink: (B) => B.colors.ink, light: () => 'radial-gradient(ellipse 80% 80% at 50% 40%, #FFFFFF, #E8EEF8 70%, #D5DEEE)',
 };
 
+// A hard cut is opaque on its first frame. Wipes/fades keep the outgoing backing scene until coverage completes.
+export function scenePresentation(s, next, t) {
+  const fade = s.transition === 'fade', wipe = s.transition === 'wipe';
+  const pre = fade ? (s.pre ?? .05) : 0;
+  const nextSoft = next && ['fade', 'wipe'].includes(next.transition);
+  const post = nextSoft ? Math.max(s.post ?? .22, next.transition === 'wipe' ? .4 : .3) : next ? 0 : (s.post ?? .22);
+  return {
+    visible: t >= s.a - pre && t < s.b + post,
+    opacity: fade ? sm(s.a - pre, s.a + .3, t) : 1,
+    clipPath: wipe ? `inset(0 ${(100 * (1 - sm(s.a, s.a + .4, t))).toFixed(2)}% 0 0)` : 'none',
+  };
+}
+
 export function makeFilm(spec, brand) {
   const tl = timeline(spec), EV = eventsOf(spec), B = brand.colors;
   const HITS = EV.filter((e) => ['slam', 'impact', 'flash', 'smash', 'wipe', 'flip', 'line', 'slash', 'push'].includes(e.kind)).map((e) => [e.t, Math.min(1.8, e.amp)]);
@@ -64,10 +77,10 @@ export function makeFilm(spec, brand) {
         g.globalAlpha = 0.12 + 0.28 * hash(i, 6) * (0.5 + 0.5 * Math.sin(t * 2 + i)); g.fillStyle = i % 5 === 0 ? B.accent : B.glow; g.beginPath(); g.arc(x, y, 1 + hash(i, 5) * 2.6, 0, 6.283); g.fill(); }
       g.globalAlpha = 1;
       for (const sc of scenes) {
-        const on = t >= sc.s.a - sc.pre && t < sc.s.b + sc.post; sc.root.style.display = on ? 'block' : 'none'; if (!on) continue;
-        const next = tl.scenes[sc.s.index + 1], fadeOut = sc.s.hold || !next ? 0 : (next.transition === 'cut' || next.transition === 'flash' || next.transition === 'smash' ? 1 : 0.6);
-        sc.root.style.opacity = (sm(sc.s.a - sc.pre, sc.s.a + (sc.s.transition === 'fade' ? 0.3 : 0.02), t) * (1 - fadeOut * sm(sc.s.b - 0.05, sc.s.b + sc.post * 0.6, t))).toFixed(3);
-        if (sc.s.transition === 'wipe') sc.root.style.clipPath = `inset(0 ${(100*(1-sm(sc.s.a,sc.s.a+.4,t))).toFixed(2)}% 0 0)`;
+        const presentation = scenePresentation(sc.s, tl.scenes[sc.s.index + 1], t);
+        sc.root.style.display = presentation.visible ? 'block' : 'none'; if (!presentation.visible) continue;
+        sc.root.style.opacity = presentation.opacity.toFixed(3);
+        sc.root.style.clipPath = presentation.clipPath;
         if (sc.s.camera?.drift !== false) sc.cam.style.transform = `translate3d(0,0,${lerp(sc.s.camera?.from ?? 0, sc.s.camera?.to ?? 0, clamp((t - sc.s.a) / (sc.s.b - sc.s.a))).toFixed(1)}px)`;
         for (const r of sc.renders) r(t);
         if (sc.s.breathe) sc.root.style.transform = `scale(${(1 + 0.012 * Math.sin((t - sc.s.a) * 0.9) + 0.02 * ramp(t, sc.s.a + 1.2, sc.s.b)).toFixed(4)})`;

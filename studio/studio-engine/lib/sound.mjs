@@ -143,8 +143,8 @@ function saw(bus, t, midis, dur, vel, { cut0 = 3200, cut1 = 700, decay = 0.4, p 
   for (const bb of [music, sfx]) { for (let i = 0; i < bb.n; i++) { const t = i / SR, g = t >= DUR ? 0 : t > DUR - 0.6 ? Math.cos(((t - (DUR - 0.6)) / 0.6) * Math.PI / 2) : 1; bb.L[i] *= g; bb.R[i] *= g; } bb.n = Math.round(DUR * SR); bb.L = bb.L.subarray(0, bb.n); bb.R = bb.R.subarray(0, bb.n); }
   const mix = new Bus(DUR); music.mixInto(mix, M.mode === 'sfx' && !musicPCM ? 0 : 1); sfx.mixInto(mix, 0.9);
   if (voicePCM) for (let i = 0; i < Math.min(mix.n, voicePCM.n); i++) { mix.L[i] += voicePCM.L[i] * 1.6; mix.R[i] += voicePCM.R[i] * 1.6; }
-  { const p0 = peak(mix), kk = 2.6; for (let i = 0; i < mix.n; i++) { mix.L[i] = Math.tanh(kk * mix.L[i] / p0) / Math.tanh(kk) * p0; mix.R[i] = Math.tanh(kk * mix.R[i] / p0) / Math.tanh(kk) * p0; } }
-  const norm = 0.5 / peak(mix);
+  { const p0 = peak(mix), kk = 2.6; if (p0 > 0) for (let i = 0; i < mix.n; i++) { mix.L[i] = Math.tanh(kk * mix.L[i] / p0) / Math.tanh(kk) * p0; mix.R[i] = Math.tanh(kk * mix.R[i] / p0) / Math.tanh(kk) * p0; } }
+  const mixPeak = peak(mix), norm = mixPeak > 0 ? 0.5 / mixPeak : 1;
   mkdirSync(outDir, { recursive: true });
   writeWav(join(outDir, 'music.wav'), music, { gain: norm }); writeWav(join(outDir, 'sfx.wav'), sfx, { gain: norm * 0.9 }); writeWav(join(outDir, 'mix.wav'), mix, { gain: norm });
   log(`score: ${DUR.toFixed(2)} s, ${tl.bpm} BPM, ${eventsOf(spec).length} sounded events`);

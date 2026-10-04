@@ -307,16 +307,18 @@ export const MODULES = {
   shape(ctx, e) {
     const k = K(ctx), geo = (s) => ({ x: (s.x ?? 0.5) * ctx.W, y: (s.y ?? 0.5) * ctx.H, w: (s.w ?? 200) * k, h: (s.h ?? 200) * k, r: (s.r ?? 0) * k, c: col(ctx.brand, s.color, ctx.brand.colors.primary), rot: s.rot ?? 0 });
     const n = div(ctx.root, { zIndex: String(e.z ?? 7), boxShadow: e.glow ? `0 0 60px ${col(ctx.brand, e.glow)}` : 'none' });
-    const steps = [{ ...geo(e), t: tin(ctx, e) }, ...(e.morph || []).map((m) => ({ ...geo({ ...e, ...m }), t: ctx.T(m.at), d: (m.dur ?? 1) * ctx.B }))];
+    let inherited = { ...e };
+    const steps = [{ ...geo(e), t: tin(ctx, e) }, ...(e.morph || []).map((m) => { inherited = { ...inherited, ...m }; return { ...geo(inherited), t: ctx.T(m.at), d: (m.dur ?? 1) * ctx.B }; })];
     const target = e.morphTo ? ctx.find(e.morphTo) : null;
-    const hx = (c) => [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16));
+    const hx = (c) => c.startsWith('#') ? [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16)) : c.match(/[\d.]+/g).slice(0, 3).map(Number);
     const mixC = (a, b, u) => { const A = hx(a), Bc = hx(b); return `rgb(${A.map((v, i) => Math.round(lerp(v, Bc[i], u))).join(',')})`; };
+    const blend = (p, s, u) => ({ ...Object.fromEntries(['x', 'y', 'w', 'h', 'r', 'rot'].map((key) => [key, lerp(p[key], s[key], u)])), c: mixC(p.c, s.c, clamp(u)) });
+    for (let i = 1; i < steps.length; i++) { const p = steps[i - 1], s = steps[i]; s.from = i === 1 ? p : blend(p.from, p, spr(s.t, p.t, p.d, .18)); }
     return (t) => {
       if (t < steps[0].t) { n.style.display = 'none'; return; } n.style.display = 'block';
       let g = steps[0], appear = spr(t, steps[0].t, 0.5, 0.3);
-      for (let i = 1; i < steps.length; i++) { const s = steps[i]; if (t < s.t) break; const u = spr(t, s.t, s.d, 0.18), p = steps[i - 1];
-        g = { x: lerp(p.x, s.x, u), y: lerp(p.y, s.y, u), w: lerp(p.w, s.w, u), h: lerp(p.h, s.h, u), r: lerp(p.r, s.r, u), c: mixC(p.c, s.c, clamp(u)), rot: lerp(p.rot, s.rot, u) }; steps[i].g = g; }
-      if (target && t > ctx.b - (target.dur ?? 0.5)) { const u = ioC(ramp(t, ctx.b - (target.dur ?? 0.5), ctx.b)); const q = target.geo; g = { x: lerp(g.x, q.x, u), y: lerp(g.y, q.y, u), w: lerp(g.w, q.w, u), h: lerp(g.h, q.h, u), r: lerp(g.r, q.r, u), c: mixC(g.c.startsWith('#') ? g.c : '#1E6BFF', q.c, u), rot: g.rot }; }
+      for (let i = 1; i < steps.length; i++) { const s = steps[i]; if (t < s.t) break; g = blend(s.from, s, spr(t, s.t, s.d, .18)); }
+      if (target && t > ctx.b - (target.dur ?? 0.5)) { const u = ioC(ramp(t, ctx.b - (target.dur ?? 0.5), ctx.b)); const q = target.geo; g = { x: lerp(g.x, q.x, u), y: lerp(g.y, q.y, u), w: lerp(g.w, q.w, u), h: lerp(g.h, q.h, u), r: lerp(g.r, q.r, u), c: mixC(g.c, q.c, u), rot: g.rot }; }
       Object.assign(n.style, { left: px(g.x - g.w / 2), top: px(g.y - g.h / 2), width: px(g.w), height: px(g.h), borderRadius: px(Math.min(g.r, g.w / 2, g.h / 2)), background: g.c, transform: `rotate(${g.rot}deg) scale(${clamp(appear, 0, 1.1).toFixed(3)})` });
     };
   },

@@ -136,7 +136,7 @@ async function frameCount(file) {
 }
 
 // Full render in parallel slices → out.mp4 (video only).
-// workers is a REQUEST: the count actually used is capped by memory headroom (plannedWorkers; STUDIO_WORKERS forces it).
+// workers is a REQUEST: the count actually used is capped by memory headroom (plannedWorkers; STUDIO_WORKERS requests a bounded count).
 // resumeKey: content key of this render (make.mjs); when the previous attempt crashed with the same key, its complete
 // slices are reused and only the missing ones are rendered. Slices are deleted only after a successful join.
 export async function video({ film, out, w = 1080, h = 1350, variant, segments, fadeOut,
@@ -154,7 +154,7 @@ export async function video({ film, out, w = 1080, h = 1350, variant, segments, 
     const fps = fpsOverride ?? info.fps, end = t1 ?? info.duration;
     const { first, last, frames: total } = frameRange(t0, end, info.duration, fps);
     const plan = plannedWorkers({ requested: workers, w, h, scale, gpu }), budget = memoryBudget();
-    if (plan.workers !== workers || plan.low) log(`  workers ${workers} → ${plan.workers}: memory headroom ${budget.headroomGB} GB (RAM free ${budget.freeGB}${budget.commitFreeGB !== null ? `, commit free ${budget.commitFreeGB}` : ''} GB), ~${plan.perWorkerGB} GB per worker${plan.low ? '  LOW: close other apps or enlarge the Windows page file' : ''}${plan.forced ? ' (forced by STUDIO_WORKERS)' : ''}`);
+    if (plan.workers !== workers || plan.low) log(`  workers ${workers} → ${plan.workers}: memory headroom ${budget.headroomGB} GB (RAM free ${budget.freeGB}${budget.commitFreeGB !== null ? `, commit free ${budget.commitFreeGB}` : ''} GB), ~${plan.perWorkerGB} GB per worker${plan.low ? '  LOW: close other apps or enlarge the Windows page file' : ''}${plan.forced ? ' (bounded STUDIO_WORKERS request)' : ''}`);
     const count = Math.min(plan.workers, total), per = Math.ceil(total / count);
     // Resume only when the previous attempt was the same render (same content key, slice layout and fps).
     const stamp = { key: resumeKey, count, fps, first, last };
