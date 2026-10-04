@@ -1,0 +1,16 @@
+{
+  "name": "studio-default",
+  "colors": { "ink": "#030818", "deep": "#071336", "primary": "#1E6BFF", "primaryDark": "#0B3FCB", "glow": "#4FD8FF", "ice": "#BFEFFF", "text": "#FFFFFF", "accent": "#FFD21F", "accentDark": "#E8A800", "warm": "#EFE6D2", "muted": "#8CA0C8", "paper": "#F4EBD9" },
+  "fonts": { "display": "Alexandria", "text": "Alexandria", "label": "Space Mono", "formal": "El Messiri" },
+  "logo": { "path": null, "rule": "show whole (pop or blur-resolve), never assembled; max 22% of frame width; never over running text" },
+  "presenter": { "name": null, "references": [], "rule": "same face/outfit in every film: generate only from these reference images" },
+  "rhythm": { "bpm": 120, "feel": "western dance-pop: four-on-the-floor, offbeat hats, one 3-3-2 hook", "readSecondsPerLine": 1.8, "cardSeconds": 2.5 },
+  "export": {
+    "fps": 30,
+    "formats": {
+      "youtube": { "w": 1920, "h": 1080, "safe": [96, 54, 1824, 1026], "shareMB": 29 },
+      "reel": { "w": 1080, "h": 1920, "safe": [60, 220, 1020, 1580], "shareMB": 29 }
+    },
+    "lufs": -14, "tp": -1.5
+  }
+}
