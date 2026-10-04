@@ -1,0 +1,72 @@
+{
+  "title": "AI × HR — workshop showreel",
+  "format": "youtube",
+  "bpm": 120,
+  "music": { "progression": ["Am", "F", "C", "G"], "final": "C", "hook": "pop332" },
+  "honesty": "copy from the owner's two posters only; no date, price or contact",
+  "scenes": [
+    { "id": "storm", "beats": 8, "music": "intro", "world": { "speed": 1.4 }, "camera": { "persp": 1400 },
+      "elements": [
+        { "type": "storm", "count": 38, "texts": ["Reports…", "Follow ups…", "Manual work…", "So many tasks…"] },
+        { "type": "words", "text": "الـ HR", "size": 330, "y": 0.33, "accent": { "1": "accent" }, "at": 0, "out": 7.9, "s0": 2.6, "shadow": "0 0 60px rgba(79,216,255,0.55)", "reel": { "y": 0.3 } },
+        { "type": "words", "text": "بيتغير", "size": 190, "x": 0.713, "y": 0.69, "width": 700, "at": 2, "out": 7.9, "reel": { "x": 0.5, "y": 0.5 } },
+        { "type": "words", "text": "بسرعة…", "size": 190, "x": 0.27, "y": 0.69, "width": 800, "color": "accent", "at": 4, "out": 7.9, "s0": 2.8, "reel": { "x": 0.5, "y": 0.64 } }
+      ] },
+    { "id": "brain", "beats": 8, "music": "drop", "drop": true, "transition": "flash", "world": { "tint": -10 },
+      "elements": [
+        { "type": "extrude", "text": "AI", "size": 520, "layers": 28, "step": 3.6, "x": 0.385, "y": 0.343, "implodeAt": 7.4, "reel": { "x": 0.5, "y": 0.26, "size": 420 } },
+        { "type": "words", "text": "والـ", "size": 150, "weight": 700, "x": 0.646, "y": 0.361, "width": 400, "at": 0.2, "out": 7.25, "s0": 1.6, "reel": { "x": 0.78, "y": 0.42 } },
+        { "type": "words", "text": "مش بقى مجرد", "size": 128, "x": 0.672, "y": 0.648, "width": 800, "at": 2, "out": 7.25, "s0": 2.0, "reel": { "x": 0.5, "y": 0.5 } },
+        { "type": "slice", "text": "Tool", "x": 0.208, "y": 0.648, "at": 3, "cutAt": 4, "reel": { "x": 0.5, "y": 0.62 } },
+        { "type": "words", "text": "نستخدمه وقت الحاجة", "size": 78, "weight": 500, "color": "muted", "y": 0.861, "width": 1300, "at": 5, "out": 7.25, "s0": 1.25, "blur": 12, "reel": { "y": 0.76 } }
+      ] },
+    { "id": "title", "beats": 8, "music": "chorus", "transition": "flash", "camera": { "persp": 1700 },
+      "elements": [
+        { "type": "lockup", "parts": ["AI", "×", "HR"], "size": 560, "y": 0.5, "at": 0, "midAt": 1, "reel": { "y": 0.36 } },
+        { "type": "words", "text": "From HR Professional to AI-Powered HR Professional", "size": 62, "weight": 600, "y": 0.731, "accent": { "3": "glow", "4": "glow" }, "at": 2, "out": 7.7, "s0": 1.35, "blur": 12, "stagger": 0.06, "reel": { "y": 0.56, "size": 56 } },
+        { "type": "pill", "text": "مشروع جديد .. ورشة عمل جديدة", "size": 66, "w": 1040, "h": 104, "y": 0.815, "bg": "glass", "border": "glow", "color": "#FFFFFF", "at": 4.5, "out": 7.7, "reel": { "y": 0.66, "w": 960 } }
+      ] },
+    { "id": "hosts", "beats": 8, "music": "hosts", "transition": "fade", "camera": { "persp": 1600 },
+      "elements": [
+        { "type": "hosts", "symbol": "×", "at": 0, "people": [
+          { "first": "Ayman", "last": "Essam", "role": "RBA, PHRi" },
+          { "first": "Mohamed", "last": "Fawzy", "role": "AI Automation | Lecturer" } ] }
+      ] },
+    { "id": "flip", "beats": 32, "music": "verse", "transition": "fade", "camera": { "persp": 1700 },
+      "elements": [
+        { "type": "cards", "start": 1, "step": 5, "badge": "AI",
+          "header": ["Traditional HR", "AI-Powered HR"], "sub": ["Keep things running", "Work Smarter. Create More Impact."],
+          "items": [
+            { "title": "Recruitment & Selection", "titleAr": "التوظيف والاختيار", "old": "Manual screening and traditional methods", "oldAr": "فرز يدوي ومقابلات تقليدية", "new": "AI Screening & Shortlisting", "newAr": "فرز ومقابلات مدعومة بالذكاء الاصطناعي", "oldIcons": ["stack", "mag"], "newIcons": ["doc", "check", "spark"] },
+            { "title": "Job Description", "titleAr": "الوصف الوظيفي", "old": "Write from scratch", "oldAr": "كتابة من الصفر وتعديل يدوي", "new": "Generate & Optimize with AI", "newAr": "إنشاء وتحسين باستخدام AI", "oldIcons": ["doc", "pen"], "newIcons": ["doc", "spark"] },
+            { "title": "HR Analytics", "titleAr": "تحليلات الموارد البشرية", "old": "Excel reports and manual analysis", "oldAr": "تقارير وتحليل Excel يدوي", "new": "Interactive Dashboards & Insights", "newAr": "لوحة بيانات تفاعلية ورؤى فورية", "oldIcons": ["grid"], "newIcons": ["bars", "spark"] },
+            { "title": "Performance Management", "titleAr": "إدارة الأداء", "old": "Track data manually", "oldAr": "متابعة الأرقام والتقارير بشكل تقليدي", "new": "Analyze, Identify Gaps & Get Recommendations", "newAr": "تحليل الأداء وتحديد الفجوات وتقديم توصيات", "oldIcons": ["clip"], "newIcons": ["radar", "star"] },
+            { "title": "HR Operations", "titleAr": "العمليات والمهام الإدارية", "old": "Routine tasks & follow ups", "oldAr": "مهام روتينية ومتابعات مستمرة", "new": "Automation & Smart Support", "newAr": "أتمتة المهام ودعم ذكي", "oldIcons": ["clock", "stack"], "newIcons": ["gear", "spark"] },
+            { "title": "Training · Employee Communication", "titleAr": "التدريب والتواصل مع الموظفين", "new": "Now AI-powered too", "newAr": "والذكاء الاصطناعي هنا برضه", "oldIcons": ["board"], "newIcons": ["chat", "people"] }
+          ] }
+      ] },
+    { "id": "ring", "beats": 8, "music": "build", "transition": "fade", "world": { "speed": 1.8 }, "camera": { "persp": 1300 },
+      "elements": [
+        { "type": "ring", "core": "AI×HR", "pushAt": 5, "items": [["Live Sessions", "جلسات مباشرة", "live"], ["Real HR Cases", "حالات عملية من الواقع", "cases"], ["Practical Templates", "نماذج جاهزة", "tmpl"], ["Hands-on Application", "تطبيق عملي", "hands"], ["Q&A Sessions", "جلسات أسئلة وأجوبة", "qa"], ["Special Surprises", "مفاجآت خاصة", "gift"]] },
+        { "type": "words", "text": "مش مجرد كلام نظري…", "size": 110, "y": 0.139, "width": 1600, "at": 0.5, "out": 7.7, "s0": 1.8, "stagger": 0.09, "z": 12, "reel": { "y": 0.16 } },
+        { "type": "pill", "text": "تطبيقات وأدوات وحالات عملية للـ HR.", "size": 62, "w": 1280, "h": 112, "y": 0.869, "bg": "accent", "grow": "x", "at": 3, "out": 7.7, "reel": { "y": 0.8, "size": 52 } }
+      ] },
+    { "id": "mega", "beats": 8, "music": "drop2", "drop": true, "transition": "cut", "world": { "tint": 12, "speed": 0.3 },
+      "elements": [
+        { "type": "words", "text": "Bigger", "size": 430, "y": 0.37, "at": 0, "out": 3, "s0": 3.0, "blur": 30, "dur": 0.4, "shadow": "0 0 70px rgba(79,216,255,0.6)", "reel": { "size": 300 } },
+        { "type": "words", "text": "Than a Training…", "size": 190, "y": 0.704, "color": "accent", "at": 1, "out": 3, "s0": 2.0, "stagger": 0.09, "reel": { "y": 0.56, "size": 120 } },
+        { "type": "wipes", "items": [
+          { "at": 3, "bg": "primary", "fg": "#FFFFFF", "text": "مساعد ذكي", "icon": "spark", "size": 250 },
+          { "at": 4.5, "bg": "#FFFFFF", "fg": "#0A1A52", "text": "عقل ثاني", "icon": "people", "size": 270, "stripe": "rgba(10,26,82,0.10)" },
+          { "at": 6, "bg": "accent", "fg": "#0A1A52", "text": "أتمتة التقارير", "icon": "gear", "size": 210 } ] }
+      ] },
+    { "id": "end", "beats": 8, "music": "finale", "transition": "smash", "bg": "blue", "breathe": true, "hold": true, "camera": { "persp": 1600 },
+      "elements": [
+        { "type": "slab", "at": 0, "y": 0.519, "lines": [ { "text": "WORKSHOP", "size": 230, "at": 0.2 }, { "text": "COMING SOON", "size": 138, "at": 1.5 } ], "reel": { "y": 0.46 } },
+        { "type": "mark", "parts": ["AI", "×", "HR"], "size": 250, "y": 0.16, "at": 0.4, "reel": { "y": 0.2 } },
+        { "type": "pill", "parts": [ { "text": "I'M INTERESTED", "color": "#1E4FD8" }, { "text": "اكتب في الكومنت" } ], "size": 56, "w": 1240, "h": 120, "y": 0.815, "at": 2.5, "reel": { "y": 0.72, "size": 44 } },
+        { "type": "words", "text": "Ayman Essam × Mohamed Fawzy", "size": 40, "weight": 800, "y": 0.907, "width": 1400, "accent": { "2": "accent" }, "at": 3.5, "s0": 1.4, "blur": 10, "stagger": 0.12, "reel": { "y": 0.8 } },
+        { "type": "sparks", "at": 0 }
+      ] }
+  ]
+}
