@@ -10,7 +10,7 @@ Default: **30 fps** (60 only when the owner says so: `--fps=60`). Two shapes: **
 | key-frame sheet + text gate (fast, ~1 min) | `node studio-engine/run.mjs <film> --stage=stills` → `takes/studio-engine/b-<film>-<fmt>/stills/sheet.png` |
 | low-res preview of one scene / the film | `node studio-engine/run.mjs <film> --stage=preview [--scene=id]` |
 | the ONE final render + all gates | `node studio-engine/run.mjs <film> [--format=reel|both] [--fps=60]` (default stage) → `out/studio-engine/b-<film>-<fmt>/takeNN/*-share-*.mp4` |
-Stay with a render until it prints its gates (chain foreground waits). Never run two renders at once.
+Stay with a render until it prints its gates: start it with `nohup … & echo $! > pid`, wait with `while kill -0 $(cat pid); do sleep 5; done` (never `pgrep -f` on the film name — it matches the waiting shell itself). Never run two renders at once.
 
 ## Spec (times in BEATS from the scene start; bpm sets the clock; `reel:{}` overrides any field for the vertical cut)
 ```json

@@ -80,7 +80,7 @@ export const MODULES = {
     });
     const a = ctx.a, len = ctx.b - ctx.a;
     return (t) => {
-      const u = t - a, kk = 0.25 * u + 0.2 * Math.pow(u / len, 3.2) * len * (e.speed ?? 1);
+      const u = t - a, rp = e.ramp ?? len * 0.8, kk = 0.25 * u + 0.2 * Math.pow(u / rp, 3.2) * rp * (e.speed ?? 1);   // accelerating rush: peaks at 80% of the scene
       cards.forEach((c, i) => {
         const p = (hash(i, 1) + kk * (0.6 + 0.8 * hash(i, 2))) % 1, z = lerp(-3400, 980, p), ang = hash(i, 3) * 6.283 + u * 0.35 * (hash(i, 4) - 0.5), rad = (380 + 720 * hash(i, 5)) * k;
         c.style.transform = T3(Math.cos(ang) * rad * (ctx.portrait ? 0.9 : 1.5), Math.sin(ang) * rad * (ctx.portrait ? 1.5 : 0.9), z, 40 * Math.sin(u + i), 60 * Math.sin(u * 0.7 + i * 2) + i * 9, 40 * (hash(i, 6) - 0.5) + u * 30 * (hash(i, 7) - 0.5));
