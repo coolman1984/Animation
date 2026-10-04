@@ -1,0 +1,5 @@
+{ "title": "audio path test", "format": "youtube",
+  "audio": { "music": "song.wav", "voice": "vo.wav" },
+  "scenes": [ { "id": "hello", "beats": 16, "music": "verse",
+    "elements": [ { "type": "words", "text": "أهلاً بيكم", "size": 160, "y": 0.45, "at": 0, "sayAt": "أهلا" },
+                  { "type": "words", "text": "هنا", "size": 120, "y": 0.65, "at": 4, "sayAt": "هنا", "color": "accent" } ] } ] }

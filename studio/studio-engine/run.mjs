@@ -40,7 +40,7 @@ for (const f of formats) {
     spec.audio.voice = resolve(FILM, spec.audio.voice);
     const w = voiceWords(spec.audio.voice, join(TAKES, 'voice'));
     if (w?.error) say(`voice timing unavailable (${w.error}); elements with sayAt keep their beats`);
-    else { const words = (w.words || w).map((x) => ({ t: x.start ?? x.t, w: (x.word || x.text || '').trim() })); const tl0 = timeline(spec);
+    else { const words = (w.words || w).map((x) => ({ t: x.start ?? x.t, w: (x.w || x.word || x.text || '').trim() })); const tl0 = timeline(spec);
       for (const s of tl0.scenes) for (const e of spec.scenes[s.index].elements || []) if (e.sayAt) { const hit = words.find((x) => x.w.includes(e.sayAt) && x.t >= s.a - 0.5); if (hit) e.at = Math.max(0, Math.round(((hit.t - s.a) / tl0.B) * 4) / 4); }
       say(`voice: ${words.length} words aligned`); }
   }

@@ -1,5 +1,6 @@
 # Animation repo
 
+**New films are made with the Studio Engine:** read `studio/studio-engine/STUDIO.md` first (one spec file + one command, 30 fps default, formats youtube | reel).
 Read `STATUS.md` first for current scope, verification evidence and the finite completion contract.
 Update it when a requested scope closes. Completed work and deferred ideas are not an automatic task queue.
 At most two correction rounds per requested scope: then record DONE or BLOCKED and stop as specified there.

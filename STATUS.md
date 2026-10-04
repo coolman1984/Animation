@@ -1,8 +1,10 @@
 # Studio status and session handoff
 
-Updated: 2026-10-04. This is the current handoff; historical plans are not a task queue.
+Updated: 2026-10-04.
 
-**Latest scope: DONE — Film 11 v2 (owner 2026-10-04: slower, readable, hosts longer, catchier music): 44 s, 120 BPM, 1080p30, take07 delivered. Gates PASS except the text gate (367 kinetic-overshoot/overlap boxes, same cause as v1). Not verified: listening.**
+**Latest scope: DONE — Studio Engine (owner order 2026-10-04): `studio/studio-engine/` — brand kit, 18-module motion library, spec player, score engine (synth or supplied music + voice with auto tempo/word timing), gates (lint, stills, dense text, sync, motion), one command `node studio-engine/run.mjs <film>`. Proof: AI × HR rebuilt from a spec, youtube + reel, every gate PASS, motion 106 % of the hand-coded original. Not verified: Higgsfield assets (MCP not connected), listening. Guide: `studio/studio-engine/STUDIO.md`.** This is the current handoff; historical plans are not a task queue.
+
+**Previous scope: DONE — Film 11 v2 (owner 2026-10-04: slower, readable, hosts longer, catchier music): 44 s, 120 BPM, 1080p30, take07 delivered. Gates PASS except the text gate (367 kinetic-overshoot/overlap boxes, same cause as v1). Not verified: listening.**
 
 **Previous scope: DONE (delivered on owner's "now") — Film 11, AI × HR workshop showreel, 25 s, 1920×1080 (owner request 2026-10-04).**
 - `studio/film11/` (BRIEF, production.json, config, timing.js shared clock, film.js real CSS 3D, score.mjs 144 BPM, LEDGER). Final take06 (local): 30 fps (owner asked 60, then asked for it immediately; 60 fps renders kept stalling in the heavy 3D title).

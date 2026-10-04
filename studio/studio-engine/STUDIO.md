@@ -41,4 +41,4 @@ Stay with a render until it prints its gates: start it with `nohup … & echo $!
 ## Proof (2026-10-04)
 AI × HR (film 11 v2) rebuilt from `films/aixhr/spec.json` alone: youtube take04 + reel take01 — **every gate PASS** (the hand-coded original failed the text gate with 367 issues),
 sync 30/30 and 31/31 hits on an audible onset, no still span > 0.7 s. Motion energy vs the original at 30 matched timestamps: **106 %** (`compare.mjs`, sheet `compare-aixhr.png`).
-Morph grammar (shape → pill → card across scenes, SVG icon morph) proven in `films/demo`. Spec size: 1 file, ~190 lines, zero code.
+Morph grammar (shape → pill → card across scenes, SVG icon morph) proven in `films/demo`. Supplied audio proven in `films/audiotest`: tempo exact (96/120 BPM, beat 0 at 0 s), voice → 18 timed words, `sayAt` lands words on the spoken beat. Fast tests: `node --test studio-engine/test/engine.test.mjs`. Spec size: 1 file, ~190 lines, zero code.
