@@ -217,3 +217,14 @@ Rule taken: in a beat-driven UI promo, put every content change on the beat and 
 - **Effects-only sound:** a very low room tone so silence is never dead, one effect per on-screen event, and `tanh` soft limiting before normalisation (sparse transients overshoot the true-peak ceiling when mastered to −16 LUFS).
 - **Physical foley without samples (film 9 v2):** a creak = stick-slip friction (clicks at 28–70 per second, rate swelling mid-gesture, each ringing a 480–620 Hz resonance with a 2.31× partial); a body on a seat = 55–125 Hz pitch-drop thud + short 350 Hz felt noise; breath = band-passed noise sweeping up (in) or down (out); heartbeat = two 48–68 Hz thuds 0.16 s apart. Keep a scene's level within ~3 dB of the rest or LRA fails.
 - **Emotion by sound, not foley (film 9 v3, owner's choice):** for "this patient has a problem and is worried" the owner wanted a low wavering warning bell, not body sounds: detune each bell partial by 0.6 % so it beats, add 5 Hz vibrato + 6 Hz tremolo, toll on each failure a semitone lower and longer, over a faint hum beating at 1.6 Hz.
+
+## Showreel in real CSS 3D at 1080p60 (2026-10-04; film `film11/`)
+- **One clock for picture and sound:** `film11/timing.js` exports `BPM/BEAT/CH/EV`; `film.js` (browser) and `score.mjs` (Node) both import it, so every flash, slam and impact is the same number. At 144 BPM one beat is exactly 25 frames at 60 fps, a bar is 100 frames, 15 bars = 25.000 s.
+- **3D stage:** `perspective` on a full-frame shell, one zero-size camera node at the centre (`transform-style: preserve-3d`), children placed with `translate3d/rotateX/Y/Z`. Move the *camera node* (orbit, dolly, push-through), never the children, for a cinematic move.
+- **Extruded type:** 26–30 copies of the same text stacked on `translateZ(-i·step)` with dark side colours and a gradient front copy; add a mirrored, faded copy under it for the floor reflection.
+- **Flip cards:** `rotateX` 0→180 on a `preserve-3d` card with two `backface-visibility:hidden` faces; fit text by measuring width and scaling the font; morph icons by cross-fading old/new SVG paths while the card turns.
+- **Cylinder ring:** N cards at `rotateY(i·360/N) translateZ(R)`; spin the group, push the camera through it on a beat with speed-line canvas.
+- **Kinetic type:** `slam()` = spring scale from 1.6 with blur, letters of one `.line` keep a single opacity so the text gate reads it; camera shake is a small decaying hash-noise on beat hits.
+- **Latin + Arabic in one line breaks bidi:** split into two `.line` elements (rtl / ltr), give ltr lines a `margin-inline-end` between words.
+- **Parent before children:** a background appended after a 3D rig covers it; insert it first.
+- **Music for a showreel:** drop only one beat before the biggest chapter, never a whole bar (a 0.8 s hole read as a bug); soft-limit the mix with `tanh` before normalising so the master can reach −14 LUFS without pumping.

@@ -82,3 +82,9 @@ No required lesson quota or automatic reuse of a prior visual style.
 30. **Owner asks; agent produces.** Reference paperwork, creative choices, proofs and judging are internal agent tasks. Use ownerRequest for exactly one target canvas/duration/fps; deliver one final video, not a pile of variants or a manual checklist.
 
 31. **Failed startup must release every resource.** A capture server opened before Chromium must close if launch fails; otherwise the test/process hangs after the real error. Never mark incomplete capture complete. One startup retry is bounded recovery, not relaxed film acceptance.
+
+## Showreel 3D (2026-10-04)
+48. **A showreel needs a hero shape, not a list of effects:** film 11 turns one symbol (×) into scratch, multiplier, spinning 3D title and final lock-up; the transitions all follow from it.
+49. **Share one timing file between picture and sound.** Cut, flash, slam and impact times come from the same constants; nothing is nudged by ear afterwards.
+50. **Measure the loudness curve, not only the average:** a short-term LUFS print every 0.3 s found a silent hole an integrated value hid.
+51. **Check text on the exported frames at the biggest overshoot** — spring overshoot on large kinetic words is what hits the safe box first.
