@@ -5,6 +5,9 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-07 — Film 13: «اتكلم كورة» 3D/2D football-show showreel, 20 s Reels (DONE)
+Owner request: a 20 s showreel on the topic of his football-show intro, "3D and 2D, go all out"; mid-production: only «اتكلم كورة», no other words. One hero (the chalk line) from an SVG scribble to a 2D tactics board, lifted 3D pass arcs, the ball's flight and the replay trajectory, to the title underline. Real Three.js stadium (six floodlight banks, stands, crowd lights, pitch, goal, holographic players, ball, net bulge, sparks), bullet-time replay with projected SVG HUD, the owner's host footage on the big screen (text-free span), extruded gold title. Original 120 BPM E-minor score. take01: every export gate PASS. Not verified: listening, real-time phone viewing.
+
 ## 2026-10-07 — Film 12: «مخطط المساحات» 3D motion showreel, 20 s Reels (DONE)
 Owner request: a 20 s motion-graphics showreel about the space-planning app from his two posters, five app screenshots and the Pixel Plus logo, "go all out". First film in real Three.js 3D end to end: a plan measured from the owner's screenshot is drawn by a pen, lifted into walls by one hero (the app's cut plane), sliced to 1.10 m, furnished room by room (25 procedural pieces with drop + squash), re-finished by clipped sweeps (three options), flattened into a flipping work floor with four zones, then the real app window and a light end card with the logo whole and the poster's CTA. Original 120 BPM D-minor score with one returning hook and a sound per event. take04: every export gate PASS (text 0 issues after take01's 87 and take03's 1). Not verified: listening, real-time phone viewing.
 

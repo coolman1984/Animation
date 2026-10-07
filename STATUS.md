@@ -2,7 +2,11 @@
 
 Updated: 2026-10-07.
 
-**Latest scope: DONE — Film 12, «مخطط المساحات» 3D motion showreel, 20 s Reels 1080×1920 (owner request 2026-10-07).**
+**Latest scope: DONE — Film 13, «اتكلم كورة» 3D/2D football-show showreel, 20 s Reels 1080×1920 (owner request 2026-10-07).**
+- `studio/film13/` (BRIEF, production.json, config, timing.js, film.js Three.js + SVG/DOM, score.mjs, LEDGER). Final take01 (local, not in git): every export gate PASS, share 13.67 MB.
+- Owner note applied: the only words are «اتكلم كورة»; host footage re-cut to a text-free span. Not verified: listening, real-time phone viewing.
+
+**Previous scope: DONE — Film 12, «مخطط المساحات» 3D motion showreel, 20 s Reels 1080×1920 (owner request 2026-10-07).**
 - `studio/film12/` (BRIEF, production.json, config, timing.js shared clock, film.js real Three.js + DOM copy, score.mjs, LEDGER). Final take04 (local, not in git): every export gate PASS, share 13.59 MB.
 - One hero (the app's cut plane); plan and room areas measured from the owner's screenshot; logo shown whole; poster CTA. Two correction rounds used (take01 text gate, take03 freeze + hidden-chip label).
 - Not verified: listening and real-time phone viewing.

@@ -102,5 +102,10 @@ No required lesson quota or automatic reuse of a prior visual style.
 55. **Measure Arabic display width, not font size:** Alexandria 900 at 128 px read back 1012 px wide on a 1080 frame. Pick sizes from read-back widths (≤ 880 px) and slam *up* from ~0.6× with a small bounce: entries from 1.9× produced 87 text-gate issues, the pop-up produced none.
 56. **A hidden box does not hide its words from the gate:** chip labels kept opacity 1 inside a faded chip and were still counted; give the words the box opacity (same rule as CRAFT 45).
 
+## Film 13 — «اتكلم كورة» 3D/2D football showreel (2026-10-07)
+57. **"Only the name" means scan the client's footage too:** removing our own labels was not enough — the owner's reference had its title baked into the later frames. Re-cut supplied footage to a span with no on-screen words before showing it.
+58. **One line can carry 2D and 3D:** the same chalk stroke as an SVG scribble, a flat line on the grass, a lifted tube arc and a projected dotted trajectory makes the medium change itself the transition.
+59. **A Three.js object that faces away is invisible, not wrong-coloured:** floodlight lamp discs rotated by π were back-face culled and the opening read as black; check a light source's facing on the first still.
+
 ## Production-path review (2026-10-04)
 A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs the outgoing scene beneath it until coverage completes. Morph retargeting starts from the actual current geometry and color and remains independent of render history. A printed failed gate must block delivery. Code regressions establish these contracts; existing exports were not re-rendered. Evidence: CODE_REVIEW_2026-10-04.md.
