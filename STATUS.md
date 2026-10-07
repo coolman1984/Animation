@@ -2,7 +2,9 @@
 
 Updated: 2026-10-07.
 
-**Latest scope: DONE — Film 14 v4 (owner 2026-10-07): score rebuilt from film12's sound at 150 BPM. take06 every gate PASS. Not verified: listening.**
+**Latest scope: DONE — Film 14 v5 (owner 2026-10-07): half-time groove, slower feel. take07 every gate PASS. Open question for the owner: a real 120 BPM needs about 5 s of scenes cut.**
+
+**Previous scope: DONE — Film 14 v4 (owner 2026-10-07): score rebuilt from film12's sound at 150 BPM. take06 every gate PASS. Not verified: listening.**
 
 **Previous scope: DONE — Film 14 v3 (owner 2026-10-07): rebalanced score (spectrum measured), title in front of the host. take05 every gate PASS. Not verified: listening.**
 

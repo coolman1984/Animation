@@ -5,6 +5,9 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-07 — Film 14 v5: half-time groove, slower feel on the same picture (DONE)
+Owner: v4 still too fast. Kept the picture on its 150-BPM grid and changed the drum and chord pattern to half-time (78 kicks/min, 8th-note hats). take07: every export gate PASS. Not verified: listening. A true 120 BPM would need about 5 s of scenes cut.
+
 ## 2026-10-07 — Film 14 v4: the score becomes film12's sound at 150 BPM (DONE)
 Owner: still bad; make it like the «مخطط المساحات» project's music, fast and distinctive. The score is now built from film12's own voices, mix, progression and hook, re-timed to 150 BPM and mapped onto film14's chapters, with film14's event sounds. take06: every export gate PASS. Not verified: listening.
 

@@ -4,6 +4,7 @@
 // two-bar hook (A asks, B answers) returning in every chapter: plucked + filtered chords (kick-off, tactics) → full drop (teams, results) →
 // half-time break with the hook on bells + a rolling-16th build (analysis) → tutti stabs, one per word (blast) → the loudest chorus, hook doubled
 // an octave apart (host + title) → last chord + final whistle. Sound for every on-screen event from timing.js; marimba notes on the cards and rows.
+// Groove: half-time (kick and clap on 1 and 3, 8th-note hats, sustained chords) so it reads slower on the same picture grid.
 // No samples, no licence needed.
 import { mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
@@ -79,13 +80,12 @@ const pair = (bar) => PROG[bar % 2].map((k) => CH[k]);
 const HOOK_A = [[0, 81, 2], [2, 79, 1], [3, 77, 1], [4, 79, 2], [6, 74, 2], [8, 77, 1], [9, 79, 1], [10, 81, 2], [12, 84, 3], [15, 81, 1]];
 const HOOK_B = [[0, 81, 2], [2, 79, 1], [3, 77, 1], [4, 79, 2], [6, 74, 2], [8, 72, 2], [10, 74, 1], [11, 77, 1], [12, 74, 4]];
 const hookFor = (bar) => (bar % 2 ? HOOK_B : HOOK_A);
-function beatDrums(bar, lvl = 1, { to = 4 } = {}) {
-  for (let b = 0; b < to; b++) kick(bt(bar, b), 0.95 * lvl);
-  for (const b of [1, 3]) if (b < to) clap(bt(bar, b), 0.42 * lvl);
-  for (let s = 0; s < to * 4; s++) hat(bt(bar) + s * S16, s % 4 === 2 ? 0.1 * lvl : 0.04 * lvl, s % 4 === 2, s % 2 ? 0.35 : -0.35);
+function beatDrums(bar, lvl = 1) { // half-time groove: kick on 1 and 3, clap on 3, 8th-note hats (the picture stays on the 150 grid)
+  kick(bt(bar, 0), 0.95 * lvl); kick(bt(bar, 2), 0.9 * lvl); clap(bt(bar, 2), 0.42 * lvl);
+  for (let e = 0; e < 8; e++) hat(bt(bar) + e * BEAT / 2, e % 2 ? 0.1 * lvl : 0.05 * lvl, e % 2 === 1, e % 2 ? 0.35 : -0.35);
 }
-function popChords(bar, lvl = 1, cut0 = 5200) { pair(bar).forEach((c, h) => { for (let e = 0; e < 4; e++) saw(chords, bt(bar, h * 2) + e * BEAT / 2, c.v, BEAT * 0.42, 0.5 * lvl, { cut0, cut1: 1300, decay: 0.12 }); }); }
-function offBass(bar, lvl = 1) { pair(bar).forEach((c, h) => { for (let b = 0; b < 2; b++) sub(bt(bar, h * 2 + b + 0.5), c.r + 12, BEAT * 0.42, 0.8 * lvl); sub(bt(bar, h * 2 + 1.75), c.r + 24, S16 * 0.8, 0.45 * lvl); }); }
+function popChords(bar, lvl = 1, cut0 = 5200) { pair(bar).forEach((c, h) => { saw(chords, bt(bar, h * 2), c.v, BEAT * 1.9, 0.5 * lvl, { cut0, cut1: 1300, decay: 0.3 }); }); }
+function offBass(bar, lvl = 1) { pair(bar).forEach((c, h) => { sub(bt(bar, h * 2), c.r + 12, BEAT * 1.6, 0.85 * lvl); sub(bt(bar, h * 2 + 1.5), c.r + 24, S16 * 0.8, 0.4 * lvl); }); }
 function hookLead(bar, { oct = 0, lvl = 1, cut0 = 8000, doubled = true } = {}) {
   for (const [s, m, l] of hookFor(bar)) saw(lead, bt(bar) + s * S16, doubled ? [m + oct, m + oct + 12] : [m + oct], l * S16 * 0.85, 0.4 * lvl, { cut0, cut1: 1700, decay: 0.09, voices: 3, detune: 0.08, width: 0.3 });
 }
@@ -98,22 +98,22 @@ for (const bar of [0, 1, 2]) {
   for (let e = 0; e < 8; e++) hat(bt(bar) + e * BEAT / 2, e % 2 ? 0.055 : 0.03, e % 2 === 1, e % 2 ? 0.3 : -0.3);
   pair(bar).forEach((c, h) => sub(bt(bar, h * 2), c.r + 12, BEAT * 1.5, 0.4));
 }
-whistle(0.0, 0.32, 0.2); kick(0.4, 0.8); kick(0.8, 0.85);
-for (let b = 0; b < 4; b++) { kick(bt(1, b), 0.7); kick(bt(2, b), 0.8); } clap(bt(1, 1), 0.3); clap(bt(1, 3), 0.3); clap(bt(2, 1), 0.4); clap(bt(2, 3), 0.4); offBass(2, 0.7);
+whistle(0.0, 0.32, 0.2); kick(0.8, 0.85);
+kick(bt(1, 0), 0.7); kick(bt(1, 2), 0.7); kick(bt(2, 0), 0.8); kick(bt(2, 2), 0.8); clap(bt(1, 2), 0.3); clap(bt(2, 2), 0.4); offBass(2, 0.7);
 roll(4.05, 4.78, 0.05, 0.32); riser(fx, 4.8, { dur: 1.2, vel: 0.3, f0: 300, f1: 9000, tonal: 0.3, seed: 12 });
 // ---------- 4.8–11.2 · DROP: teams, leagues, results — the full groove ----------
 for (let bar = 3; bar < 7; bar++) { beatDrums(bar); offBass(bar); popChords(bar); hookLead(bar, { lvl: bar === 6 ? 1.06 : 1 }); }
 for (const st of [13, 14, 15]) snare(bt(6) + st * S16, 0.12 + st * 0.01);
 // ---------- 11.2–14.4 · analysis: half-time break with the hook on bells, then a rolling-16th build ----------
-kick(bt(7, 0), 0.9); kick(bt(7, 2), 0.85); kick(bt(7, 3.5), 0.5); clap(bt(7, 1), 0.36); clap(bt(7, 3), 0.36);
-for (let s = 0; s < 16; s++) hat(bt(7) + s * S16, s % 4 === 2 ? 0.08 : 0.03, s % 4 === 2, s % 2 ? 0.35 : -0.35);
+kick(bt(7, 0), 0.9); kick(bt(7, 2), 0.85); clap(bt(7, 2), 0.36);
+for (let e = 0; e < 8; e++) hat(bt(7) + e * BEAT / 2, e % 2 ? 0.07 : 0.035, e % 2 === 1, e % 2 ? 0.35 : -0.35);
 saw(chords, bt(7, 0), CH.Dm.v, 0.7, 0.26, { cut0: 2400, cut1: 700, decay: 0.5, voices: 7, width: 0.9 }); saw(chords, bt(7, 2), CH.Bb.v, 0.7, 0.26, { cut0: 2400, cut1: 700, decay: 0.5, voices: 7, width: 0.9 });
 sub(bt(7, 0), 50, 0.7, 0.7); sub(bt(7, 2), 46, 0.7, 0.7);
 for (const [s, m] of HOOK_A) tone(lead, bt(7) + s * S16, mtof(m + 12), mtof(m + 12), { dur: 0.18, vel: 0.2, harm: 0.15, p: s % 2 ? 0.3 : -0.3 });
-for (let b = 0; b < 4; b++) kick(bt(8, b), 0.85); clap(bt(8, 1), 0.4); clap(bt(8, 3), 0.4);
-pair(8).forEach((c, h) => { for (let b = 0; b < 2; b++) for (const s of [1, 2, 3]) sub(bt(8, h * 2 + b) + s * S16, c.r + 12, S16 * 0.7, s === 2 ? 0.75 : 0.55); });
+kick(bt(8, 0), 0.85); kick(bt(8, 2), 0.85); clap(bt(8, 2), 0.4);
+pair(8).forEach((c, h) => sub(bt(8, h * 2), c.r + 12, BEAT * 1.6, 0.75));
 popChords(8, 0.75, 1800 + 2600); hookLead(8, { lvl: 0.7, cut0: 4500 });
-for (let s = 0; s < 16; s++) hat(bt(8) + s * S16, s % 4 === 2 ? 0.09 : 0.04, s % 4 === 2, s % 2 ? 0.35 : -0.35);
+for (let e = 0; e < 8; e++) hat(bt(8) + e * BEAT / 2, e % 2 ? 0.08 : 0.04, e % 2 === 1, e % 2 ? 0.35 : -0.35);
 roll(13.75, 14.38, 0.06, 0.34); riser(fx, 14.4, { dur: 1.0, vel: 0.28, f0: 400, f1: 10000, tonal: 0.25, seed: 41 });
 // ---------- 14.4–16 · word blast: one tutti stab per word, then the roll into the host ----------
 [['Dm', 0], ['Bb', 1], ['F', 2], ['C', 3]].forEach(([c, b]) => { const t = 14.4 + b * BEAT;
@@ -170,4 +170,4 @@ const lim = (b) => { for (const ch of ['L', 'R']) for (let i = 0; i < b.n; i++) 
 const norm0 = 0.9 / peak(mix); for (const b of [mix]) { for (const ch of ['L', 'R']) for (let i = 0; i < b.n; i++) b[ch][i] *= norm0; lim(b); }
 const norm = 0.5 / peak(mix);
 writeWav(join(OUT, 'music.wav'), music, { gain: norm * norm0 }); writeWav(join(OUT, 'sfx.wav'), sfx, { gain: norm * norm0 * 0.9 }); writeWav(join(OUT, 'mix.wav'), mix, { gain: norm });
-console.log(`film14 score: ${DUR}s 150 BPM D minor (film12 sound), norm ${norm.toFixed(3)}`);
+console.log(`film14 score: ${DUR}s 150 BPM grid, half-time groove, ${kicks.length} kicks (${(kicks.length / DUR * 60).toFixed(0)}/min), norm ${norm.toFixed(3)}`);

@@ -39,3 +39,12 @@ Not verified: listening. The music cannot be judged by ear in this environment; 
 | take06 (final) | all 11 export gates PASS: 20.000 s, 1080×1920, 30 fps, −14.0 LUFS, TP −5.6 dBTP, LRA 3.4 LU, 232 text lines zero issues, share 13.86 MB | — | — | delivered `out/film14/take06/film14-reels20-share-14MB.mp4` |
 
 Note: the score is as bass-heavy as film12's (≈ 80–90 % of the energy < 150 Hz) on purpose: that is the sound he asked for. Not verified: listening. The orchestral version is kept at takes/film14/score-v3-backup.mjs (local).
+
+## v5 (owner 2026-10-07: "still not liked, far too fast — adjust the rhythm")
+| time | issue | sev | fix | result |
+|---|---|---|---|---|
+| audio | v4 kept film12's pulse on the 150 grid: 150 kicks/min, 16th hats (600/min) — too fast | blocker | half-time groove on the same picture grid: kick and clap on beats 1 and 3, 8th-note hats (300/min), sustained half-bar chords, sub notes on the half-bar; intro and analysis bars converted the same way; the hook melody unchanged | 78 kicks/min |
+| constraint | a true 120 BPM would need the picture to be re-timed; the 150 grid holds 12.5 bars in 20 s, 120 BPM only 10 bars | note | kept the picture; asked the owner whether a real 120 BPM may cut about 5 s of scenes | open |
+| take07 (final) | all 11 export gates PASS: 20.000 s, 1080×1920, 30 fps, −14 LUFS, TP −5.2 dBTP, LRA 2.3 LU, 232 text lines zero issues, share 13.86 MB | — | — | delivered `out/film14/take07/film14-reels20-share-14MB.mp4` |
+
+Not verified: listening.
