@@ -5,6 +5,9 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-07 — Film 14: «اتكلم كورة» 2D football motion showreel, 20 s Facebook Reels (DONE)
+Owner rejected film13's 3D: new 2D-only film at 150 BPM. The ball as hero through kick-off, a chalk tactics board (4-4-2 → 4-3-3, passes), one shirt flipping through الأهلي / الزمالك / منتخب مصر, colour roundels for the Egyptian league and the Premier League, three real sourced results as slot-machine scores, unlabeled analysis graphics with a match clock, a one-word-per-beat blast, and the host's own footage until the show title has flown in behind him, frozen in a gold frame. Original crowd-chant score. take02: every export gate PASS. Not verified: listening, real-time phone viewing; official crests not supplied.
+
 ## 2026-10-07 — Film 13: «اتكلم كورة» 3D/2D football-show showreel, 20 s Reels (DONE)
 Owner request: a 20 s showreel on the topic of his football-show intro, "3D and 2D, go all out"; mid-production: only «اتكلم كورة», no other words. One hero (the chalk line) from an SVG scribble to a 2D tactics board, lifted 3D pass arcs, the ball's flight and the replay trajectory, to the title underline. Real Three.js stadium (six floodlight banks, stands, crowd lights, pitch, goal, holographic players, ball, net bulge, sparks), bullet-time replay with projected SVG HUD, the owner's host footage on the big screen (text-free span), extruded gold title. Original 120 BPM E-minor score. take01: every export gate PASS. Not verified: listening, real-time phone viewing.
 

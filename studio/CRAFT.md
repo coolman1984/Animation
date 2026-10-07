@@ -107,5 +107,10 @@ No required lesson quota or automatic reuse of a prior visual style.
 58. **One line can carry 2D and 3D:** the same chalk stroke as an SVG scribble, a flat line on the grass, a lifted tube arc and a projected dotted trajectory makes the medium change itself the transition.
 59. **A Three.js object that faces away is invisible, not wrong-coloured:** floodlight lamp discs rotated by π were back-face culled and the opening read as black; check a light source's facing on the first still.
 
+## Film 14 — «اتكلم كورة» 2D football showreel (2026-10-07)
+60. **When the owner calls the 3D "very bad", the fix is a different film, not a better 3D:** flat team colours, chalk, scoreboards and kinetic type at 150 BPM carried the same story with more energy and rendered 3× faster.
+61. **`hash()` returns 0–1, not an integer:** `hash(...) % 10` printed long fractions as score digits; always `floor(hash × n)`. (film13's floodlight flicker used the same wrong idiom.)
+62. **A card that slides in from off-frame must stay transparent until it is nearly home:** opaque words 900 px off the right edge were counted outside the safe area; gate the words' opacity on the last 15 % of the spring and exit by scale/fade.
+
 ## Production-path review (2026-10-04)
 A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs the outgoing scene beneath it until coverage completes. Morph retargeting starts from the actual current geometry and color and remains independent of render history. A printed failed gate must block delivery. Code regressions establish these contracts; existing exports were not re-rendered. Evidence: CODE_REVIEW_2026-10-04.md.

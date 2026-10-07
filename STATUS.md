@@ -2,7 +2,11 @@
 
 Updated: 2026-10-07.
 
-**Latest scope: DONE — Film 13, «اتكلم كورة» 3D/2D football-show showreel, 20 s Reels 1080×1920 (owner request 2026-10-07).**
+**Latest scope: DONE — Film 14, «اتكلم كورة» 2D football motion showreel, 20 s Facebook Reels 1080×1920 (owner request 2026-10-07, replaces film13's rejected 3D).**
+- `studio/film14/` (BRIEF with result sources, production.json, config, timing.js, film.js DOM/SVG, score.mjs, LEDGER). Final take02 (local): every export gate PASS, share 13.95 MB.
+- Owner decision open: official club/league crests (none supplied; names + colours + original roundels used). Not verified: listening, real-time phone viewing.
+
+**Previous scope: DONE (rejected by the owner: "the 3D is very bad") — Film 13, «اتكلم كورة» 3D/2D football-show showreel, 20 s Reels 1080×1920 (owner request 2026-10-07).**
 - `studio/film13/` (BRIEF, production.json, config, timing.js, film.js Three.js + SVG/DOM, score.mjs, LEDGER). Final take01 (local, not in git): every export gate PASS, share 13.67 MB.
 - Owner note applied: the only words are «اتكلم كورة»; host footage re-cut to a text-free span. Not verified: listening, real-time phone viewing.
 
