@@ -183,13 +183,12 @@ export default {
     // one <img> per layer; render() swaps its src and returns the decode promise (capture waits for it) — 138 decoded 1080² frames at once failed
     S.GfrSrc = (i) => new URL(`./plates/end2/g${String(i + 1).padStart(3, '0')}.jpg`, import.meta.url).href; S.GcutSrc = (i) => new URL(`./plates/end2cut/g${String(i + 1).padStart(3, '0')}.webp`, import.meta.url).href;
     S.Gimg = el('img', { src: S.GfrSrc(0), style: { position: 'absolute', left: '0', top: '0', width: '1080px', height: '1080px' } }, S.Gpanel); S.GimgI = 0;
-    // the show title, styled like his video: heavy white letters, warm bevel, deep extrusion, on the stadium screen behind him
-    S.Gtitle = div(S.Gpanel, { left: '0', top: '205px', width: '1080px', height: '220px' });
-    S.GtLayers = []; for (let i = 9; i >= 1; i--) { const d = div(S.Gtitle, { left: '0', top: '0', width: '1080px', textAlign: 'center', fontFamily: AR, fontWeight: '900', fontSize: '150px', lineHeight: '1.1', direction: 'rtl', color: i < 3 ? '#C9A46A' : `rgb(${Math.round(lerp(90, 25, i / 9))},${Math.round(lerp(70, 22, i / 9))},${Math.round(lerp(40, 30, i / 9))})`, transform: `translate(${(i * 1.2).toFixed(1)}px, ${(i * 2.6).toFixed(1)}px)` }); d.textContent = 'اتكلم كورة'; S.GtLayers.push(d); }
-    S.GtL = words(S.Gtitle, 'اتكلم كورة', { size: 150, top: 0, lh: 1.1, width: 1080, shadow: '0 0 24px rgba(255,255,255,0.25)' });
-    S.GtL.words.forEach((w) => { w.style.backgroundImage = 'linear-gradient(180deg, #FFFFFF 0%, #F4F1EA 55%, #D9CDB4 100%)'; w.style.webkitBackgroundClip = 'text'; w.style.backgroundClip = 'text'; w.style.color = 'transparent'; });
-    S.Gsweep = div(S.Gtitle, { left: '-400px', top: '0', width: '220px', height: '240px', background: 'linear-gradient(90deg, rgba(255,255,255,0), rgba(255,250,230,0.55), rgba(255,255,255,0))', transform: 'skewX(-18deg)', mixBlendMode: 'overlay' });
-    S.Gcutimg = el('img', { src: S.GcutSrc(0), style: { position: 'absolute', left: '0', top: '0', width: '1080px', height: '1080px' } }, S.Gpanel); S.GcutI = 0;
+    // the show title sits IN FRONT of him, low on the frame (owner 2026-10-07: «اتكلم كورة» whole, in front, at the bottom): heavy white letters,
+    // warm bevel, deep extrusion, light sweep — the same look as the title on his stadium screen
+    S.Gtitle = div(S.G, { left: '0', top: '1010px', width: '1080px', height: '194px', zIndex: '4' });
+    S.GtLayers = []; for (let i = 10; i >= 1; i--) { const d = div(S.Gtitle, { left: '0', top: '0', width: '1080px', textAlign: 'center', fontFamily: AR, fontWeight: '900', fontSize: '176px', lineHeight: '1.1', direction: 'rtl', color: i < 3 ? '#C9A46A' : `rgb(${Math.round(lerp(90, 25, i / 10))},${Math.round(lerp(70, 22, i / 10))},${Math.round(lerp(40, 30, i / 10))})`, transform: `translate(${(i * 1.3).toFixed(1)}px, ${(i * 2.8).toFixed(1)}px)` }); d.textContent = 'اتكلم كورة'; S.GtLayers.push(d); }
+    S.GtL = words(S.Gtitle, 'اتكلم كورة', { size: 176, top: 0, lh: 1.1, width: 1080 });
+    S.GtL.words.forEach((w) => { w.style.backgroundImage = 'linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 60%, #EFE6D2 100%)'; w.style.webkitBackgroundClip = 'text'; w.style.backgroundClip = 'text'; w.style.color = 'transparent'; });
     S.Gsvg = svg(S.G); S.Gsvg.innerHTML = `<g id="spk"></g>`;
     S.Gspk = []; { const r = rng(91); for (let i = 0; i < 40; i++) S.Gspk.push({ e: el('circle', { r: (2 + r() * 5).toFixed(1), fill: i % 3 ? C.gold : '#FFFFFF' }, S.Gsvg.querySelector('#spk')), x: r() * 1080, y: 300 + r() * 1400, v: 40 + r() * 120, ph: r() * 6 }); }
     // crest parade along the bottom (decorative zone)
@@ -305,16 +304,16 @@ export default {
       flash = Math.max(flash, Math.exp(-Math.max(0, t - EV.end) / 0.12) * (t >= EV.end ? 1 : 0));
       const fi = Math.max(0, Math.min(S.Gn - 1, Math.floor((t - EV.end) * 30))), tv = t >= EV.title - 0.05, waits = [];
       if (S.GimgI !== fi) { S.Gimg.src = S.GfrSrc(fi); S.GimgI = fi; waits.push(S.Gimg.decode()); }
-      S.Gcutimg.style.display = tv ? 'block' : 'none'; if (tv && S.GcutI !== fi) { S.Gcutimg.src = S.GcutSrc(fi); S.GcutI = fi; waits.push(S.Gcutimg.decode()); }
       if (waits.length) pending = Promise.all(waits);
       const inn = spr(t, EV.end, 0.6, 0.15), push = ease.inOutSine(ramp(t, EV.freeze - 0.4, 20));
       S.Gpanel.style.transform = `scale(${(lerp(1.25, 1, clamp(inn)) * (1 + 0.08 * push)).toFixed(4)})`;
       // the title builds behind him like in his video: words fly in from the sides with blur, the extrusion grows, then a light sweep
       S.Gtitle.style.display = tv ? 'block' : 'none';
       if (tv) { const e = [0, 1].map((j) => spr(t, EV.title + j * 0.14, 0.55, 0.22)), dep = ease.outCubic(ramp(t, EV.title + 0.25, EV.title + 0.7));
-        S.GtL.words.forEach((w, j) => { const k2 = e[j]; w.style.opacity = clamp((k2 - 0.93) / 0.05).toFixed(3); w.style.transform = `translateX(${((1 - clamp(k2)) * (j ? -700 : 700)).toFixed(1)}px) scale(${lerp(1.6, 1, clamp(k2)).toFixed(3)})`; blur(w, (1 - clamp(k2)) * 24); });
-        S.GtLayers.forEach((d, i) => { const k3 = 9 - i; d.style.opacity = (clamp(Math.min(e[0], e[1]) * 2) * (k3 <= Math.ceil(9 * dep) ? 1 : 0)).toFixed(3); });
-        let sw = -400; EV.sweep.forEach((s0) => { if (t >= s0 && t < s0 + 0.7) sw = lerp(-300, 1300, ease.inOutSine(ramp(t, s0, s0 + 0.7))); }); S.Gsweep.style.left = `${sw.toFixed(1)}px`; }
+        S.GtL.words.forEach((w, j) => { const k2 = e[j]; w.style.opacity = clamp(k2 * 3).toFixed(3); w.style.transform = `translateY(${((1 - clamp(k2)) * 90).toFixed(1)}px) scale(${lerp(0.5, 1, k2).toFixed(3)})`; blur(w, (1 - clamp(k2)) * 18); });
+        S.GtLayers.forEach((d, i) => { const k3 = 10 - i; d.style.opacity = (clamp(Math.min(e[0], e[1]) * 3) * (k3 <= Math.ceil(10 * dep) ? 1 : 0)).toFixed(3); d.style.transform = `translate(${(k3 * 1.3).toFixed(1)}px, ${(k3 * 2.8 + (1 - clamp(Math.min(e[0], e[1]))) * 90).toFixed(1)}px) scale(${lerp(0.5, 1, Math.min(e[0], e[1])).toFixed(3)})`; });
+        let sw = -60; EV.sweep.forEach((s0) => { if (t >= s0 && t < s0 + 0.7) sw = lerp(-30, 130, ease.inOutSine(ramp(t, s0, s0 + 0.7))); }); // light sweep painted into the letters themselves (an overlay box showed as a grey rectangle)
+        S.GtL.words.forEach((w) => { w.style.backgroundImage = `linear-gradient(100deg, #FFFFFF 0%, #FFFFFF ${(sw - 14).toFixed(1)}%, #FFD36B ${sw.toFixed(1)}%, #FFFFFF ${(sw + 14).toFixed(1)}%, #EFE6D2 100%)`; }); }
       S.Grow.style.transform = `translateX(${(-((t - EV.end) * 140) % 950).toFixed(1)}px)`; S.Grow.style.opacity = (0.85 * sm(16.4, 16.9, t)).toFixed(3);
       const sp = sm(EV.title, EV.title + 0.6, t); S.Gspk.forEach((s) => { const y = s.y - ((t - EV.end) * s.v) % 1400; s.e.setAttribute('cx', (s.x + 20 * Math.sin(t * 2 + s.ph)).toFixed(1)); s.e.setAttribute('cy', (y < 300 ? y + 1400 : y).toFixed(1)); s.e.style.opacity = (sp * (0.4 + 0.6 * Math.abs(Math.sin(t * 3 + s.ph)))).toFixed(3); });
     }

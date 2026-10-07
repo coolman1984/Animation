@@ -22,3 +22,12 @@ Not verified: listening (1.6 s windows: intro −16.0, tactics −15.1, teams �
 | take04 (final) | all 11 export gates PASS: 20.000 s, 1080×1920, 30 fps, −14.2 LUFS, TP −3.9 dBTP, LRA 4.1 LU, 232 text lines zero issues, share 13.85 MB | — | strips at 4.7, 7.0, 9.3, 15.9, 17.0, 18.4 s | delivered `out/film14/take04/film14-reels20-share-14MB.mp4` |
 
 Not verified: listening and real-time phone viewing. Standings are the owner's screenshots (after five rounds), read back by eye.
+
+## v3 (owner 2026-10-07: "the music is still very bad"; «اتكلم كورة» whole, in front of him, at the bottom)
+| time | issue | sev | fix | result |
+|---|---|---|---|---|
+| audio | measured why v2 sounded bad: 70–85 % of the energy sat below 150 Hz (kick + sub 4–8× louder than every melodic bus; phone speakers drop that range) | blocker | kick = click + 160 Hz body + short tail; bass with 2nd–4th harmonics; hats ×3, clap ×1.9; a bright synth hook added under the brass (brass an octave lower, not shrill); bus weights drums 0.6 / bass 0.3 / chords 3.2 / lead 1.6 / orchestra 1.25 | bands now ≈ 32 % <150 Hz, 35 % 150–1k, 30 % 1–4k, 3 % >4k |
+| ending | title behind him and cut off | blocker | title now in front, one line at 176 px (the Arabic line is 5.2× its font size wide — 240 px was 1250 px), y 1010–1204, extruded; light sweep painted into the letters (an overlay box printed a grey rectangle; text-shadow under clipped text printed grey); cut-out layer removed | take05 |
+| take05 (final) | all 11 export gates PASS: 20.000 s, 1080×1920, 30 fps, −14.3 LUFS, TP −3.1 dBTP, LRA 4.5 LU, 232 text lines zero issues, share 13.86 MB | — | stills at 17.5, 17.9, 19.5 s | delivered `out/film14/take05/film14-reels20-share-14MB.mp4` |
+
+Not verified: listening. The music cannot be judged by ear in this environment; the owner's own ear decides. Offer made: send a track and the film is re-timed to it.

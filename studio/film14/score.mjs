@@ -23,11 +23,11 @@ const kicks = [];
 function kick(t, vel = 1) {
   kicks.push(t); const i0 = Math.round(t * SR); let ph = 0;
   for (let k = 0; k < SR * 0.42; k++) { const tt = k / SR, f = 46 + 120 * Math.exp(-tt / 0.028); ph += 2 * Math.PI * f / SR;
-    const s = Math.tanh(1.9 * Math.sin(ph) * Math.exp(-tt / 0.25)) * 0.75 + (k < 90 ? Math.sin(k * 0.9) * 0.25 * (1 - k / 90) : 0);
-    drums.add(i0 + k, s * vel * 0.6); }
+    const body = Math.tanh(2.6 * Math.sin(ph) * Math.exp(-tt / 0.11)) * 0.7, click = k < 140 ? (Math.sin(k * 1.9) + Math.sin(k * 0.7)) * 0.3 * (1 - k / 140) : 0, thud = Math.sin(2 * Math.PI * 160 * tt) * Math.exp(-tt / 0.03) * 0.35;
+    drums.add(i0 + k, (body + click + thud) * vel * 0.7); }
 }
-const clap = (t, v = 0.45) => { for (let i = 0; i < 4; i++) noiseHit(drums, t + i * 0.008, { dur: i === 3 ? 0.11 : 0.01, vel: v * (i === 3 ? 1 : 0.55), bp: 1350, q: 0.8, seed: 31 + i + Math.round(t * 100) }); };
-const hat = (t, v = 0.07, open = false, p = 0.25) => noiseHit(drums, t, { dur: open ? 0.09 : 0.02, vel: v, hp: 8500, p, seed: Math.round(t * 1000) });
+const clap = (t, v = 0.45) => { for (let i = 0; i < 4; i++) noiseHit(drums, t + i * 0.008, { dur: i === 3 ? 0.16 : 0.012, vel: v * 1.9 * (i === 3 ? 1 : 0.6), bp: 1700, q: 0.7, seed: 31 + i + Math.round(t * 100) }); };
+const hat = (t, v = 0.07, open = false, p = 0.25) => noiseHit(drums, t, { dur: open ? 0.11 : 0.03, vel: v * 3.2, hp: 6500, p, seed: Math.round(t * 1000) });
 const snare = (t, v) => noiseHit(drums, t, { dur: 0.04, vel: v, bp: 1900, q: 0.8, tone: 230, seed: Math.round(t * 997) });
 function roll(t0, t1, v0 = 0.05, v1 = 0.3) { let t = t0, step = (t1 - t0) / 6; while (t < t1 - 0.02) { snare(t, v0 + (v1 - v0) * ((t - t0) / (t1 - t0))); t += step; step = Math.max(S16 / 2, step * 0.8); } }
 function saw(bus, t, midis, dur, vel, { cut0 = 6000, cut1 = 900, decay = 0.25, p = 0, detune = 0.16, voices = 5, width = 0.6 } = {}) {
@@ -45,7 +45,7 @@ function saw(bus, t, midis, dur, vel, { cut0 = 6000, cut1 = 900, decay = 0.25, p
 }
 function sub(t, midi, dur, vel = 0.7) { const i0 = Math.round(t * SR), f = mtof(midi); let ph = 0;
   for (let k = 0; k < (dur + 0.05) * SR; k++) { const tt = k / SR; ph += 2 * Math.PI * f / SR; const env = Math.min(1, tt / 0.005) * (tt > dur ? Math.exp(-(tt - dur) / 0.02) : 1);
-    low.add(i0 + k, Math.tanh(1.6 * (Math.sin(ph) + 0.3 * Math.sin(2 * ph))) * env * vel * 0.45); } }
+    low.add(i0 + k, Math.tanh(2.2 * (Math.sin(ph) + 0.7 * Math.sin(2 * ph) + 0.55 * Math.sin(3 * ph) + 0.35 * Math.sin(4 * ph))) * env * vel * 0.34); } }
 function tone(bus, t, f0, f1, { dur = 0.25, vel = 0.3, p = 0, glide = 0.04, harm = 0.25 } = {}) {
   const i0 = Math.round(t * SR), len = Math.round(dur * 3 * SR), [gl, gr] = pan(p); let ph = 0;
   for (let k = 0; k < len; k++) { const tt = k / SR, f = f1 + (f0 - f1) * Math.exp(-tt / glide); ph += (2 * Math.PI * f) / SR; const s = (Math.sin(ph) + harm * Math.sin(2 * ph)) * Math.min(1, tt / 0.002) * Math.exp(-tt / dur) * vel * 0.35; bus.add(i0 + k, s * gl, s * gr); }
@@ -117,7 +117,8 @@ const pair = (bar) => PROG[bar % 2].map((k) => CH[k]);
 const HOOK_A = [[0, 76, 2], [2, 81, 3], [5, 83, 1], [6, 84, 2], [8, 83, 1], [9, 81, 1], [10, 79, 2], [12, 76, 4]];
 const HOOK_B = [[0, 76, 2], [2, 81, 3], [5, 83, 1], [6, 84, 2], [8, 86, 2], [10, 88, 2], [12, 84, 4]];
 const hookFor = (bar) => (bar % 2 ? HOOK_B : HOOK_A);
-function fanfare(bar, lvl = 1) { for (const [s, m, l] of hookFor(bar)) { const t = bt(bar) + s * S16, d = l * S16;
+function synthHook(bar, lvl = 1, cut = 7500) { for (const [s, m, l] of hookFor(bar)) saw(lead, bt(bar) + s * S16, [m, m + 12], l * S16 * 0.9, 0.55 * lvl, { cut0: cut, cut1: 2600, decay: 0.12, voices: 5, detune: 0.14, width: 0.5 }); }
+function fanfare(bar, lvl = 1) { synthHook(bar, lvl); for (const [s, m0, l] of hookFor(bar)) { const m = m0 - 12, t = bt(bar) + s * S16, d = l * S16;
   if (l >= 2) { play(I.tptL, t, m, d * 0.92, 0.55 * lvl, { p: -0.15, att: 0.01, rel: 0.08 }); play(I.hrnL, t, m - 12, d * 0.92, 0.42 * lvl, { p: 0.25, att: 0.015, rel: 0.1 }); }
   play(I.tptS, t, m, 0, 0.5 * lvl, { p: 0.1 }); } }
 function brassPad(bar, lvl = 1) { pair(bar).forEach((c, h) => { const t = bt(bar, h * 2); play(I.tbnL, t, c.r + 12, BAR / 2 - 0.04, 0.35 * lvl, { p: -0.3, att: 0.03 }); play(I.tbnL, t, c.r + 19, BAR / 2 - 0.04, 0.3 * lvl, { p: 0.3, att: 0.03 }); play(I.hrnL, t, c.v[1], BAR / 2 - 0.04, 0.28 * lvl, { p: 0, att: 0.04 }); }); }
@@ -145,7 +146,7 @@ hit(CRASH, 4.8, 0.7, -0.2); hit(CRASH, 8.0, 0.6, 0.2);
 for (let bar = 7; bar < 9; bar++) { ostinato(bar, 1.25); brassPad(bar, 1.0); fanfare(bar, 0.45); edm(bar, 0.9); hit(TIMP_LO, bt(bar, 0), 0.7); }
 hit(CRASH, 11.2, 0.35); rollInto(TIMP_ROLL, 14.4, 1.0, 0.6);
 // ---------- 14.4–16.0 · word blast: one tutti brass stab per word ----------
-[['Am', 0], ['F', 1], ['C', 2], ['G', 3]].forEach(([c, b]) => { const t = 14.4 + b * BEAT; stabs(t, c, 1.05); kick(t, 1); sub(t, CH[c].r, 0.3, 0.9); });
+[['Am', 0], ['F', 1], ['C', 2], ['G', 3]].forEach(([c, b]) => { const t = 14.4 + b * BEAT; stabs(t, c, 1.5); kick(t, 0.8); sub(t, CH[c].r, 0.3, 0.45); saw(lead, t, [CH[c].v[3] + 12, CH[c].v[3] + 24], 0.3, 0.6, { cut0: 8000, cut1: 2800, decay: 0.12, voices: 5, detune: 0.14, width: 0.6 }); });
 rollInto(PERC + snareRollFile, 16.0, 0.8, 0.65); riser(fx, EV.end, { dur: 0.8, vel: 0.22, f0: 400, f1: 11000, tonal: 0.25, seed: 41 });
 // ---------- 16.0–20.0 · the host + title: the fanfare at full strength, then the final chord and whistle ----------
 for (let bar = 10; bar < 12; bar++) { fanfare(bar, 1.2); ostinato(bar, 1.05); brassPad(bar, 1.05); timps(bar, 1.1); edm(bar, 1.1); }
@@ -181,7 +182,7 @@ pump(chords, 0.75); pump(low, 0.5, 0.09); pump(lead, 0.25, 0.08);
 const hp = (bus, f) => { for (const ch of ['L', 'R']) { const a = biquad('hp', f, 0.7), x = bus[ch]; for (let i = 0; i < bus.n; i++) x[i] = a(x[i]); } };
 hp(chords, 170); hp(lead, 240); hp(fx, 40);
 const music = mk();
-drums.mixInto(music, 0.9); low.mixInto(music, 0.85); chords.mixInto(music, 0.5); lead.mixInto(music, 0.6); orch.mixInto(music, 1.25);
+drums.mixInto(music, 0.6); low.mixInto(music, 0.3); chords.mixInto(music, 3.2); lead.mixInto(music, 1.6); orch.mixInto(music, 1.25);
 const send = mk(); chords.mixInto(send, 0.3); orch.mixInto(send, 0.35); reverb(send, { room: 0.78, damp: 0.4 }).mixInto(music, 0.5);
 hp(music, 28);
 const sfx = mk(); fx.mixInto(sfx, 1);
@@ -197,3 +198,4 @@ const norm0 = 0.9 / peak(mix); for (const b of [mix]) { for (const ch of ['L', '
 const norm = 0.5 / peak(mix);
 writeWav(join(OUT, 'music.wav'), music, { gain: norm * norm0 }); writeWav(join(OUT, 'sfx.wav'), sfx, { gain: norm * norm0 * 0.9 }); writeWav(join(OUT, 'mix.wav'), mix, { gain: norm }); writeWav(join(OUT, 'orch.wav'), orch, { gain: norm * norm0 * 1.25 });
 console.log(`film14 score: ${DUR}s 150 BPM A minor orchestral anthem, norm ${norm.toFixed(3)}`);
+if (process.env.SCORE_DEBUG) for (const [n, b] of Object.entries({ drums, low, chords, lead, orch, fx })) writeWav(join(OUT, `dbg-${n}.wav`), b, { gain: 1 });
