@@ -5,6 +5,9 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-07 — Film 12: «مخطط المساحات» 3D motion showreel, 20 s Reels (DONE)
+Owner request: a 20 s motion-graphics showreel about the space-planning app from his two posters, five app screenshots and the Pixel Plus logo, "go all out". First film in real Three.js 3D end to end: a plan measured from the owner's screenshot is drawn by a pen, lifted into walls by one hero (the app's cut plane), sliced to 1.10 m, furnished room by room (25 procedural pieces with drop + squash), re-finished by clipped sweeps (three options), flattened into a flipping work floor with four zones, then the real app window and a light end card with the logo whole and the poster's CTA. Original 120 BPM D-minor score with one returning hook and a sound per event. take04: every export gate PASS (text 0 issues after take01's 87 and take03's 1). Not verified: listening, real-time phone viewing.
+
 ## 2026-10-04 — Production-path bug review and fixes (DONE)
 Fixed delivery/gate propagation, missing video errors and stale/nonnumeric take selection; malformed spec/CLI validation; silent audio division; asset path confinement/fresh-library copies/content refresh; narration content cache/PYTHON/absolute tool path; scene-boundary coverage and inherited/retargeted shape colors; deep format overrides; supplied-media dependencies/rights/phase alignment; bounded workers and CDP startup deadlines/cleanup. Focused tests 37 pass/2 optional skips, docs 5 pass; check-only showreel passes. Existing video exports unchanged. Full evidence and limits: CODE_REVIEW_2026-10-04.md.
 ## 2026-10-04 — FORM / FUNCTION resume showreel and latest-branch integration (DONE)

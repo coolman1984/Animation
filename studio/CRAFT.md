@@ -97,5 +97,10 @@ No required lesson quota or automatic reuse of a prior visual style.
 3. Clear outgoing text before a 0.4-second wipe; carry the sculpture through the boundary, then let the new headline land. A pointer click and its target morph share the same spec beat.
 
 
+## Film 12 — space-planner motion showreel, 20 s Reels, real Three.js (2026-10-07)
+54. **The product's own feature can be the hero:** the app's "walls cut at 1.10 m" became a cyan sheet of light that lifts the plan into walls, slices them, sweeps the finishes, flattens the flat and builds the work zones — every transition is caused by the product's idea.
+55. **Measure Arabic display width, not font size:** Alexandria 900 at 128 px read back 1012 px wide on a 1080 frame. Pick sizes from read-back widths (≤ 880 px) and slam *up* from ~0.6× with a small bounce: entries from 1.9× produced 87 text-gate issues, the pop-up produced none.
+56. **A hidden box does not hide its words from the gate:** chip labels kept opacity 1 inside a faded chip and were still counted; give the words the box opacity (same rule as CRAFT 45).
+
 ## Production-path review (2026-10-04)
 A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs the outgoing scene beneath it until coverage completes. Morph retargeting starts from the actual current geometry and color and remains independent of render history. A printed failed gate must block delivery. Code regressions establish these contracts; existing exports were not re-rendered. Evidence: CODE_REVIEW_2026-10-04.md.

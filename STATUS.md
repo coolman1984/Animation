@@ -1,8 +1,13 @@
 # Studio status and session handoff
 
-Updated: 2026-10-04.
+Updated: 2026-10-07.
 
-**Latest scope: DONE — deep production-path code review and fixes (owner 2026-10-04).**
+**Latest scope: DONE — Film 12, «مخطط المساحات» 3D motion showreel, 20 s Reels 1080×1920 (owner request 2026-10-07).**
+- `studio/film12/` (BRIEF, production.json, config, timing.js shared clock, film.js real Three.js + DOM copy, score.mjs, LEDGER). Final take04 (local, not in git): every export gate PASS, share 13.59 MB.
+- One hero (the app's cut plane); plan and room areas measured from the owner's screenshot; logo shown whole; poster CTA. Two correction rounds used (take01 text gate, take03 freeze + hidden-chip label).
+- Not verified: listening and real-time phone viewing.
+
+**Previous scope: DONE — deep production-path code review and fixes (owner 2026-10-04).**
 - Fixed gate propagation/stale delivery, malformed clocks/specs, silent NaN audio, asset traversal/cache handling, narration caching/Windows launcher, scene cuts/morph continuity, format overrides, music phase/media metadata, bounded workers and browser startup deadlines.
 - Evidence: focused checks 37 passed/2 optional fixtures skipped; docs 5 passed; showreel check-only pipeline passes. Seven regression failures reproduced before fixes. Details: `studio/CODE_REVIEW_2026-10-04.md`.
 - Existing take02 exports predate these source fixes; no new full render. Real Whisper, listening and browser failure injection remain unverified. Work stays on the isolated integrated branch; original user edits/media preserved.

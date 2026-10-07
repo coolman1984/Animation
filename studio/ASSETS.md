@@ -63,3 +63,5 @@ FORM / FUNCTION (2026-10-04): all sculptures, generative fields, pointer and Orb
 
 
 Code review (2026-10-04): no new media, models, fonts or dependencies. Supplied assets must declare `rights`; optional supplied music/voice use `audio.musicRights`, `audio.licenseScope`, `audio.voiceRights`. Production plans and cache inputs include actual media files. Missing permissions fail final preflight; no license is fabricated. Temporary test libraries and WAVs are removed after checks.
+
+Film 12 (2026-10-07): `film12/source/` holds the owner-supplied chat uploads (two ad posters, five app screenshots, the Pixel Plus logo) — git-ignored client material. `film12/plates/logo.png` is the logo cut from its own white (colour-to-alpha, no redraw); `plates/app-3d.jpg` is an unedited app screenshot. All 3D geometry, textures (parquet, tiles, grid, corrugation, screens) and furniture are procedural code in `film12/film.js`. Music and effects are synthesised in `film12/score.mjs` (no samples). Fonts: vendored Alexandria only. Three.js is the pinned vendor copy (MIT).

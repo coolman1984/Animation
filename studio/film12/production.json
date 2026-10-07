@@ -1,0 +1,286 @@
+{
+  "version": 1,
+  "duration": 20,
+  "fps": 30,
+  "audience": "Egyptian contractors, interior designers, real-estate and factory owners scrolling Reels who need to show a client a space before building it",
+  "promise": "see your project in 3D before you build it (the owner's own ad line «شوف مشروعك قبل ما تنفذه»)",
+  "cta": "راسلني وجرّب البرنامج (the owner's own CTA; no contact details were supplied, so none are shown)",
+  "direction": "«The cut plane»: one cyan sheet of light — the app's own 'walls cut at 1.10 m' — lifts a measured plan into 3D walls, slices them to the cut height, sweeps alternative finishes, flattens the flat and builds four work zones; real Three.js on a dark-navy blueprint ground, Alexandria for all type, camera from top-down drafting to orbiting perspective, transitions caused by the plane; 120 BPM D-minor original dance-pop with one returning hook and a designed sound for every event",
+  "assets": [
+    {
+      "id": "logo",
+      "path": "film12/source/logo.jpg",
+      "role": "logo",
+      "rights": "Owner-supplied Pixel Plus logo (chat upload 2026-10-07); client material, not in git. Shown whole (colour-to-alpha on its own white, no redraw)"
+    },
+    {
+      "id": "app-3d",
+      "path": "film12/source/app-3d.jpg",
+      "role": "product",
+      "rights": "Owner-supplied screenshot of the app (chat upload 2026-10-07); shown as-is in the app window; not in git"
+    },
+    {
+      "id": "plan-ref",
+      "path": "film12/source/app-plan.png",
+      "role": "reference",
+      "rights": "Owner-supplied plan screenshot: wall layout, outside size 10.40 × 8.80 m and room areas measured from it; not in git"
+    },
+    {
+      "id": "ads",
+      "path": "film12/source/ad-home.png",
+      "role": "reference",
+      "rights": "Owner-supplied ad posters (home + offices): copy, categories, CTA and palette taken from them; artwork not copied"
+    }
+  ],
+  "sound": {
+    "mode": "original",
+    "bpm": 120,
+    "note": "Original synthesised score (film12/score.mjs, lib/audio.mjs + lib/sfx.mjs): D minor Dm–Bb|F–C, one two-bar hook in every chapter, drops at 4.0 and 12.0, loudest on the logo; no samples, no licence needed"
+  },
+  "creative": {
+    "viewer": "a contractor, designer or business owner on Reels who must convince a client before spending on execution",
+    "problem": "clients cannot read flat plans; showing the space before building is the product's whole argument",
+    "promise": "شوف مشروعك قبل ما تنفذه",
+    "evidence": "the real plan layout and areas from the owner's app screenshot, the app's real features (3D, cut walls, three furnishing options, client report) and a real app screenshot",
+    "emotion": "wonder at seeing a plan become a home, then confidence",
+    "motif": "the cut plane — a cyan sheet of light",
+    "palette": [
+      "#020816",
+      "#0A1E48",
+      "#2DE6FF",
+      "#10B9E2",
+      "#F4F8FB"
+    ],
+    "light": "dark navy blueprint world with a glowing grid ground; warm key light on the model; a light paper world for the end card",
+    "typography": {
+      "display": "Alexandria",
+      "text": "Alexandria"
+    },
+    "camera": "top-down drafting → spring tilt into an orbiting 3D perspective → pushes into each room → pull back over a work floor with zone-to-zone pushes",
+    "transitions": [
+      "plane lift",
+      "plane slice",
+      "plane sweep",
+      "tile flip",
+      "zoom continuation",
+      "circle wipe from the highlighted UI"
+    ],
+    "motion": "pen-drawn blueprint with counting dimensions, walls extruded by the plane, furniture drops with squash, clipped finish wipes, tile cascade, zone builds, container drops, spring camera",
+    "sound": "120 BPM original dance-pop, pen scribble, laser slice, furniture as marimba notes on the hook scale, sweeps, tile clicks, container impacts, logo bloom",
+    "pacing": "one idea per bar: draft, rise, furnish, options, scale, app, logo",
+    "payoff": "the real app window, then the Pixel Plus logo whole with the CTA",
+    "cta": "راسلني وجرّب البرنامج",
+    "styleFrames": {
+      "hook": 3.2,
+      "proof": 9.6,
+      "payoff": 19.6
+    },
+    "proof": {
+      "start": 0,
+      "end": 12
+    }
+  },
+  "shots": [
+    {
+      "id": "draft",
+      "start": 0,
+      "end": 4,
+      "purpose": "hook: the pen draws the measured plan on a blueprint grid, dimensions count up, rooms get their real areas; the promise line",
+      "assetIds": [],
+      "craft": {
+        "scale": "whole plan, top-down",
+        "camera": "top-down, slow push",
+        "focal": "the pen head",
+        "transition": "plane lift",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "pen drawing",
+          "word slam"
+        ],
+        "audioCue": "scribble, dimension ticks, slams on 0.5/1.0, riser into 4.0",
+        "layers": [
+          "text",
+          "3d"
+        ]
+      },
+      "copy": {
+        "text": "شوف مشروعك قبل ما تنفذه",
+        "start": 0.5,
+        "end": 3.75
+      }
+    },
+    {
+      "id": "rise",
+      "start": 4,
+      "end": 6,
+      "purpose": "the cut plane lifts the walls into 3D while the camera tilts; then it slices them to the app cut height (1.10 m)",
+      "assetIds": [],
+      "craft": {
+        "scale": "whole flat",
+        "camera": "spring tilt to perspective",
+        "focal": "the plane",
+        "transition": "cut",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "extrusion",
+          "slice"
+        ],
+        "audioCue": "drop impact 4.0, laser 5.1–5.8",
+        "layers": [
+          "text",
+          "3d"
+        ]
+      },
+      "copy": {
+        "text": "برنامج لتخطيط المساحات ثلاثي الأبعاد",
+        "start": 4.12,
+        "end": 5.95
+      }
+    },
+    {
+      "id": "furnish",
+      "start": 6,
+      "end": 10,
+      "purpose": "furniture lands room by room with the ad categories; live count of placed pieces",
+      "assetIds": [],
+      "craft": {
+        "scale": "whole flat",
+        "camera": "orbit + push per room",
+        "focal": "the landing room",
+        "transition": "plane sweep",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "drop + squash",
+          "chip pops"
+        ],
+        "audioCue": "marimba note per landing, confirm per chip",
+        "layers": [
+          "text",
+          "3d"
+        ]
+      },
+      "copy": {
+        "text": "غرف نوم · معيشة · مطبخ · حمام",
+        "start": 6,
+        "end": 9.8
+      }
+    },
+    {
+      "id": "options",
+      "start": 10,
+      "end": 12,
+      "purpose": "two plane sweeps change every floor, wall and piece to the next finish; a three-way selector follows",
+      "assetIds": [],
+      "craft": {
+        "scale": "whole flat",
+        "camera": "orbit",
+        "focal": "the sweep line",
+        "transition": "plane slice down",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "clipped wipe",
+          "selector knob"
+        ],
+        "audioCue": "sweeps 10.3/11.3, half-time break, roll into 12",
+        "layers": [
+          "text",
+          "3d"
+        ]
+      },
+      "copy": {
+        "text": "٣ اقتراحات فرش وتشطيب مختلف",
+        "start": 10,
+        "end": 11.86
+      }
+    },
+    {
+      "id": "scale",
+      "start": 12,
+      "end": 16,
+      "purpose": "the flat flattens, a floor of tiles flips open and four work zones build behind the sweep",
+      "assetIds": [],
+      "craft": {
+        "scale": "wide work floor",
+        "camera": "pull back, zone-to-zone pushes, pull back",
+        "focal": "the building zone",
+        "transition": "zoom continuation",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "tile cascade",
+          "zone build",
+          "container drops"
+        ],
+        "audioCue": "drop 2 at 12.0, tile clicks, zone whooshes, container impacts",
+        "layers": [
+          "text",
+          "3d"
+        ]
+      },
+      "copy": {
+        "text": "من الشقة.. للمصنع",
+        "start": 12.15,
+        "end": 15.85
+      }
+    },
+    {
+      "id": "app",
+      "start": 16,
+      "end": 17.85,
+      "purpose": "the 3D world recedes into the real app window; the ready-for-client-report box is highlighted",
+      "assetIds": [
+        "app-3d"
+      ],
+      "craft": {
+        "scale": "app window",
+        "camera": "locked, window tilt settles",
+        "focal": "the ready box",
+        "transition": "circle wipe",
+        "depthLayers": 2,
+        "primaryMotions": [
+          "window land",
+          "focus ring"
+        ],
+        "audioCue": "whoosh + soft hit, confirm 16.78",
+        "layers": [
+          "text",
+          "image"
+        ]
+      },
+      "copy": {
+        "text": "الخطة جاهزة لتقرير العميل",
+        "start": 16.15,
+        "end": 17.82
+      }
+    },
+    {
+      "id": "logo",
+      "start": 17.85,
+      "end": 20,
+      "purpose": "light end card: logo whole, CTA pill, plan outline drawing, quiet hold",
+      "assetIds": [
+        "logo"
+      ],
+      "craft": {
+        "scale": "logo lock-up",
+        "camera": "locked",
+        "focal": "logo then CTA",
+        "transition": "cut",
+        "depthLayers": 2,
+        "primaryMotions": [
+          "blur resolve",
+          "pill pop"
+        ],
+        "audioCue": "impact + bell bloom 18.0, CTA pop 18.35, last chord",
+        "layers": [
+          "text",
+          "image"
+        ]
+      },
+      "copy": {
+        "text": "راسلني وجرّب البرنامج",
+        "start": 18.35,
+        "end": 20
+      }
+    }
+  ]
+}
