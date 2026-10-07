@@ -1,9 +1,10 @@
-// Film 14 score — original stadium-chant dance track at 150 BPM (beat 0.4 s = 12 frames, bar 1.6 s), 12.5 bars = 20.0 s, A minor.
-// Owner: faster, distinctive, catchy, fits football. Andalusian cadence Am–G | F–E (the E major chord gives the regional colour),
-// a crowd-style CHANT hook (formant-synth voices, detuned and loosened like a stand) that returns in every chapter, stomp-stomp-clap
-// intro, four-on-the-floor drive, horn stabs on the word blast, the loudest chorus on the host + title. Whistle at kick-off and the end.
-// Designed sound for every on-screen event from timing.js. No samples, no licence needed.
-import { mkdirSync } from 'node:fs';
+// Film 14 score v2 — epic football anthem at 150 BPM (beat 0.4 s = 12 frames, bar 1.6 s), 12.5 bars = 20.0 s, A minor.
+// Owner (2026-10-07): v1 synth chant was "very bad"; wants energetic World-Cup-anthem energy. The 2026 World Cup anthem pairs an
+// operatic/orchestral sound with an EDM drop; this score takes that STYLE (no melody or recording copied): real recorded orchestra
+// samples — trumpets, trombones, French horns, violin/viola/cello spiccato, timpani, snare rolls, crash cymbals — from VS Chamber
+// Orchestra Community Edition (CC0, assets/audio/vsco, git-ignored), over an EDM kick/sub/supersaw bed. One original brass fanfare
+// hook (I–VI–III–VII: Am–F | C–G) returns in every chapter; the loudest statement is on the host + title. Whistle at kick-off and end.
+import { mkdirSync, readFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SR, Bus, mtof, noiseHit, bell, reverb, writeWav, peak, biquad, rng, pan, bloop } from '../lib/audio.mjs';
@@ -15,7 +16,7 @@ mkdirSync(OUT, { recursive: true });
 const BEAT = 0.4, BAR = 1.6, S16 = 0.1, N = DUR + 2;
 const bt = (bar, beat = 0) => bar * BAR + beat * BEAT;
 const mk = () => new Bus(N);
-const drums = mk(), low = mk(), chords = mk(), lead = mk(), fx = mk(), vox = mk();
+const drums = mk(), low = mk(), chords = mk(), lead = mk(), fx = mk(), vox = mk(), orch = mk();
 const kicks = [];
 
 // ---------- voices ----------
@@ -80,43 +81,78 @@ function chant(t, midi, dur, vel = 0.3, { vowel = 'o', voices = 6 } = {}) {
 }
 function horn(t, midis, dur = 0.28, vel = 0.5) { for (const m of midis) saw(chords, t, [m], dur, vel, { cut0: 4500, cut1: 1600, decay: 0.1, voices: 3, detune: 0.2, width: 0.5 }); }
 
-// ---------- harmony + chant hook ----------
-const CH = { Am: { v: [57, 60, 64, 69], r: 33 }, G: { v: [55, 59, 62, 67], r: 31 }, F: { v: [57, 60, 65, 69], r: 29 }, E: { v: [56, 59, 64, 68], r: 28 } };
-const PROG = [['Am', 'G'], ['F', 'E']];
-const pair = (bar) => PROG[bar % 2].map((k) => CH[k]);
-const HOOK_A = [[0, 69, 2], [2, 69, 1], [3, 69, 1], [4, 72, 2], [6, 71, 2], [8, 69, 2], [10, 67, 2], [12, 64, 4]];
-const HOOK_B = [[0, 69, 2], [2, 69, 1], [3, 69, 1], [4, 72, 2], [6, 71, 2], [8, 72, 2], [10, 74, 2], [12, 76, 4]];
-const hookFor = (bar) => (bar % 2 ? HOOK_B : HOOK_A);
-function beatDrums(bar, lvl = 1, { to = 4 } = {}) {
-  for (let b = 0; b < to; b++) kick(bt(bar, b), 0.95 * lvl);
-  for (const b of [1, 3]) if (b < to) clap(bt(bar, b), 0.48 * lvl);
-  for (let s = 0; s < to * 4; s++) hat(bt(bar) + s * S16, s % 4 === 2 ? 0.1 * lvl : 0.045 * lvl, s % 4 === 2, s % 2 ? 0.35 : -0.35);
+// ---------- sampler (VSCO 2 CE, CC0): file names are one octave below scientific pitch (measured: "A2" = 220 Hz) ----------
+const VS = join(dirname(fileURLToPath(import.meta.url)), '..', 'assets', 'audio', 'vsco');
+const NOTE = { C: 0, 'C#': 1, D: 2, 'D#': 3, E: 4, F: 5, 'F#': 6, G: 7, 'G#': 8, A: 9, 'A#': 10, B: 11 };
+const cache = new Map();
+function readWav(path) { if (cache.has(path)) return cache.get(path); const b = readFileSync(path); let o = 12, fmt, data;
+  while (o < b.length - 8) { const id = b.toString('ascii', o, o + 4), sz = b.readUInt32LE(o + 4); if (id === 'fmt ') fmt = { ch: b.readUInt16LE(o + 10), sr: b.readUInt32LE(o + 12), bits: b.readUInt16LE(o + 22) }; if (id === 'data') { data = [o + 8, sz]; break; } o += 8 + sz + (sz & 1); }
+  const [st, sz] = data, bps = fmt.bits / 8, n = Math.floor(sz / (bps * fmt.ch)), L = new Float32Array(n), R = new Float32Array(n);
+  for (let i = 0; i < n; i++) for (let c = 0; c < fmt.ch; c++) { const off = st + (i * fmt.ch + c) * bps, v = fmt.bits === 16 ? b.readInt16LE(off) / 32768 : fmt.bits === 24 ? b.readIntLE(off, 3) / 8388608 : b.readFloatLE(off); if (c === 0) { L[i] = v; if (fmt.ch === 1) R[i] = v; } else R[i] = v; }
+  const w = { L, R, sr: fmt.sr }; cache.set(path, w); return w; }
+function instrument(dir) { return readdirSync(join(VS, dir)).filter((f) => f.endsWith('.wav')).map((f) => { const m = f.match(/_([A-G]#?)(-?\d)_/); return m ? { midi: (+m[2] + 2) * 12 + NOTE[m[1]], path: join(VS, dir, f) } : null; }).filter(Boolean).sort((x, y) => x.midi - y.midi); }
+const I = { tptS: instrument('Brass/Trumpet/stac'), tptL: instrument('Brass/Trumpet/sus'), tbnS: instrument('Brass/Tenor Trombone/stac'), tbnL: instrument('Brass/Tenor Trombone/sus'), hrnS: instrument('Brass/F Horn/stac'), hrnL: instrument('Brass/F Horn/sus'),
+  vln: instrument('Strings/Violin Section/Spic'), vla: instrument('Strings/Viola Section/spic'), vc: instrument('Strings/Cello Section/spic'), vlnL: instrument('Strings/Violin Section/susVib') };
+// play a pitched sample: nearest recorded note, resampled; sustained samples are cut at dur with a release
+function play(set, t, midi, dur, vel = 0.5, { p = 0, rel = 0.12, att = 0.004 } = {}) {
+  let best = set[0]; for (const s of set) if (Math.abs(s.midi - midi) < Math.abs(best.midi - midi)) best = s;
+  const w = readWav(best.path), ratio = (w.sr / SR) * Math.pow(2, (midi - best.midi) / 12), maxK = Math.floor((w.L.length - 2) / ratio), dK = dur ? Math.round(dur * SR) : maxK, n = Math.min(maxK, dur ? dK + Math.round(rel * 5 * SR) : maxK);
+  const i0 = Math.round(t * SR), [gl, gr] = pan(p);
+  for (let k = 0; k < n; k++) { const pos = k * ratio, j = pos | 0, f = pos - j, env = Math.min(1, k / (att * SR + 1)) * (dur && k > dK ? Math.exp(-(k - dK) / (rel * SR)) : 1);
+    orch.add(i0 + k, (w.L[j] + (w.L[j + 1] - w.L[j]) * f) * env * vel * gl * 1.4, (w.R[j] + (w.R[j + 1] - w.R[j]) * f) * env * vel * gr * 1.4); }
 }
-function popChords(bar, lvl = 1, cut0 = 5200) { pair(bar).forEach((c, h) => { for (let e = 0; e < 4; e++) saw(chords, bt(bar, h * 2) + e * BEAT / 2, c.v, BEAT * 0.4, 0.48 * lvl, { cut0, cut1: 1300, decay: 0.1 }); }); }
-function offBass(bar, lvl = 1) { pair(bar).forEach((c, h) => { for (let b = 0; b < 2; b++) sub(bt(bar, h * 2 + b + 0.5), c.r + 12, BEAT * 0.42, 0.85 * lvl); }); }
-function hookLead(bar, { lvl = 1, cut0 = 7000 } = {}) { for (const [s, m, l] of hookFor(bar)) saw(lead, bt(bar) + s * S16, [m + 12], l * S16 * 0.85, 0.36 * lvl, { cut0, cut1: 1800, decay: 0.07, voices: 3, detune: 0.08, width: 0.3 }); }
-function hookChant(bar, lvl = 1, vowel = 'o') { for (const [s, m, l] of hookFor(bar)) chant(bt(bar) + s * S16, m, l * S16 * 0.9, 0.42 * lvl, { vowel }); }
+function hit(file, t, vel = 0.6, p = 0) { const w = readWav(join(VS, file)), i0 = Math.round(t * SR), ratio = w.sr / SR, n = Math.floor((w.L.length - 2) / ratio), [gl, gr] = pan(p);
+  for (let k = 0; k < n; k++) { const pos = k * ratio, j = pos | 0, f = pos - j; orch.add(i0 + k, (w.L[j] + (w.L[j + 1] - w.L[j]) * f) * vel * gl * 1.4, (w.R[j] + (w.R[j + 1] - w.R[j]) * f) * vel * gr * 1.4); } }
+const PERC = 'Percussion/', TIMP_LO = PERC + 'Timpani/Timpani2_Hit_v4_rr1_Sum.wav', TIMP_HI = PERC + 'Timpani/Timpani3_Hit_v4_rr1_Sum.wav', TIMP_ROLL = PERC + 'Timpani/Rolls/Timpani3_Roll_v5_rr1_Sum.wav',
+  CRASH = PERC + 'cymbal-crash1_ff_rr1.wav', BD = PERC + 'BDrumNewhit_v7_rr1_Sum.wav';
+const snareRollFile = readdirSync(join(VS, 'Percussion')).find((f) => f.startsWith('Snare2-rollNS'));
+// a timpani roll / snare roll that ENDS on time te (crescendo by fade-in)
+function rollInto(file, te, len, vel = 0.5) { const w = readWav(join(VS, file)), ratio = w.sr / SR, n = Math.min(Math.round(len * SR), Math.floor((w.L.length - 2) / ratio)), i0 = Math.round((te - n / SR) * SR);
+  for (let k = 0; k < n; k++) { const pos = k * ratio, j = pos | 0, env = (k / n) ** 1.6; orch.add(i0 + k, w.L[j] * env * vel * 1.4, w.R[j] * env * vel * 1.4); } }
 
-// ---------- 0–1.6 · kick-off: whistle, stomp-stomp-clap, the chant alone ----------
+// ---------- harmony + fanfare hook ----------
+const CH = { Am: { v: [57, 60, 64, 69], r: 45 }, F: { v: [57, 60, 65, 69], r: 41 }, C: { v: [55, 60, 64, 67], r: 48 }, G: { v: [55, 59, 62, 67], r: 43 } };
+const PROG = [['Am', 'F'], ['C', 'G']];
+const pair = (bar) => PROG[bar % 2].map((k) => CH[k]);
+const HOOK_A = [[0, 76, 2], [2, 81, 3], [5, 83, 1], [6, 84, 2], [8, 83, 1], [9, 81, 1], [10, 79, 2], [12, 76, 4]];
+const HOOK_B = [[0, 76, 2], [2, 81, 3], [5, 83, 1], [6, 84, 2], [8, 86, 2], [10, 88, 2], [12, 84, 4]];
+const hookFor = (bar) => (bar % 2 ? HOOK_B : HOOK_A);
+function fanfare(bar, lvl = 1) { for (const [s, m, l] of hookFor(bar)) { const t = bt(bar) + s * S16, d = l * S16;
+  if (l >= 2) { play(I.tptL, t, m, d * 0.92, 0.55 * lvl, { p: -0.15, att: 0.01, rel: 0.08 }); play(I.hrnL, t, m - 12, d * 0.92, 0.42 * lvl, { p: 0.25, att: 0.015, rel: 0.1 }); }
+  play(I.tptS, t, m, 0, 0.5 * lvl, { p: 0.1 }); } }
+function brassPad(bar, lvl = 1) { pair(bar).forEach((c, h) => { const t = bt(bar, h * 2); play(I.tbnL, t, c.r + 12, BAR / 2 - 0.04, 0.35 * lvl, { p: -0.3, att: 0.03 }); play(I.tbnL, t, c.r + 19, BAR / 2 - 0.04, 0.3 * lvl, { p: 0.3, att: 0.03 }); play(I.hrnL, t, c.v[1], BAR / 2 - 0.04, 0.28 * lvl, { p: 0, att: 0.04 }); }); }
+function ostinato(bar, lvl = 1) { pair(bar).forEach((c, h) => { const v = c.v.map((m) => m + 12), seq = [v[3], v[1], v[2], v[1]];
+  for (let s = 0; s < 8; s++) { const t = bt(bar, h * 2) + s * S16; play(I.vln, t, seq[s % 4], 0, (s % 4 === 0 ? 0.42 : 0.3) * lvl, { p: 0.35 }); play(I.vla, t, seq[(s + 2) % 4] - 12, 0, 0.22 * lvl, { p: -0.2 }); }
+  for (let e = 0; e < 4; e++) play(I.vc, bt(bar, h * 2) + e * BEAT / 2, c.r, 0, 0.45 * lvl, { p: -0.35 }); }); }
+function stabs(t, chord, lvl = 1) { const c = CH[chord]; c.v.forEach((m, i) => { play(I.tptS, t, m + 12, 0, 0.42 * lvl, { p: -0.4 + i * 0.25 }); play(I.tbnS, t, m - 12, 0, 0.4 * lvl, { p: 0.4 - i * 0.25 }); play(I.hrnS, t, m, 0, 0.3 * lvl, { p: 0 }); }); hit(TIMP_HI, t, 0.6 * lvl); }
+function edm(bar, lvl = 1, { kicks: kk = 4 } = {}) { for (let b = 0; b < kk; b++) kick(bt(bar, b), 0.85 * lvl); for (const b of [1, 3]) clap(bt(bar, b), 0.4 * lvl);
+  for (let s = 0; s < 16; s++) hat(bt(bar) + s * S16, s % 4 === 2 ? 0.08 * lvl : 0.035 * lvl, s % 4 === 2, s % 2 ? 0.35 : -0.35);
+  pair(bar).forEach((c, h) => { for (let b = 0; b < 2; b++) sub(bt(bar, h * 2 + b + 0.5), c.r, BEAT * 0.42, 0.85 * lvl); for (let e = 0; e < 4; e++) saw(chords, bt(bar, h * 2) + e * BEAT / 2, c.v, BEAT * 0.4, 0.3 * lvl, { cut0: 4200, cut1: 1200, decay: 0.1 }); }); }
+const timps = (bar, lvl = 1) => { hit(TIMP_LO, bt(bar, 0), 0.75 * lvl, -0.1); hit(TIMP_HI, bt(bar, 2), 0.55 * lvl, 0.1); };
+
+// ---------- 0–1.6 · kick-off: whistle, timpani + brass stabs on the slams, a trumpet pickup ----------
 whistle(0.0, 0.32, 0.2);
-for (const b of [0, 1]) kick(bt(0, b) + 0.0, 0.85); clap(bt(0, 2), 0.5); kick(bt(0, 3), 0.7); clap(bt(0, 3) + 0.2, 0.4);
-hookChant(0, 0.85); sub(0.0, 45, 1.5, 0.4);
-// ---------- 1.6–4.8 · tactics: the beat enters, filtered ----------
-for (let bar = 1; bar < 3; bar++) { beatDrums(bar, 0.9); offBass(bar, 0.9); popChords(bar, 0.7, 1800 + (bar - 1) * 1800); hookLead(bar, { lvl: 0.8, cut0: 3000 + (bar - 1) * 2500 }); }
-roll(4.2, 4.78, 0.05, 0.3); riser(fx, 4.8, { dur: 1.0, vel: 0.26, f0: 300, f1: 9000, tonal: 0.3, seed: 12 });
-// ---------- 4.8–11.2 · DROP: teams + results — full groove, chant + lead ----------
-for (let bar = 3; bar < 7; bar++) { beatDrums(bar); offBass(bar); popChords(bar); hookLead(bar, { lvl: 0.9 }); hookChant(bar, bar < 5 ? 0.9 : 0.75, bar % 2 ? 'a' : 'o'); }
-// ---------- 11.2–14.4 · analysis: driving but scanning — filtered chords, 16th bass, hook on bells ----------
-for (let bar = 7; bar < 9; bar++) { beatDrums(bar, 0.85); pair(bar).forEach((c, h) => { for (let s = 0; s < 8; s++) sub(bt(bar, h * 2) + s * S16, c.r + 12, S16 * 0.7, s % 2 ? 0.45 : 0.65); }); popChords(bar, 0.6, 1600 + (bar - 7) * 2000);
-  for (const [s, m] of hookFor(bar)) tone(lead, bt(bar) + s * S16, mtof(m + 12), mtof(m + 12), { dur: 0.16, vel: 0.2, harm: 0.15, p: s % 2 ? 0.3 : -0.3 }); }
-roll(13.8, 14.38, 0.05, 0.3);
-// ---------- 14.4–16.0 · word blast: a horn stab + "hey!" on every beat, snare build into the final drop ----------
-[['Am', 0], ['G', 1], ['F', 2], ['E', 3]].forEach(([c, b]) => { const t = EV.blast[b]; kick(t, 1); horn(t, CH[c].v.map((m) => m + 12), 0.26, 0.55); chant(t, CH[c].v[3], 0.16, 0.5, { vowel: 'a', voices: 8 }); sub(t, CH[c].r + 12, 0.3, 0.9); });
-roll(15.6, 15.98, 0.08, 0.36); riser(fx, EV.end, { dur: 0.8, vel: 0.3, f0: 400, f1: 11000, tonal: 0.25, seed: 41 });
-// ---------- 16.0–20.0 · the host + title: the loudest chorus, then the last chord and the final whistle ----------
-for (let bar = 10; bar < 12; bar++) { beatDrums(bar, 1.15); offBass(bar, 1.12); popChords(bar, 1.12, 7000); hookLead(bar, { lvl: 1.1 }); hookChant(bar, 1.25, bar % 2 ? 'a' : 'o'); }
-beatDrums(12, 1.1, { to: 1 }); saw(chords, 19.2, [57, 64, 69, 72, 76], 0.6, 0.45, { cut0: 7000, cut1: 1100, decay: 0.4, voices: 7, width: 0.9 }); sub(19.2, 33, 0.6, 0.85); chant(19.2, 69, 0.55, 0.5, { voices: 8 });
-whistle(19.25, 0.12, 0.16); whistle(19.42, 0.12, 0.16); whistle(19.58, 0.32, 0.18);
+hit(BD, 0.0, 0.7); stabs(0.4, 'Am', 0.9); stabs(0.8, 'Am', 1.0); hit(CRASH, 0.4, 0.35, -0.3);
+[[1.2, 64], [1.3, 69], [1.4, 71], [1.5, 72]].forEach(([t, m]) => play(I.tptS, t, m + 12, 0, 0.45, { p: 0.1 })); rollInto(TIMP_ROLL, 1.6, 0.9, 0.5);
+// ---------- 1.6–4.8 · tactics: strings ostinato drives, horns hold, the pulse builds ----------
+ostinato(1, 1.15); ostinato(2, 1.3); brassPad(1, 0.95); brassPad(2, 1.05); timps(1, 0.9); timps(2, 1.0);
+edm(1, 0.6, { kicks: 4 }); edm(2, 0.85);
+rollInto(TIMP_ROLL, 4.8, 1.2, 0.7); rollInto(PERC + snareRollFile, 4.8, 1.0, 0.55); riser(fx, 4.8, { dur: 1.0, vel: 0.18, f0: 300, f1: 8000, tonal: 0.2, seed: 12 });
+// ---------- 4.8–11.2 · DROP: the anthem — fanfare + strings + brass + EDM ----------
+for (let bar = 3; bar < 7; bar++) { fanfare(bar, bar < 5 ? 1 : 0.92); ostinato(bar, 0.9); brassPad(bar, 0.85); timps(bar); edm(bar, 1); }
+hit(CRASH, 4.8, 0.7, -0.2); hit(CRASH, 8.0, 0.6, 0.2);
+// ---------- 11.2–14.4 · analysis: the trumpets rest — strings + low brass + a lighter pulse, rising ----------
+for (let bar = 7; bar < 9; bar++) { ostinato(bar, 1.25); brassPad(bar, 1.0); fanfare(bar, 0.45); edm(bar, 0.9); hit(TIMP_LO, bt(bar, 0), 0.7); }
+hit(CRASH, 11.2, 0.35); rollInto(TIMP_ROLL, 14.4, 1.0, 0.6);
+// ---------- 14.4–16.0 · word blast: one tutti brass stab per word ----------
+[['Am', 0], ['F', 1], ['C', 2], ['G', 3]].forEach(([c, b]) => { const t = 14.4 + b * BEAT; stabs(t, c, 1.05); kick(t, 1); sub(t, CH[c].r, 0.3, 0.9); });
+rollInto(PERC + snareRollFile, 16.0, 0.8, 0.65); riser(fx, EV.end, { dur: 0.8, vel: 0.22, f0: 400, f1: 11000, tonal: 0.25, seed: 41 });
+// ---------- 16.0–20.0 · the host + title: the fanfare at full strength, then the final chord and whistle ----------
+for (let bar = 10; bar < 12; bar++) { fanfare(bar, 1.2); ostinato(bar, 1.05); brassPad(bar, 1.05); timps(bar, 1.1); edm(bar, 1.1); }
+hit(CRASH, 16.0, 0.85, -0.2); hit(CRASH, 16.02, 0.6, 0.3);
+{ const t = 19.2; CH.Am.v.forEach((m, i) => { play(I.tptL, t, m + 12, 0.7, 0.5, { p: -0.4 + i * 0.25, att: 0.01, rel: 0.2 }); play(I.tbnL, t, m - 12, 0.7, 0.45, { p: 0.3 - i * 0.2, att: 0.01, rel: 0.2 }); play(I.vlnL, t, m + 12, 0.7, 0.4, { p: 0.4, att: 0.02, rel: 0.2 }); });
+  hit(CRASH, t, 0.8); hit(TIMP_LO, t, 0.9); hit(BD, t, 0.8); kick(t, 1.1); sub(t, 33, 0.6, 0.9); }
+whistle(19.3, 0.1, 0.15); whistle(19.45, 0.1, 0.15); whistle(19.6, 0.3, 0.17);
 
 // ---------- designed sound ----------
 texture(fx, 0, DUR, { level: 0.01, kind: 'room', seed: 19, fade: 0.6 });
@@ -135,7 +171,7 @@ for (let i = 0; i < 25; i++) click(fx, EV.clock[0] + i * 0.1, { vel: 0.035, brig
 for (let i = 0; i < 11; i++) bloop(fx, 11.9 + i * 0.04, 0.08, { f0: 900 + i * 70, f1: 1400 + i * 50, p: -0.6 + i * 0.12 });                        // nodes
 whooshBy(fx, 13.3, { dur: 0.9, vel: 0.12, direction: 'lr', low: 600, high: 5000, seed: 9 });                                                          // the run
 whooshBy(fx, 15.9, { dur: 0.35, vel: 0.24, direction: 'center', low: 200, high: 4000, seed: 31 });
-crowd(EV.end, 2.6, 0.22, { attack: 0.05, bright: 0.15 }); impact(fx, EV.end, { vel: 0.85, weight: 0.9 });
+crowd(EV.end, 2.6, 0.12, { attack: 0.05, bright: 0.15 }); impact(fx, EV.end, { vel: 0.85, weight: 0.9 });
 impact(fx, EV.freeze, { vel: 0.6, weight: 0.6 }); [69, 76, 81, 84, 88].forEach((m, i) => bell(fx, EV.freeze + 0.03 + i * 0.05, m + 12, 0.1, { p: -0.5 + i * 0.25, decay: 1.4 }));
 EV.sweep.forEach((t) => sweep(fx, t + 0.3, { dur: 0.6, vel: 0.1, up: true, seed: 29 }));
 
@@ -145,8 +181,8 @@ pump(chords, 0.75); pump(low, 0.5, 0.09); pump(lead, 0.25, 0.08);
 const hp = (bus, f) => { for (const ch of ['L', 'R']) { const a = biquad('hp', f, 0.7), x = bus[ch]; for (let i = 0; i < bus.n; i++) x[i] = a(x[i]); } };
 hp(chords, 170); hp(lead, 240); hp(fx, 40);
 const music = mk();
-drums.mixInto(music, 1); low.mixInto(music, 0.9); chords.mixInto(music, 0.62); lead.mixInto(music, 0.6); vox.mixInto(music, 1.5);
-const send = mk(); chords.mixInto(send, 0.3); lead.mixInto(send, 0.5); vox.mixInto(send, 0.7); reverb(send, { room: 0.78, damp: 0.4 }).mixInto(music, 0.5);
+drums.mixInto(music, 0.9); low.mixInto(music, 0.85); chords.mixInto(music, 0.5); lead.mixInto(music, 0.6); orch.mixInto(music, 1.25);
+const send = mk(); chords.mixInto(send, 0.3); orch.mixInto(send, 0.35); reverb(send, { room: 0.78, damp: 0.4 }).mixInto(music, 0.5);
 hp(music, 28);
 const sfx = mk(); fx.mixInto(sfx, 1);
 const sendF = mk(); fx.mixInto(sendF, 0.4); reverb(sendF, { room: 0.7, damp: 0.3 }).mixInto(sfx, 0.45);
@@ -159,5 +195,5 @@ const mix = new Bus(DUR); music.mixInto(mix, 1); sfx.mixInto(mix, 0.9);
 const lim = (b) => { for (const ch of ['L', 'R']) for (let i = 0; i < b.n; i++) b[ch][i] = Math.tanh(b[ch][i] * 1.6) / 1.6; };
 const norm0 = 0.9 / peak(mix); for (const b of [mix]) { for (const ch of ['L', 'R']) for (let i = 0; i < b.n; i++) b[ch][i] *= norm0; lim(b); }
 const norm = 0.5 / peak(mix);
-writeWav(join(OUT, 'music.wav'), music, { gain: norm * norm0 }); writeWav(join(OUT, 'sfx.wav'), sfx, { gain: norm * norm0 * 0.9 }); writeWav(join(OUT, 'mix.wav'), mix, { gain: norm });
-console.log(`film14 score: ${DUR}s 150 BPM A minor chant, norm ${norm.toFixed(3)}`);
+writeWav(join(OUT, 'music.wav'), music, { gain: norm * norm0 }); writeWav(join(OUT, 'sfx.wav'), sfx, { gain: norm * norm0 * 0.9 }); writeWav(join(OUT, 'mix.wav'), mix, { gain: norm }); writeWav(join(OUT, 'orch.wav'), orch, { gain: norm * norm0 * 1.25 });
+console.log(`film14 score: ${DUR}s 150 BPM A minor orchestral anthem, norm ${norm.toFixed(3)}`);

@@ -13,3 +13,11 @@ Placement: Facebook Reels 1080×1920, 20 s, 30 fps.
   two red stripes; Egypt red/black/white) and original roundels for the two leagues. Official crests are an owner decision (send the files to swap in).
 - Analysis graphics carry no invented statistics (heat map, network, radar and ring are unlabeled); the clock counts a match to ٩٠:٠٠.
 - Ending: the owner's footage 7.40–8.36 s (the title flies onto the screen behind the host, as in his video), then a freeze on «اتكلم كورة».
+
+## v2 additions (owner 2026-10-07)
+- Owner decision: official marks requested and supplied by the owner (standings screenshots with crests, Premier League logo photo, trophy photo,
+  players poster, Egyptian standings graphic). Used as supplied; Egypt's national-team crest was not supplied → flag.
+- Standings shown exactly as his screenshots (after five rounds): Egypt — بيراميدز ١٥، الزمالك ١٣، الأهلي ١٣، سيراميكا ١٢، مودرن سبورت ١٠;
+  Premier League — مان سيتي ١٥، أرسنال ١٢، برايتون ١٠، برينتفورد ٩، ليدز ٩.
+- Music: in the style of the 2026 World Cup anthem «DNA» (FIFA: Bocelli, Guetta, Megan Thee Stallion, EJAE — orchestral/operatic + EDM); no melody,
+  lyric or recording used. Recorded instruments: VSCO 2 CE (CC0).

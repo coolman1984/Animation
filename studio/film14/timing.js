@@ -5,7 +5,7 @@ export const EV = {
   whistle: 0, slamA: 0.4, slamB: 0.8, bounces: [0.4, 0.8, 1.2], kickBall: 1.2,
   dots: 1.75, arrows: 2.45, morph: 3.2, passes: [3.6, 3.9, 4.2], wipe: 4.6,
   teams: [4.8, 5.6, 6.4, 7.2],                  // الأهلي · الزمالك · منتخب مصر · the two leagues
-  cards: [8.0, 8.8, 9.6], cardsOut: 11.0,
+  cards: [8.0, 8.2, 8.4], cardsOut: 9.35, table: 9.6, tableOut: 11.0,
   clock: [11.4, 13.9], blast: [14.4, 14.8, 15.2, 15.6],
-  end: 16.0, freeze: 17.37, sweep: [17.5, 19.0], hold: 18.4,
+  end: 16.0, title: 17.25, freeze: 18.27, sweep: [18.0, 19.2], hold: 18.9,
 };

@@ -111,6 +111,9 @@ No required lesson quota or automatic reuse of a prior visual style.
 60. **When the owner calls the 3D "very bad", the fix is a different film, not a better 3D:** flat team colours, chalk, scoreboards and kinetic type at 150 BPM carried the same story with more energy and rendered 3× faster.
 61. **`hash()` returns 0–1, not an integer:** `hash(...) % 10` printed long fractions as score digits; always `floor(hash × n)`. (film13's floodlight flicker used the same wrong idiom.)
 62. **A card that slides in from off-frame must stay transparent until it is nearly home:** opaque words 900 px off the right edge were counted outside the safe area; gate the words' opacity on the last 15 % of the spring and exit by scale/fade.
+63. **When the web's music libraries are blocked, real instruments can still come through GitHub:** a CC0 orchestral sample library (VSCO 2 CE) cloned with a blob-less sparse checkout of 153 files turned a rejected synth score into recorded brass, strings and timpani in one pass. Measure each library's octave naming first ("A2" was 220 Hz).
+64. **A title "behind the person" needs a per-frame cut-out, not a better freeze:** rembg's human-seg model cut the host from 69 interpolated frames in 65 s; text placed between the plate and the cut-out reads as part of the scene.
+65. **Swap one `<img>` and await `decode()` instead of preloading every frame:** 138 decoded 1080² frames made Chromium fail an image decode; `render()` may return the decode promise and the capture waits.
 
 ## Production-path review (2026-10-04)
 A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs the outgoing scene beneath it until coverage completes. Morph retargeting starts from the actual current geometry and color and remains independent of render history. A printed failed gate must block delivery. Code regressions establish these contracts; existing exports were not re-rendered. Evidence: CODE_REVIEW_2026-10-04.md.

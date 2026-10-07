@@ -5,6 +5,9 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-07 — Film 14 v2: official logos, recorded-orchestra anthem, new host ending (DONE)
+Owner: put the official logos, the music is very bad, the ending is very bad, find energetic / World Cup music. Crests from his screenshots on shirts, result cards, a new two-league standings scene and an end parade; his Premier League photos as cards. Web music sites are blocked in this environment, so the score now uses recorded CC0 orchestra samples (VSCO 2 CE via GitHub) in the style of the 2026 World Cup anthem (orchestral + EDM), melody original. Ending rebuilt: 2× smooth slow motion, the host cut out per frame, «اتكلم كورة» flies onto the screen behind him. take04: every export gate PASS. Not verified: listening.
+
 ## 2026-10-07 — Film 14: «اتكلم كورة» 2D football motion showreel, 20 s Facebook Reels (DONE)
 Owner rejected film13's 3D: new 2D-only film at 150 BPM. The ball as hero through kick-off, a chalk tactics board (4-4-2 → 4-3-3, passes), one shirt flipping through الأهلي / الزمالك / منتخب مصر, colour roundels for the Egyptian league and the Premier League, three real sourced results as slot-machine scores, unlabeled analysis graphics with a match clock, a one-word-per-beat blast, and the host's own footage until the show title has flown in behind him, frozen in a gold frame. Original crowd-chant score. take02: every export gate PASS. Not verified: listening, real-time phone viewing; official crests not supplied.
 
