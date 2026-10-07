@@ -2,7 +2,9 @@
 
 Updated: 2026-10-07.
 
-**Latest scope: DONE — Film 14 v3 (owner 2026-10-07): rebalanced score (spectrum measured), title in front of the host. take05 every gate PASS. Not verified: listening.**
+**Latest scope: DONE — Film 14 v4 (owner 2026-10-07): score rebuilt from film12's sound at 150 BPM. take06 every gate PASS. Not verified: listening.**
+
+**Previous scope: DONE — Film 14 v3 (owner 2026-10-07): rebalanced score (spectrum measured), title in front of the host. take05 every gate PASS. Not verified: listening.**
 
 **Previous scope: DONE — Film 14 v2 (owner 2026-10-07): official logos from his screenshots, recorded CC0 orchestra anthem (VSCO 2 CE), new host ending with the title behind him. take04 every gate PASS. Not verified: listening.**
 

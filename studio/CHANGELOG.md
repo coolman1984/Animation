@@ -5,6 +5,9 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-07 — Film 14 v4: the score becomes film12's sound at 150 BPM (DONE)
+Owner: still bad; make it like the «مخطط المساحات» project's music, fast and distinctive. The score is now built from film12's own voices, mix, progression and hook, re-timed to 150 BPM and mapped onto film14's chapters, with film14's event sounds. take06: every export gate PASS. Not verified: listening.
+
 ## 2026-10-07 — Film 14 v3: balanced phone-ready score, title in front of the host (DONE)
 Owner: music still very bad; the show title must appear whole in front of him at the bottom. Measured the real fault (70–85 % of the energy below 150 Hz) and rebalanced the buses, rebuilt the kick/bass for small speakers and added a bright synth hook. Title: one extruded line in front of the host, light sweep inside the letters. take05: every export gate PASS. Not verified: listening; offered to re-time the film to any track the owner sends.
 

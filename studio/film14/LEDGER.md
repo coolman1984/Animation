@@ -31,3 +31,11 @@ Not verified: listening and real-time phone viewing. Standings are the owner's s
 | take05 (final) | all 11 export gates PASS: 20.000 s, 1080×1920, 30 fps, −14.3 LUFS, TP −3.1 dBTP, LRA 4.5 LU, 232 text lines zero issues, share 13.86 MB | — | stills at 17.5, 17.9, 19.5 s | delivered `out/film14/take05/film14-reels20-share-14MB.mp4` |
 
 Not verified: listening. The music cannot be judged by ear in this environment; the owner's own ear decides. Offer made: send a track and the film is re-timed to it.
+
+## v4 (owner 2026-10-07: "the music is still bad — make it like the «مخطط المساحات» project's music, fast and distinctive")
+| time | issue | sev | fix | result |
+|---|---|---|---|---|
+| audio | my own v2/v3 scores (orchestral samples, rebalanced buses) were rejected; the owner pointed at film12's score as the sound he wants | blocker | score rebuilt from film12's own code: same voices, mix recipe, progression Dm–Bb \| F–C and two-bar hook, re-timed to 150 BPM (bar 1.6 s), sections mapped to film14's chapters (build → drop → half-time break + 16th build → one tutti stab per word → loudest doubled-hook chorus → last chord + whistle); film14's event sounds kept, marimba notes on the cards and standings rows | take06 |
+| take06 (final) | all 11 export gates PASS: 20.000 s, 1080×1920, 30 fps, −14.0 LUFS, TP −5.6 dBTP, LRA 3.4 LU, 232 text lines zero issues, share 13.86 MB | — | — | delivered `out/film14/take06/film14-reels20-share-14MB.mp4` |
+
+Note: the score is as bass-heavy as film12's (≈ 80–90 % of the energy < 150 Hz) on purpose: that is the sound he asked for. Not verified: listening. The orchestral version is kept at takes/film14/score-v3-backup.mjs (local).
