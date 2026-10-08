@@ -21,3 +21,4 @@
 | Judge | chart 10.8–12.4 | chart filled 55 % of the width | minor | 88 px per point, x0 1470 | full width |
 | Judge | audio | lock hit not bigger than the others; ball hit softer | minor | lock impact + kick ×1.5–2, other cut hits 0.6, −2 dB outside the lock window | lock +3.9 dB, ball ≥ cuts |
 | Final take07 | — | wide25: all 11 gates PASS (−13.8 LUFS, −2.7 dBTP, 23.2 MB share); 26 timestamps inspected on the exported file; text gate fix ("الكورة" box at entry). Not verified: listening, real-speed viewing | — | — | delivered |
+| Owner v2 (take08) | all | owner: use the reference reel's music exactly, change nothing else | — | reference music fitted 117.57→115.2 BPM (rubberband, pitch kept), beats 0–23 twice with the repeat on the 12.5 s cut, same RMS as the old bed, effects unchanged; equalizer/relief now read the new mix | all 11 gates PASS (−14 LUFS, −3.2 dBTP); 48 hits on the grid, every cut within 9–15 ms of a hit. Licence of the track NOT verified |

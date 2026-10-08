@@ -3,7 +3,8 @@
 // bar 4 PL stab break, bar 5 bar-race ticks, bar 6 stop-time (manga), bars 7–8 data/host build, bar 9 riser +
 // a clap roll into the title lock at 20.833 s, bars 10–11 resolution. Also writes data/spectrum.js: 32 band
 // levels per frame measured from the final mix, so the on-screen equalizer is the real music, not a loop.
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SR, Bus, rng, pluck, bass, pad, kick, noiseHit, whoosh, bell, reverb, writeWav, peak, biquad, mtof, pan } from '../lib/audio.mjs';
@@ -163,6 +164,31 @@ kicks.mixInto(music, 1.0); clap.mixInto(music, 0.9); hats.mixInto(music, 1); low
 const send = new Bus(DUR + 2); stabs.mixInto(send, 0.35); lead.mixInto(send, 0.6); pads.mixInto(send, 0.35); clap.mixInto(send, 0.35); fx.mixInto(send, 0.25);
 reverb(send, { room: 0.8, damp: 0.45 }).mixInto(music, 0.8);
 hp(music, 28);
+// Owner order 2026-10-08: use the reference reel's own music, nothing else changes. Its tempo (117.57 BPM, measured
+// from 25 drum hits) is fitted to the picture's 115.2 BPM grid with rubberband (pitch unchanged, 2 % slower) so the
+// cuts stay on the beat; source beats 0–23 play twice, the repeat starting exactly on the 12.5 s flash cut.
+// It replaces the synthesised bed at the same RMS, so the effects and the mix chain keep their balance.
+const REF = join(HERE, 'source', 'reference-reel.mp4');
+if (existsSync(REF)) {
+  const TEMPO = 0.51032 / BEAT, r = spawnSync('ffmpeg', ['-v', 'error', '-i', REF, '-vn', '-af', `rubberband=tempo=${TEMPO.toFixed(5)}:pitchq=quality`, '-ac', '2', '-ar', String(SR), '-f', 'f32le', '-'], { maxBuffer: 1 << 28 });
+  if (r.status !== 0) throw new Error('reference music decode failed: ' + r.stderr);
+  const f = new Float32Array(r.stdout.buffer.slice(r.stdout.byteOffset, r.stdout.byteOffset + r.stdout.length)), n = f.length / 2;
+  const first = 0.04 / TEMPO - 0.012, PASS = 24 * BEAT, XF = 0.03;          // first drum hit lands 12 ms after t = 0
+  const at = (t) => { const i = Math.round((t + first) * SR); return i >= 0 && i < n ? i : -1; };
+  const rms = (b) => { let q = 0; for (let i = 0; i < b.n; i++) q += b.L[i] * b.L[i] + b.R[i] * b.R[i]; return Math.sqrt(q / (2 * b.n)); };
+  const target = rms(music), ref = new Bus(DUR + 2);
+  for (let i = 0; i < ref.n; i++) {
+    const t = i / SR, j = PASS - 0.012 - XF;                                       // crossfade ends just before the repeat's first hit
+    const g2 = Math.min(1, Math.max(0, (t - j) / XF)), g1 = 1 - g2;
+    let L = 0, R = 0;
+    if (g1 > 0) { const k = at(t); if (k >= 0) { L += f[2 * k] * g1; R += f[2 * k + 1] * g1; } }
+    if (g2 > 0) { const k = at(t - PASS); if (k >= 0) { L += f[2 * k] * g2; R += f[2 * k + 1] * g2; } }
+    ref.L[i] = L; ref.R[i] = R;
+  }
+  const g = target / (rms(ref) + 1e-9);
+  for (let i = 0; i < music.n; i++) { music.L[i] = ref.L[i] * g; music.R[i] = ref.R[i] * g; }
+  console.log(`music: reference reel, tempo ×${TEMPO.toFixed(4)}, two passes of 24 beats, level ×${g.toFixed(3)}`);
+}
 const sfx = new Bus(DUR + 2); fx.mixInto(sfx, 1.0);
 for (const b of [music, sfx]) {
   for (let i = 0; i < b.n; i++) { const t = i / SR; const g = t >= DUR ? 0 : t > DUR - 0.5 ? Math.cos(((t - (DUR - 0.5)) / 0.5) * Math.PI / 2) : 1; b.L[i] *= g; b.R[i] *= g; }
