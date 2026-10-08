@@ -1,0 +1,256 @@
+{
+  "version": 1,
+  "duration": 25,
+  "fps": 30,
+  "audience": "owners and managers of Egyptian private-tutoring centres (سناتر) who today reconcile attendance, fees and the cash drawer by hand at the end of each day",
+  "promise": "Hessa answers the four questions of the day — who attended, who paid, who owes, what is in the drawer — and puts the whole centre in front of the owner's eyes",
+  "cta": "راسلني واحجز عرض البرنامج — the owner's own poster CTA; no contact details on screen",
+  "direction": "One hero object, the app's amber dot, hops down four questions then becomes a student, a flood, a toggle and the logo tile. Worlds per chapter (ink, navy, amber, paper, night). Alexandria display + IBM Plex Sans Arabic for the UI. 120 BPM original score with a rising question motif that resolves on the logo.",
+  "assets": [
+    {
+      "id": "ui",
+      "path": "../../Teachers/docs/img/desk-door-card.jpg",
+      "role": "reference",
+      "rights": "Screens of the owner's own Hessa product (public repo, fictional sample data); used only as the reference the UI is rebuilt from, never placed in the film"
+    }
+  ],
+  "sound": {
+    "mode": "original",
+    "bpm": 120,
+    "note": "Synthesised in film12/score.mjs; no samples"
+  },
+  "creative": {
+    "viewer": "a centre owner at the end of a long day, adding up cash and paper",
+    "problem": "four questions every evening, answered from notebooks, receipts and memory",
+    "promise": "the four answers are one tap each, in one record that cannot be quietly edited",
+    "evidence": "the product's own screens (reception check-in, payment + receipt, dues list, close shift) and the owner-approved first-sale promise; all data fictional",
+    "emotion": "relief, clarity, trust",
+    "motif": "the amber dot as ball, student, coin, toggle and logo tile",
+    "palette": [
+      "#070D1C",
+      "#13294B",
+      "#F2A900",
+      "#EAF0F8",
+      "#FFFFFF"
+    ],
+    "light": "worlds per chapter: ink, navy, amber, daylight paper, night; soft UI shadows",
+    "typography": {
+      "display": "Alexandria",
+      "text": "IBM Plex Sans Arabic"
+    },
+    "camera": "locked frame with slow push-ins on holds; short impact shake on the hook landings and the logo hit",
+    "transitions": [
+      "dot ripple reveal",
+      "amber flood from the dot",
+      "page scroll",
+      "moon-toggle circle reveal",
+      "tiles collapse into the logo"
+    ],
+    "motion": "springs with squash and stretch, container morphs, FLIP list sort, seeded wave, counters",
+    "sound": "120 BPM kick from the first frame, hop notes E-G-A-C, cursor ticks, receipt printer chatter, vault-like close, full motif on the logo",
+    "pacing": "one idea per bar; holds 1.5–2 s for each answer line",
+    "payoff": "the four answers become the owner's poster line: the logo tile, حِصّة, «سنترك كله قدام عينك», «برنامج لإدارة السنتر»",
+    "cta": "راسلني واحجز عرض البرنامج",
+    "styleFrames": {
+      "hook": 1.6,
+      "proof": 9.9,
+      "payoff": 22.4
+    },
+    "proof": {
+      "start": 4,
+      "end": 12
+    }
+  },
+  "shots": [
+    {
+      "id": "hook",
+      "start": 0,
+      "end": 4,
+      "purpose": "name the owner's four evening questions; the amber dot hops down them like a bullet list",
+      "assetIds": [],
+      "craft": {
+        "scale": "wide type + ball",
+        "camera": "locked, landing shake",
+        "focal": "the dot and the lines",
+        "transition": "dot ripple reveal",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "ball hops",
+          "type birth"
+        ],
+        "audioCue": "kick from frame 1, four rising hop notes",
+        "layers": [
+          "text",
+          "particles"
+        ]
+      },
+      "copy": {
+        "text": "مين حضر؟ مين دفع؟ مين عليه فلوس؟ والدرج فيه كام؟",
+        "start": 0.5,
+        "end": 3.4
+      }
+    },
+    {
+      "id": "attendance",
+      "start": 4,
+      "end": 8,
+      "purpose": "who attended: one check-in button becomes a dot, a wave lights the student field and the counter",
+      "assetIds": [],
+      "craft": {
+        "scale": "UI card to wide field",
+        "camera": "slow push-in",
+        "focal": "the button, then the lit field",
+        "transition": "amber flood from the dot",
+        "depthLayers": 4,
+        "primaryMotions": [
+          "container morph",
+          "seeded wave"
+        ],
+        "audioCue": "typing ticks, click, check cascade",
+        "layers": [
+          "text",
+          "ui",
+          "particles"
+        ]
+      },
+      "copy": {
+        "text": "بكارت.. أو اسم.. أو رقم",
+        "start": 6.0,
+        "end": 7.9
+      }
+    },
+    {
+      "id": "paid",
+      "start": 8,
+      "end": 12,
+      "purpose": "who paid: a receipt prints; a reversal prints beside it instead of erasing it",
+      "assetIds": [],
+      "craft": {
+        "scale": "UI card and two receipts",
+        "camera": "slow lateral drift",
+        "focal": "the receipts",
+        "transition": "page scroll",
+        "depthLayers": 4,
+        "primaryMotions": [
+          "thermal print",
+          "reversal link"
+        ],
+        "audioCue": "printer chatter, stamp",
+        "layers": [
+          "text",
+          "ui",
+          "svg"
+        ]
+      },
+      "copy": {
+        "text": "الإيصال مبيتمسحش.. بيتعكس",
+        "start": 9.95,
+        "end": 11.75
+      }
+    },
+    {
+      "id": "dues",
+      "start": 12,
+      "end": 15,
+      "purpose": "who owes: rows spring into order by amount; the cursor flips the world to night",
+      "assetIds": [],
+      "craft": {
+        "scale": "UI list",
+        "camera": "locked",
+        "focal": "the sorted rows",
+        "transition": "moon-toggle circle reveal",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "FLIP sort",
+          "counter"
+        ],
+        "audioCue": "row whooshes, toggle click",
+        "layers": [
+          "text",
+          "ui"
+        ]
+      },
+      "copy": {
+        "text": "بالاسم.. وبالمبلغ",
+        "start": 13.0,
+        "end": 14.8
+      }
+    },
+    {
+      "id": "drawer",
+      "start": 15,
+      "end": 19,
+      "purpose": "what is in the drawer: cash counted by denomination until the difference is zero",
+      "assetIds": [],
+      "craft": {
+        "scale": "UI modal",
+        "camera": "slow push-in",
+        "focal": "the difference",
+        "transition": "tiles collapse into the logo",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "denomination counters",
+          "difference to zero"
+        ],
+        "audioCue": "counting ticks, vault close",
+        "layers": [
+          "text",
+          "ui"
+        ]
+      },
+      "copy": {
+        "text": "والفرق قدّامك",
+        "start": 17.2,
+        "end": 19.0
+      }
+    },
+    {
+      "id": "payoff",
+      "start": 19,
+      "end": 25,
+      "purpose": "the four answers become one clear record: logo tile, name, tagline, invitation",
+      "assetIds": [],
+      "craft": {
+        "scale": "four tiles to lock-up",
+        "camera": "pull-back then settled",
+        "focal": "the logo tile",
+        "transition": "tiles collapse into the logo",
+        "depthLayers": 3,
+        "primaryMotions": [
+          "tile collapse",
+          "logo pop"
+        ],
+        "audioCue": "riser into 20.0, full motif on C",
+        "layers": [
+          "text",
+          "ui",
+          "logo"
+        ]
+      },
+      "copy": {
+        "text": "سنترك كله قدام عينك",
+        "start": 21.3,
+        "end": 25
+      }
+    }
+  ],
+  "cues": [
+    {
+      "id": "hop4",
+      "t": 2.0,
+      "kind": "reveal",
+      "shot": "hook"
+    },
+    {
+      "id": "logo",
+      "t": 20.0,
+      "kind": "reveal",
+      "shot": "payoff",
+      "sound": {
+        "type": "impact",
+        "vel": 0.7,
+        "weight": 0.8
+      }
+    }
+  ]
+}

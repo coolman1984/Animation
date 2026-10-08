@@ -1,8 +1,14 @@
 # Studio status and session handoff
 
-Updated: 2026-10-04.
+Updated: 2026-10-08.
 
-**Latest scope: DONE — deep production-path code review and fixes (owner 2026-10-04).**
+**Latest scope: DONE — Film 12, Hessa (حِصّة) «٤ أسئلة», 25 s motion-graphics showreel-ad (owner 2026-10-08: world-class, "go all out", for the Teachers program).**
+- Source `studio/film12/` (BRIEF, config, production.json, timing.js shared clock, kit.js, film.js, score.mjs, LEDGER). One delivery 1920×1080 @ 30 fps, 25.00 s, 120 BPM original score; fonts Alexandria + IBM Plex Sans Arabic (already vendored). UI rebuilt from the product's own screens; all names/numbers fictional, footnote «عرض توضيحي · بيانات تجريبية».
+- Payoff uses the owner's own poster lines («سنترك كله قدام عينك», «برنامج لإدارة السنتر», «راسلني واحجز عرض البرنامج»); owner order: **never say «يشتغل من غير إنترنت»**. No phone/URL on screen (public repo, as on his posters).
+- Final take07 (local, not in git): all technical gates PASS (−14.1 LUFS, TP −3.2 dBTP, LRA 3.5, 12 text lines in the safe band, share 27.25 MB); mixcheck clean (phone band −6.2 LU under stereo). Two correction rounds used.
+- Not verified: listening, real-speed viewing on a phone, an independent reviewer; Meta overlays.
+
+**Previous scope: DONE — deep production-path code review and fixes (owner 2026-10-04).**
 - Fixed gate propagation/stale delivery, malformed clocks/specs, silent NaN audio, asset traversal/cache handling, narration caching/Windows launcher, scene cuts/morph continuity, format overrides, music phase/media metadata, bounded workers and browser startup deadlines.
 - Evidence: focused checks 37 passed/2 optional fixtures skipped; docs 5 passed; showreel check-only pipeline passes. Seven regression failures reproduced before fixes. Details: `studio/CODE_REVIEW_2026-10-04.md`.
 - Existing take02 exports predate these source fixes; no new full render. Real Whisper, listening and browser failure injection remain unverified. Work stays on the isolated integrated branch; original user edits/media preserved.
