@@ -89,8 +89,8 @@ const HOOK = {
 };
 const lvl = (t, lanes) => { for (const [a, b, v] of lanes) if (t >= a && t < b) return v; return 0; };
 // instrument of the hook per chapter (the same tune, a new voice each time)
-const HOOKV = [[4, 6, 'pluck', 0.8], [6, 10, 'pluck', 0.55], [10, 14, 'saw', 0.5], [14, 16, 'bell', 0.75], [16, 20, 'pluck', 0.75], [20, 24, 'lead', 1]];
-const DRUMS = [[4, 6, 1], [6, 10, 0.95], [10, 14, 0.9], [14, 16, 0.85], [16, 18, 0.95], [18, 19.85, 1.05], [20, 24, 1.1]];
+const HOOKV = [[4, 6, 'pluck', 0.8], [6, 10, 'pluck', 0.55], [10, 14, 'saw', 0.5], [14, 16, 'bell', 0.75], [16, 20, 'pluck', 0.75], [20, 22, 'lead', 0.5], [22, 24, 'bell', 0.65]]; // owner 2026-10-08: the ending was too loud and harsh
+const DRUMS = [[4, 6, 1], [6, 10, 0.95], [10, 14, 0.9], [14, 16, 0.85], [16, 18, 0.95], [18, 19.85, 1.05], [20, 22, 0.9], [22, 23, 0.8], [23, 24, 0.68]];
 
 // ---------- 0–4 · hook: thin, minor, heavy ----------
 pad(pads, 0, CH.Fm9.v, 2.0, 1.5, { cutoff: 700 }); pad(pads, 2, CH.Dbmaj7.v, 1.0, 1.5, { cutoff: 640 }); pad(pads, 3, CH.Eb7.v, 1.0, 1.6, { cutoff: 900 });
@@ -124,9 +124,9 @@ for (let k = 0; k < 10; k++) {
   const chords = split ? [[22, CH.Db], [23, CH.Eb]] : [[t0, c]];
   for (const [ta, cc] of chords) {
     const len = split ? 1 : BAR;
-    saw(pads, ta, cc.v, len * 0.98, 0.26 * (ta >= 20 ? 1.15 : 1), { cut0: ta >= 16 ? 4200 : 3000, cut1: 900, decay: 0.5 });
+    saw(pads, ta, cc.v, len * 0.98, 0.26 * (ta >= 22 ? 0.9 : 1), { cut0: ta >= 22 ? 2200 : ta >= 16 ? 4200 : 3000, cut1: ta >= 22 ? 600 : 900, decay: 0.5 });
     for (let e = 0; e < len / E8; e += 2) { sub(ta + e * E8, cc.r + 12, E8 * 1.7, 0.6); sub(ta + (e + 1.5) * E8, cc.r + 24, E8 * 0.4, 0.35); }
-    for (let e = 0; e < len / E8; e++) pluck(arp, ta + e * E8, cc.v[[0, 2, 1, 3][e % 4]] + 12, 0.11 * (ta >= 16 ? 1.2 : 1), { p: e % 2 ? 0.45 : -0.45, damp: 0.55, decay: 0.994, bright: 0.65, seed: 9 + k });
+    for (let e = 0; e < len / E8; e++) pluck(arp, ta + e * E8, cc.v[[0, 2, 1, 3][e % 4]] + 12, 0.11 * (ta >= 22 ? 0.8 : ta >= 16 ? 1.2 : 1), { p: e % 2 ? 0.45 : -0.45, damp: 0.55, decay: 0.994, bright: 0.65, seed: 9 + k });
   }
   // the hook
   const hv = HOOKV.find(([a, b]) => t0 >= a && t0 < b); if (!hv) continue;
@@ -138,7 +138,7 @@ for (let k = 0; k < 10; k++) {
       if (voice === 'pluck') { pluck(lead, tt, m, 0.32 * v, { p: 0.1, damp: 0.4, decay: 0.997, bright: 0.85, seed: 77 }); bell(lead, tt, m + 12, 0.06 * v, { decay: 0.6, p: 0.2 }); }
       else if (voice === 'saw') saw(lead, tt, [m - 12], dur, 0.45 * v, { cut0: 2600, cut1: 500, decay: 0.15, voices: 3, detune: 0.1 });
       else if (voice === 'bell') { bell(lead, tt, m, 0.22 * v, { decay: 1.0, p: -0.1 }); bell(lead, tt, m + 12, 0.07 * v, { decay: 0.7, p: 0.2 }); }
-      else { saw(lead, tt, [m], dur, 0.42 * v, { cut0: 5200, cut1: 1600, decay: 0.2, voices: 5, detune: 0.16, width: 0.6 }); pluck(lead, tt, m + 12, 0.14, { p: 0.15, damp: 0.4, decay: 0.996, bright: 0.9, seed: 78 }); }
+      else { saw(lead, tt, [m], dur, 0.42 * v, { cut0: 3000, cut1: 1100, decay: 0.2, voices: 5, detune: 0.16, width: 0.6 }); pluck(lead, tt, m, 0.1 * v, { p: 0.15, damp: 0.5, decay: 0.995, bright: 0.6, seed: 78 }); }
     }
   }
 }
@@ -190,12 +190,12 @@ sub(T.logo, 32 + 12, 1.5, 0.85);
 [68, 72, 75, 80, 84, 87].forEach((m, i) => bell(fx, T.logo + 0.02 + i * 0.05, m + 12, 0.11, { decay: 1.8, p: -0.5 + i * 0.2 }));
 bell(fx, T.word2, 96, 0.08, { decay: 1.0 });
 sweep(fx, T.tag, { dur: 0.6, vel: 0.06, up: true, seed: 32 });
-tone(fx, T.cta, 800, 1300, { dur: 0.08, vel: 0.2 }); uiConfirm(fx, T.cta + 0.2, { vel: 0.18, notes: [80, 87] });
-whooshBy(fx, T.shine, { dur: 0.7, vel: 0.08, direction: 'lr', low: 600, high: 6000, seed: 33 });
+tone(fx, T.cta, 700, 1000, { dur: 0.08, vel: 0.1 }); uiConfirm(fx, T.cta + 0.2, { vel: 0.08, notes: [75, 80] });
+whooshBy(fx, T.shine, { dur: 0.7, vel: 0.04, direction: 'lr', low: 400, high: 3000, seed: 33 });
 // the final A♭ rings under the hold
-saw(pads, 24, [44, 56, 60, 63, 68, 72], 1.0, 0.34, { cut0: 3400, cut1: 1000, decay: 0.8, voices: 5, width: 0.7 });
-kick(24, 0.8); sub(24, 32 + 12, 0.95, 0.8);
-[75, 80, 84, 87, 92].forEach((m, i) => bell(fx, 24.03 + i * 0.07, m, 0.1, { decay: 2.2, p: -0.4 + i * 0.2 }));
+saw(pads, 24, [44, 56, 60, 63, 68], 1.0, 0.22, { cut0: 1600, cut1: 700, decay: 0.8, voices: 5, width: 0.7 });
+kick(24, 0.45); sub(24, 32 + 12, 0.95, 0.55);
+[63, 68, 72, 75].forEach((m, i) => bell(fx, 24.03 + i * 0.09, m, 0.045, { decay: 2.2, p: -0.3 + i * 0.2 }));
 placeCues(fx, plan.cues);
 
 // ---------- processing ----------
@@ -214,7 +214,10 @@ hp(music, 28);
 const sfx = mk(); fx.mixInto(sfx, 1);
 const sendF = mk(); fx.mixInto(sendF, 0.4); reverb(sendF, { room: 0.72, damp: 0.3 }).mixInto(sfx, 0.45);
 // end: a short fade in the last 0.35 s
-for (const b of [music, sfx]) for (let i = 0; i < b.n; i++) { const t = i / SR, g = t > DUR - 0.35 ? Math.max(0, Math.cos(((t - (DUR - 0.35)) / 0.35) * Math.PI / 2)) : 1; b.L[i] *= g; b.R[i] *= g; }
+// the ending settles: a gentle −3 dB tilt from 21.5 to 24, a soft top-end shelf over the payoff, then a 1 s fade
+const lpEnd = (bus) => { for (const ch of ['L', 'R']) { const a = biquad('lp', 5000, 0.7), x = bus[ch]; for (let i = Math.round(20 * SR); i < bus.n; i++) { const t = i / SR, y = a(x[i]), w = Math.min(1, Math.max(0, (t - 20) / 0.5)); x[i] = x[i] * (1 - w) + y * w; } } };
+lpEnd(music); lpEnd(sfx);
+for (const b of [music, sfx]) for (let i = 0; i < b.n; i++) { const t = i / SR, tilt = 1 - 0.22 * Math.min(1, Math.max(0, (t - 21.5) / 3)), g = (t > DUR - 1 ? Math.max(0, Math.cos(((t - (DUR - 1)) / 1) * Math.PI / 2)) : 1) * tilt; b.L[i] *= g; b.R[i] *= g; }
 const out = (b) => { const o = new Bus(DUR); for (let i = 0; i < o.n; i++) { o.L[i] = b.L[i]; o.R[i] = b.R[i]; } return o; };
 const M = out(music), F = out(sfx), mix = new Bus(DUR); M.mixInto(mix, 1); F.mixInto(mix, 0.95);
 const norm = 0.5 / peak(mix);

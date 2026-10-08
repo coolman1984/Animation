@@ -14,7 +14,8 @@ config.mjs, timing.js shared clock, film.js, score.mjs). Fonts: Alexandria + Rea
 | take04 | final | delivered (first version): 11/11 gates PASS — 25.000 s, 1080×1920, 30 fps, −14.2 LUFS, TP −3.3 dBTP, LRA 4.2, 140 text lines in the safe band, no freeze/black, share 15.39 MB |
 | take05 | final | owner revision 1: «يشتغل من غير إنترنت» removed (badge, icon, sound cue); 11/11 PASS — superseded |
 | take06 | final | owner revision 2: «MIZAN» touched the dots of «ميزان» in both lock-ups → re-spaced; text gate 1 boundary-frame overlap (sub lines at 6.0) FAIL |
-| take07 | final | **delivered**: 11/11 gates PASS — 25.000 s, 1080×1920, 30 fps, −14.2 LUFS, TP −3.3, LRA 4.2, 139 text lines, share 15.38 MB; both lock-ups checked at 100 % on the share copy |
+| take07 | final | delivered (v2): 11/11 gates PASS — 25.000 s, 1080×1920, 30 fps, −14.2 LUFS, TP −3.3, LRA 4.2, 139 text lines, share 15.38 MB; both lock-ups checked at 100 % on the share copy |
+| take08 | final | **delivered (v3)**: owner revision 3 — ending too loud and harsh. Picture unchanged (cached). 11/11 PASS: −13.7 LUFS, TP −3.2, LRA 1.8, share 15.4 MB |
 
 ## Issues (time → issue → severity → fix → result)
 | # | time | issue | sev | fix | result |
@@ -45,3 +46,4 @@ Correction rounds used: 2 of 2 (review take01 → take02; final take03 → take0
 ## Owner revisions (2026-10-08)
 1. «شيل جملة بيشتغل من غير انترنت دى خالص» → the offline badge, its icon and its sound cue are gone from the payoff (take05).
 2. «ميزان بالإنجليزي داخلة فى اللوجو العربى» → the Latin «MIZAN» collided with the descending dots of «ميزان» (Alexandria's dots fall ~0.3 em below the line box's centre + half size). Name lock-up: word 940→920, MIZAN 1072→1092, subs 1150/1216 at 44 px; payoff: logo centre 560→540, word 832→806, MIZAN 972→1002, tagline 1062→1072 (take06/07). Lesson: the text gate measures line boxes and missed it; a 100 % crop of the Arabic + Latin lock-up is the check.
+3. «الموسيقى فى آخر ٣ ثوانى عالية جدا و حادة جدا» — measured on take07's share copy: 20.5–24 s momentary −11.5 LUFS vs −15…−17 for the body (+5 dB), 2–6 kHz −9 dB and 6–16 kHz −27 dB of the band total. Fix (score only): payoff hook lead 1 → 0.5 and its filter 5.2 → 3 kHz, the last bar's hook on soft bells, drums 1.1 → 0.9/0.8/0.68, darker pads and final chord, quieter CTA/shine accents, a 5 kHz low-pass shelf from 20 s, a −2 dB tilt 21.5–24.5 and a 1 s fade. take08 share copy: last 3 s −17…−18 vs body −13…−15.5; 2–6 kHz −16.7 dB, 6–16 kHz −39 dB. The same request also repeated «remove the offline line»: already absent from take07 (code and text timeline checked).
