@@ -1,8 +1,12 @@
 # Studio status and session handoff
 
-Updated: 2026-10-04.
+Updated: 2026-10-08.
 
-**Latest scope: DONE — deep production-path code review and fixes (owner 2026-10-04).**
+**Latest scope: DONE — Film 12, «إتكلم كورة» 25 s voxel motion-graphics showreel ad, 1920×1080 (owner 2026-10-08).**
+- `studio/film12/` (BRIEF, LEDGER, production.json, config with ownerRequest, voxel.js, pitch3d.js, film.js, score.mjs, plates.py). One independent review, majors fixed in one round. See the film LEDGER and CHANGELOG 2026-10-08.
+- Truth notes: bar-race numbers are the owner's standings screenshot (perishable); tactical graphics are illustrative; PL logo/trophy/players are third-party topic imagery — owner must confirm clearance for paid use. Not verified: listening, real-speed viewing.
+
+**Previous scope: DONE — deep production-path code review and fixes (owner 2026-10-04).**
 - Fixed gate propagation/stale delivery, malformed clocks/specs, silent NaN audio, asset traversal/cache handling, narration caching/Windows launcher, scene cuts/morph continuity, format overrides, music phase/media metadata, bounded workers and browser startup deadlines.
 - Evidence: focused checks 37 passed/2 optional fixtures skipped; docs 5 passed; showreel check-only pipeline passes. Seven regression failures reproduced before fixes. Details: `studio/CODE_REVIEW_2026-10-04.md`.
 - Existing take02 exports predate these source fixes; no new full render. Real Whisper, listening and browser failure injection remain unverified. Work stays on the isolated integrated branch; original user edits/media preserved.

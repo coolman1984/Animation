@@ -5,6 +5,8 @@
 | El Messiri (variable) | `assets/fonts/ElMessiri.ttf` | SIL OFL 1.1 — `assets/fonts/OFL-ElMessiri.txt` (google/fonts) |
 | Aref Ruqaa Regular/Bold | `assets/fonts/ArefRuqaa-*.ttf` | SIL OFL 1.1 — `assets/fonts/OFL-ArefRuqaa.txt` |
 | IBM Plex Sans Arabic Regular/Medium | `assets/fonts/IBMPlexSansArabic-*.ttf` | SIL OFL 1.1 — `assets/fonts/OFL-IBMPlexSansArabic.txt` |
+| Lalezar Regular | `assets/fonts/Lalezar-Regular.ttf` | SIL OFL 1.1 — `assets/fonts/OFL-Lalezar.txt` (google/fonts) |
+| Cairo (variable 200–1000, Arabic + Latin) | `assets/fonts/Cairo.ttf` | SIL OFL 1.1 — `assets/fonts/OFL-Cairo.txt` (google/fonts) |
 | Montserrat (variable) | `assets/fonts/Montserrat.ttf` | SIL OFL 1.1 — `assets/fonts/OFL-Montserrat.txt` |
 | Archivo (variable wdth/wght) | `assets/fonts/Archivo.ttf` | SIL OFL 1.1 — `assets/fonts/OFL-archivo.txt` (google/fonts) |
 | Instrument Serif Italic | `assets/fonts/InstrumentSerif-Italic.ttf` | SIL OFL 1.1 — `assets/fonts/OFL-instrumentserif.txt` |
@@ -63,3 +65,5 @@ FORM / FUNCTION (2026-10-04): all sculptures, generative fields, pointer and Orb
 
 
 Code review (2026-10-04): no new media, models, fonts or dependencies. Supplied assets must declare `rights`; optional supplied music/voice use `audio.musicRights`, `audio.licenseScope`, `audio.voiceRights`. Production plans and cache inputs include actual media files. Missing permissions fail final preflight; no license is fabricated. Temporary test libraries and WAVs are removed after checks.
+
+Film 12 (2026-10-08): owner-supplied images/video in git-ignored `film12/source/` — `players.jpg` (three Premier League players), `pl-logo.jpg`, `trophy.jpg`, `table.jpg` (Egyptian league standings after 5 rounds), `channel-intro.mp4` (host frame at 8.0 s; the owner's own channel intro). Cut-outs in `film12/plates/` are produced by `film12/plates.py` (MediaPipe selfie-multiclass segmenter, Apache 2.0, downloaded at run time and not committed; OpenCV grabCut for the trophy; colour key for the logo). Third-party marks and likenesses (PL logo/trophy, kits, players) are topic imagery only, no affiliation claimed — the owner must confirm clearance before paid use. The style-reference reel (X screen recording) is not used, picture or sound. Music/SFX are synthesised in `film12/score.mjs`. Fonts Lalezar and Cairo (OFL) added; `film12/data/spectrum.js` is generated from that score.
