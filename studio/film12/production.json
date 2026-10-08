@@ -47,15 +47,15 @@
   "sound": {
     "mode": "licensed",
     "assetId": "refmusic",
-    "bpm": 115.2,
+    "bpm": 117.57,
     "licenseScope": "NOT verified — supplied and ordered by the owner; the owner is responsible for clearing it before publishing (platforms may mute or claim it).",
-    "note": "Reference music fitted from 117.57 to 115.2 BPM with rubberband (pitch unchanged), source beats 0–23 played twice, repeat on the 12.5 s cut; code effects kept as before."
+    "note": "Reference music untouched (117.57 BPM, original pitch); the picture is retimed to it (film12/timing.js, real t × 1.0206 = authored time). Source beats 0–23, then the track repeats from its start on the flash cut (12.248 s). Code effects kept, moved onto the same clock."
   },
   "shots": [
     {
       "id": "ball",
-      "start": 0,
-      "end": 2.0833,
+      "start": 0.0,
+      "end": 2.041,
       "purpose": "hook: a football assembled from cubes — establishes the voxel language in the first second",
       "assetIds": [],
       "craft": {
@@ -72,14 +72,14 @@
       },
       "copy": {
         "text": "الكورة",
-        "start": 1.08,
-        "end": 2.0
+        "start": 1.058,
+        "end": 1.96
       }
     },
     {
       "id": "pitch",
-      "start": 2.0833,
-      "end": 6.25,
+      "start": 2.041,
+      "end": 6.124,
       "purpose": "tactics: a cube pitch, formations, live pitch-control, passing chain, offside wall, goal",
       "assetIds": [],
       "craft": {
@@ -96,14 +96,14 @@
       },
       "copy": {
         "text": "مش حظ دي خطة",
-        "start": 2.5,
-        "end": 5.55
+        "start": 2.45,
+        "end": 5.438
       }
     },
     {
       "id": "players",
-      "start": 6.25,
-      "end": 8.3333,
+      "start": 6.124,
+      "end": 8.165,
       "purpose": "who: three star players rebuilt from cubes",
       "assetIds": [
         "players"
@@ -121,14 +121,14 @@
       },
       "copy": {
         "text": "كل لاعب له دور",
-        "start": 6.62,
-        "end": 7.85
+        "start": 6.486,
+        "end": 7.692
       }
     },
     {
       "id": "pl",
-      "start": 8.3333,
-      "end": 10.4167,
+      "start": 8.165,
+      "end": 10.206,
       "purpose": "where: Premier League logo and trophy",
       "assetIds": [
         "pllogo",
@@ -147,14 +147,14 @@
       },
       "copy": {
         "text": "من البريميرليج",
-        "start": 8.7,
-        "end": 9.95
+        "start": 8.524,
+        "end": 9.749
       }
     },
     {
       "id": "egypt",
-      "start": 10.4167,
-      "end": 12.5,
+      "start": 10.206,
+      "end": 12.248,
       "purpose": "where: the Egyptian league table as a cube bar-race (real standings from the screenshot)",
       "assetIds": [
         "table"
@@ -173,14 +173,14 @@
       },
       "copy": {
         "text": "للدوري المصري",
-        "start": 10.78,
-        "end": 12.1
+        "start": 10.562,
+        "end": 11.856
       }
     },
     {
       "id": "manga",
-      "start": 12.5,
-      "end": 14.5833,
+      "start": 12.248,
+      "end": 14.289,
       "purpose": "intensity: pressing and decisions in manga language",
       "assetIds": [
         "players"
@@ -199,14 +199,14 @@
       },
       "copy": {
         "text": "كل ضغطة كل قرار",
-        "start": 12.58,
-        "end": 14.2
+        "start": 12.326,
+        "end": 13.913
       }
     },
     {
       "id": "data",
-      "start": 14.5833,
-      "end": 16.6667,
+      "start": 14.289,
+      "end": 16.33,
       "purpose": "numbers: heat map, shot map and radar built from cubes (illustrative, no real match claimed)",
       "assetIds": [],
       "craft": {
@@ -223,14 +223,14 @@
       },
       "copy": {
         "text": "والأرقام بتحكي",
-        "start": 14.95,
-        "end": 16.2
+        "start": 14.648,
+        "end": 15.873
       }
     },
     {
       "id": "host",
-      "start": 16.6667,
-      "end": 18.75,
+      "start": 16.33,
+      "end": 18.372,
       "purpose": "who explains: the channel host, cubes resolve into the real face",
       "assetIds": [
         "host"
@@ -248,13 +248,13 @@
       },
       "copy": {
         "text": "نحلّلها ونبسّطها",
-        "start": 17.0,
-        "end": 18.15
+        "start": 16.657,
+        "end": 17.784
       }
     },
     {
       "id": "title",
-      "start": 18.75,
+      "start": 18.372,
       "end": 25,
       "purpose": "brand: cubes build the channel name, lock on the downbeat, tagline and call to action, held",
       "assetIds": [],
@@ -272,7 +272,7 @@
       },
       "copy": {
         "text": "إتكلم كورة مع تيتو",
-        "start": 20.83,
+        "start": 20.41,
         "end": 25
       }
     }

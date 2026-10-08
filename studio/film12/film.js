@@ -8,6 +8,7 @@ import { microDrift } from '../lib/cinema.js';
 import { TAU, easeOutCubic, easeInOut, easeOutBack, hex, rgb, faces, makeVoxels, textCanvas, cube, drawVoxels, alphaBBox, silhouette } from './voxel.js';
 import { makePitch, drawPitch } from './pitch3d.js';
 import SPEC from './data/spectrum.js';
+import { SCALE } from './timing.js';
 
 const P = (f) => new URL(`./plates/${f}`, import.meta.url).href;
 const BPM = 115.2, BEAT = 60 / BPM, BAR = 4 * BEAT;
@@ -21,7 +22,7 @@ const S = {}, L = {};
 
 // ---------- audio-reactive helpers ----------
 const specRow = (f) => SPEC.data[clamp(Math.round(f), 0, SPEC.data.length - 1)];
-function band(t, bi) { const f = clamp(t * SPEC.fps, 0, SPEC.data.length - 1), a = Math.floor(f), b = Math.min(SPEC.data.length - 1, a + 1), k = f - a, x = clamp(bi, 0, SPEC.bands - 1), i0 = Math.floor(x), i1 = Math.min(SPEC.bands - 1, i0 + 1), kb = x - i0, row = (r) => lerp(SPEC.data[r][i0], SPEC.data[r][i1], kb); return lerp(row(a), row(b), k) / 255; }
+function band(t, bi) { const f = clamp((t / SCALE) * SPEC.fps, 0, SPEC.data.length - 1), a = Math.floor(f), b = Math.min(SPEC.data.length - 1, a + 1), k = f - a, x = clamp(bi, 0, SPEC.bands - 1), i0 = Math.floor(x), i1 = Math.min(SPEC.bands - 1, i0 + 1), kb = x - i0, row = (r) => lerp(SPEC.data[r][i0], SPEC.data[r][i1], kb); return lerp(row(a), row(b), k) / 255; }
 const bassE = (t) => (band(t, 1) + band(t, 2) + band(t, 3) + band(t, 4)) / 4;
 const kickEnv = (t) => (t < 1.0417 ? 0 : Math.exp(-((t < 20.9 ? (t - 1.0417) % BEAT : t - 20.83)) / 0.17));
 function eq(t, color, { alpha = 0.32, hmax = 0.17, n = 64, y = H, x0 = 0, w = W } = {}) {
@@ -427,7 +428,8 @@ export default {
     L.cta = textLine(layer, 'تابع القناة', { ...BODY, fontSize: '72px', lineHeight: 1.1, color: C.ink, top: H * 0.835 + 'px', left: (W / 2 - 260) + 'px', width: '520px', justifyContent: 'center', background: C.yellow, padding: '14px 0 20px', borderRadius: '999px', boxShadow: '0 10px 0 #a67f00, 0 22px 40px rgba(0,0,0,0.3)' });
     grainTiles = [];
   },
-  render(t, frame) {
+  render(tReal, frame) {
+    const t = tReal * SCALE; // picture follows the reference music's tempo (timing.js)
     if (!built) build();
     const [sx, sy] = shake(t); world.style.transform = `translate(${sx.toFixed(1)}px,${sy.toFixed(1)}px)`;
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, W, H);

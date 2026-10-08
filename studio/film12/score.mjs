@@ -5,6 +5,7 @@
 // levels per frame measured from the final mix, so the on-screen equalizer is the real music, not a loop.
 import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
+import { SCALE, MUSIC_BEAT, FIRST_HIT, LEAD } from './timing.js';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SR, Bus, rng, pluck, bass, pad, kick, noiseHit, whoosh, bell, reverb, writeWav, peak, biquad, mtof, pan } from '../lib/audio.mjs';
@@ -164,16 +165,15 @@ kicks.mixInto(music, 1.0); clap.mixInto(music, 0.9); hats.mixInto(music, 1); low
 const send = new Bus(DUR + 2); stabs.mixInto(send, 0.35); lead.mixInto(send, 0.6); pads.mixInto(send, 0.35); clap.mixInto(send, 0.35); fx.mixInto(send, 0.25);
 reverb(send, { room: 0.8, damp: 0.45 }).mixInto(music, 0.8);
 hp(music, 28);
-// Owner order 2026-10-08: use the reference reel's own music, nothing else changes. Its tempo (117.57 BPM, measured
-// from 25 drum hits) is fitted to the picture's 115.2 BPM grid with rubberband (pitch unchanged, 2 % slower) so the
-// cuts stay on the beat; source beats 0–23 play twice, the repeat starting exactly on the 12.5 s flash cut.
+// Owner order 2026-10-08: the reference reel's own music, untouched (original tempo and pitch). The picture follows it
+// (timing.js). Source beats 0–23 play, then the track repeats from its start exactly on the 12.5 s (film-time) flash cut.
 // It replaces the synthesised bed at the same RMS, so the effects and the mix chain keep their balance.
 const REF = join(HERE, 'source', 'reference-reel.mp4');
 if (existsSync(REF)) {
-  const TEMPO = 0.51032 / BEAT, r = spawnSync('ffmpeg', ['-v', 'error', '-i', REF, '-vn', '-af', `rubberband=tempo=${TEMPO.toFixed(5)}:pitchq=quality`, '-ac', '2', '-ar', String(SR), '-f', 'f32le', '-'], { maxBuffer: 1 << 28 });
+  const r = spawnSync('ffmpeg', ['-v', 'error', '-i', REF, '-vn', '-ac', '2', '-ar', String(SR), '-f', 'f32le', '-'], { maxBuffer: 1 << 28 });
   if (r.status !== 0) throw new Error('reference music decode failed: ' + r.stderr);
   const f = new Float32Array(r.stdout.buffer.slice(r.stdout.byteOffset, r.stdout.byteOffset + r.stdout.length)), n = f.length / 2;
-  const first = 0.04 / TEMPO - 0.012, PASS = 24 * BEAT, XF = 0.03;          // first drum hit lands 12 ms after t = 0
+  const first = FIRST_HIT - LEAD, PASS = 24 * MUSIC_BEAT, XF = 0.03;          // first drum hit lands 12 ms after t = 0
   const at = (t) => { const i = Math.round((t + first) * SR); return i >= 0 && i < n ? i : -1; };
   const rms = (b) => { let q = 0; for (let i = 0; i < b.n; i++) q += b.L[i] * b.L[i] + b.R[i] * b.R[i]; return Math.sqrt(q / (2 * b.n)); };
   const target = rms(music), ref = new Bus(DUR + 2);
@@ -187,9 +187,10 @@ if (existsSync(REF)) {
   }
   const g = target / (rms(ref) + 1e-9);
   for (let i = 0; i < music.n; i++) { music.L[i] = ref.L[i] * g; music.R[i] = ref.R[i] * g; }
-  console.log(`music: reference reel, tempo ×${TEMPO.toFixed(4)}, two passes of 24 beats, level ×${g.toFixed(3)}`);
+  console.log(`music: reference reel at its own tempo, repeat at ${PASS.toFixed(3)} s, level ×${g.toFixed(3)}`);
 }
-const sfx = new Bus(DUR + 2); fx.mixInto(sfx, 1.0);
+const sfx = new Bus(DUR + 2);
+for (let i = 0; i < sfx.n; i++) { const x = i * SCALE, k = Math.floor(x), u = x - k; if (k + 1 >= fx.n) break; sfx.L[i] = fx.L[k] * (1 - u) + fx.L[k + 1] * u; sfx.R[i] = fx.R[k] * (1 - u) + fx.R[k + 1] * u; } // film time → real time
 for (const b of [music, sfx]) {
   for (let i = 0; i < b.n; i++) { const t = i / SR; const g = t >= DUR ? 0 : t > DUR - 0.5 ? Math.cos(((t - (DUR - 0.5)) / 0.5) * Math.PI / 2) : 1; b.L[i] *= g; b.R[i] *= g; }
   b.n = DUR * SR; b.L = b.L.subarray(0, b.n); b.R = b.R.subarray(0, b.n);
@@ -212,7 +213,7 @@ function limiter(bus, thr, rel = 0.09, look = 0.003) {
 limiter(mix, 0.42);
 // the title lock must be the biggest moment: everything else sits ~2 dB lower, the lock window (20.75–21.4 s) keeps full level
 const ss = (x) => { x = Math.min(1, Math.max(0, x)); return x * x * (3 - 2 * x); };
-for (let i = 0; i < mix.n; i++) { const t = i / SR, k = ss((t - 20.7) / 0.1) * (1 - ss((t - 21.0) / 0.5)), g = 0.78 + 0.22 * k; mix.L[i] *= g; mix.R[i] *= g; }
+for (let i = 0; i < mix.n; i++) { const t = (i / SR) * SCALE, k = ss((t - 20.7) / 0.1) * (1 - ss((t - 21.0) / 0.5)), g = 0.78 + 0.22 * k; mix.L[i] *= g; mix.R[i] *= g; }
 for (let i = 0; i < mix.n; i++) { mix.L[i] = Math.tanh(mix.L[i] * 1.5) / 1.5; mix.R[i] = Math.tanh(mix.R[i] * 1.5) / 1.5; }
 const norm = 0.55 / peak(mix);
 writeWav(join(OUT, 'music.wav'), music, { gain: norm }); writeWav(join(OUT, 'sfx.wav'), sfx, { gain: norm }); writeWav(join(OUT, 'mix.wav'), mix, { gain: norm });

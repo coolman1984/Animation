@@ -5,6 +5,9 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-08 — Film 12 v3: picture follows the untouched reference music (scope DONE)
+Owner: keep the music exact, sync the picture to it. Removed the 2 % tempo fit; `film12/timing.js` maps real time to authored time (×1.0206) for picture, spectrum and effects. take09: all gates PASS, every cut within 24 ms of a drum hit. Licence not verified; not listened to.
+
 ## 2026-10-08 — Film 12 v2: the reference reel's music (scope DONE)
 Owner: use the reference music exactly, change nothing else. `score.mjs` loads `source/reference-reel.mp4`, fits 117.57 → 115.2 BPM with rubberband (2 % slower, pitch kept) so every cut stays within 15 ms of a drum hit, plays source beats 0–23 twice (repeat on the 12.5 s flash cut, 30 ms crossfade), matches the old bed's RMS; effects and picture unchanged except the music-reactive equalizer/relief. take08: all gates PASS. Licence of the track not verified; not listened to.
 
