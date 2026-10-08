@@ -5,6 +5,9 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-08 — Film 13: the 9:16 Reels cut of film 12 (DONE)
+Owner request: the vertical version. `film13/` re-composes every chapter for 1080×1920 (not letterboxed): ball along the right margin, the student field turned 90° (7×17), the form closing before two receipts print side by side, one column of rows, 2×2 tiles into a stacked lock-up. Same clock (`film12/timing.js`), same score (film13/score.mjs builds film 12's and copies it), same copy. Safe band x 65–1015, y 269–1248. take02 all gates PASS (−14.1 LUFS, TP −3.2, share 27.25 MB). Not verified: listening, phone viewing.
+
 ## 2026-10-08 — Film 12: Hessa «٤ أسئلة», 25 s motion-graphics showreel-ad (DONE)
 Owner request: a world-class 25 s motion-graphics showreel for the Teachers/Hessa program. One 16:9 delivery (`hessa25`, 1920×1080 @ 30), 120 BPM original score, shared clock `film12/timing.js` read by picture and sound. Idea: the owner's four evening questions (who attended, who paid, who owes, what is in the drawer) answered by real product behaviour, chained by one hero object, the amber dot (ball on a ruled page → card → button → student → flood → toggle → logo tile). New reusable pieces: `kit.js` (palette, text lines with a coloured «؟», the product's icon set, ball physics anchored at the floor), HUD chips that morph into KPI tiles, thermal-printer paper feed, FLIP list sort, circle reveal from a UI element. Owner posters mid-build replaced the invented payoff with his own lines; owner order: never mention offline use. Evidence: `film12/LEDGER.md` (take07 all gates PASS, −14.1 LUFS, TP −3.2, share 27.25 MB, phone-band loss −6.2 LU). Not verified: listening, real-speed phone viewing, an independent reviewer.
 

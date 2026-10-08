@@ -108,4 +108,4 @@ A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs th
 5. **Read the phone, not only the meter:** a mix at −14 LUFS can lose 10 LU on a phone speaker; a band-passed (1.5 kHz) copy of the music and a lighter sub fixed it (−6.2 LU) with no change to the loudness gates.
 6. **A stamp must never cover the number it certifies,** and an owner's veto («never say it works offline») is removed from picture, sound, plan and brief together.
 7. **When the owner sends his own posters, use his lines:** invented CTAs and taglines are replaced by his copy; the film becomes part of his ad family.
-
+8. **A reel is a new composition:** rotate the field (17×7 → 7×17), close the dialog before the receipts print, stack the lock-up, size type from the measured text width (94 px for the longest hook line) and let the bottom third carry motion only.
