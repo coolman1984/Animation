@@ -34,4 +34,6 @@ the scanner beeps play the hook's notes; a low wavering warning bell under the q
 | 5–6 | 10–14 | stock (night) | كل جهاز مكانه معروف · مخزون وجرد وضمان بالسيريال |
 | 7 | 14–16 | instalments (copper) | تقسيط وآجل |
 | 8–9 | 16–20 | numbers (night) | أرقام واضحة وقرار أذكى |
-| 10–12 | 20–25 | payoff (ivory) | ميزان · بيع بسهولة.. وحاسب بثقة · يشتغل من غير إنترنت · راسلني واحجز عرض البرنامج |
+| 10–12 | 20–25 | payoff (ivory) | ميزان · بيع بسهولة.. وحاسب بثقة · راسلني واحجز عرض البرنامج |
+
+**Revision 2026-10-08 (owner):** remove «يشتغل من غير إنترنت» entirely — badge, icon and its sound cue removed from the payoff.

@@ -19,6 +19,6 @@ export const T = {
   copper: [13.85, 14.15], cells: [14.5, 14.75, 15.0, 15.25], due: 15.5,
   // 16–20 NUMBERS (night): navy rises like a level; the cells stand up as bars; KPI; trend line; the owner's eye.
   rise: [15.85, 16.2], bars: 16.0, kpi: 16.4, line: [17.0, 17.9], insight: 18.4, numOut: 19.72,
-  // 20–25 PAYOFF (ivory): the night gathers into the navy tile — the whole logo; name, tagline, offline, CTA.
-  gather: 19.85, logo: 20.1, word2: 20.4, latin: 20.75, tag: 21.0, badge: 21.7, cta: 22.3, shine: 23.2, end: 25,
+  // 20–25 PAYOFF (ivory): the night gathers into the navy tile — the whole logo; name, tagline, CTA.
+  gather: 19.85, logo: 20.1, word2: 20.4, latin: 20.75, tag: 21.0, cta: 22.3, shine: 23.2, end: 25,
 };

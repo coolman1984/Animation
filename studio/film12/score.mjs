@@ -171,7 +171,7 @@ T.boxes.forEach((t, i) => { softHit(fx, t, { vel: 0.32, tone: 150 + i * 12, p: 0
 whooshBy(fx, T.transfer, { dur: 0.5, vel: 0.1, direction: 'rl', low: 400, high: 3000, seed: 27 }); softHit(fx, T.transfer + 0.5, { vel: 0.3, tone: 170 });
 beep(fx, T.serial + 0.1, 92, { vel: 0.2, dur: 0.07 }); beep(fx, T.serial + 0.18, 96, { vel: 0.16, dur: 0.07 });
 bell(fx, T.serial + 0.3, 87, 0.12, { decay: 1.0 }); bell(fx, T.serial + 0.33, 94, 0.08, { decay: 0.8 }); // warranty shield
-[935, 790, 645, 435, 290, 145].forEach((x, i) => click(fx, T.count + x / 4000 + 0.06, { vel: 0.07, bright: 0.95, p: 0.5 - i * 0.2, seed: 80 + i })); // count ticks: one per badge, as each flashes
+[915, 775, 635, 445, 305, 165].forEach((x, i) => click(fx, T.count + x / 4000 + 0.06, { vel: 0.07, bright: 0.95, p: 0.5 - i * 0.2, seed: 80 + i })); // count ticks: one per badge, as each flashes
 // 13.85 copper wipe
 whooshBy(fx, T.copper[0], { dur: 0.4, vel: 0.13, direction: 'center', low: 200, high: 4500, seed: 28 });
 T.cells.forEach((t, i) => uiConfirm(fx, t, { vel: 0.12, notes: [80 + [0, 4, 7, 12][i], 87 + [0, 4, 7, 12][i]], gap: 0.05 }));
@@ -190,7 +190,6 @@ sub(T.logo, 32 + 12, 1.5, 0.85);
 [68, 72, 75, 80, 84, 87].forEach((m, i) => bell(fx, T.logo + 0.02 + i * 0.05, m + 12, 0.11, { decay: 1.8, p: -0.5 + i * 0.2 }));
 bell(fx, T.word2, 96, 0.08, { decay: 1.0 });
 sweep(fx, T.tag, { dur: 0.6, vel: 0.06, up: true, seed: 32 });
-uiConfirm(fx, T.badge, { vel: 0.1, notes: [84, 91] });
 tone(fx, T.cta, 800, 1300, { dur: 0.08, vel: 0.2 }); uiConfirm(fx, T.cta + 0.2, { vel: 0.18, notes: [80, 87] });
 whooshBy(fx, T.shine, { dur: 0.7, vel: 0.08, direction: 'lr', low: 600, high: 6000, seed: 33 });
 // the final A♭ rings under the hold

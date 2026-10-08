@@ -3,7 +3,7 @@
  "duration": 25,
  "fps": 30,
  "audience": "owners of household-goods and electrical-appliance shops in Egypt (non-technical), scrolling Facebook/Instagram, who juggle invoices, instalments, stock and the cash drawer by hand or with a weak program",
- "promise": "Mizan (ميزان, the Al-Store program) keeps the whole shop in balance: barcode selling with every payment method, every appliance's place, serial and warranty, shop instalments and credit, clear numbers — offline",
+ "promise": "Mizan (ميزان, the Al-Store program) keeps the whole shop in balance: barcode selling with every payment method, every appliance's place, serial and warranty, shop instalments and credit, clear numbers",
  "cta": "راسلني واحجز عرض البرنامج (the CTA on the owner's three posters; no contact details supplied, so none are shown)",
  "direction": "ميزان = the scale. The mark's two bars on a fulcrum become the story: the shop's loads tip the beam, the copper bar levels it (the logo), then the same copper bar is the scanner laser, the total, the paid button, the shelf, the instalment progress and the tallest sales bar, and returns into the logo. Worlds: night → cream tile → ivory → night shelves → copper → night numbers → ivory payoff. Alexandria (display) + Readex Pro (UI) — the product's own fonts; the app's own icon set; client palette navy #13213c / cream #f3e9d8 / copper #c8743c. Container morphs on springs, slams, a blind pull, a circle wipe, a rising level. Original 120 BPM electro-pop, one hook in every chapter.",
  "assets": [
@@ -17,7 +17,7 @@
    "id": "icons",
    "path": "film12/film.js",
    "role": "reference",
-   "rights": "Client's own UI icon paths copied from Store/web/img/icons.svg (owner's product); appliance glyphs and the wifi-off icon drawn for this film"
+   "rights": "Client's own UI icon paths copied from Store/web/img/icons.svg (owner's product); appliance glyphs drawn for this film"
   },
   {
    "id": "fonts",
@@ -34,7 +34,7 @@
  "creative": {
   "viewer": "an Egyptian appliance-shop owner",
   "problem": "at the end of the day invoices, instalments, stock and the safe don't add up",
-  "promise": "one program that balances them, offline",
+  "promise": "one program that balances them",
   "evidence": "the owner's three Mizan posters (headlines, feature names, staged practice-shop numbers, CTA) and the product spec in Store/docs; no invented clients, results or prices beyond the posters' practice-shop figures, labelled as practice data",
   "emotion": "recognition, relief, confidence",
   "motif": "the copper bar of the logo",
@@ -63,7 +63,7 @@
   "motion": "one copper container on springs through every job, word slams/drops/flips/blur-resolves, squash on landings",
   "sound": "F minor tension → A flat major drop on the logo; hook returns per chapter on a new voice",
   "pacing": "one idea per bar (2 s); headlines held 1.7–3.8 s; 1.4 s final hold",
-  "payoff": "the whole Mizan logo, name, the posters' tagline, offline badge and the posters' CTA",
+  "payoff": "the whole Mizan logo, name, the posters' tagline and the posters' CTA",
   "cta": "راسلني واحجز عرض البرنامج",
   "styleFrames": {
    "hook": 3.0,
@@ -236,7 +236,7 @@
    "id": "payoff",
    "start": 20,
    "end": 25,
-   "purpose": "payoff: the whole logo, the name, the client's tagline, offline, one action",
+   "purpose": "payoff: the whole logo, the name, the client's tagline, one action",
    "assetIds": [
     "brand"
    ],

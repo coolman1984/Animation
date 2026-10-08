@@ -56,7 +56,6 @@ const ICON = {
   eye: '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
   barcode: '<path d="M3 5v14M6.5 5v14M9 5v14M12.5 5v14M15 5v14M18.5 5v14M21 5v14"/>',
   message: '<path d="M20.5 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.6-4.6A8.5 8.5 0 1 1 20.5 11.5Z"/>',
-  wifiOff: '<path d="M2.5 8.8a14 14 0 0 1 5-2.9M11 5.2a14 14 0 0 1 10.5 3.6M5.5 12.3a9 9 0 0 1 4-2.1M15.6 10.6a9 9 0 0 1 2.9 1.7M8.8 15.6a4.6 4.6 0 0 1 6.4 0M12 19.5h.01M3.5 3.5l17 17"/>',
   // appliance glyphs (drawn for this film in the same 24-grid line style)
   fridge: '<rect x="6" y="2.5" width="12" height="19" rx="2"/><path d="M6 10h12M9 5.5v2M9 12.5v3"/>',
   washer: '<rect x="4.5" y="2.5" width="15" height="19" rx="2"/><circle cx="12" cy="13.5" r="4.3"/><path d="M7.5 6h3M16 6h.01"/>',
@@ -108,7 +107,7 @@ function markGeom(k, cx, cy) {
 }
 const K1 = 22, M1 = [540, 1000];             // hook: the beam, big
 const K2 = 280 / 48, M2 = [540, 650];        // name: the logo
-const K3 = 260 / 48, M3 = [540, 560];        // payoff: the logo
+const K3 = 260 / 48, M3 = [540, 540];        // payoff: the logo
 const G1 = markGeom(K1, ...M1), G3 = markGeom(K3, ...M3);
 // Hook beam: before the copper bar arrives, the top bar pivots on the fulcrum's apex and tips under the loads.
 const TILT = [-5, -5.5, -4, -4];
@@ -216,10 +215,10 @@ SC.push({ id: 'name', a: 4.1, b: 6.5, z: 12, init(root) {
   full(root, { background: `radial-gradient(ellipse 85% 55% at 50% 42%, ${C.night3} 0%, ${C.navy} 50%, ${C.night} 100%)` });
   const halo = div(root, { width: '900px', height: '900px', borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(224,138,76,0.28), rgba(224,138,76,0))' });
   const cam = div(root, { width: px(W), height: px(H), transformOrigin: `${M2[0]}px ${M2[1]}px` });
-  const word = words(cam, 'ميزان', { size: 196, weight: 800, color: C.cream, cy: 940, lh: 1.1 });
-  const latin = words(cam, 'MIZAN', { size: 40, weight: 600, color: C.copperL, cy: 1072, dir: 'ltr', tr: 0.5, lh: 1.1 });
-  const sub1 = words(cam, 'برنامج لمحلات الأدوات المنزلية', { size: 46, weight: 500, color: 'rgba(243,233,216,0.86)', cy: 1128, font: UI, lh: 1.2 });
-  const sub2 = words(cam, 'والأجهزة الكهربائية', { size: 46, weight: 500, color: 'rgba(243,233,216,0.86)', cy: 1204, font: UI, lh: 1.2 });
+  const word = words(cam, 'ميزان', { size: 196, weight: 800, color: C.cream, cy: 920, lh: 1.1 });
+  const latin = words(cam, 'MIZAN', { size: 40, weight: 600, color: C.copperL, cy: 1092, dir: 'ltr', tr: 0.5, lh: 1.1 });
+  const sub1 = words(cam, 'برنامج لمحلات الأدوات المنزلية', { size: 44, weight: 500, color: 'rgba(243,233,216,0.86)', cy: 1150, font: UI, lh: 1.2 });
+  const sub2 = words(cam, 'والأجهزة الكهربائية', { size: 44, weight: 500, color: 'rgba(243,233,216,0.86)', cy: 1216, font: UI, lh: 1.2 });
   S.name = { root, halo, cam, word, latin, sub1, sub2 };
 }, render(t) {
   const s = S.name, m = markState(t);
@@ -573,34 +572,27 @@ SC.push({ id: 'numbers', a: T.rise[0], b: 19.95, z: 16, init(root) {
 } });
 
 // =====================================================================================================
-// PAYOFF 19.85–25 — ivory; the night gathers into the navy tile = the whole logo. Name, tagline, offline, CTA, hold.
+// PAYOFF 19.85–25 — ivory; the night gathers into the navy tile = the whole logo. Name, tagline, CTA, hold (owner 2026-10-08: no offline line).
 SC.push({ id: 'payoff', a: T.gather, b: 25.1, z: 12, init(root) {
   full(root, { background: `radial-gradient(ellipse 90% 60% at 50% 35%, #fbfaf6 0%, ${C.ivory} 55%, #e9e3d6 100%)` });
   const lines = full(root, { opacity: '0.55', backgroundImage: 'repeating-linear-gradient(0deg, rgba(19,33,60,0.045) 0 1.5px, transparent 1.5px 96px)' });
   const halo = div(root, { width: '820px', height: '820px', borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(200,116,60,0.2), rgba(200,116,60,0))' });
   const ring = div(root, { border: `4px solid ${C.copper}`, borderRadius: '30%' });
   const cam = div(root, { width: px(W), height: px(H), transformOrigin: '540px 760px' });
-  const badge = div(cam, { border: `2px solid rgba(19,33,60,0.18)`, borderRadius: '999px', background: 'rgba(255,255,255,0.6)' });
-  const bIc = icon(cam, 'wifiOff', 38, C.copper, 2);
-  const bL = words(cam, 'يشتغل من غير إنترنت', { size: 38, weight: 600, color: C.navy, cx: 515, cy: 322, width: 460, font: UI, lh: 1.2 });
-  const word = words(cam, 'ميزان', { size: 200, weight: 800, color: C.navy, cy: 832, lh: 1.1 });
-  const latin = words(cam, 'MIZAN', { size: 40, weight: 600, color: C.copper, cy: 972, dir: 'ltr', tr: 0.5, lh: 1.1 });
-  const tag = words(cam, 'بيع بسهولة.. وحاسب بثقة', { size: 64, weight: 700, color: C.navy, cy: 1062, lh: 1.2, accent: { 2: C.copper, 3: C.copper } });
+  const word = words(cam, 'ميزان', { size: 200, weight: 800, color: C.navy, cy: 806, lh: 1.1 });
+  const latin = words(cam, 'MIZAN', { size: 40, weight: 600, color: C.copper, cy: 1002, dir: 'ltr', tr: 0.5, lh: 1.1 });
+  const tag = words(cam, 'بيع بسهولة.. وحاسب بثقة', { size: 64, weight: 700, color: C.navy, cy: 1072, lh: 1.2, accent: { 2: C.copper, 3: C.copper } });
   const cta = div(cam, { background: `linear-gradient(180deg, ${C.copperL}, ${C.copper})`, borderRadius: '999px', boxShadow: '0 24px 44px rgba(164,83,28,0.35), inset 0 1px 0 rgba(255,255,255,0.3)', overflow: 'hidden' });
   const shine = div(cta, { width: '120px', height: '200px', background: 'linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.55), rgba(255,255,255,0))' });
   const ctaIc = icon(cam, 'message', 44, C.white, 2.1);
   const ctaL = words(cam, 'راسلني واحجز عرض البرنامج', { size: 44, weight: 700, color: C.white, cx: 510, cy: 1186, width: 640, font: UI, lh: 1.2 });
-  S.payoff = { root, lines, halo, ring, cam, badge, bIc, bL, word, latin, tag, cta, shine, ctaIc, ctaL };
+  S.payoff = { root, lines, halo, ring, cam, word, latin, tag, cta, shine, ctaIc, ctaL };
 }, render(t) {
   const s = S.payoff;
   s.cam.style.transform = `scale(${(1 + 0.03 * ramp(t, 20.5, 25)).toFixed(4)})`;
   place(s.halo, M3[0], M3[1], 820, 820); op(s.halo, sm(20.2, 20.8, t));
   const ru = ramp(t, T.logo + 0.18, T.logo + 0.95);
   place(s.ring, M3[0], M3[1], 260 + 520 * oE(ru), 260 + 520 * oE(ru)); op(s.ring, ru > 0 && ru < 1 ? 0.7 * (1 - ru) : 0);
-  const bp = spr(t, T.badge, 0.45, 0.25), bOn = t > T.badge;
-  vis(s.badge, bOn); if (bOn) { place(s.badge, 540, 322, 560, 76, 38); s.badge.style.transform = `scale(${clamp(bp, 0, 1.15).toFixed(3)})`; op(s.badge, clamp(bp * 2)); }
-  s.bIc.style.left = px(540 + 280 - 70); s.bIc.style.top = px(322 - 19); op(s.bIc, bOn ? clamp(bp * 2) : 0);
-  play(s.bL, t, T.badge + 0.06, 99, { style: 'rise', dy: 12 });
   play(s.word, t, T.word2, 99, { style: 'blur', dur: 0.5 });
   play(s.latin, t, T.latin, 99, { style: 'rise', dy: 16 });
   play(s.tag, t, T.tag, 99, { style: 'rise', stagger: 0.12, dy: 30 });
