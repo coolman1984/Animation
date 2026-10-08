@@ -5,6 +5,9 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-08 — Film 12: MIZAN 25 s Reels ad for the Store program (DONE)
+Hand-built composer film on a shared 120 BPM clock (`film12/timing.js`, read by picture and score). One copper container (a chain of spring anchors whose segments blend live states: `heroSeg`) carries the whole film; the logo is drawn from the client's 48-unit geometry and shown whole. Composer gains Readex Pro (OFL, the client's UI font). take04: 25.000 s, 1080×1920, 30 fps, −14.2 LUFS, TP −3.3, LRA 4.2, 11/11 gates PASS, share 15.39 MB. Two correction rounds: text-band fixes + still span (review), blurred payoff logo found on a 100 % share-copy crop (final). Not verified: listening, phone playback.
+
 ## 2026-10-04 — Production-path bug review and fixes (DONE)
 Fixed delivery/gate propagation, missing video errors and stale/nonnumeric take selection; malformed spec/CLI validation; silent audio division; asset path confinement/fresh-library copies/content refresh; narration content cache/PYTHON/absolute tool path; scene-boundary coverage and inherited/retargeted shape colors; deep format overrides; supplied-media dependencies/rights/phase alignment; bounded workers and CDP startup deadlines/cleanup. Focused tests 37 pass/2 optional skips, docs 5 pass; check-only showreel passes. Existing video exports unchanged. Full evidence and limits: CODE_REVIEW_2026-10-04.md.
 ## 2026-10-04 — FORM / FUNCTION resume showreel and latest-branch integration (DONE)

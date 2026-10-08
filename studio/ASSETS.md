@@ -10,6 +10,7 @@
 | Instrument Serif Italic | `assets/fonts/InstrumentSerif-Italic.ttf` | SIL OFL 1.1 — `assets/fonts/OFL-instrumentserif.txt` |
 | Space Mono Regular/Bold | `assets/fonts/SpaceMono-*.ttf` | SIL OFL 1.1 — `assets/fonts/OFL-spacemono.txt` |
 | Alexandria (variable 100–900, Arabic + Latin) | `assets/fonts/Alexandria-arabic.woff2`, `assets/fonts/Alexandria-latin.woff2` (Google Fonts subsets) | SIL OFL 1.1 — `assets/fonts/OFL-alexandria.txt` (google/fonts) |
+| Readex Pro (variable 160–700, Arabic + Latin) | `assets/fonts/ReadexPro-arabic.woff2`, `assets/fonts/ReadexPro-latin.woff2` (copied from the client's own bundle `Store/web/fonts`) | SIL OFL 1.1 — `assets/fonts/OFL-readexpro.txt` |
 | Lora (variable 400–700, roman + italic, Latin subset) | `assets/fonts/Lora-latin.woff2`, `assets/fonts/Lora-italic-latin.woff2` (Google Fonts) | SIL OFL 1.1 — `assets/fonts/OFL-lora.txt` |
 | BALACONBAR photos + posters | `film2/source/*.jpg` | Supplied by the owner for this ad. Not to be reused for other clients. |
 | Plates derived from them | `film2/plates/*.png` | Derived in code from the owner's photos (`film2/plates*.js`) |
@@ -63,3 +64,5 @@ FORM / FUNCTION (2026-10-04): all sculptures, generative fields, pointer and Orb
 
 
 Code review (2026-10-04): no new media, models, fonts or dependencies. Supplied assets must declare `rights`; optional supplied music/voice use `audio.musicRights`, `audio.licenseScope`, `audio.voiceRights`. Production plans and cache inputs include actual media files. Missing permissions fail final preflight; no license is fabricated. Temporary test libraries and WAVs are removed after checks.
+
+Film 12 (2026-10-08): no external media. The Mizan mark is redrawn in code from its published 48-unit geometry (`Store/web/js/brand.js`, `docs/brand/*.svg`); UI icon paths copied from `Store/web/img/icons.svg` (the owner's product); appliance and wifi-off glyphs drawn for the film. The owner's three posters (chat upload) were read for copy and practice-shop figures only. Music and effects synthesised in `film12/score.mjs`.

@@ -1,8 +1,13 @@
 # Studio status and session handoff
 
-Updated: 2026-10-04.
+Updated: 2026-10-08.
 
-**Latest scope: DONE — deep production-path code review and fixes (owner 2026-10-04).**
+**Latest scope: DONE — Film 12, MIZAN (ميزان) «بيع بسهولة.. وحاسب بثقة», 25 s Reels ad for the Store program (owner request 2026-10-08: world-class, fast, lively, a showreel, go all out).**
+- Source `studio/film12/` (BRIEF, production.json, config, timing.js shared clock, film.js, score.mjs, LEDGER). Hand-built composer film: one copper hero (the logo's bar) does every job — levels the shop's tipping beam (= the logo), scanner laser, total, paid button, shelf, instalment progress, tallest sales bar — and returns into the logo. Brand, icons and fonts are the client's own (Store main: docs/DESIGN.md, brand.js, icons.svg, Readex Pro vendored).
+- Final take04 (local, `out/film12/take04/`): 25.000 s, 1080×1920, 30 fps; −14.2 LUFS, TP −3.3 dBTP, LRA 4.2; 11/11 gates PASS incl. text (140 lines) and no freeze; share 15.39 MB. 2 of 2 correction rounds used; take03 rejected on a 100 % crop (blurred logo).
+- Not verified: listening (mix judged by measured band balance and loudness curve only), real-speed phone viewing, a fresh reviewer, Meta's overlays. Owner to know: poster 3 spells «مبزان»; the name is provisional, not trademark-cleared (Store DESIGN.md).
+
+**Previous scope: DONE — deep production-path code review and fixes (owner 2026-10-04).**
 - Fixed gate propagation/stale delivery, malformed clocks/specs, silent NaN audio, asset traversal/cache handling, narration caching/Windows launcher, scene cuts/morph continuity, format overrides, music phase/media metadata, bounded workers and browser startup deadlines.
 - Evidence: focused checks 37 passed/2 optional fixtures skipped; docs 5 passed; showreel check-only pipeline passes. Seven regression failures reproduced before fixes. Details: `studio/CODE_REVIEW_2026-10-04.md`.
 - Existing take02 exports predate these source fixes; no new full render. Real Whisper, listening and browser failure injection remain unverified. Work stays on the isolated integrated branch; original user edits/media preserved.
