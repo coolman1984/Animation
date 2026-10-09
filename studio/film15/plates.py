@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Film 12 plates (run once, needs film12/source/*): cut-outs used by film.js.
+"""Film 15 plates (run once, needs film15/source/*): cut-outs used by film.js.
   pip install numpy opencv-python-headless mediapipe   (+ libegl1 on Debian/Ubuntu)
   curl -o /tmp/selfie_multiclass.tflite https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_multiclass_256x256/float32/latest/selfie_multiclass_256x256.tflite
-  python3 film12/plates.py /tmp/selfie_multiclass.tflite
-Frames: ffmpeg -ss 8.0 -i film12/source/channel-intro.mp4 -frames:v 1 film12/source/host.png
-Outputs film12/plates/{players,host,pl-logo,trophy}-cut.png (RGBA)."""
+  python3 film15/plates.py /tmp/selfie_multiclass.tflite
+Frames: ffmpeg -ss 8.0 -i film15/source/channel-intro.mp4 -frames:v 1 film15/source/host.png
+Outputs film15/plates/{players,host,pl-logo,trophy}-cut.png (RGBA)."""
 import sys, os, numpy as np, cv2
 import mediapipe as mp
 from mediapipe.tasks import python as mpt

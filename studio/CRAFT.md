@@ -100,7 +100,7 @@ No required lesson quota or automatic reuse of a prior visual style.
 ## Production-path review (2026-10-04)
 A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs the outgoing scene beneath it until coverage completes. Morph retargeting starts from the actual current geometry and color and remains independent of render history. A printed failed gate must block delivery. Code regressions establish these contracts; existing exports were not re-rendered. Evidence: CODE_REVIEW_2026-10-04.md.
 
-## Film 12 — voxel showreel ad (2026-10-08)
+## Film 15 — voxel showreel ad (2026-10-08)
 1. A fractional index into a per-frame array (`SPEC.data[f][3.4]`) is `undefined` → NaN → `fillRect` silently draws nothing: the equalizer showed only bars 0 and 63. Interpolate between bands and look at the first frame of every scene for the bottom bars.
 2. Cubes that start invisible (alpha ~0, size 0.2) leave 0.3 s of empty background after every cut: give assembling cubes a floor of ~35 % alpha / 40 % size and start them 0.3 s before the cut inside the transition clip.
 3. A low-resolution person matte (256 px model output) shows as stair-steps on a 2× upscale: upscale the photo, then blur the alpha and smoothstep it. Remove spill by colour (turf green) before keeping the largest component.

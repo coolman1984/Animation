@@ -1,4 +1,4 @@
-# BRIEF — Film 12 "إتكلم كورة" · 25 s motion-graphics showreel ad (16:9, 1920×1080)
+# BRIEF — Film 15 "إتكلم كورة" · 25 s motion-graphics showreel ad (16:9, 1920×1080)
 
 Owner brief of 2026-10-08 is the spec; this file records decisions only. Plan + craft metadata: `production.json`.
 
@@ -17,5 +17,5 @@ Fast headline holds (0.9–1.3 s, 1–3 words) are deliberate for a showreel pac
 Music (v3, owner order 2026-10-08): the reference reel's own track at its own tempo (117.57 BPM), untouched; the PICTURE is retimed to it through `timing.js` (authored on 115.2 BPM, played ×1.0206), the track repeats from its start on the flash cut (12.248 s); licence not verified — the owner must clear it. v1 music: original, 115.2 BPM (bar 2.0833 s, 12 bars = 25 s), A minor; lift per scene; lock on the downbeat at 20.833 s.
 
 ## Rebuild
-`python3 film12/plates.py <selfie_multiclass.tflite>` (see its header; people via MediaPipe selfie-multiclass, trophy via grabCut, logo by colour key).
-`node film12/score.mjs && node make.mjs film12 --profile=final`
+`python3 film15/plates.py <selfie_multiclass.tflite>` (see its header; people via MediaPipe selfie-multiclass, trophy via grabCut, logo by colour key).
+`node film15/score.mjs && node make.mjs film15 --profile=final`

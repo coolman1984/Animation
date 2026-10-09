@@ -2,8 +2,8 @@
 
 Updated: 2026-10-08.
 
-**Latest scope: DONE — Film 12, «إتكلم كورة» 25 s voxel motion-graphics showreel ad, 1920×1080 (owner 2026-10-08).**
-- `studio/film12/` (BRIEF, LEDGER, production.json, config with ownerRequest, voxel.js, pitch3d.js, film.js, score.mjs, plates.py). One independent review, majors fixed in one round. See the film LEDGER and CHANGELOG 2026-10-08.
+**Latest scope: DONE — Film 15, «إتكلم كورة» 25 s voxel motion-graphics showreel ad, 1920×1080 (owner 2026-10-08).**
+- `studio/film15/` (BRIEF, LEDGER, production.json, config with ownerRequest, voxel.js, pitch3d.js, film.js, score.mjs, plates.py). One independent review, majors fixed in one round. See the film LEDGER and CHANGELOG 2026-10-08.
 - v3 (take09): soundtrack = the reference reel's music, untouched; picture retimed to its tempo (timing.js). Licence NOT verified, owner must clear it.
 - Truth notes: bar-race numbers are the owner's standings screenshot (perishable); tactical graphics are illustrative; PL logo/trophy/players are third-party topic imagery — owner must confirm clearance for paid use. Not verified: listening, real-speed viewing.
 

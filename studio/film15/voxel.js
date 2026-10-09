@@ -1,4 +1,4 @@
-// Voxel engine for film 12: turns any RGBA image / rasterised text / procedural shape into a field of
+// Voxel engine for film 15: turns any RGBA image / rasterised text / procedural shape into a field of
 // shaded cubes that can assemble, pulse with the music and burst apart. Pure functions of time: every
 // per-cube random is seeded at build time, nothing is simulated frame to frame.
 import { clamp, lerp, rng } from '../lib/motion.js';

@@ -9,37 +9,37 @@
   "assets": [
     {
       "id": "players",
-      "path": "film12/source/players.jpg",
+      "path": "film15/source/players.jpg",
       "role": "product",
       "rights": "Owner-supplied image of three Premier League players; shown as topic imagery only, no endorsement or affiliation claimed; owner to confirm clearance for paid ads"
     },
     {
       "id": "pllogo",
-      "path": "film12/source/pl-logo.jpg",
+      "path": "film15/source/pl-logo.jpg",
       "role": "logo",
       "rights": "Owner-supplied Premier League logo; third-party mark used as a topic cue only; owner to confirm clearance"
     },
     {
       "id": "trophy",
-      "path": "film12/source/trophy.jpg",
+      "path": "film15/source/trophy.jpg",
       "role": "product",
       "rights": "Owner-supplied photo of the Premier League trophy; third-party image, topic cue only; owner to confirm clearance"
     },
     {
       "id": "table",
-      "path": "film12/source/table.jpg",
+      "path": "film15/source/table.jpg",
       "role": "product",
       "rights": "Owner-supplied standings screenshot (5 rounds played, 2026-10-08): team names and points are read from it exactly; perishable data"
     },
     {
       "id": "host",
-      "path": "film12/source/channel-intro.mp4",
+      "path": "film15/source/channel-intro.mp4",
       "role": "product",
       "rights": "Owner's own channel intro; the host frame is used with the owner's permission as the channel presenter"
     },
     {
       "id": "refmusic",
-      "path": "film12/source/reference-reel.mp4",
+      "path": "film15/source/reference-reel.mp4",
       "role": "music",
       "rights": "Owner-supplied reference reel (X screen recording). The owner ordered its music to be used as the soundtrack (2026-10-08). Composer/licence of the track NOT verified."
     }
@@ -49,7 +49,7 @@
     "assetId": "refmusic",
     "bpm": 117.57,
     "licenseScope": "NOT verified — supplied and ordered by the owner; the owner is responsible for clearing it before publishing (platforms may mute or claim it).",
-    "note": "Reference music untouched (117.57 BPM, original pitch); the picture is retimed to it (film12/timing.js, real t × 1.0206 = authored time). Source beats 0–23, then the track repeats from its start on the flash cut (12.248 s). Code effects kept, moved onto the same clock."
+    "note": "Reference music untouched (117.57 BPM, original pitch); the picture is retimed to it (film15/timing.js, real t × 1.0206 = authored time). Source beats 0–23, then the track repeats from its start on the flash cut (12.248 s). Code effects kept, moved onto the same clock."
   },
   "shots": [
     {
