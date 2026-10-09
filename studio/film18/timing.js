@@ -1,4 +1,4 @@
-// Film 12 — MIZAN (ميزان) 25 s Reels ad — ONE clock for picture and sound (CRAFT 49: nothing is nudged by ear).
+// Film 18 — MIZAN (ميزان) 25 s Reels ad — ONE clock for picture and sound (CRAFT 49: nothing is nudged by ear).
 // 120 BPM: beat 0.5 s, bar 2 s, 12 bars + a 1 s ring-out = 25.0 s. Every story event sits on a beat or an eighth.
 export const BPM = 120, BEAT = 0.5, BAR = 2, DUR = 25;
 export const T = {

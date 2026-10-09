@@ -9,13 +9,13 @@
  "assets": [
   {
    "id": "brand",
-   "path": "film12/BRIEF.md",
+   "path": "film18/BRIEF.md",
    "role": "logo",
    "rights": "Client's own Mizan mark geometry (Store/web/js/brand.js, docs/brand/*.svg; 48-unit grid) re-drawn exactly in code from its numbers; colours from Store/docs/DESIGN.md; owner's product, public repository"
   },
   {
    "id": "icons",
-   "path": "film12/film.js",
+   "path": "film18/film.js",
    "role": "reference",
    "rights": "Client's own UI icon paths copied from Store/web/img/icons.svg (owner's product); appliance glyphs drawn for this film"
   },
@@ -29,7 +29,7 @@
  "sound": {
   "mode": "original",
   "bpm": 120,
-  "note": "Original score synthesised in film12/score.mjs with lib/audio.mjs and lib/sfx.mjs on the shared clock film12/timing.js; no samples, no licence needed"
+  "note": "Original score synthesised in film18/score.mjs with lib/audio.mjs and lib/sfx.mjs on the shared clock film18/timing.js; no samples, no licence needed"
  },
  "creative": {
   "viewer": "an Egyptian appliance-shop owner",

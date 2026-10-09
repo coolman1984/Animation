@@ -1,4 +1,4 @@
-// Film 12 — MIZAN (ميزان · "the scale") — 25 s Reels ad for the Al-Store shop program, 1080×1920 @ 30 fps, 120 BPM.
+// Film 18 — MIZAN (ميزان · "the scale") — 25 s Reels ad for the Al-Store shop program, 1080×1920 @ 30 fps, 120 BPM.
 // Idea: the product's name is a scale, and its mark is two bars balanced on a fulcrum. The shop's daily loads (invoices,
 // instalments, stock, the safe) pile on one end of the beam and tip it; the copper bar — the hero of the whole film — slams
 // in under the beam and levels it: that IS the logo. Then the same copper bar does every job in the program: the barcode

@@ -1,4 +1,4 @@
-// Film 12 score — MIZAN «بيع بسهولة.. وحاسب بثقة» — original, 120 BPM (beat 0.5 s, bar 2 s), 25.0 s. Western electro-pop with a real
+// Film 18 score — MIZAN «بيع بسهولة.. وحاسب بثقة» — original, 120 BPM (beat 0.5 s, bar 2 s), 25.0 s. Western electro-pop with a real
 // beat and ONE hook that returns in every chapter (owner taste, QUALITY_PLAYBOOK §0), written on the picture's own clock (timing.js).
 // Form: HOOK 0–4 F minor, thin and heavy — a low thud + falling note for each load on the beam, ticking 16ths, a low wavering
 //   warning bell under the question, riser, a breath (3.92) → DROP 4.0 on A♭ major (the scale levels = the problem resolves).
@@ -16,7 +16,7 @@ import { T, BEAT, BAR, DUR } from './timing.js';
 import plan from './production.json' with { type: 'json' };
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const OUT = join(HERE, '..', 'takes', 'film12');
+const OUT = join(HERE, '..', 'takes', 'film18');
 mkdirSync(OUT, { recursive: true });
 const E8 = BEAT / 2, S16 = BEAT / 4, N = DUR + 1;
 const mk = () => new Bus(N);
@@ -222,4 +222,4 @@ const out = (b) => { const o = new Bus(DUR); for (let i = 0; i < o.n; i++) { o.L
 const M = out(music), F = out(sfx), mix = new Bus(DUR); M.mixInto(mix, 1); F.mixInto(mix, 0.95);
 const norm = 0.5 / peak(mix);
 writeWav(join(OUT, 'music.wav'), M, { gain: norm }); writeWav(join(OUT, 'sfx.wav'), F, { gain: norm * 0.95 }); writeWav(join(OUT, 'mix.wav'), mix, { gain: norm });
-console.log(`film12 score: ${DUR}s 120 BPM, norm ${norm.toFixed(3)}`);
+console.log(`film18 score: ${DUR}s 120 BPM, norm ${norm.toFixed(3)}`);

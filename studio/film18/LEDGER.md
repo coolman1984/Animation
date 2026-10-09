@@ -1,7 +1,7 @@
-# Film 12 — MIZAN (ميزان) · LEDGER
+# Film 18 — MIZAN (ميزان) · LEDGER
 
 Owner request 2026-10-08: world-class, fast, lively motion-graphics ad for the Store program («ميزان»), 25 s, "a showreel", go all out.
-One delivery: Reels 9:16 1080×1920, 30 fps, 25.0 s (no placement named → studio default). Source: `film12/` (BRIEF, production.json,
+One delivery: Reels 9:16 1080×1920, 30 fps, 25.0 s (no placement named → studio default). Source: `film18/` (BRIEF, production.json,
 config.mjs, timing.js shared clock, film.js, score.mjs). Fonts: Alexandria + Readex Pro (the product's own; Readex vendored this scope).
 
 ## Build log
