@@ -1,8 +1,13 @@
 # Studio status and session handoff
 
-Updated: 2026-10-07.
+Updated: 2026-10-08.
 
-**Latest scope: DONE — Film 14 v5 (owner 2026-10-07): half-time groove, slower feel. take07 every gate PASS. Open question for the owner: a real 120 BPM needs about 5 s of scenes cut.**
+**Latest scope: DONE — Film 15, «إتكلم كورة» 25 s voxel motion-graphics showreel ad, 1920×1080 (owner 2026-10-08).**
+- `studio/film15/` (BRIEF, LEDGER, production.json, config with ownerRequest, voxel.js, pitch3d.js, film.js, score.mjs, plates.py). One independent review, majors fixed in one round. See the film LEDGER and CHANGELOG 2026-10-08.
+- v3 (take09): soundtrack = the reference reel's music, untouched; picture retimed to its tempo (timing.js). Licence NOT verified, owner must clear it.
+- Truth notes: bar-race numbers are the owner's standings screenshot (perishable); tactical graphics are illustrative; PL logo/trophy/players are third-party topic imagery — owner must confirm clearance for paid use. Not verified: listening, real-speed viewing.
+
+**Previous scope: DONE — Film 14 v5 (owner 2026-10-07): half-time groove, slower feel. take07 every gate PASS. Open question for the owner: a real 120 BPM needs about 5 s of scenes cut.**
 
 **Previous scope: DONE — Film 14 v4 (owner 2026-10-07): score rebuilt from film12's sound at 150 BPM. take06 every gate PASS. Not verified: listening.**
 
