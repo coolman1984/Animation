@@ -81,3 +81,9 @@ Film 18 (2026-10-08): no external media. The Mizan mark is redrawn in code from 
 
 Film 16 (2026-10-08): Hessa «٤ أسئلة». No new files. Fonts: Alexandria (display) + IBM Plex Sans Arabic (UI inside the cards), both already vendored. The 24×24 stroke icon paths (cap, search, moon, check, lock, users, sheet, alert, send …) are copied from the owner's own product `Teachers/js/core.js`; the UI is rebuilt from `Teachers/docs/img` screens (fictional sample data). The owner's three posters were a copy/brand reference only (nothing copied as artwork). Music and effects are synthesised in `film16/score.mjs` (no samples, no licence needed).
 
+
+Films 19–21 (imported 2026-10-09 from unmerged 2026-10-02 branches; originally numbered film6/film7 there):
+- `film19/mascot.js` — the PIXEL Plus character (cute full-body young person) and service objects: original signed-distance model + ordered dither written in code. `film19/score.mjs`: synthesised in code, no samples.
+- `film20/film.js`, `film20/kit.js`, `film20/timing.js` — PIXEL Plus «ريل الموشن»: every interface state, icon, chart and word drawn in code; the brand-card character is `film19/mascot.js`. `film20/score.mjs`: synthesised 144 BPM electro-shaabi in D Hijaz, no samples, no voiceover.
+- `film21/film.js`, `film21/score.mjs` — living poster: nebula, stars, planet, chrome lettering and score are procedural/synthesised; the studied teaser's artwork, logo and music are not used.
+- Owner reference recordings `Screen_Recording_20261002_220226_X.mp4` and `Screen_Recording_20261002_231706_X.mp4` (not in git; packs git-ignored): study references only — their brand, copy, mascot, icons, numbers and music are NOT reused.

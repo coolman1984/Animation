@@ -130,13 +130,13 @@ A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs th
 6. Another session can create the same film number on main: fetch and check `ls studio` before naming a film folder.
 
 ## Film 18 — MIZAN (2026-10-08)
-54. **The brand's name can be a machine:** ميزان = a scale, so the problem is a beam tipping under the shop's loads and the logo is the moment it levels. One copper bar then did six product jobs (laser, total, button, shelf, progress, chart bar); every transition had a cause.
-55. **A blur that is not bounded in time leaks into the payoff:** a dive blur computed as `1 - smoothstep(6.1, 6.36)` stayed at 10 px for the rest of the film and blurred the final logo. Gates passed; only a 100 % crop of the exported share copy caught it. Crop the logo in the share copy every time.
-56. **Global zoom and mid-frame push-ins push copy out of the safe band:** a 2 % camera scale moved top headlines 12 px past y 269. Anchor push-ins at the top copy line (origin y ≈ 300), hide shake edges by colouring the stage with the current world, never by zooming.
-57. **A white flash over a dark frame reads grey, not bright:** when the incoming world is itself a light burst, the burst is the flash.
-58. **Measure the mix in bands, not only in LUFS:** a mix that passed −14 LUFS was ~95 % sub-bass with the hook 17–21 dB down; a numpy band table showed it, while a log-scale spectrogram mislabelled the bass as 1.2 kHz.
-59. **Arabic dots fall below the line box the gate measures:** «MIZAN» under «ميزان» passed the overlap gate but touched the ي/ن dots (owner caught it). For an Arabic word over a Latin line, leave ≥ 0.45 em of the Arabic size between centres beyond half of each size, and check the lock-up on a 100 % crop.
-60. **"The loudest section is the logo" can overshoot:** film 18's payoff chorus sat +5 dB over the body with a bright saw lead, and the owner called the last 3 s too loud and harsh. Keep the logo moment ≤ +2 dB over the body, let the final bars settle below it, and check 2–16 kHz energy in the ending, not only loudness.
+69. **The brand's name can be a machine:** ميزان = a scale, so the problem is a beam tipping under the shop's loads and the logo is the moment it levels. One copper bar then did six product jobs (laser, total, button, shelf, progress, chart bar); every transition had a cause.
+70. **A blur that is not bounded in time leaks into the payoff:** a dive blur computed as `1 - smoothstep(6.1, 6.36)` stayed at 10 px for the rest of the film and blurred the final logo. Gates passed; only a 100 % crop of the exported share copy caught it. Crop the logo in the share copy every time.
+71. **Global zoom and mid-frame push-ins push copy out of the safe band:** a 2 % camera scale moved top headlines 12 px past y 269. Anchor push-ins at the top copy line (origin y ≈ 300), hide shake edges by colouring the stage with the current world, never by zooming.
+72. **A white flash over a dark frame reads grey, not bright:** when the incoming world is itself a light burst, the burst is the flash.
+73. **Measure the mix in bands, not only in LUFS:** a mix that passed −14 LUFS was ~95 % sub-bass with the hook 17–21 dB down; a numpy band table showed it, while a log-scale spectrogram mislabelled the bass as 1.2 kHz.
+74. **Arabic dots fall below the line box the gate measures:** «MIZAN» under «ميزان» passed the overlap gate but touched the ي/ن dots (owner caught it). For an Arabic word over a Latin line, leave ≥ 0.45 em of the Arabic size between centres beyond half of each size, and check the lock-up on a 100 % crop.
+75. **"The loudest section is the logo" can overshoot:** film 18's payoff chorus sat +5 dB over the body with a bright saw lead, and the owner called the last 3 s too loud and harsh. Keep the logo moment ≤ +2 dB over the body, let the final bars settle below it, and check 2–16 kHz energy in the ending, not only loudness.
 
 ## Hessa showreel-ad (2026-10-08)
 1. **One brand atom can be every object:** the product's amber dot is a ball, a student, a coin-flood, a toggle knob and the logo tile; every transition then has a cause and no effect is decoration.

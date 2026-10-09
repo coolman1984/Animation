@@ -1,8 +1,12 @@
 # Studio status and session handoff
 
-Updated: 2026-10-08.
+Updated: 2026-10-09.
 
-**Latest scope: DONE — Film 17, the 9:16 Reels cut of film 16 (owner 2026-10-08).** `studio/film17/` (own composition for 1080×1920, shared clock and score). take02 all gates PASS, share 27.25 MB. Not verified: listening, phone viewing.
+**Latest scope: DONE — Branch consolidation (owner 2026-10-09): all unmerged branch work is in main.**
+- Films 12–18 merged with history (renumbered where several branches used film12/film13); old 2026-10-02 drafts imported as films 19–21. Superseded branches deleted; each kept as an `archive/<branch>` tag. Details: `studio/CHANGELOG.md` 2026-10-09.
+- Not verified: no re-render; films 19–21 predate later studio changes.
+
+**Previous scope: DONE — Film 17, the 9:16 Reels cut of film 16 (owner 2026-10-08).** `studio/film17/` (own composition for 1080×1920, shared clock and score). take02 all gates PASS, share 27.25 MB. Not verified: listening, phone viewing.
 
 **Previous scope: DONE — Film 16, Hessa (حِصّة) «٤ أسئلة», 25 s motion-graphics showreel-ad (owner 2026-10-08: world-class, "go all out", for the Teachers program).**
 - Source `studio/film16/` (BRIEF, config, production.json, timing.js shared clock, kit.js, film.js, score.mjs, LEDGER). One delivery 1920×1080 @ 30 fps, 25.00 s, 120 BPM original score; fonts Alexandria + IBM Plex Sans Arabic (already vendored). UI rebuilt from the product's own screens; all names/numbers fictional, footnote «عرض توضيحي · بيانات تجريبية».
