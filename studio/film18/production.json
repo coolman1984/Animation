@@ -1,0 +1,300 @@
+{
+ "version": 1,
+ "duration": 25,
+ "fps": 30,
+ "audience": "owners of household-goods and electrical-appliance shops in Egypt (non-technical), scrolling Facebook/Instagram, who juggle invoices, instalments, stock and the cash drawer by hand or with a weak program",
+ "promise": "Mizan (ميزان, the Al-Store program) keeps the whole shop in balance: barcode selling with every payment method, every appliance's place, serial and warranty, shop instalments and credit, clear numbers",
+ "cta": "راسلني واحجز عرض البرنامج (the CTA on the owner's three posters; no contact details supplied, so none are shown)",
+ "direction": "ميزان = the scale. The mark's two bars on a fulcrum become the story: the shop's loads tip the beam, the copper bar levels it (the logo), then the same copper bar is the scanner laser, the total, the paid button, the shelf, the instalment progress and the tallest sales bar, and returns into the logo. Worlds: night → cream tile → ivory → night shelves → copper → night numbers → ivory payoff. Alexandria (display) + Readex Pro (UI) — the product's own fonts; the app's own icon set; client palette navy #13213c / cream #f3e9d8 / copper #c8743c. Container morphs on springs, slams, a blind pull, a circle wipe, a rising level. Original 120 BPM electro-pop, one hook in every chapter.",
+ "assets": [
+  {
+   "id": "brand",
+   "path": "film18/BRIEF.md",
+   "role": "logo",
+   "rights": "Client's own Mizan mark geometry (Store/web/js/brand.js, docs/brand/*.svg; 48-unit grid) re-drawn exactly in code from its numbers; colours from Store/docs/DESIGN.md; owner's product, public repository"
+  },
+  {
+   "id": "icons",
+   "path": "film18/film.js",
+   "role": "reference",
+   "rights": "Client's own UI icon paths copied from Store/web/img/icons.svg (owner's product); appliance glyphs drawn for this film"
+  },
+  {
+   "id": "fonts",
+   "path": "assets/fonts/ReadexPro-arabic.woff2",
+   "role": "reference",
+   "rights": "Readex Pro, SIL OFL (assets/fonts/OFL-readexpro.txt), copied from the client's own bundle Store/web/fonts; Alexandria already vendored (OFL)"
+  }
+ ],
+ "sound": {
+  "mode": "original",
+  "bpm": 120,
+  "note": "Original score synthesised in film18/score.mjs with lib/audio.mjs and lib/sfx.mjs on the shared clock film18/timing.js; no samples, no licence needed"
+ },
+ "creative": {
+  "viewer": "an Egyptian appliance-shop owner",
+  "problem": "at the end of the day invoices, instalments, stock and the safe don't add up",
+  "promise": "one program that balances them",
+  "evidence": "the owner's three Mizan posters (headlines, feature names, staged practice-shop numbers, CTA) and the product spec in Store/docs; no invented clients, results or prices beyond the posters' practice-shop figures, labelled as practice data",
+  "emotion": "recognition, relief, confidence",
+  "motif": "the copper bar of the logo",
+  "palette": [
+   "#13213c",
+   "#f3e9d8",
+   "#c8743c",
+   "#f5f3ee",
+   "#0a101c"
+  ],
+  "light": "night navy with copper glows for problem/stock/numbers; ivory paper for selling and the payoff; one copper world for instalments",
+  "typography": {
+   "display": "Alexandria",
+   "text": "Readex Pro"
+  },
+  "camera": "locked frames with push-ins, impact shakes, a pull-back into the logo and a dive into it",
+  "transitions": [
+   "copper slam + circle burst",
+   "gather into tile",
+   "dive into tile",
+   "blind pull-up",
+   "circle wipe from the shield",
+   "rising level",
+   "night gathers into the tile"
+  ],
+  "motion": "one copper container on springs through every job, word slams/drops/flips/blur-resolves, squash on landings",
+  "sound": "F minor tension → A flat major drop on the logo; hook returns per chapter on a new voice",
+  "pacing": "one idea per bar (2 s); headlines held 1.7–3.8 s; 1.4 s final hold",
+  "payoff": "the whole Mizan logo, name, the posters' tagline and the posters' CTA",
+  "cta": "راسلني واحجز عرض البرنامج",
+  "styleFrames": {
+   "hook": 3.0,
+   "proof": 7.2,
+   "payoff": 23.6
+  },
+  "proof": {
+   "start": 0,
+   "end": 12
+  }
+ },
+ "shots": [
+  {
+   "id": "hook",
+   "start": 0,
+   "end": 4,
+   "purpose": "hook: the shop's four daily loads (invoices, instalments, stock, the safe) pile on one end of a beam and tip it — the question every shop owner knows",
+   "assetIds": [
+    "brand"
+   ],
+   "craft": {
+    "scale": "wide symbol, beam + fulcrum",
+    "camera": "locked, grid drift, shake on each landing",
+    "focal": "the tipping beam and the question",
+    "transition": "copper bar streaks in, beam levels, cream circle bursts out of the fulcrum",
+    "depthLayers": 3,
+    "primaryMotions": [
+     "beam tilt",
+     "type slam"
+    ],
+    "audioCue": "F minor, a thud per load, ticking 16ths, low wavering warning bell, riser, breath"
+   },
+   "copy": {
+    "text": "والحساب مش بيقفل؟",
+    "start": 2.0,
+    "end": 3.72
+   }
+  },
+  {
+   "id": "name",
+   "start": 4,
+   "end": 6,
+   "purpose": "the copper bar levels the beam: it is the logo; the cream world gathers into the logo tile; the name",
+   "assetIds": [
+    "brand"
+   ],
+   "craft": {
+    "scale": "logo",
+    "camera": "pull-back from the beam into the whole logo",
+    "focal": "logo and name",
+    "transition": "dive into the tile",
+    "depthLayers": 3,
+    "primaryMotions": [
+     "tile gather",
+     "type blur-resolve"
+    ],
+    "audioCue": "drop on A flat, hook first statement"
+   },
+   "copy": {
+    "text": "ميزان — برنامج لمحلات الأدوات المنزلية والأجهزة الكهربائية",
+    "start": 4.5,
+    "end": 5.86
+   }
+  },
+  {
+   "id": "sell",
+   "start": 6,
+   "end": 10,
+   "purpose": "selling: the copper bar becomes the scanner; three scans on the beat build an invoice; payment methods; change; paid",
+   "assetIds": [
+    "brand"
+   ],
+   "craft": {
+    "scale": "UI medium",
+    "camera": "slow push-in",
+    "focal": "scan line, invoice, the total",
+    "transition": "the ivory world is pulled up like a blind",
+    "depthLayers": 3,
+    "primaryMotions": [
+     "cards through the laser",
+     "container morphs"
+    ],
+    "audioCue": "scanner beeps play the hook, ka-ching on the change"
+   },
+   "copy": {
+    "text": "بيع بالباركود · وطرق دفع متعددة",
+    "start": 6.2,
+    "end": 9.9
+   }
+  },
+  {
+   "id": "stock",
+   "start": 10,
+   "end": 14,
+   "purpose": "stock: the paid button becomes the shelf; appliances land with their place codes and counts; a transfer store → showroom; serial and warranty; the count",
+   "assetIds": [
+    "brand"
+   ],
+   "craft": {
+    "scale": "shelf medium",
+    "camera": "push-in with a parallax back shelf",
+    "focal": "boxes and their place codes",
+    "transition": "copper circle wipe out of the warranty shield",
+    "depthLayers": 4,
+    "primaryMotions": [
+     "box drops",
+     "arc transfer"
+    ],
+    "audioCue": "hook on a low saw, woody box landings"
+   },
+   "copy": {
+    "text": "كل جهاز مكانه معروف — مخزون وجرد وضمان بالسيريال",
+    "start": 10.12,
+    "end": 13.9
+   }
+  },
+  {
+   "id": "inst",
+   "start": 14,
+   "end": 16,
+   "purpose": "instalments and credit: a schedule of six; four paid on the beat; the next one due breathes",
+   "assetIds": [
+    "brand"
+   ],
+   "craft": {
+    "scale": "card",
+    "camera": "locked",
+    "focal": "the paid cells and the progress",
+    "transition": "navy rises like a level; the cells stand up as chart bars",
+    "depthLayers": 2,
+    "primaryMotions": [
+     "cell fills",
+     "progress"
+    ],
+    "audioCue": "hook on bells, a tick per paid cell"
+   },
+   "copy": {
+    "text": "تقسيط وآجل",
+    "start": 14.12,
+    "end": 15.8
+   }
+  },
+  {
+   "id": "numbers",
+   "start": 16,
+   "end": 20,
+   "purpose": "numbers: the owner's day in one screen — net sales, the trend, what needs a look",
+   "assetIds": [
+    "brand"
+   ],
+   "craft": {
+    "scale": "dashboard",
+    "camera": "locked",
+    "focal": "KPI and the trend line",
+    "transition": "the night gathers into the navy logo tile",
+    "depthLayers": 3,
+    "primaryMotions": [
+     "bars rise",
+     "line draw"
+    ],
+    "audioCue": "build: glide, snare roll, riser"
+   },
+   "copy": {
+    "text": "أرقام واضحة وقرار أذكى",
+    "start": 16.15,
+    "end": 19.72
+   }
+  },
+  {
+   "id": "payoff",
+   "start": 20,
+   "end": 25,
+   "purpose": "payoff: the whole logo, the name, the client's tagline, one action",
+   "assetIds": [
+    "brand"
+   ],
+   "craft": {
+    "scale": "brand resolve",
+    "camera": "slow push then hold",
+    "focal": "logo, name and CTA",
+    "transition": "hold",
+    "depthLayers": 2,
+    "primaryMotions": [
+     "logo pop",
+     "type"
+    ],
+    "audioCue": "full chorus on the logo, final A flat rings"
+   },
+   "copy": {
+    "text": "بيع بسهولة.. وحاسب بثقة — راسلني واحجز عرض البرنامج",
+    "start": 21.0,
+    "end": 25.0
+   }
+  }
+ ],
+ "cues": [
+  {
+   "id": "slam",
+   "t": 4.0,
+   "kind": "impact",
+   "shot": "name",
+   "sound": {
+    "type": "impact",
+    "vel": 0.75,
+    "weight": 0.8
+   },
+   "note": "the copper bar levels the beam: the drop"
+  },
+  {
+   "id": "stock",
+   "t": 10.05,
+   "kind": "transition",
+   "shot": "stock"
+  },
+  {
+   "id": "bars",
+   "t": 16.1,
+   "kind": "transition",
+   "shot": "numbers"
+  },
+  {
+   "id": "logo",
+   "t": 20.1,
+   "kind": "reveal",
+   "shot": "payoff",
+   "sound": {
+    "type": "impact",
+    "vel": 0.7,
+    "weight": 0.7
+   },
+   "note": "the whole logo"
+  }
+ ]
+}

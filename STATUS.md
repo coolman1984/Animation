@@ -2,7 +2,12 @@
 
 Updated: 2026-10-08.
 
-**Latest scope: DONE — Film 15, «إتكلم كورة» 25 s voxel motion-graphics showreel ad, 1920×1080 (owner 2026-10-08).**
+**Latest scope: DONE — Film 18, MIZAN (ميزان) «بيع بسهولة.. وحاسب بثقة», 25 s Reels ad for the Store program (owner request 2026-10-08: world-class, fast, lively, a showreel, go all out).**
+- Source `studio/film18/` (BRIEF, production.json, config, timing.js shared clock, film.js, score.mjs, LEDGER). Hand-built composer film: one copper hero (the logo's bar) does every job — levels the shop's tipping beam (= the logo), scanner laser, total, paid button, shelf, instalment progress, tallest sales bar — and returns into the logo. Brand, icons and fonts are the client's own (Store main: docs/DESIGN.md, brand.js, icons.svg, Readex Pro vendored).
+- Final take08 (local, `out/film18/take08/`): 25.000 s, 1080×1920, 30 fps; −13.7 LUFS, TP −3.2 dBTP, LRA 1.8; 11/11 gates PASS incl. text (139 lines) and no freeze; share 15.4 MB. 2 of 2 correction rounds used (take03 rejected on a 100 % crop: blurred logo); then three owner revisions: offline line removed, «MIZAN» re-spaced under «ميزان», ending music calmer and softer (was +5 dB and bright).
+- Not verified: listening (mix judged by measured band balance and loudness curve only), real-speed phone viewing, a fresh reviewer, Meta's overlays. Owner to know: poster 3 spells «مبزان»; the name is provisional, not trademark-cleared (Store DESIGN.md).
+
+**Previous scope: DONE — Film 15, «إتكلم كورة» 25 s voxel motion-graphics showreel ad, 1920×1080 (owner 2026-10-08).**
 - `studio/film15/` (BRIEF, LEDGER, production.json, config with ownerRequest, voxel.js, pitch3d.js, film.js, score.mjs, plates.py). One independent review, majors fixed in one round. See the film LEDGER and CHANGELOG 2026-10-08.
 - v3 (take09): soundtrack = the reference reel's music, untouched; picture retimed to its tempo (timing.js). Licence NOT verified, owner must clear it.
 - Truth notes: bar-race numbers are the owner's standings screenshot (perishable); tactical graphics are illustrative; PL logo/trophy/players are third-party topic imagery — owner must confirm clearance for paid use. Not verified: listening, real-speed viewing.

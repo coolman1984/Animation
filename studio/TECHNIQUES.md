@@ -285,3 +285,8 @@ Focused check: `node --test --test-isolation=none studio-engine/test/review.test
 - **Transitions as clip paths**: iris (arc), venetian blinds (rect union), cube-wipe (grid of scaling squares with `easeOutBack`), whip (translate both scenes + streaks), flash (white ±2 frames). The incoming scene draws with negative local time so its heroes start assembling inside the clip.
 - **Plates in code** (`film15/plates.py`): MediaPipe selfie-multiclass for people, grabCut + colour rules for a trophy, colour key + flat colour for a logo; needs `libegl1` on Debian.
 
+## One hero container through a whole film (film 18, 2026-10-08)
+`film18/film.js` → `HERO` is a list of anchors `{ t, f(t), cfg }`; `heroSeg(i, t) = lerp(heroSeg(i-1, t), HERO[i].f(t), springStep(t - HERO[i].t))`. Each anchor may be a live function (the logo's copper bar at the current zoom, a progress bar that grows per paid cell), so the container follows moving targets and still retargets with spring momentum; pure in t. Properties: cx, cy, w, h, r, rot (a bar becomes a vertical laser by turning 90°, not by a squashed "T"), hot (colour), glow. Labels live inside the container and fade by time.
+- **World inside the tile:** the next scene's root is clipped to the growing tile rect (`clip-path: inset(... round r)`) and sits just under the mark's bars, so the dive shows the new world inside the logo; the reverse (a full-frame tile shrinking into the logo) closes the film.
+- **Rising level transition:** `clip-path: path()` with a sine-wave top edge climbing the frame (numbers chapter).
+- **Text that leaves the frame:** set `visibility: hidden` on a scene's `.line` elements while it is flung, dived or pulled away; the text gate ignores them and the eye cannot read them anyway.

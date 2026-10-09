@@ -5,6 +5,9 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-08 — Film 18: MIZAN 25 s Reels ad for the Store program (DONE)
+Hand-built composer film on a shared 120 BPM clock (`film18/timing.js`, read by picture and score). One copper container (a chain of spring anchors whose segments blend live states: `heroSeg`) carries the whole film; the logo is drawn from the client's 48-unit geometry and shown whole. Composer gains Readex Pro (OFL, the client's UI font). take04: 25.000 s, 1080×1920, 30 fps, −14.2 LUFS, TP −3.3, LRA 4.2, 11/11 gates PASS, share 15.39 MB. Two correction rounds: text-band fixes + still span (review), blurred payoff logo found on a 100 % share-copy crop (final). Not verified: listening, phone playback.
+
 ## 2026-10-08 — Film 15 v3: picture follows the untouched reference music (scope DONE)
 Owner: keep the music exact, sync the picture to it. Removed the 2 % tempo fit; `film15/timing.js` maps real time to authored time (×1.0206) for picture, spectrum and effects. take09: all gates PASS, every cut within 24 ms of a drum hit. Licence not verified; not listened to.
 
