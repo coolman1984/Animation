@@ -244,8 +244,8 @@ Asset libraries constrain IDs/cache filenames, resolve supplied paths from the f
 `platform.mjs` bounds STUDIO_WORKERS by memory/CPU/request limits. `cdp.mjs` bounds HTTP/WebSocket startup and cleans up failed private session setup. Scene cuts remain opaque at their first frame; fades/wipes retain backing coverage. Morphs inherit geometry and analytically evaluate interrupted retargets.
 Focused check: `node --test --test-isolation=none studio-engine/test/review.test.mjs studio-engine/test/engine.test.mjs studio-engine/test/ribbon.test.mjs test/platform.test.mjs test/options-cache.test.mjs test/pipeline.test.mjs`. No slow suite/full render. Details and limits: CODE_REVIEW_2026-10-04.md.
 
-## Four-questions showreel-ad (2026-10-08; film `film12/`)
-- **Ball on a ruled page:** `ballAt(t)` in `film12/kit.js` is a closed form of t: a parabola between floors with stretch along the fall (`1 + 0.16|1−2u|³`) and a 0.12 s contact squash anchored at the floor; each landing time is also the time a question is born, a kick, a pitched note and a camera shake (`timing.js T.hop`).
+## Four-questions showreel-ad (2026-10-08; film `film16/`)
+- **Ball on a ruled page:** `ballAt(t)` in `film16/kit.js` is a closed form of t: a parabola between floors with stretch along the fall (`1 + 0.16|1−2u|³`) and a 0.12 s contact squash anchored at the floor; each landing time is also the time a question is born, a kick, a pitched note and a camera shake (`timing.js T.hop`).
 - **One list for picture and sound:** the 119-dot student field, its 82 present dots and each dot's lit time live in `timing.js` (`PRESENT`, `dotLit`, `litList`); the canvas draws them, the counter counts them, the score plays one bell per dot (pitch rises with the wave).
 - **Container morph chain:** dot → card (scale from 0.04) → button (follows the card's scale) → circle → dot flying to the field centre. Fix learned: scale the button with the card about the card's centre, or it pops in at full size.
 - **Thermal printer:** paper `translateY` fed in 14 steps (`(⌊v⌋ + easeOutCubic(frac)) / 14`) under a clip window whose bottom is the slot; one tick per step in the score.

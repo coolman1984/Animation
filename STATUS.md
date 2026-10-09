@@ -2,10 +2,10 @@
 
 Updated: 2026-10-08.
 
-**Latest scope: DONE — Film 13, the 9:16 Reels cut of film 12 (owner 2026-10-08).** `studio/film13/` (own composition for 1080×1920, shared clock and score). take02 all gates PASS, share 27.25 MB. Not verified: listening, phone viewing.
+**Latest scope: DONE — Film 17, the 9:16 Reels cut of film 16 (owner 2026-10-08).** `studio/film17/` (own composition for 1080×1920, shared clock and score). take02 all gates PASS, share 27.25 MB. Not verified: listening, phone viewing.
 
-**Previous scope: DONE — Film 12, Hessa (حِصّة) «٤ أسئلة», 25 s motion-graphics showreel-ad (owner 2026-10-08: world-class, "go all out", for the Teachers program).**
-- Source `studio/film12/` (BRIEF, config, production.json, timing.js shared clock, kit.js, film.js, score.mjs, LEDGER). One delivery 1920×1080 @ 30 fps, 25.00 s, 120 BPM original score; fonts Alexandria + IBM Plex Sans Arabic (already vendored). UI rebuilt from the product's own screens; all names/numbers fictional, footnote «عرض توضيحي · بيانات تجريبية».
+**Previous scope: DONE — Film 16, Hessa (حِصّة) «٤ أسئلة», 25 s motion-graphics showreel-ad (owner 2026-10-08: world-class, "go all out", for the Teachers program).**
+- Source `studio/film16/` (BRIEF, config, production.json, timing.js shared clock, kit.js, film.js, score.mjs, LEDGER). One delivery 1920×1080 @ 30 fps, 25.00 s, 120 BPM original score; fonts Alexandria + IBM Plex Sans Arabic (already vendored). UI rebuilt from the product's own screens; all names/numbers fictional, footnote «عرض توضيحي · بيانات تجريبية».
 - Payoff uses the owner's own poster lines («سنترك كله قدام عينك», «برنامج لإدارة السنتر», «راسلني واحجز عرض البرنامج»); owner order: **never say «يشتغل من غير إنترنت»**. No phone/URL on screen (public repo, as on his posters).
 - Final take07 (local, not in git): all technical gates PASS (−14.1 LUFS, TP −3.2 dBTP, LRA 3.5, 12 text lines in the safe band, share 27.25 MB); mixcheck clean (phone band −6.2 LU under stereo). Two correction rounds used.
 - Not verified: listening, real-speed viewing on a phone, an independent reviewer; Meta overlays.

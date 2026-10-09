@@ -1,4 +1,4 @@
-// Film 12 — small kit shared by film.js: palette, helpers, text lines, the product's own icons, the hero dot's physics.
+// Film 16 — small kit shared by film.js: palette, helpers, text lines, the product's own icons, the hero dot's physics.
 // Pure in t, seeded, no wall clock. The icon paths are copied from Teachers/js/core.js (24×24 stroke set) so the UI is the real one.
 import { clamp, lerp, ramp, ease, el, textLine } from '../lib/motion.js';
 import { springStep, hash } from '../lib/kinetics.js';

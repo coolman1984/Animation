@@ -1,12 +1,12 @@
-// Film 13 — Hessa «٤ أسئلة» — the 9:16 REELS cut of film 12. 1080×1920 @ 30 fps, 25 s, same 120 BPM clock and the same score (film12/timing.js, film12/score.mjs).
+// Film 17 — Hessa «٤ أسئلة» — the 9:16 REELS cut of film 16. 1080×1920 @ 30 fps, 25 s, same 120 BPM clock and the same score (film16/timing.js, film16/score.mjs).
 // Not a letterboxed landscape: every chapter is re-composed for the phone. Copy stays inside the published safe band (x 65–1015, y 269–1248); the bottom third gets motion only.
 //   hook: ball hops down four ruled lines (right margin) · A: 7×17 student field, card born from the dot · B: the form closes on save, two receipts print side by side
 //   C: one column of rows (FLIP sort), moon toggle · D: night modal · payoff: chips → 2×2 tiles → logo tile, the owner's poster lines.
 // Owner order: no offline-use claim anywhere. All data fictional.
 import { cursorAt, cursorClick } from '../lib/uimorph.js';
 import { grain } from '../lib/motion.js';
-import { PRESENT, dotLit, GX, GY } from '../film12/timing.js';
-import { clamp, lerp, ramp, ease, el, hash, T, C, DISP, UIF, px, oE, ioC, oC, ioQ, sm, spr, div, place, setBlur, pulse, mixHex, num, icon, tline, colourMark, rise } from '../film12/kit.js';
+import { PRESENT, dotLit, GX, GY } from '../film16/timing.js';
+import { clamp, lerp, ramp, ease, el, hash, T, C, DISP, UIF, px, oE, ioC, oC, ioQ, sm, spr, div, place, setBlur, pulse, mixHex, num, icon, tline, colourMark, rise } from '../film16/kit.js';
 
 const W = 1080, H = 1920, CX = 540, CY = 960;
 const full = (parent, style = {}) => div(parent, { width: px(W), height: px(H), ...style });

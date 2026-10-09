@@ -1,6 +1,6 @@
-# BRIEF — Film 13 «٤ أسئلة» · Hessa · the 9:16 Reels cut of film 12
+# BRIEF — Film 17 «٤ أسئلة» · Hessa · the 9:16 Reels cut of film 16
 
-Owner request 2026-10-08: "اعمل نسخة الريلز طولي ٩:١٦". ONE delivery: 1080×1920 @ 30 fps, 25 s (`ownerRequest` reel25). Same story, copy, clock (`film12/timing.js`) and score as film 12; **re-composed for the phone, not letterboxed**.
+Owner request 2026-10-08: "اعمل نسخة الريلز طولي ٩:١٦". ONE delivery: 1080×1920 @ 30 fps, 25 s (`ownerRequest` reel25). Same story, copy, clock (`film16/timing.js`) and score as film 16; **re-composed for the phone, not letterboxed**.
 Copy stays inside the published safe band (x 65–1015, y 269–1248); the bottom third carries motion only (dots, embers, printers, glow).
 
 | chapter | landscape → portrait change |

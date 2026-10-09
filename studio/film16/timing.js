@@ -1,5 +1,5 @@
 import { hash } from '../lib/kinetics.js';
-// Film 12 — the shared clock. Picture (film.js) and sound (score.mjs) read the SAME constants, so nothing is nudged by ear.
+// Film 16 — the shared clock. Picture (film.js) and sound (score.mjs) read the SAME constants, so nothing is nudged by ear.
 // 120 BPM: beat 0.5 s, bar 2 s. Every time below is in film seconds. No DOM here: Node imports it too.
 export const BPM = 120, BEAT = 0.5, BAR = 2, DUR = 25;
 export const T = {

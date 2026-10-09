@@ -1,4 +1,4 @@
-# LEDGER — Film 12 Hessa (حِصّة) «٤ أسئلة» (25 s, 16:9, one delivery). Takes in `studio/out/film12/` (not in git). Final: take07.
+# LEDGER — Film 16 Hessa (حِصّة) «٤ أسئلة» (25 s, 16:9, one delivery). Takes in `studio/out/film16/` (not in git). Final: take07.
 
 | time | issue | sev | fix | result |
 |---|---|---|---|---|

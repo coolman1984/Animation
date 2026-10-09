@@ -1,5 +1,5 @@
-// Film 12 score — Hessa «٤ أسئلة» — original, 120 BPM (beat 0.5 s, bar 2 s). A minor / C major, no samples, no licence needed.
-// Every sound is placed from film12/timing.js — the SAME constants the picture uses.
+// Film 16 score — Hessa «٤ أسئلة» — original, 120 BPM (beat 0.5 s, bar 2 s). A minor / C major, no samples, no licence needed.
+// Every sound is placed from film16/timing.js — the SAME constants the picture uses.
 // Shape: the four hop notes E G A C are a question (they rise and stay open); each answered chip plays a higher C-major tone; the logo hit plays the whole
 // motif and RESOLVES it on C. Kick on every beat from the first frame (the owner's taste: a real beat), clap from chapter A, bells for coins/receipts,
 // a low vault for the drawer, a one-frame breath before the hit (the music ducks 70 ms), then the full groove under the lock-up.
@@ -13,7 +13,7 @@ import plan from './production.json' with { type: 'json' };
 import { T, HOP_NOTES, BEAT, BAR, DUR, litList } from './timing.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const OUT = join(HERE, '..', 'takes', 'film12');
+const OUT = join(HERE, '..', 'takes', 'film16');
 mkdirSync(OUT, { recursive: true });
 const E8 = BEAT / 2, S16 = BEAT / 4, N = DUR + 2, END = DUR;
 const mk = () => new Bus(N);
@@ -197,4 +197,4 @@ for (const b of [music, sfx]) { for (let i = 0; i < b.n; i++) { const t = i / SR
 const mix = new Bus(DUR); music.mixInto(mix, 1); sfx.mixInto(mix, 0.9);
 const norm = 0.5 / peak(mix);
 writeWav(join(OUT, 'music.wav'), music, { gain: norm }); writeWav(join(OUT, 'sfx.wav'), sfx, { gain: norm * 0.9 }); writeWav(join(OUT, 'mix.wav'), mix, { gain: norm });
-console.log(`film12 score: ${DUR}s 120 BPM, norm ${norm.toFixed(3)}`);
+console.log(`film16 score: ${DUR}s 120 BPM, norm ${norm.toFixed(3)}`);
