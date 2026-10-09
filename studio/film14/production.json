@@ -1,0 +1,266 @@
+{
+  "version": 1,
+  "duration": 20,
+  "fps": 30,
+  "audience": "Egyptian football fans on Facebook Reels following the show «اتكلم كورة»",
+  "promise": "the show «اتكلم كورة»: tactics, teams, results and analysis, ending on its host",
+  "cta": "none supplied; the film ends on the host with the show title as in his video",
+  "direction": "«The ball»: a 2D football bounces the name in, is kicked through the lens into a chalk tactics board, becomes the pass dot, the shirt colour wipe, the rolling score digit, the run on the analysis pitch and the word-blast ball that flashes into the host's freeze; flat sports graphics in team colours; Alexandria only; 150 BPM A-minor chant track",
+  "assets": [
+    {
+      "id": "ref",
+      "path": "film14/source/ref.mp4",
+      "role": "reference",
+      "rights": "Owner-supplied show intro (chat upload 2026-10-07, generator-watermarked); not in git"
+    },
+    {
+      "id": "host",
+      "path": "film14/plates/end",
+      "role": "product",
+      "rights": "24 frames of the owner's own footage (ref 7.40–8.36 s: the host as the show title flies onto the screen behind him, exactly as in his video), unedited; not in git"
+    }
+  ],
+  "sound": {
+    "mode": "original",
+    "bpm": 150,
+    "note": "Original synthesised score (film14/score.mjs): Am–G|F–E, crowd-chant hook in every chapter, horn stabs, whistles; no samples"
+  },
+  "creative": {
+    "viewer": "a football fan on Reels",
+    "problem": "a talk-show promo must feel fast, Egyptian and match-night",
+    "promise": "اتكلم كورة",
+    "evidence": "three real, sourced results; the host's own footage; club/league names with their colours",
+    "emotion": "hype and belonging",
+    "motif": "the ball",
+    "palette": [
+      "#05080F",
+      "#0F3A24",
+      "#C8102E",
+      "#FFC83D",
+      "#C6FF3D"
+    ],
+    "light": "flat graphic colour fields per chapter; floodlight blooms on the end card",
+    "typography": {
+      "display": "Alexandria",
+      "text": "Alexandria"
+    },
+    "camera": "2D only: zooms, pushes and wipes of flat layers",
+    "transitions": [
+      "ball through the lens",
+      "diagonal colour wipe",
+      "shirt flip",
+      "LED wipe",
+      "circle reveal",
+      "colour slam",
+      "flash"
+    ],
+    "motion": "bounce + squash, chalk draw, formation morph, shirt flips, roundel spins, slot-machine scores, heat map, pass network, radar, run path, word blast, freeze + push",
+    "sound": "whistle, stomp-stomp-clap, chant hook, chalk taps, ball thumps, slot clicks, clock ticks, horn stabs, crowd roar",
+    "pacing": "one idea per beat at 150 BPM",
+    "payoff": "the host with the show title behind him, frozen, framed in gold",
+    "cta": "",
+    "styleFrames": {
+      "hook": 1,
+      "proof": 10.4,
+      "payoff": 19.6
+    },
+    "proof": {
+      "start": 0,
+      "end": 12
+    }
+  },
+  "shots": [
+    {
+      "id": "kickoff",
+      "start": 0,
+      "end": 1.6,
+      "purpose": "whistle; the ball drops and bounces the name in; kicked through the lens",
+      "assetIds": [],
+      "craft": {
+        "depthLayers": 2,
+        "scale": "centre circle",
+        "camera": "locked",
+        "focal": "ball",
+        "transition": "ball through the lens",
+        "primaryMotions": [
+          "bounce"
+        ],
+        "audioCue": "whistle, stomps, chant",
+        "layers": [
+          "text",
+          "svg"
+        ]
+      },
+      "copy": {
+        "text": "اتكلم كورة",
+        "start": 0.4,
+        "end": 1.4
+      }
+    },
+    {
+      "id": "tactics",
+      "start": 1.6,
+      "end": 4.8,
+      "purpose": "chalk board: 4-4-2 pops, morphs to 4-3-3, arrows, the ball dot runs three passes",
+      "assetIds": [],
+      "craft": {
+        "depthLayers": 2,
+        "scale": "full pitch",
+        "camera": "slow zoom + tilt",
+        "focal": "ball dot",
+        "transition": "diagonal wipe",
+        "primaryMotions": [
+          "formation morph",
+          "chalk draw"
+        ],
+        "audioCue": "chalk taps, pass thumps",
+        "layers": [
+          "text",
+          "svg"
+        ]
+      },
+      "copy": {
+        "text": "التكتيك",
+        "start": 1.7,
+        "end": 4.55
+      }
+    },
+    {
+      "id": "teams",
+      "start": 4.8,
+      "end": 8,
+      "purpose": "one shirt flips through الأهلي, الزمالك, منتخب مصر; the two leagues as colour roundels",
+      "assetIds": [],
+      "craft": {
+        "depthLayers": 2,
+        "scale": "shirt",
+        "camera": "locked",
+        "focal": "shirt",
+        "transition": "LED wipe",
+        "primaryMotions": [
+          "shirt flip",
+          "roundel spin"
+        ],
+        "audioCue": "drop at 4.8, whoosh + hit per team",
+        "layers": [
+          "text",
+          "svg"
+        ]
+      },
+      "copy": {
+        "text": "الأهلي · الزمالك · منتخب مصر · الدوري المصري · الدوري الإنجليزي",
+        "start": 4.85,
+        "end": 7.9
+      }
+    },
+    {
+      "id": "results",
+      "start": 8,
+      "end": 11.2,
+      "purpose": "three real results roll in like a slot machine",
+      "assetIds": [],
+      "craft": {
+        "depthLayers": 2,
+        "scale": "cards",
+        "camera": "locked",
+        "focal": "scores",
+        "transition": "circle reveal",
+        "primaryMotions": [
+          "card fly",
+          "digit roll"
+        ],
+        "audioCue": "clicks + confirm per card",
+        "layers": [
+          "text"
+        ]
+      },
+      "copy": {
+        "text": "النتايج",
+        "start": 8,
+        "end": 11.05
+      }
+    },
+    {
+      "id": "analysis",
+      "start": 11.2,
+      "end": 14.4,
+      "purpose": "heat map, pass network, radar, possession ring, a run; match clock to ٩٠:٠٠",
+      "assetIds": [],
+      "craft": {
+        "depthLayers": 2,
+        "scale": "pitch",
+        "camera": "locked",
+        "focal": "network",
+        "transition": "colour slam",
+        "primaryMotions": [
+          "heat blobs",
+          "network draw"
+        ],
+        "audioCue": "clock ticks, node bloops",
+        "layers": [
+          "text",
+          "svg",
+          "particles"
+        ]
+      },
+      "copy": {
+        "text": "التحليل",
+        "start": 11.25,
+        "end": 14.25
+      }
+    },
+    {
+      "id": "blast",
+      "start": 14.4,
+      "end": 16,
+      "purpose": "one word per beat on colour slams; the ball flies at the lens",
+      "assetIds": [],
+      "craft": {
+        "depthLayers": 2,
+        "scale": "full frame type",
+        "camera": "locked",
+        "focal": "word",
+        "transition": "flash",
+        "primaryMotions": [
+          "slam",
+          "shake"
+        ],
+        "audioCue": "horn + hey per beat",
+        "layers": [
+          "text",
+          "svg"
+        ]
+      },
+      "copy": {
+        "text": "تكتيك · نتايج · تحليل · جووول!",
+        "start": 14.4,
+        "end": 16
+      }
+    },
+    {
+      "id": "host",
+      "start": 16,
+      "end": 20,
+      "purpose": "the host's own footage until the show title has flown in behind him, then a gold-framed freeze with a slow push",
+      "assetIds": [
+        "host"
+      ],
+      "craft": {
+        "depthLayers": 2,
+        "scale": "host medium-close",
+        "camera": "push",
+        "focal": "host + title",
+        "transition": "cut",
+        "primaryMotions": [
+          "freeze push",
+          "light sweep"
+        ],
+        "audioCue": "final chorus, freeze hit, whistle",
+        "layers": [
+          "image",
+          "svg"
+        ]
+      }
+    }
+  ]
+}

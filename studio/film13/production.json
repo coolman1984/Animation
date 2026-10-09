@@ -1,0 +1,222 @@
+{
+  "version": 1,
+  "duration": 20,
+  "fps": 30,
+  "audience": "football fans on Reels who follow the show «اتكلم كورة»",
+  "promise": "the show «اتكلم كورة» — football talked through tactics, play and analysis (owner's reference: a stadium intro with the host and the show name)",
+  "cta": "none supplied; the film ends on the show name only (owner 2026-10-07: «اتكلم كورة» only, no other words)",
+  "direction": "«The chalk line»: one glowing tactics line scribbles under the floodlights, sweeps the show name onto a 2D chalk board, rises into 3D pass arcs, becomes the ball's flight and the replay trajectory, and underlines the title; real Three.js stadium (floodlights, stands, pitch, goal, holographic players) + SVG/DOM 2D (chalk, HUD, rays, extruded title); Alexandria only; 120 BPM E-minor original score",
+  "assets": [
+    {
+      "id": "ref",
+      "path": "film13/source/ref.mp4",
+      "role": "reference",
+      "rights": "Owner-supplied 10 s show intro (chat upload 2026-10-07, generator-watermarked footage); order and argument followed, artwork not copied; not in git"
+    },
+    {
+      "id": "host",
+      "path": "film13/plates/host",
+      "role": "product",
+      "rights": "64 frames of the owner's own footage (ref 5.4–8.07 s, before any on-screen text), cropped clear of the generator watermark; shown on the stadium screen only; not in git"
+    }
+  ],
+  "sound": {
+    "mode": "original",
+    "bpm": 120,
+    "note": "Original synthesised score (film13/score.mjs): E minor Em–C|G–D, one two-bar hook in every chapter, drop at 4.0, frozen-replay break 10–14, loudest on the title; stadium crowd and ball sounds synthesised; no samples"
+  },
+  "creative": {
+    "viewer": "a football fan on Reels",
+    "problem": "a talk-show intro must feel like match night and say the show's name",
+    "promise": "اتكلم كورة",
+    "evidence": "the owner's host footage and the show name; no invented stats, clubs or claims",
+    "emotion": "match-night thrill, then pride",
+    "motif": "the chalk line",
+    "palette": [
+      "#03060D",
+      "#1F6B35",
+      "#F4F7FA",
+      "#5CF2FF",
+      "#FFC94D"
+    ],
+    "light": "floodlit night stadium: banks switch on, cones, crowd lights; gold title",
+    "typography": {
+      "display": "Alexandria",
+      "text": "Alexandria"
+    },
+    "camera": "push-out from a floodlight bank → top-down tactics → swoop to low 3D → ball follow → goal reaction → bullet-time orbit → whip to the big screen",
+    "transitions": [
+      "line sweep",
+      "2D-to-3D lift",
+      "whip pan",
+      "flash",
+      "screen"
+    ],
+    "motion": "chalk scribble, chalk marks pop, tube arcs lift, holographic players rise, ball passes/shot, net bulge, sparks + rays, rewind, frozen orbit with HUD, extruded title + light sweep",
+    "sound": "floodlight clunks, chalk, ball thumps, net + crowd roar, tape rewind, HUD ticks, title bells",
+    "pacing": "one idea per bar",
+    "payoff": "the show name, gold and white, extruded, underlined by the line, the ball as its full stop",
+    "cta": "",
+    "styleFrames": {
+      "hook": 1.3,
+      "proof": 9.4,
+      "payoff": 19.6
+    },
+    "proof": {
+      "start": 0,
+      "end": 12
+    }
+  },
+  "shots": [
+    {
+      "id": "lights",
+      "start": 0,
+      "end": 2.3,
+      "purpose": "six floodlight banks switch on; a chalk line scribbles; the show name slams; the line sweeps it away",
+      "assetIds": [],
+      "craft": {
+        "depthLayers": 3,
+        "scale": "floodlight close → stadium",
+        "camera": "push out and down",
+        "focal": "the lamps, then the name",
+        "transition": "line sweep",
+        "primaryMotions": [
+          "lights on",
+          "scribble"
+        ],
+        "audioCue": "clunks on 8ths, title hits",
+        "layers": [
+          "text",
+          "3d",
+          "svg"
+        ]
+      },
+      "copy": {
+        "text": "اتكلم كورة",
+        "start": 0.5,
+        "end": 1.95
+      }
+    },
+    {
+      "id": "tactics",
+      "start": 2.3,
+      "end": 6,
+      "purpose": "top-down chalk board: O and X pop, arrows draw; on the drop the arrows lift into 3D arcs and players rise",
+      "assetIds": [],
+      "craft": {
+        "depthLayers": 3,
+        "scale": "half pitch",
+        "camera": "top-down → swoop low",
+        "focal": "the arrows",
+        "transition": "2D-to-3D lift",
+        "primaryMotions": [
+          "marks pop",
+          "arc lift",
+          "players rise"
+        ],
+        "audioCue": "chalk taps, drop at 4.0",
+        "layers": [
+          "3d"
+        ]
+      }
+    },
+    {
+      "id": "attack",
+      "start": 6,
+      "end": 10,
+      "purpose": "three passes along the arcs, dribble, shot, goal: net bulge, flash, sparks, rays",
+      "assetIds": [],
+      "craft": {
+        "depthLayers": 3,
+        "scale": "player close",
+        "camera": "ball follow → goal reaction",
+        "focal": "the ball",
+        "transition": "flash",
+        "primaryMotions": [
+          "ball flight",
+          "net bulge"
+        ],
+        "audioCue": "thumps, shot, net + roar at 9.0",
+        "layers": [
+          "3d",
+          "svg"
+        ]
+      }
+    },
+    {
+      "id": "replay",
+      "start": 10,
+      "end": 14,
+      "purpose": "the ball rewinds into mid-flight and freezes; the camera orbits; HUD rings and the dotted remaining trajectory draw",
+      "assetIds": [],
+      "craft": {
+        "depthLayers": 3,
+        "scale": "ball close",
+        "camera": "bullet-time orbit",
+        "focal": "the frozen ball",
+        "transition": "whip pan",
+        "primaryMotions": [
+          "orbit",
+          "HUD draw"
+        ],
+        "audioCue": "tape rewind, half-time break, ticks",
+        "layers": [
+          "3d",
+          "svg"
+        ]
+      }
+    },
+    {
+      "id": "host",
+      "start": 14,
+      "end": 17.5,
+      "purpose": "the camera whips to the big screen showing the owner's footage of the host",
+      "assetIds": [
+        "host"
+      ],
+      "craft": {
+        "depthLayers": 3,
+        "scale": "screen",
+        "camera": "whip then slow push",
+        "focal": "the host",
+        "transition": "cut",
+        "primaryMotions": [
+          "whip"
+        ],
+        "audioCue": "whoosh, soft hit",
+        "layers": [
+          "3d",
+          "video"
+        ]
+      }
+    },
+    {
+      "id": "title",
+      "start": 17.5,
+      "end": 20,
+      "purpose": "the show name on the big screen: blur-resolve, extrusion grows, light sweep, underline, the ball as a dot; hold",
+      "assetIds": [],
+      "craft": {
+        "depthLayers": 3,
+        "scale": "title",
+        "camera": "locked push",
+        "focal": "the name",
+        "transition": "cut",
+        "primaryMotions": [
+          "extrude",
+          "sweep"
+        ],
+        "audioCue": "hit + bells, final chorus",
+        "layers": [
+          "text",
+          "3d"
+        ]
+      },
+      "copy": {
+        "text": "اتكلم كورة",
+        "start": 17.5,
+        "end": 20
+      }
+    }
+  ]
+}

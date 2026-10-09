@@ -97,5 +97,26 @@ No required lesson quota or automatic reuse of a prior visual style.
 3. Clear outgoing text before a 0.4-second wipe; carry the sculpture through the boundary, then let the new headline land. A pointer click and its target morph share the same spec beat.
 
 
+## Film 12 — space-planner motion showreel, 20 s Reels, real Three.js (2026-10-07)
+54. **The product's own feature can be the hero:** the app's "walls cut at 1.10 m" became a cyan sheet of light that lifts the plan into walls, slices them, sweeps the finishes, flattens the flat and builds the work zones — every transition is caused by the product's idea.
+55. **Measure Arabic display width, not font size:** Alexandria 900 at 128 px read back 1012 px wide on a 1080 frame. Pick sizes from read-back widths (≤ 880 px) and slam *up* from ~0.6× with a small bounce: entries from 1.9× produced 87 text-gate issues, the pop-up produced none.
+56. **A hidden box does not hide its words from the gate:** chip labels kept opacity 1 inside a faded chip and were still counted; give the words the box opacity (same rule as CRAFT 45).
+
+## Film 13 — «اتكلم كورة» 3D/2D football showreel (2026-10-07)
+57. **"Only the name" means scan the client's footage too:** removing our own labels was not enough — the owner's reference had its title baked into the later frames. Re-cut supplied footage to a span with no on-screen words before showing it.
+58. **One line can carry 2D and 3D:** the same chalk stroke as an SVG scribble, a flat line on the grass, a lifted tube arc and a projected dotted trajectory makes the medium change itself the transition.
+59. **A Three.js object that faces away is invisible, not wrong-coloured:** floodlight lamp discs rotated by π were back-face culled and the opening read as black; check a light source's facing on the first still.
+
+## Film 14 — «اتكلم كورة» 2D football showreel (2026-10-07)
+60. **When the owner calls the 3D "very bad", the fix is a different film, not a better 3D:** flat team colours, chalk, scoreboards and kinetic type at 150 BPM carried the same story with more energy and rendered 3× faster.
+61. **`hash()` returns 0–1, not an integer:** `hash(...) % 10` printed long fractions as score digits; always `floor(hash × n)`. (film13's floodlight flicker used the same wrong idiom.)
+62. **A card that slides in from off-frame must stay transparent until it is nearly home:** opaque words 900 px off the right edge were counted outside the safe area; gate the words' opacity on the last 15 % of the spring and exit by scale/fade.
+63. **When the web's music libraries are blocked, real instruments can still come through GitHub:** a CC0 orchestral sample library (VSCO 2 CE) cloned with a blob-less sparse checkout of 153 files turned a rejected synth score into recorded brass, strings and timpani in one pass. Measure each library's octave naming first ("A2" was 220 Hz).
+64. **A title "behind the person" needs a per-frame cut-out, not a better freeze:** rembg's human-seg model cut the host from 69 interpolated frames in 65 s; text placed between the plate and the cut-out reads as part of the scene.
+65. **Swap one `<img>` and await `decode()` instead of preloading every frame:** 138 decoded 1080² frames made Chromium fail an image decode; `render()` may return the decode promise and the capture waits.
+66. **Measure the spectrum before blaming the taste:** a score judged "very bad" three times had 70–85 % of its energy under 150 Hz because the kick and bass were 4–8× louder than the melody. Print per-bus RMS and a 4-band split (<150, 150–1k, 1–4k, >4k) and target roughly 30/35/30/5 for phone playback.
+67. **Clipped-text effects:** `text-shadow` under `color: transparent; background-clip: text` shows through the glyph as grey; put a light sweep inside the text's own gradient, not in an overlay box.
+68. **When an owner points at an earlier film's music, reuse that score's code, not a new idea:** two rounds of "fixes" to a new score (orchestral samples, spectrum rebalancing) missed what a single sentence — "like the space-planner film" — asked for; the same voices, mix recipe, progression and hook at a new tempo were accepted as the direction. Ask for a reference track or film first.
+
 ## Production-path review (2026-10-04)
 A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs the outgoing scene beneath it until coverage completes. Morph retargeting starts from the actual current geometry and color and remains independent of render history. A printed failed gate must block delivery. Code regressions establish these contracts; existing exports were not re-rendered. Evidence: CODE_REVIEW_2026-10-04.md.

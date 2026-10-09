@@ -5,6 +5,27 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-07 — Film 14 v5: half-time groove, slower feel on the same picture (DONE)
+Owner: v4 still too fast. Kept the picture on its 150-BPM grid and changed the drum and chord pattern to half-time (78 kicks/min, 8th-note hats). take07: every export gate PASS. Not verified: listening. A true 120 BPM would need about 5 s of scenes cut.
+
+## 2026-10-07 — Film 14 v4: the score becomes film12's sound at 150 BPM (DONE)
+Owner: still bad; make it like the «مخطط المساحات» project's music, fast and distinctive. The score is now built from film12's own voices, mix, progression and hook, re-timed to 150 BPM and mapped onto film14's chapters, with film14's event sounds. take06: every export gate PASS. Not verified: listening.
+
+## 2026-10-07 — Film 14 v3: balanced phone-ready score, title in front of the host (DONE)
+Owner: music still very bad; the show title must appear whole in front of him at the bottom. Measured the real fault (70–85 % of the energy below 150 Hz) and rebalanced the buses, rebuilt the kick/bass for small speakers and added a bright synth hook. Title: one extruded line in front of the host, light sweep inside the letters. take05: every export gate PASS. Not verified: listening; offered to re-time the film to any track the owner sends.
+
+## 2026-10-07 — Film 14 v2: official logos, recorded-orchestra anthem, new host ending (DONE)
+Owner: put the official logos, the music is very bad, the ending is very bad, find energetic / World Cup music. Crests from his screenshots on shirts, result cards, a new two-league standings scene and an end parade; his Premier League photos as cards. Web music sites are blocked in this environment, so the score now uses recorded CC0 orchestra samples (VSCO 2 CE via GitHub) in the style of the 2026 World Cup anthem (orchestral + EDM), melody original. Ending rebuilt: 2× smooth slow motion, the host cut out per frame, «اتكلم كورة» flies onto the screen behind him. take04: every export gate PASS. Not verified: listening.
+
+## 2026-10-07 — Film 14: «اتكلم كورة» 2D football motion showreel, 20 s Facebook Reels (DONE)
+Owner rejected film13's 3D: new 2D-only film at 150 BPM. The ball as hero through kick-off, a chalk tactics board (4-4-2 → 4-3-3, passes), one shirt flipping through الأهلي / الزمالك / منتخب مصر, colour roundels for the Egyptian league and the Premier League, three real sourced results as slot-machine scores, unlabeled analysis graphics with a match clock, a one-word-per-beat blast, and the host's own footage until the show title has flown in behind him, frozen in a gold frame. Original crowd-chant score. take02: every export gate PASS. Not verified: listening, real-time phone viewing; official crests not supplied.
+
+## 2026-10-07 — Film 13: «اتكلم كورة» 3D/2D football-show showreel, 20 s Reels (DONE)
+Owner request: a 20 s showreel on the topic of his football-show intro, "3D and 2D, go all out"; mid-production: only «اتكلم كورة», no other words. One hero (the chalk line) from an SVG scribble to a 2D tactics board, lifted 3D pass arcs, the ball's flight and the replay trajectory, to the title underline. Real Three.js stadium (six floodlight banks, stands, crowd lights, pitch, goal, holographic players, ball, net bulge, sparks), bullet-time replay with projected SVG HUD, the owner's host footage on the big screen (text-free span), extruded gold title. Original 120 BPM E-minor score. take01: every export gate PASS. Not verified: listening, real-time phone viewing.
+
+## 2026-10-07 — Film 12: «مخطط المساحات» 3D motion showreel, 20 s Reels (DONE)
+Owner request: a 20 s motion-graphics showreel about the space-planning app from his two posters, five app screenshots and the Pixel Plus logo, "go all out". First film in real Three.js 3D end to end: a plan measured from the owner's screenshot is drawn by a pen, lifted into walls by one hero (the app's cut plane), sliced to 1.10 m, furnished room by room (25 procedural pieces with drop + squash), re-finished by clipped sweeps (three options), flattened into a flipping work floor with four zones, then the real app window and a light end card with the logo whole and the poster's CTA. Original 120 BPM D-minor score with one returning hook and a sound per event. take04: every export gate PASS (text 0 issues after take01's 87 and take03's 1). Not verified: listening, real-time phone viewing.
+
 ## 2026-10-04 — Production-path bug review and fixes (DONE)
 Fixed delivery/gate propagation, missing video errors and stale/nonnumeric take selection; malformed spec/CLI validation; silent audio division; asset path confinement/fresh-library copies/content refresh; narration content cache/PYTHON/absolute tool path; scene-boundary coverage and inherited/retargeted shape colors; deep format overrides; supplied-media dependencies/rights/phase alignment; bounded workers and CDP startup deadlines/cleanup. Focused tests 37 pass/2 optional skips, docs 5 pass; check-only showreel passes. Existing video exports unchanged. Full evidence and limits: CODE_REVIEW_2026-10-04.md.
 ## 2026-10-04 — FORM / FUNCTION resume showreel and latest-branch integration (DONE)

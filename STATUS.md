@@ -1,8 +1,29 @@
 # Studio status and session handoff
 
-Updated: 2026-10-04.
+Updated: 2026-10-07.
 
-**Latest scope: DONE — deep production-path code review and fixes (owner 2026-10-04).**
+**Latest scope: DONE — Film 14 v5 (owner 2026-10-07): half-time groove, slower feel. take07 every gate PASS. Open question for the owner: a real 120 BPM needs about 5 s of scenes cut.**
+
+**Previous scope: DONE — Film 14 v4 (owner 2026-10-07): score rebuilt from film12's sound at 150 BPM. take06 every gate PASS. Not verified: listening.**
+
+**Previous scope: DONE — Film 14 v3 (owner 2026-10-07): rebalanced score (spectrum measured), title in front of the host. take05 every gate PASS. Not verified: listening.**
+
+**Previous scope: DONE — Film 14 v2 (owner 2026-10-07): official logos from his screenshots, recorded CC0 orchestra anthem (VSCO 2 CE), new host ending with the title behind him. take04 every gate PASS. Not verified: listening.**
+
+**Previous scope: DONE — Film 14, «اتكلم كورة» 2D football motion showreel, 20 s Facebook Reels 1080×1920 (owner request 2026-10-07, replaces film13's rejected 3D).**
+- `studio/film14/` (BRIEF with result sources, production.json, config, timing.js, film.js DOM/SVG, score.mjs, LEDGER). Final take02 (local): every export gate PASS, share 13.95 MB.
+- Owner decision open: official club/league crests (none supplied; names + colours + original roundels used). Not verified: listening, real-time phone viewing.
+
+**Previous scope: DONE (rejected by the owner: "the 3D is very bad") — Film 13, «اتكلم كورة» 3D/2D football-show showreel, 20 s Reels 1080×1920 (owner request 2026-10-07).**
+- `studio/film13/` (BRIEF, production.json, config, timing.js, film.js Three.js + SVG/DOM, score.mjs, LEDGER). Final take01 (local, not in git): every export gate PASS, share 13.67 MB.
+- Owner note applied: the only words are «اتكلم كورة»; host footage re-cut to a text-free span. Not verified: listening, real-time phone viewing.
+
+**Previous scope: DONE — Film 12, «مخطط المساحات» 3D motion showreel, 20 s Reels 1080×1920 (owner request 2026-10-07).**
+- `studio/film12/` (BRIEF, production.json, config, timing.js shared clock, film.js real Three.js + DOM copy, score.mjs, LEDGER). Final take04 (local, not in git): every export gate PASS, share 13.59 MB.
+- One hero (the app's cut plane); plan and room areas measured from the owner's screenshot; logo shown whole; poster CTA. Two correction rounds used (take01 text gate, take03 freeze + hidden-chip label).
+- Not verified: listening and real-time phone viewing.
+
+**Previous scope: DONE — deep production-path code review and fixes (owner 2026-10-04).**
 - Fixed gate propagation/stale delivery, malformed clocks/specs, silent NaN audio, asset traversal/cache handling, narration caching/Windows launcher, scene cuts/morph continuity, format overrides, music phase/media metadata, bounded workers and browser startup deadlines.
 - Evidence: focused checks 37 passed/2 optional fixtures skipped; docs 5 passed; showreel check-only pipeline passes. Seven regression failures reproduced before fixes. Details: `studio/CODE_REVIEW_2026-10-04.md`.
 - Existing take02 exports predate these source fixes; no new full render. Real Whisper, listening and browser failure injection remain unverified. Work stays on the isolated integrated branch; original user edits/media preserved.
