@@ -137,3 +137,13 @@ A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs th
 58. **Measure the mix in bands, not only in LUFS:** a mix that passed −14 LUFS was ~95 % sub-bass with the hook 17–21 dB down; a numpy band table showed it, while a log-scale spectrogram mislabelled the bass as 1.2 kHz.
 59. **Arabic dots fall below the line box the gate measures:** «MIZAN» under «ميزان» passed the overlap gate but touched the ي/ن dots (owner caught it). For an Arabic word over a Latin line, leave ≥ 0.45 em of the Arabic size between centres beyond half of each size, and check the lock-up on a 100 % crop.
 60. **"The loudest section is the logo" can overshoot:** film 18's payoff chorus sat +5 dB over the body with a bright saw lead, and the owner called the last 3 s too loud and harsh. Keep the logo moment ≤ +2 dB over the body, let the final bars settle below it, and check 2–16 kHz energy in the ending, not only loudness.
+
+## Hessa showreel-ad (2026-10-08)
+1. **One brand atom can be every object:** the product's amber dot is a ball, a student, a coin-flood, a toggle knob and the logo tile; every transition then has a cause and no effect is decoration.
+2. **A persistent checklist ties chapters together:** four chips that start as the questions, turn into answers one by one and become the four KPI tiles of the payoff give the viewer progress and make the payoff a match-cut, not a new idea.
+3. **Squash must be anchored at the floor:** compute the bottom contact point first, then the centre from the squashed height, so the ball never slides on landing.
+4. **Text-gate geometry:** a bottom answer line needs centre ≤ 948 and a rise ≤ 22 px (its box includes the blur/rise); headline words that slam in should rise from below with overshoot ≤ 1.14 so neighbouring lines never overlap.
+5. **Read the phone, not only the meter:** a mix at −14 LUFS can lose 10 LU on a phone speaker; a band-passed (1.5 kHz) copy of the music and a lighter sub fixed it (−6.2 LU) with no change to the loudness gates.
+6. **A stamp must never cover the number it certifies,** and an owner's veto («never say it works offline») is removed from picture, sound, plan and brief together.
+7. **When the owner sends his own posters, use his lines:** invented CTAs and taglines are replaced by his copy; the film becomes part of his ad family.
+8. **A reel is a new composition:** rotate the field (17×7 → 7×17), close the dialog before the receipts print, stack the lock-up, size type from the measured text width (94 px for the longest hook line) and let the bottom third carry motion only.

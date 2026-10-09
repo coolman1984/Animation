@@ -290,3 +290,14 @@ Focused check: `node --test --test-isolation=none studio-engine/test/review.test
 - **World inside the tile:** the next scene's root is clipped to the growing tile rect (`clip-path: inset(... round r)`) and sits just under the mark's bars, so the dive shows the new world inside the logo; the reverse (a full-frame tile shrinking into the logo) closes the film.
 - **Rising level transition:** `clip-path: path()` with a sine-wave top edge climbing the frame (numbers chapter).
 - **Text that leaves the frame:** set `visibility: hidden` on a scene's `.line` elements while it is flung, dived or pulled away; the text gate ignores them and the eye cannot read them anyway.
+
+## Four-questions showreel-ad (2026-10-08; film `film16/`)
+- **Ball on a ruled page:** `ballAt(t)` in `film16/kit.js` is a closed form of t: a parabola between floors with stretch along the fall (`1 + 0.16|1−2u|³`) and a 0.12 s contact squash anchored at the floor; each landing time is also the time a question is born, a kick, a pitched note and a camera shake (`timing.js T.hop`).
+- **One list for picture and sound:** the 119-dot student field, its 82 present dots and each dot's lit time live in `timing.js` (`PRESENT`, `dotLit`, `litList`); the canvas draws them, the counter counts them, the score plays one bell per dot (pitch rises with the wave).
+- **Container morph chain:** dot → card (scale from 0.04) → button (follows the card's scale) → circle → dot flying to the field centre. Fix learned: scale the button with the card about the card's centre, or it pops in at full size.
+- **Thermal printer:** paper `translateY` fed in 14 steps (`(⌊v⌋ + easeOutCubic(frac)) / 14`) under a clip window whose bottom is the slot; one tick per step in the score.
+- **FLIP sort with springs:** rows keep their DOM node, `top = lerp(i, final(i), spring(t, start + rank·0.045)) · rowHeight`; dues light up one by one (the counter counts them) before the sort.
+- **Circle reveal from a UI element:** `clip-path: circle(r at x y)` on the incoming scene's root, centred on the clicked moon icon; the night scene is a different world, not a filter.
+- **Chips → tiles → one point:** morph size/radius with `ioQ`, crossfade the mini and big content while the background passes through an intermediate colour (no grey mid-state); then everything converges on a bright core and the logo tile blooms from it.
+- **Phone-band presence:** `bp 1500 Hz Q 0.45` copy of the music added at ×1.1 and sub 0.8 → 0.62 took the phone loss from −10.2 to −6.2 LU.
+
