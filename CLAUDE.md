@@ -46,3 +46,7 @@ Documentation is part of done: when a scope closes, update `STATUS.md`, `studio/
 Reusable recipes: `studio/TECHNIQUES.md`. Quality method: `studio/QUALITY_PLAYBOOK.md`. Real footage of people: `studio/LIVE_ACTION.md` (skill live-action-editor). Evolution/log: `studio/CHANGELOG.md`.
 
 **Owner production policy:** read `studio/AUTONOMOUS_FILM.md` first for new films. The owner requests subject + placement/size; the Claude Code agent does ALL analysis, direction, internal JSON, review, corrections and export. No ordinary approval pauses or manual owner tasks. Deliver one finished video link. Use config.ownerRequest to enforce the single requested canvas/duration/fps.
+
+**AI mailbox (owner order, 2026-10-10):** Claude, Codex and Grok share the private repo `coolman1984/ai-mailbox`. At the start of
+every session, attach it (add_repo) and read the open messages in `inbox/claude/` before other work. When you need something you
+cannot reach (blocked websites, downloads), leave a request in `inbox/grok/` or `inbox/codex/` following its README, and tell the owner in one line.
