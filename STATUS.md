@@ -1,8 +1,10 @@
 # Studio status and session handoff
 
-Updated: 2026-10-09.
+Updated: 2026-10-11.
 
-**Latest scope: DONE — Branch consolidation (owner 2026-10-09): all unmerged branch work is in main.**
+**Latest scope: DONE — Motion-numbers recipes (owner 2026-10-11):** six points from an external motion-design article added to `studio/TECHNIQUES.md` and `studio/CRAFT.md` (springs by damping ratio, subframe motion blur, speed graph, GIF delays, beat grid, banning model defaults by name). Docs only; not yet used in a film.
+
+**Previous scope: DONE — Branch consolidation (owner 2026-10-09): all unmerged branch work is in main.**
 - Films 12–18 merged with history (renumbered where several branches used film12/film13); old 2026-10-02 drafts imported as films 19–21. Superseded branches deleted; each kept as an `archive/<branch>` tag. Details: `studio/CHANGELOG.md` 2026-10-09.
 - Not verified: no re-render; films 19–21 predate later studio changes.
 

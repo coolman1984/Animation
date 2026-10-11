@@ -147,3 +147,11 @@ A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs th
 6. **A stamp must never cover the number it certifies,** and an owner's veto («never say it works offline») is removed from picture, sound, plan and brief together.
 7. **When the owner sends his own posters, use his lines:** invented CTAs and taglines are replaced by his copy; the film becomes part of his ad family.
 8. **A reel is a new composition:** rotate the field (17×7 → 7×17), close the dialog before the receipts print, stack the lock-up, size type from the measured text width (94 px for the longest hook line) and let the bottom third carry motion only.
+
+## Motion-numbers review (2026-10-11)
+1. **Name the defaults, then ban them by name:** after the first render, list what the model reached for anyway (glow, bloom, floating particles, everything fading in together, fade-and-slide-up on every element, centred everything) and add each one to the brief's avoid list. A blanket "don't look like AI" swaps one default for another.
+2. **Write springs as a damping ratio, not raw knobs:** one number (ζ) carries over between every engine; 0.7–0.85 reads premium, 0.4–0.6 playful. Only position and size may bounce, never opacity or colour.
+3. **Fast motion needs real motion blur:** averaging subframes over half a frame in linear light reads as a camera; a CSS blur on a moving layer does not. Spend it only where the motion is fast.
+4. **Plot the speed, don't only watch it:** a per-frame speed graph shows a linear move or a pop that real-speed viewing misses.
+5. **GIF time is centiseconds:** a 24 fps GIF at 4 cs per frame runs 4 % fast and leaves the beat; alternate 4 and 5 cs (5 + 1 per 6 frames).
+6. **Compute every beat from time:** adding a rounded frames-per-beat drifts off the music (2 frames by beat 32 at 128 BPM / 30 fps).
