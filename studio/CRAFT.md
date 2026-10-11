@@ -155,3 +155,10 @@ A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs th
 4. **Plot the speed, don't only watch it:** a per-frame speed graph shows a linear move or a pop that real-speed viewing misses.
 5. **GIF time is centiseconds:** a 24 fps GIF at 4 cs per frame runs 4 % fast and leaves the beat; alternate 4 and 5 cs (5 + 1 per 6 frames).
 6. **Compute every beat from time:** adding a rounded frames-per-beat drifts off the music (2 frames by beat 32 at 128 BPM / 30 fps).
+
+## Film 22 — Claude Code 10 s (2026-10-11)
+1. **A hero cursor can carry a UI story:** the same orange block is the problem, the window, the caret, each step's bullet, the edit marker and the wipe; every transition then has a cause.
+2. **Text gates see hidden lines:** a line under a cream wipe or a not-yet-faded exit still counts. Set `display: none` (not just opacity) when a line is covered or gone, or the overlap gate fails on frames nobody sees.
+3. **Arabic line boxes are taller than glyphs:** two stacked 190/138 px headlines overlapped by 21 px until the centres moved apart; a 28 px label needed centre ≤ 1212 to stay inside y 1248.
+4. **Small typing changes do not count as motion:** a 1 s typing beat tripped the frozen-span gate; a slow camera push fixed it without hurting reading.
+5. **Subframe blur makes a 300 px/frame hop read as speed:** with S = 4 the cursor's first hop (213 px in one frame) looks like a streak, not a jump.

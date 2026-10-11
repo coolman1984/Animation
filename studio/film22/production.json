@@ -1,0 +1,156 @@
+{
+ "version": 1,
+ "duration": 10,
+ "fps": 30,
+ "audience": "Arabic-speaking developers and students (Egypt first) scrolling Reels who lose hours to one failing test",
+ "promise": "Claude Code reads your codebase, edits files and runs your tests from the terminal — shown as a staged example, no speed or accuracy claim",
+ "cta": "جرّبه دلوقتي (no URL or contact supplied, none shown)",
+ "direction": "One hero: the orange terminal cursor. Problem cursor → window → caret → bullet per step → edit marker → dot visiting three tests → circle wipe to cream → the tile. Ink #15130f / cream #f4efe6 / terracotta #d97757, Alexandria (display) + Space Mono (code). Springs by damping ratio (0.5–0.8), subframe motion blur, no glow/particles/gradients, no fade-up. 120 BPM original score, one hook returning every bar.",
+ "assets": [
+  {
+   "id": "fonts",
+   "path": "assets/fonts/Alexandria-arabic.woff2",
+   "role": "reference",
+   "rights": "Alexandria and Space Mono, SIL OFL (assets/fonts/OFL-*.txt), already vendored"
+  },
+  {
+   "id": "mark",
+   "path": "film22/film.js",
+   "role": "logo",
+   "rights": "Terminal glyph (chevron + underscore) drawn in code as a generic mark; NOT Anthropic's logo and no affiliation is claimed; product name shown as text"
+  }
+ ],
+ "sound": {
+  "mode": "original",
+  "bpm": 120,
+  "note": "Original score synthesised in film22/score.mjs with lib/audio.mjs and lib/sfx.mjs on the shared clock film22/timing.js; no samples, no licence needed"
+ },
+ "shots": [
+  {
+   "id": "hook",
+   "start": 0,
+   "end": 2.0,
+   "purpose": "name the viewer's problem: one failing test eats the day",
+   "assetIds": [],
+   "craft": {
+    "scale": "large type + a small cursor",
+    "camera": "locked, hit shakes on the beat",
+    "focal": "flat 2D, 2 % push per hold",
+    "transition": "cursor grows into the window",
+    "layers": [
+     "svg",
+     "text"
+    ]
+   }
+  },
+  {
+   "id": "request",
+   "start": 2.0,
+   "end": 4.0,
+   "purpose": "the cursor hops into a terminal and types the request",
+   "assetIds": [],
+   "craft": {
+    "scale": "one window, small mono type",
+    "camera": "locked",
+    "focal": "flat 2D, 2 % push per hold",
+    "transition": "cursor becomes the step bullet",
+    "layers": [
+     "text",
+     "ui"
+    ]
+   }
+  },
+  {
+   "id": "work",
+   "start": 4.0,
+   "end": 6.0,
+   "purpose": "Claude Code reads files and edits the failing line (staged diff)",
+   "assetIds": [],
+   "craft": {
+    "scale": "a card inside the window",
+    "camera": "locked",
+    "focal": "flat 2D, 2 % push per hold",
+    "transition": "edit marker hops to the tests",
+    "layers": [
+     "ui"
+    ]
+   }
+  },
+  {
+   "id": "tests",
+   "start": 6.0,
+   "end": 8.0,
+   "purpose": "three tests turn green; the cursor becomes the wipe",
+   "assetIds": [],
+   "craft": {
+    "scale": "three chips and a wipe",
+    "camera": "locked",
+    "focal": "flat 2D, 2 % push per hold",
+    "transition": "circle wipe from the last test",
+    "layers": [
+     "camera",
+     "ui"
+    ]
+   }
+  },
+  {
+   "id": "payoff",
+   "start": 8.0,
+   "end": 10.0,
+   "purpose": "name, three verbs, one action",
+   "assetIds": [],
+   "craft": {
+    "scale": "a big tile and three lines",
+    "camera": "2 % push-in",
+    "focal": "flat 2D, 2 % push per hold",
+    "transition": "end",
+    "layers": [
+     "logo",
+     "text",
+     "ui"
+    ]
+   }
+  }
+ ],
+ "creative": {
+  "viewer": "an Arabic-speaking developer or student scrolling Reels",
+  "problem": "one failing test eats the whole day",
+  "promise": "a terminal agent that reads the code, edits the files and runs the tests (shown as a staged example)",
+  "evidence": "how Claude Code is publicly described (reads a codebase, edits files, runs commands/tests from the terminal); the code, test names and numbers on screen are an invented illustration and are labelled «مثال توضيحي»; no speed, accuracy or customer claim",
+  "emotion": "recognition, then relief",
+  "motif": "the orange terminal cursor",
+  "palette": [
+   "#15130f",
+   "#f4efe6",
+   "#d97757",
+   "#6fcf97",
+   "#ef6f63"
+  ],
+  "light": "warm-black terminal world for the problem and the work; one cream world for the payoff",
+  "typography": {
+   "display": "Alexandria",
+   "text": "Space Mono"
+  },
+  "camera": "locked frames, a 2 % push per hold, decaying impact shakes on the beat, subframe motion blur on the cursor's hops",
+  "transitions": [
+   "cursor grows into the window",
+   "cursor becomes the step bullet",
+   "edit marker hops to the tests",
+   "circle wipe from the last test"
+  ],
+  "motion": "one orange cursor on springs (ζ 0.5–0.8) does every job; slams and clip reveals, no fade-up, no glow, no particles, no gradients",
+  "sound": "A minor warning bell and thuds → typing ticks on the picture's own times → groove → C major drop on the tile; one hook (E G A G) returns every bar",
+  "pacing": "one idea per bar (2 s); headline held 1.0 s+, tagline 1.4 s, CTA 1.1 s, final hold to 10.0 s",
+  "payoff": "terminal-glyph tile, the name «Claude Code», three verbs, one action «جرّبه دلوقتي»",
+  "cta": "جرّبه دلوقتي",
+  "styleFrames": {
+   "hook": 1.4,
+   "proof": 5.9,
+   "payoff": 9.2
+  },
+  "proof": {
+   "start": 0,
+   "end": 10
+  }
+ }
+}
