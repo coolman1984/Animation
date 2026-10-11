@@ -2,7 +2,9 @@
 
 Updated: 2026-10-11.
 
-**Latest scope: DONE — Film 22 «Claude Code» 10 s Reels (owner 2026-10-11).** `studio/film22/` (BRIEF, LEDGER, config, production.json, timing.js, motion.js, film.js, score.mjs, speedgraph.mjs). take05 final: all technical gates PASS, share 11.91 MB. New engine option `config.subframes` (motion blur). One correction round used. Not verified: listening, phone viewing, a fresh reviewer.
+**Latest scope: DONE — ManimGX test (owner 2026-10-11):** 5 s scene rendered on CPU in 13.6 s; recorded as LEARN in `studio/TECH_RADAR.md`; «90× faster» unverified. Not added to the pipeline.
+
+**Previous scope: DONE — Film 22 «Claude Code» 10 s Reels (owner 2026-10-11).** `studio/film22/` (BRIEF, LEDGER, config, production.json, timing.js, motion.js, film.js, score.mjs, speedgraph.mjs). take05 final: all technical gates PASS, share 11.91 MB. New engine option `config.subframes` (motion blur). One correction round used. Not verified: listening, phone viewing, a fresh reviewer.
 
 **Previous scope: DONE — Motion-numbers recipes (owner 2026-10-11):** six points from an external motion-design article added to `studio/TECHNIQUES.md` and `studio/CRAFT.md` (springs by damping ratio, subframe motion blur, speed graph, GIF delays, beat grid, banning model defaults by name). Docs only; not yet used in a film.
 
