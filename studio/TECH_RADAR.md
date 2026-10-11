@@ -47,3 +47,8 @@ Sources: the engineering audit `../STUDIO_AUDIT_AND_TECHNOLOGY_REPORT_2026-10-03
 ## Next refresh
 Check the official sites for the rows marked PILOT/WATCH. Add only what changed, with its date and source.
 Promote to `capabilities.json` only after a passing study.
+
+## ManimGX 0.1.1 — tested 2026-10-11
+| Technology | What was measured | Decision | Source |
+|---|---|---|---|
+| ManimGX (`pip install manimgx`, Python ≥ 3.13; repo `academa-labs/manimgx`, docs manimgx.academa.ai): Rust + wgpu core with Manim CE's Python API, for agents | Installed in an isolated venv; a 5 s, 1080×1920, 30 fps scene (Axes + sine plot + moving dot) rendered in 13.6 s (≈ 11 fps) on CPU only (no GPU here, so wgpu ran in software); output 5.033 s / 151 frames (one frame over), 46 KB; clean anti-aliasing; `inspect` reports layout problems itself; default text font is a serif maths face. The claim «90× faster than ManimCE» (author's own post) was **not** checked: no ManimCE run, no GPU, no like-for-like scene in our pipeline. Sound and 3D not tried. | LEARN: a separate route for maths/chart/equation explainers only; adds nothing to the ad-film pipeline (HTML + Chromium + ffmpeg). Pilot only when a film needs it, with a GPU benchmark first. | tweet by @sinaatalay (owner screenshot); PyPI metadata; local test (scratch scene, not committed) |

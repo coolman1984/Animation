@@ -129,6 +129,12 @@ export function encodeFilter({ dither = false, lut } = {}) {
     : `${pad},scale=out_color_matrix=bt709:out_range=tv`;
 }
 
+// Motion blur (config.subframes = S): S captures per output frame, averaged in 16-bit gamma-2.2 "linear" light, one kept per group.
+export const shutterFilter = (S, fps) => {
+  const lin = (e) => `lutrgb=r='${e}':g='${e}':b='${e}'`;
+  return `format=gbrp16le,${lin('pow(val/65535,2.2)*65535')},tmix=frames=${S},${lin('pow(val/65535,1/2.2)*65535')},select='not(mod(n+1\\,${S}))',setpts=N/${fps}/TB,format=rgb48le`;
+};
+
 // Frames actually stored in a slice file (ffprobe packet count): a crashed run leaves complete and partial slices behind.
 async function frameCount(file) {
   try { const { out } = await run('ffprobe', ['-v', 'error', '-select_streams', 'v:0', '-count_packets', '-show_entries', 'stream=nb_read_packets', '-of', 'csv=p=0', file]); return +out.trim() || 0; }
@@ -141,7 +147,7 @@ async function frameCount(file) {
 // slices are reused and only the missing ones are rendered. Slices are deleted only after a successful join.
 export async function video({ film, out, w = 1080, h = 1350, variant, segments, fadeOut,
   workers = Math.min(4, cpus().length), crf = 14, preset = 'slow', t0 = 0, t1,
-  fps: fpsOverride, scale = 1, format = 'png', quality = 95, gpu = false, dither = false, lut, resumeKey = null, log = (m) => console.log(m) }) {
+  fps: fpsOverride, scale = 1, format = 'png', quality = 95, gpu = false, dither = false, lut, subframes = 1, resumeKey = null, log = (m) => console.log(m) }) {
   if (!Number.isInteger(workers) || workers < 1 || workers > 16 || !Number.isFinite(scale) || scale <= 0 || scale > 2)
     throw new Error('invalid workers or capture scale');
   if (!['png', 'jpeg'].includes(format)) throw new Error('invalid capture format');
@@ -162,6 +168,7 @@ export async function video({ film, out, w = 1080, h = 1350, variant, segments, 
     const resume = !!resumeKey && !!previous && JSON.stringify(previous) === JSON.stringify(stamp);
     if (!resume) rmSync(tmp, { recursive: true, force: true });
     mkdirSync(tmp, { recursive: true }); writeFileSync(keyFile, JSON.stringify(stamp));
+    const SUB = Math.max(1, Math.round(subframes));
     const captureWidth = Math.round(w * scale), captureHeight = Math.round(h * scale);
     const outputWidth = Math.ceil(captureWidth / 2) * 2, outputHeight = Math.ceil(captureHeight / 2) * 2;
     const started = Date.now(); let done = 0, reused = 0;
@@ -176,10 +183,10 @@ export async function video({ film, out, w = 1080, h = 1350, variant, segments, 
       }
       const open = () => openFilm(srv.port, film, { w, h, variant, segments, fadeOut, scale, gpu });
       let { client } = await open(), reopened = 0;
-      const ff = spawn('ffmpeg', ['-v', 'error', '-y', '-f', 'image2pipe', '-c:v', format === 'png' ? 'png' : 'mjpeg', '-framerate', String(fps), '-i', '-',
+      const ff = spawn('ffmpeg', ['-v', 'error', '-y', '-f', 'image2pipe', '-c:v', format === 'png' ? 'png' : 'mjpeg', '-framerate', String(fps * SUB), '-i', '-',
         '-c:v', 'libx264', '-threads', '1', '-preset', preset, '-crf', String(crf), '-pix_fmt', 'yuv420p',
         '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv',
-        '-vf', encodeFilter({ dither, lut }),
+        '-vf', (SUB > 1 ? shutterFilter(SUB, fps) + ',' : '') + encodeFilter({ dither, lut }), ...(SUB > 1 ? ['-r', String(fps)] : []),
         '-x264-params', 'keyint=60:min-keyint=30',
         // Exact timescales: with B-frames the slice's edit list is written in the MOVIE timescale (1000 by default), so each
         // slice lost up to 1 ms and every worker join shifted later frames (FFmpeg 9: 15 frames measured 30.039 fps).
@@ -196,6 +203,15 @@ export async function video({ film, out, w = 1080, h = 1350, variant, segments, 
           const t = f / fps;
           // A lower preview fps must keep the film's authored frame-dependent motion.
           let image;
+          if (SUB > 1) { // 180° shutter: SUB captures spread over half a frame centred on t; ffmpeg averages them in (approximate) linear light
+            for (let i = 0; i < SUB; i++) {
+              const ts = Math.min(Math.max(t + (i / (SUB - 1) - 0.5) * 0.5 / fps, 0), info.duration - 1e-4);
+              const img = await frameAt(client, ts, f, { format, quality });
+              if (ff.stdin.destroyed) throw new Error('encoder stopped: ' + ferr);
+              if (!ff.stdin.write(img)) await once(ff.stdin, 'drain');
+            }
+            done++; continue;
+          }
           try { image = await frameAt(client, t, Math.round(t * info.fps), { format, quality }); }
           catch (error) {
             // A page that has rendered hundreds of heavy 3D frames can stop answering captures (film 11, headless software mode);

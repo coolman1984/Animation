@@ -5,6 +5,12 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-11 — TECH_RADAR: ManimGX tested (DONE)
+Owner asked for a 5 s test of the ManimGX engine from an X post. Installed in an isolated venv, rendered one 5 s 1080×1920 scene on CPU in 13.6 s; recorded as LEARN in `TECH_RADAR.md`. The «90× faster» claim is unverified (no GPU, no ManimCE comparison). Nothing was added to the pipeline; the scratch scene and video stayed outside the repo.
+
+## 2026-10-11 — Film 22: «Claude Code» 10 s Reels, the first film with the new motion methods (DONE)
+Owner request: a new 10 s film about Claude Code using the new methods. `film22/`: one orange terminal cursor hero (problem → window → caret → step bullets → edit marker → test dot → circle wipe → tile), springs by damping ratio, beats from time, shared typing clock, original 120 BPM score. Engine: `lib/render.mjs` gains `subframes` (180° shutter blur averaged in ffmpeg), wired through `make.mjs` and `config.subframes`. take05 FINAL: all technical gates PASS (−14.2 LUFS, TP −3.2, no frozen span, 125 text lines clean, share 11.91 MB). One correction round (frozen typing beat, text boxes). Not verified: listening, phone playback, sound/picture offset, a fresh reviewer; the code/test names on screen are an invented illustration labelled «مثال توضيحي».
+
 ## 2026-10-11 — Motion-numbers recipes added from an external article (DONE)
 Owner request: add the useful new points of a motion-design article (Opus prompting "lab notebook") to the docs. TECHNIQUES gains springs by damping ratio (closed form), subframe motion blur in linear light, a per-frame speed graph, GIF centisecond delays and drift-free beat grids; CRAFT gains six short lessons including naming and banning model defaults. Docs only, no code. Not verified: none of these recipes has been used in a film yet; the article's view counts and claims were not checked.
 
