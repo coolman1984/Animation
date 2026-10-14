@@ -12,7 +12,7 @@ export default {
   preview: { delivery: 'youtube30', range: [0, 12] },
   cacheInputs: ['film23/timing.js', 'film23/motion.js', 'assets/fonts/Inter-latin.woff2', 'assets/fonts/PlexArabic-600.woff2'],
   deliveries: [
-    { name: 'youtube30', duration: 30, safe: [96, 54, 1824, 1026], shareMB: 30, poster: 28.5, holds: [[28.2, 30]] },
+    { name: 'youtube30', duration: 30, safe: [96, 54, 1824, 1026], shareMB: 30, poster: 28.5, holds: [[12.8, 13.9], [28.2, 30]] },  // 12.8–13.9: settled reading hold on the equation's result (logged in LEDGER)
   ],
   thumbs: [],
   holds: [],

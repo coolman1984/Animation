@@ -162,3 +162,10 @@ A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs th
 3. **Arabic line boxes are taller than glyphs:** two stacked 190/138 px headlines overlapped by 21 px until the centres moved apart; a 28 px label needed centre ≤ 1212 to stay inside y 1248.
 4. **Small typing changes do not count as motion:** a 1 s typing beat tripped the frozen-span gate; a slow camera push fixed it without hurting reading.
 5. **Subframe blur makes a 300 px/frame hop read as speed:** with S = 4 the cursor's first hop (213 px in one frame) looks like a streak, not a jump.
+
+## Film 23 — AI Essentials Academy 30 s (2026-10-14)
+1. **The product's own page can be the hero:** a grey book page whose lines become the units and which becomes the app window made every chapter change a cause, not a cut.
+2. **Never put a middle dot next to Arabic-Indic digits:** «٣٥ · ١٣» reads as «٣٥٠ ١٣٠» because «·» looks like the Arabic zero «٠». Use the Arabic comma «،» (or Latin digits) between counts.
+3. **A hard circle reveal bands under subframe blur:** four averaged captures of a fast clip-path edge show stepped rings; a 140 px feathered radial mask reads as one smooth sweep.
+4. **Theme each element when the reveal reaches it:** drive colour from the circle's radius at the element's own distance from the toggle, not from a timer, or the window stays light over a dark world.
+5. **An eased push still freezes at its ends:** an in-out sine push is nearly flat in its last second; the frozen gate caught it. Give the hold a meaningful motion (a reading sweep, pulses along a line) or log it as a hold.

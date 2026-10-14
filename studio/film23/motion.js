@@ -13,7 +13,7 @@ const lerp = (a, b, p) => a + (b - a) * p;
 
 // ---------- layout (1920×1080) ----------
 // The window lives on the left (the UI stage); copy lives in a right-hand column (RTL reading starts there).
-export const COPY = { cx: 1440, y1: 430, y2: 560, width: 760 };
+export const COPY = { cx: 1420, y1: 430, y2: 560, width: 760 };
 export const PAGE = { x: 560, y: 540, w: 400, h: 540, r: 14 };
 export const WIN = {
   ac: { x: 560, y: 545, w: 900, h: 760, r: 18 },

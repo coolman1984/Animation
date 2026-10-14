@@ -5,6 +5,9 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-14 — Film 23: «أكاديمية أساسيات الذكاء الاصطناعي» 30 s YouTube showreel-ad (DONE)
+Owner request: a 30 s YouTube video explaining the AI Essentials academy, as a showreel ("go all out"). `film23/`: one hero (a page of the book) → its lines fly into the six unit badges → the page becomes the app window → one window morphs through counters, four levels, the book's p. 7 equation, the Excel lab, the prompt library (dark mode via feathered circle reveal from the window's moon toggle), the quiz → breaks into the 41 pages → implodes into the logo on the drop. Look and type follow the academy's 2026-10-14 redesign (Inter + IBM Plex Sans Arabic 400–700 + JetBrains Mono newly vendored, OFL). Original 120 BPM score, one hook across chapters, drops at 4 s and 24 s. take06 FINAL: all technical gates PASS, share 25.99 MB. Fixes on the way: chapter counter text, sidebar overflow, banded circle edge (now a feathered mask), window theme timed to the circle's radius, frozen holds (per-chapter push, a reading sweep on the hook page, pulses in the payoff, one logged reading hold), and the stats separator «·» that read as the Arabic zero «٠» (now «،»; one targeted fix beyond the two-round budget). Not verified: listening, real-speed phone viewing, a fresh reviewer.
+
 ## 2026-10-11 — TECH_RADAR: ManimGX tested (DONE)
 Owner asked for a 5 s test of the ManimGX engine from an X post. Installed in an isolated venv, rendered one 5 s 1080×1920 scene on CPU in 13.6 s; recorded as LEARN in `TECH_RADAR.md`. The «90× faster» claim is unverified (no GPU, no ManimCE comparison). Nothing was added to the pipeline; the scratch scene and video stayed outside the repo.
 

@@ -1,8 +1,10 @@
 # Studio status and session handoff
 
-Updated: 2026-10-11.
+Updated: 2026-10-14.
 
-**Latest scope: DONE — ManimGX test (owner 2026-10-11):** 5 s scene rendered on CPU in 13.6 s; recorded as LEARN in `studio/TECH_RADAR.md`; «90× faster» unverified. Not added to the pipeline.
+**Latest scope: DONE — Film 23 «أكاديمية أساسيات الذكاء الاصطناعي» 30 s showreel-ad, YouTube 16:9 (owner 2026-10-14: "go all out").** `studio/film23/` (BRIEF, LEDGER, config, production.json, timing.js, motion.js, film.js, score.mjs). One hero: a book page that wakes, whose lines become the six units and which becomes the app window that morphs through every chapter, then breaks into 41 pages that implode into the logo. take06 FINAL: every technical gate PASS (−13.8 LUFS, TP −2.5, 72 text lines clean, two logged holds, share 25.99 MB). Rounds: two correction rounds plus one targeted text fix over budget (stats separator «·» read as the Arabic zero «٠» — a factual blocker). Not verified: listening, real-speed phone viewing, a fresh reviewer.
+
+**Previous scope: DONE — ManimGX test (owner 2026-10-11):** 5 s scene rendered on CPU in 13.6 s; recorded as LEARN in `studio/TECH_RADAR.md`; «90× faster» unverified. Not added to the pipeline.
 
 **Previous scope: DONE — Film 22 «Claude Code» 10 s Reels (owner 2026-10-11).** `studio/film22/` (BRIEF, LEDGER, config, production.json, timing.js, motion.js, film.js, score.mjs, speedgraph.mjs). take05 final: all technical gates PASS, share 11.91 MB. New engine option `config.subframes` (motion blur). One correction round used. Not verified: listening, phone viewing, a fresh reviewer.
 

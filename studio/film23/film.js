@@ -74,7 +74,12 @@ const icon = (parent, name, { x, y, size = 24, color = L.ink3, sw = 1.8, z } = {
 function camera(t) {
   let x = 0, y = 0, r = 0;
   for (const [h, a] of HITS) { if (t < h) continue; const d = Math.exp(-(t - h) / 0.12) * a; x += d * 6 * Math.sin((t - h) * 61 + h); y += d * 8 * Math.cos((t - h) * 53 + 2 * h); r += d * 0.06 * Math.sin((t - h) * 47); }
-  const s = t < T.drop ? 1 + 0.012 * (0.5 - 0.5 * Math.cos(2 * Math.PI * t / 8)) : 1 + 0.035 * ioC(ramp(t, T.drop, T.end));
+  // a slow push inside each chapter (keeps holds alive), eased back during the next chapter's morph
+  const SEG = [0, T.wake, T.lv, T.sc, T.lab, T.dark, T.qz, T.light, T.drop];
+  let s = 1;
+  if (t >= T.drop) s = 1 + 0.06 * ioC(ramp(t, T.drop + 0.3, T.end));
+  else { let k = 0; while (k + 1 < SEG.length && t >= SEG[k + 1]) k++; const a = SEG[k], b = SEG[k + 1] ?? T.drop, prevPeak = k ? 0.035 : 0;
+    s = 1 + 0.035 * ease.inOutSine(ramp(t, a + 0.3, b)) + prevPeak * (1 - ioC(ramp(t, a, a + 0.45))); }
   return { x, y, r, s };
 }
 
@@ -96,6 +101,7 @@ function build(stage) {
     [...lines1.map(([d, c], i) => `<path class="c1" d="${d}" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" data-i="${i}"/>`),
      ...lines2.map(([d, c], i) => `<path class="c2" d="${d}" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" data-i="${i}"/>`)].join(''));
   S.c1 = [...S.circ.querySelectorAll('.c1')]; S.c2 = [...S.circ.querySelectorAll('.c2')];
+  S.pulses = lines2.map(([, c]) => { const d = el('circle', { r: 5, fill: c }, S.circ); return d; });
 
   // ----- THE HERO: page → window frame -----
   S.win = div(CAM, { background: L.bg, border: `1px solid ${L.line2}`, zIndex: '5', overflow: 'hidden' });
@@ -266,7 +272,7 @@ function build(stage) {
   S.ctaT = words(S.pay, 'ابدأ الرحلة', { size: 36, weight: 600, cx: 940, cy: 760, width: 300, color: '#ffffff', z: 16 });
   S.ctaIcon = icon(S.pay, 'play', { x: 1060, y: 760, size: 22, color: '#fff', z: 16 });
   S.ring = div(S.pay, { border: `2px solid ${L.blue}`, borderRadius: '50%', zIndex: '15' });
-  S.stat = words(S.pay, '٤١ درسًا · ٣٥ مشهدًا · ١٣ مختبرًا · ٩٧ برومبت · ٨٣ سؤالًا', { size: 28, weight: 500, cx: 960, cy: 880, width: 1300, color: L.ink3 });
+  S.stat = words(S.pay, '٤١ درسًا، ٣٥ مشهدًا، ١٣ مختبرًا، ٩٧ برومبت، ٨٣ سؤالًا', { size: 28, weight: 500, cx: 960, cy: 880, width: 1300, color: L.ink3 });
   S.credit = words(S.pay, 'من كتاب محمد فوزي', { size: 26, weight: 400, cx: 960, cy: 940, width: 600, color: L.ink3 });
 
   // ----- the cursor narrator (always on top) -----
@@ -291,13 +297,14 @@ function frame(t) {
 
   // ----- the hero: page → window → tiles -----
   const r = winRect(t), pageMode = t < T.wake;
+  const fl = 7 * Math.sin(2 * Math.PI * (t - 0.8) / 2.4) * ramp(t, 0.8, 1.6) * (1 - ramp(t, 3.6, 4.0));
   const winOn = t < T.tiles + 0.25;
   S.win.style.display = winOn ? 'block' : 'none';
   if (winOn) {
     const pIn = zspring(t - T.page, 0.62, 14), wq = t >= T.tiles ? 1 - ioC(ramp(t, T.tiles, T.tiles + 0.25)) : 1;
     const sc = pageMode ? lerp(0.55, 1, Math.min(pIn, 1.08)) : 1;
     place(S.win, r.x, r.y, r.w * sc, r.h * sc, r.r);
-    S.win.style.transform = pageMode ? `rotate(${((1 - clamp(pIn)) * -9).toFixed(2)}deg)` : 'none';
+    S.win.style.transform = pageMode ? `translateY(${fl.toFixed(2)}px) rotate(${((1 - clamp(pIn)) * -9 + fl * 0.12).toFixed(2)}deg)` : 'none';
     S.win.style.opacity = (pageMode ? clamp(pIn * 3) : wq).toFixed(3);
     const wc = mixHex(L.bg, D.win, theme);
     S.win.style.background = wc; S.win.style.borderColor = mixHex(L.line2, D.line2, theme);
@@ -314,12 +321,12 @@ function frame(t) {
   if (show(S.pageFace, faceO, 0)) {
     const sc = lerp(0.55, 1, Math.min(zspring(t - T.page, 0.62, 14), 1.08));
     place(S.ptitle, PAGE.x + 30, PAGE.y - PAGE.h / 2 + 72, 220 * sc, 18 * sc, 7);
-    S.pageFace.style.transformOrigin = `${PAGE.x}px ${PAGE.y}px`; S.pageFace.style.transform = `rotate(${((1 - clamp(zspring(t - T.page, 0.62, 14))) * -9).toFixed(2)}deg)`;
+    S.pageFace.style.transformOrigin = `${PAGE.x}px ${PAGE.y}px`; S.pageFace.style.transform = `translateY(${fl.toFixed(2)}px) rotate(${((1 - clamp(zspring(t - T.page, 0.62, 14))) * -9 + fl * 0.12).toFixed(2)}deg)`;
   }
   // the page's lines: grey text bars → they light up on the click and fly to become the six unit badges
   S.plines.forEach((ln, i) => {
     const pIn = zspring(t - T.page - 0.08 - i * 0.03, 0.7, 16), y0 = PAGE.y - PAGE.h / 2 + 130 + i * 44, w0 = (PAGE.w - 80) * ln.f, x0 = PAGE.x + (PAGE.w - 80) / 2 - w0 / 2;
-    if (t < T.wake) { place(ln.n, x0, y0, w0 * clamp(pIn), 12, 6); ln.n.style.opacity = clamp(pIn * 2).toFixed(3); ln.n.style.background = L.line2; ln.n.style.display = 'block'; ln.n.style.transform = `rotate(${((1 - clamp(zspring(t - T.page, 0.62, 14))) * -9).toFixed(2)}deg)`; ln.n.style.filter = 'none'; return; }
+    if (t < T.wake) { place(ln.n, x0, y0, w0 * clamp(pIn), 12, 6); ln.n.style.opacity = clamp(pIn * 2).toFixed(3); const rd = T.l1 + 0.4 + i * 0.36, hl = Math.max(0, Math.min(ramp(t, rd, rd + 0.18), 1 - ramp(t, rd + 0.25, rd + 1.1))); ln.n.style.background = mixHex(L.line2, L.blue, hl * 0.85); ln.n.style.display = 'block'; ln.n.style.transformOrigin = `${PAGE.x - x0 + w0 / 2}px ${PAGE.y - y0 + 6}px`; ln.n.style.transform = `translateY(${fl.toFixed(2)}px) rotate(${((1 - clamp(zspring(t - T.page, 0.62, 14))) * -9 + fl * 0.12).toFixed(2)}deg)`; ln.n.style.filter = 'none'; return; }
     if (i >= 6) { ln.n.style.display = t < T.wake + 0.15 ? 'block' : 'none'; ln.n.style.opacity = (1 - ramp(t, T.wake, T.wake + 0.15)).toFixed(3); return; }
     const u = S.urows[i], a = T.wake + 0.06 + i * 0.05, p = zspring(t - a, 0.62, 15), q = Math.min(p, 1.1), litU = oC(ramp(t, T.wake, T.wake + 0.12));
     const x = lerp(x0, u.bx, q), y = lerp(y0, u.y, q) - Math.sin(Math.PI * clamp((t - a) / 0.5)) * 70, w = lerp(w0, 26, q), h = lerp(12, 26, q), rr = lerp(6, 7, clamp(p));
@@ -482,7 +489,10 @@ function frame(t) {
     const a = T.wake + 0.05 + i * 0.06, u = oC(ramp(t, a, a + 0.75)), out = ioC(ramp(t, T.tiles - 0.1, T.tiles + 0.3));
     p.setAttribute('stroke-dashoffset', (1 - u + out).toFixed(4)); p.style.display = t >= a && out < 1 ? 'block' : 'none'; p.style.opacity = (0.9 - 0.4 * theme).toFixed(3);
   });
-  S.c2.forEach((p, i) => { const a = T.drop - 0.05 + i * 0.05, u = oC(ramp(t, a, a + 0.7)); p.setAttribute('stroke-dashoffset', (1 - u).toFixed(4)); p.style.display = t >= a ? 'block' : 'none'; });
+  S.c2.forEach((p, i) => { const a = T.drop - 0.05 + i * 0.05, u = oC(ramp(t, a, a + 0.7)); p.setAttribute('stroke-dashoffset', (1 - u).toFixed(4)); p.style.display = t >= a ? 'block' : 'none';
+    const dot = S.pulses[i], per = 1.6, ph = ((t - T.drop - 0.9 - i * 0.37) % per + per) % per / per, onP = t >= T.drop + 0.9;
+    dot.style.display = onP ? 'block' : 'none';
+    if (onP) { const len = p.getTotalLength(), pt = p.getPointAtLength(ease.inOutSine(ph) * len); dot.setAttribute('cx', pt.x.toFixed(1)); dot.setAttribute('cy', pt.y.toFixed(1)); dot.setAttribute('opacity', Math.sin(Math.PI * ph).toFixed(3)); } });
 
   // ----- payoff -----
   const pOn = t >= T.drop - 0.02;
