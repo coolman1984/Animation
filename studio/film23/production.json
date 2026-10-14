@@ -1,0 +1,229 @@
+{
+ "version": 1,
+ "duration": 30,
+ "fps": 30,
+ "audience": "Arabic-speaking office and factory staff (Egypt first) who use AI at work and the trainers of the AI Essentials course",
+ "promise": "The 41-page AI Essentials book is now an interactive academy: units, four levels, animated scenes, real labs, ready prompts, quizzes — every count shown is the academy's real count",
+ "cta": "ابدأ الرحلة (the academy's own button; no URL or contact supplied, none shown)",
+ "direction": "One hero: a page of the book. It wakes on a click, its lines fly out into the six unit badges, the page becomes the app window, that one window morphs through levels, the equation, the lab, the prompt library (dark mode via the moon toggle), the quiz, then breaks into the 41 pages that implode into the logo on the drop. Look = the academy's redesign: white canvas, ink #111114, one blue #2f5fe6, signal colours, hairline borders, grey app window, circuit lines with dots, pill buttons; Inter + IBM Plex Sans Arabic (display/UI) and JetBrains Mono (formula, eyebrow). Springs by damping ratio, subframe motion blur, blur swaps, cursor narrator. No glow, confetti, particles or fade-and-slide-up on headlines.",
+ "assets": [
+  {
+   "id": "fonts",
+   "path": "assets/fonts/PlexArabic-600.woff2",
+   "role": "reference",
+   "rights": "Inter, IBM Plex Sans Arabic, JetBrains Mono — SIL OFL 1.1 (assets/fonts/OFL-IBMPlexSansArabic.txt, OFL-inter-jetbrains.md)"
+  },
+  {
+   "id": "mark",
+   "path": "film23/film.js",
+   "role": "logo",
+   "rights": "The academy's own stroke logo (ladder + spark), copied from coolman1984/Course academy/src/data/ui.js — the owner's own product"
+  }
+ ],
+ "sound": {
+  "mode": "original",
+  "bpm": 120,
+  "note": "Original score synthesised in film23/score.mjs with lib/audio.mjs and lib/sfx.mjs on the shared clock film23/timing.js; no samples, no licence needed"
+ },
+ "shots": [
+  {
+   "id": "hook",
+   "start": 0,
+   "end": 4,
+   "purpose": "name the viewer's problem: a 41-page book you read and forget",
+   "assetIds": [],
+   "craft": {
+    "scale": "a grey book page + two slammed lines",
+    "camera": "page drops in, locked; hit shakes on the beat",
+    "focal": "flat 2D, slow breathing drift",
+    "transition": "the cursor clicks the page; it wakes",
+    "layers": [
+     "ui",
+     "text"
+    ]
+   }
+  },
+  {
+   "id": "academy",
+   "start": 4,
+   "end": 8,
+   "purpose": "the page becomes the academy: six units, four real counts",
+   "assetIds": [],
+   "craft": {
+    "scale": "the window, sidebar units, four counters",
+    "camera": "window morphs out of the page; slow drift",
+    "focal": "flat 2D, slow breathing drift",
+    "transition": "main pane swaps content with blur",
+    "layers": [
+     "ui",
+     "text"
+    ]
+   }
+  },
+  {
+   "id": "levels",
+   "start": 8,
+   "end": 10,
+   "purpose": "one idea explained at four levels",
+   "assetIds": [],
+   "craft": {
+    "scale": "segmented control + reflowing text bars",
+    "camera": "locked",
+    "focal": "flat 2D, slow breathing drift",
+    "transition": "window widens, sidebar collapses",
+    "layers": [
+     "ui",
+     "text"
+    ]
+   }
+  },
+  {
+   "id": "scene",
+   "start": 10,
+   "end": 14,
+   "purpose": "the governing equation of the book (p. 7) assembles part by part",
+   "assetIds": [],
+   "craft": {
+    "scale": "four boxes, plus signs, result pill, meter",
+    "camera": "locked; slow 1.2 % breathing drift, hit on the key event",
+    "focal": "flat 2D, slow breathing drift",
+    "transition": "window morphs to the lab",
+    "layers": [
+     "ui",
+     "text"
+    ]
+   }
+  },
+  {
+   "id": "lab",
+   "start": 14,
+   "end": 16,
+   "purpose": "a real calculation: the missing-data rule clears the #DIV/0! errors",
+   "assetIds": [],
+   "craft": {
+    "scale": "table, checkbox, formula bar",
+    "camera": "locked",
+    "focal": "flat 2D, slow breathing drift",
+    "transition": "the cursor clicks the moon: the world turns dark",
+    "layers": [
+     "ui",
+     "text"
+    ]
+   }
+  },
+  {
+   "id": "prompts",
+   "start": 16,
+   "end": 20,
+   "purpose": "ready prompts: search, open, fill the brackets, copy",
+   "assetIds": [],
+   "craft": {
+    "scale": "search field, list, card morph, toast",
+    "camera": "locked; slow 1.2 % breathing drift, hit on the key event",
+    "focal": "flat 2D, slow breathing drift",
+    "transition": "content swap",
+    "layers": [
+     "ui",
+     "text"
+    ]
+   }
+  },
+  {
+   "id": "quiz",
+   "start": 20,
+   "end": 22,
+   "purpose": "test yourself and learn why",
+   "assetIds": [],
+   "craft": {
+    "scale": "question card, three options, feedback",
+    "camera": "locked",
+    "focal": "flat 2D, slow breathing drift",
+    "transition": "the cursor clicks the sun: light returns",
+    "layers": [
+     "ui",
+     "text"
+    ]
+   }
+  },
+  {
+   "id": "pages",
+   "start": 22,
+   "end": 24,
+   "purpose": "every page of the book has a lesson: 41/41",
+   "assetIds": [],
+   "craft": {
+    "scale": "41 page tiles cascade, counter",
+    "camera": "locked",
+    "focal": "flat 2D, slow breathing drift",
+    "transition": "tiles implode into the logo tile on the drop",
+    "layers": [
+     "ui",
+     "text"
+    ]
+   }
+  },
+  {
+   "id": "payoff",
+   "start": 24,
+   "end": 30,
+   "purpose": "the academy's name, its own line, one action",
+   "assetIds": [],
+   "craft": {
+    "scale": "logo tile, name, tagline, CTA, stats, credit",
+    "camera": "2→3.5 % push",
+    "focal": "flat 2D, slow breathing drift",
+    "transition": "hold",
+    "layers": [
+     "ui",
+     "text"
+    ]
+   }
+  }
+ ],
+ "creative": {
+  "viewer": "Egyptian office and factory staff who use AI at work, and the course trainers",
+  "problem": "a 41-page book you read once and forget",
+  "promise": "the same book, now a living interactive academy",
+  "evidence": "the academy's own UI rebuilt in motion with its real counts (41 lessons, 35 scenes, 13 labs, 97 prompts, 83 questions), the book's p. 7 equation, the real Excel lab rule, a real prompt and a real quiz question",
+  "emotion": "from mild guilt (you forget what you read) to curiosity and momentum",
+  "motif": "one book page that wakes and becomes the window; circuit lines with dots; the cursor as narrator",
+  "palette": [
+   "#ffffff",
+   "#111114",
+   "#2f5fe6",
+   "#0b0b0d",
+   "#34a466",
+   "#e5a03a",
+   "#8b6cf6",
+   "#e2558f"
+  ],
+  "light": "flat product light: white canvas, then a dark-mode chapter via the moon toggle, back to light via the sun",
+  "typography": {
+   "display": "IBM Plex Sans Arabic 600–700 / Inter",
+   "text": "IBM Plex Sans Arabic 400–500, JetBrains Mono for formula and chapter numbers"
+  },
+  "camera": "locked 2D stage with a slow breathing drift and decaying hit shakes; payoff push 3.5 %",
+  "transitions": [
+   "container morph (page → window → chapter rects)",
+   "lines fly into badges",
+   "row → card morph",
+   "feathered circle theme flip",
+   "mosaic break into 41 tiles",
+   "implosion into the logo"
+  ],
+  "motion": "springs by damping ratio (ζ 0.5–0.82), blur swaps, 180° subframe motion blur",
+  "sound": "original 120 BPM score, one hook (E G A G) changing instrument per chapter; warning bell for the problem; drops at 4 s and 24 s",
+  "pacing": "one chapter per one or two bars; each line holds ≥ 1.8 s",
+  "payoff": "logo tile on the drop, the academy name, its own line, the CTA, real counts, the author credit",
+  "cta": "ابدأ الرحلة",
+  "styleFrames": {
+   "hook": 2.6,
+   "proof": 8.9,
+   "payoff": 28.0
+  },
+  "proof": {
+   "start": 2.0,
+   "end": 12.0
+  }
+ }
+}
