@@ -214,7 +214,7 @@ export async function connect(url, { timeout = CDP_TIMEOUT } = {}) {
 // Page.captureScreenshot can very rarely never answer in headless software mode right after canvas commits (seen with live
 // footage pages: 1 in ~6 captures, the next request answers in ~40 ms). Wait `timeout` ms, then ask again; a late answer to the
 // abandoned request is ignored. Pixels are unaffected: the same page state is captured.
-export async function screenshot(client, params = { format: 'png' }, { timeout = 4000, tries = 4 } = {}) {
+export async function screenshot(client, params = { format: 'png' }, { timeout = +process.env.STUDIO_SHOT_TIMEOUT || 4000, tries = 4 } = {}) {
   for (let i = 0; i < tries; i++) {
     const ask = client.send('Page.captureScreenshot', params);
     ask.catch(() => {}); // an abandoned request may later time out or be aborted: never an unhandled rejection

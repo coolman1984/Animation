@@ -1,7 +1,7 @@
 // Film 24 — 3D fly-over of the AI Essentials Academy landing page. 14.5 s, 1440×1152 @ 60 fps, one continuous camera.
 // WebGL2: the page is a textured quad on a bright studio floor; every lifted piece is its own quad at its height, drawn lowest
 // first with no depth buffer; per-pixel depth of field (40-tap golden-angle gather, mip-matched); 16 subframes across 0.7 of a
-// frame accumulated in linear light inside the engine. Every frame is computed from t inside render(t): no timers, no CSS transitions.
+// frame summed in linear light (colour + coc/depth), then depth of field runs once on the sum. Every frame is computed from t inside render(t): no timers, no CSS transitions.
 import layout from './capture/layout.json' with { type: 'json' };
 import { textLine } from '../lib/motion.js';
 import { W, HI, F, PAGE_W, PAGE_H, HERO_B, T, camera, TILT } from './timing.js';
@@ -61,7 +61,8 @@ in vec2 aUV; out vec2 vUV; void main(){ vUV = aUV; gl_Position = vec4(aUV * 2.0 
 // depth of field: 40 taps on a golden-angle disc; near taps scatter over sharper pixels, far taps never smear over nearer ones
 const DOF = `#version 300 es
 precision highp float;
-in vec2 vUV; uniform sampler2D uC, uD; uniform vec2 uRes; uniform float uGain; out vec4 o;
+in vec2 vUV; uniform sampler2D uC, uD; uniform vec2 uRes; uniform float uGain, uLin; out vec4 o;
+vec3 lin(vec3 c){ return uLin > 0.5 ? c : pow(c, vec3(2.2)); }
 void main(){
   vec4 cd = texture(uD, vUV); float rc = cd.r * 120.0, zc = cd.g;
   float R = max(rc, textureLod(uD, vUV, 5.0).r * 120.0 * 1.6);         // reach of nearby foreground blur
@@ -69,7 +70,7 @@ void main(){
   vec3 acc = vec3(0.0); float wsum = 0.0;
   float lod = clamp(log2(max(1.0, R / 6.3)) + 0.3, 0.0, 6.0);
   vec3 c0 = textureLod(uC, vUV, clamp(log2(max(1.0, rc / 6.3)), 0.0, 6.0)).rgb;
-  acc += pow(c0, vec3(2.2)) * 1.0; wsum += 1.0;
+  acc += lin(c0) * 1.0; wsum += 1.0;
   if (R > 0.6) {
     for (int i = 0; i < 40; i++) {
       float fi = float(i) + 0.5, rr = sqrt(fi / 40.0) * R, th = fi * 2.39996323;
@@ -77,11 +78,16 @@ void main(){
       vec4 td = texture(uD, uv); float rt = td.r * 120.0;
       float reach = td.g < zc - 0.0004 ? rt : min(rt, rc);                // behind-the-centre taps only spread as far as the centre's own blur
       float w = smoothstep(rr - 1.5, rr + 0.5, reach);
-      acc += pow(textureLod(uC, uv, lod).rgb, vec3(2.2)) * w; wsum += w;
+      acc += lin(textureLod(uC, uv, lod).rgb) * w; wsum += w;
     }
   }
   o = vec4(acc / wsum * uGain, 1.0);
 }`;
+// motion-blur sum: each subframe's scene is added in linear light (colour) with its coc/depth; depth of field then runs once
+const SUM = `#version 300 es
+precision highp float;
+in vec2 vUV; uniform sampler2D uC, uD; uniform float uGain; layout(location = 0) out vec4 o0; layout(location = 1) out vec4 o1;
+void main(){ ivec2 p = ivec2(gl_FragCoord.xy); o0 = vec4(pow(texelFetch(uC, p, 0).rgb, vec3(2.2)) * uGain, uGain); o1 = texelFetch(uD, p, 0) * uGain; }`;
 const FIN = `#version 300 es
 precision highp float;
 in vec2 vUV; uniform sampler2D uA; out vec4 o;
@@ -253,24 +259,39 @@ function drawTile(pr, s) {
   quad(pr, [s.p[0] - h / 2, s.p[1] - h / 2 * ca, s.p[2] + h / 2 * sa], [h, 0, 0], [0, h * ca, -h * sa]);
   gl.uniform1f(pr.u.uNoMask, 0);
 }
-function dofInto(gain) {
-  gl.bindTexture(gl.TEXTURE_2D, FBO.color); gl.generateMipmap(gl.TEXTURE_2D);
-  gl.bindTexture(gl.TEXTURE_2D, FBO.depth); gl.generateMipmap(gl.TEXTURE_2D);
-  gl.bindFramebuffer(gl.FRAMEBUFFER, FBO.accum); gl.viewport(0, 0, W, HI);
-  const pr = PROG.dof; gl.useProgram(pr.p); gl.bindVertexArray(QUAD);
+function sumInto(gain) {
+  gl.bindFramebuffer(gl.FRAMEBUFFER, FBO.sum); gl.viewport(0, 0, W, HI);
+  const pr = PROG.sum; gl.useProgram(pr.p); gl.bindVertexArray(QUAD);
   gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, FBO.color); gl.uniform1i(pr.u.uC, 0);
   gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, FBO.depth); gl.uniform1i(pr.u.uD, 1);
-  gl.uniform2f(pr.u.uRes, W, HI); gl.uniform1f(pr.u.uGain, gain);
+  gl.uniform1f(pr.u.uGain, gain);
+  gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  gl.activeTexture(gl.TEXTURE0);
+}
+function dofInto(gain, cTex = FBO.color, dTex = FBO.depth, linear = 0) {
+  gl.bindTexture(gl.TEXTURE_2D, cTex); gl.generateMipmap(gl.TEXTURE_2D);
+  gl.bindTexture(gl.TEXTURE_2D, dTex); gl.generateMipmap(gl.TEXTURE_2D);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, FBO.accum); gl.viewport(0, 0, W, HI);
+  const pr = PROG.dof; gl.useProgram(pr.p); gl.bindVertexArray(QUAD);
+  gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, cTex); gl.uniform1i(pr.u.uC, 0);
+  gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, dTex); gl.uniform1i(pr.u.uD, 1);
+  gl.uniform2f(pr.u.uRes, W, HI); gl.uniform1f(pr.u.uGain, gain); gl.uniform1f(pr.u.uLin, linear);
   gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE);
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   gl.activeTexture(gl.TEXTURE0);
 }
 function frame(t) {
   gl.bindFramebuffer(gl.FRAMEBUFFER, FBO.accum); gl.viewport(0, 0, W, HI); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
-  for (let k = 0; k < SUB; k++) {
-    const ts = SUB > 1 ? t - SHUTTER / 2 + SHUTTER * (k + 0.5) / SUB : t;
-    drawScene(Math.max(0, Math.min(T.end, ts)));
-    dofInto(1 / SUB);
+  if (SUB === 1) { drawScene(t); dofInto(1); }
+  else {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, FBO.sum); gl.viewport(0, 0, W, HI); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+    for (let k = 0; k < SUB; k++) {
+      const ts = t - SHUTTER / 2 + SHUTTER * (k + 0.5) / SUB;
+      drawScene(Math.max(0, Math.min(T.end, ts)));
+      sumInto(1 / SUB);
+    }
+    dofInto(1, FBO.sumC, FBO.sumD, 1);
   }
   gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, W, HI); gl.disable(gl.BLEND);
   const pr = PROG.fin; gl.useProgram(pr.p); gl.bindVertexArray(QUAD); gl.bindTexture(gl.TEXTURE_2D, FBO.accumTex); gl.uniform1i(pr.u.uA, 0);
@@ -308,7 +329,7 @@ export default {
     if (!gl) throw new Error('WebGL2 unavailable (config.gpu must be true)');
     if (!gl.getExtension('EXT_color_buffer_float')) throw new Error('EXT_color_buffer_float unavailable');
     const aniso = gl.getExtension('EXT_texture_filter_anisotropic');
-    PROG.scene = prog(VS, FS); PROG.dof = prog(VS2, DOF); PROG.fin = prog(VS2, FIN);
+    PROG.scene = prog(VS, FS); PROG.dof = prog(VS2, DOF); PROG.sum = prog(VS2, SUM); PROG.fin = prog(VS2, FIN);
     QUAD = gl.createVertexArray(); gl.bindVertexArray(QUAD);
     const vb = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, vb); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 0, 1, 1, 1]), gl.STATIC_DRAW);
     gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
@@ -319,6 +340,9 @@ export default {
     FBO.color = target(W, HI, gl.RGBA8, true); FBO.depth = target(W, HI, gl.RGBA16F, true);
     FBO.scene = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, FBO.scene);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, FBO.color, 0); gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT1, gl.TEXTURE_2D, FBO.depth, 0);
+    gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1]);
+    FBO.sumC = target(W, HI, gl.RGBA16F, true); FBO.sumD = target(W, HI, gl.RGBA16F, true); FBO.sum = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, FBO.sum);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, FBO.sumC, 0); gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT1, gl.TEXTURE_2D, FBO.sumD, 0);
     gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1]);
     FBO.accumTex = target(W, HI, gl.RGBA16F, false); FBO.accum = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, FBO.accum); gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, FBO.accumTex, 0);
     const css = document.createElement('style'); css.textContent = `@font-face{font-family:'Geist';src:url('../assets/fonts/Geist-500-latin.woff2') format('woff2');font-weight:500;}`; document.head.appendChild(css);
