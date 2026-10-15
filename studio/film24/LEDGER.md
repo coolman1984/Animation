@@ -9,3 +9,6 @@
 | final take02 9.55–9.70 | dark grey block under the card: the command palette's shadow stayed after the page faded | major | round 2: shadows below the hero fade with the page | fixed (stills) |
 | final take02 9.0–9.4 | logo-tile and chip shadows were hard dark squares (alpha mips outgrew the quad) | major | round 2: soft rounded-rect SDF shadows for pieces and tiles | fixed (stills) |
 | final take02 flow | page glide constant (analytic 582 px/s 1.6–7.3 s); measured band reads up to ≈ 1.5× at 1.7–2.7 s while the raised window passes (parallax, not camera); 0.4–0.6 s expansion = hero buttons lifting toward the lens | known | none — two-round budget used | logged |
+| take05 | delivery | — | master 10.8 MB, share 37.5 MB, 14.500 s, −13.6 LUFS, TP −2.7; dive and tile shadows checked clean on a contact sheet | DONE |
+
+Not verified: listening to the mix, real-speed viewing on a phone, a fresh independent reviewer.
