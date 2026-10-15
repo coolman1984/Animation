@@ -1,0 +1,168 @@
+{
+ "version": 1,
+ "duration": 14.5,
+ "fps": 60,
+ "audience": "people who land on the AI Essentials Academy page (Arabic-speaking staff and trainers; the film uses the page's English version)",
+ "promise": "the real landing page of the academy, flown over in one continuous 3D camera move, ending on the page's own line",
+ "cta": "none on screen beyond the page's own buttons; the end card carries the brand badge and the closing line",
+ "direction": "Owner brief (2026-10-15): 3D fly-over of the landing page on a bright studio floor; one camera, never a cut; razor-thin focus; pieces lift and stand up; four logo tiles; end card in Geist 500 + Instrument Serif italic.",
+ "assets": [
+  {
+   "id": "page",
+   "path": "film24/capture/layout.json",
+   "role": "product",
+   "rights": "The owner's own landing page (coolman1984/Course AI_Academy.html), captured in this session"
+  },
+  {
+   "id": "fonts",
+   "path": "assets/fonts/Geist-500-latin.woff2",
+   "role": "reference",
+   "rights": "Geist (SIL OFL 1.1, assets/fonts/OFL-geist.txt) and Instrument Serif (SIL OFL 1.1, already vendored)"
+  }
+ ],
+ "sound": {
+  "mode": "original",
+  "bpm": 120,
+  "note": "Original score synthesised in film24/score.mjs; hit on 9.97 s, whooshes on 8.66 and 9.80 s; no samples"
+ },
+ "creative": {
+  "viewer": "visitors of the academy page",
+  "problem": "a landing page is usually seen as a flat scroll",
+  "promise": "the page as a physical object you fly over",
+  "evidence": "the real page, captured at 1440 px, every piece its own layer",
+  "emotion": "calm wonder, then arrival",
+  "motif": "logo tiles that lift off beside the hero button and return on the end card",
+  "palette": [
+   "#f9fbfb",
+   "#f2f3f6",
+   "#2f5fe6",
+   "#111114",
+   "#8b8b92"
+  ],
+  "light": "bright studio floor, soft wide shadows",
+  "typography": {
+   "display": "Geist 500",
+   "text": "Instrument Serif italic"
+  },
+  "camera": "one camera: steady backward glide at 56°, rise to overhead, dive into the hero",
+  "transitions": [
+   "none: one continuous move"
+  ],
+  "motion": "one speed curve integrated into page position; pieces stand up about their own middle",
+  "sound": "steady groove under the glide, build under the rise, hit on the dive",
+  "pacing": "steady flight, even rise, quick dive, long breathing hold",
+  "payoff": "the hero lands as a card under the two-line title",
+  "cta": "the page's own buttons",
+  "styleFrames": {
+   "hook": 0.0,
+   "proof": 5.0,
+   "payoff": 11.0
+  },
+  "proof": {
+   "start": 0,
+   "end": 9.97
+  }
+ },
+ "shots": [
+  {
+   "id": "flight",
+   "start": 0,
+   "end": 8.2,
+   "purpose": "glide backwards down the landing page at one steady speed, sections sharp as they cross the middle",
+   "assetIds": [
+    "page"
+   ],
+   "craft": {
+    "scale": "the page on a studio floor, pieces lifting and standing up",
+    "camera": "one continuous camera, 56° tilt, distance easing out 1360→1700, never turning",
+    "focal": "1880 px focal, razor-thin focus",
+    "transition": "continuous rise",
+    "layers": [
+     "page",
+     "pieces",
+     "tiles"
+    ]
+   }
+  },
+  {
+   "id": "rise",
+   "start": 7.75,
+   "end": 9.25,
+   "purpose": "zoom out at an even rate while the tilt flattens; the page's bottom edge settles 42 px above the frame bottom",
+   "assetIds": [
+    "page"
+   ],
+   "craft": {
+    "scale": "the whole page",
+    "camera": "log-scale trapezoid zoom, tilt 56°→0",
+    "focal": "1880 px focal, razor-thin focus",
+    "transition": "continuous",
+    "layers": [
+     "page",
+     "pieces",
+     "tiles"
+    ]
+   }
+  },
+  {
+   "id": "overhead",
+   "start": 9.25,
+   "end": 9.47,
+   "purpose": "the whole page as one centred strip",
+   "assetIds": [
+    "page"
+   ],
+   "craft": {
+    "scale": "page strip",
+    "camera": "creeps 3.5 % closer",
+    "focal": "1880 px focal, razor-thin focus",
+    "transition": "dive",
+    "layers": [
+     "page",
+     "pieces",
+     "tiles"
+    ]
+   }
+  },
+  {
+   "id": "dive",
+   "start": 9.47,
+   "end": 9.97,
+   "purpose": "dive into the hero; it lands as a 1018 px card",
+   "assetIds": [
+    "page"
+   ],
+   "craft": {
+    "scale": "hero card, logo tiles",
+    "camera": "log scale quad in-out, top edge pinned",
+    "focal": "1880 px focal, razor-thin focus",
+    "transition": "hit",
+    "layers": [
+     "page",
+     "pieces",
+     "tiles"
+    ]
+   }
+  },
+  {
+   "id": "title",
+   "start": 9.97,
+   "end": 14.5,
+   "purpose": "badge, statement and italic tail over the hero card",
+   "assetIds": [
+    "page"
+   ],
+   "craft": {
+    "scale": "title card",
+    "camera": "2 % creep",
+    "focal": "1880 px focal, razor-thin focus",
+    "transition": "hold",
+    "layers": [
+     "page",
+     "pieces",
+     "tiles"
+    ]
+   }
+  }
+ ]
+}
