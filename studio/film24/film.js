@@ -43,6 +43,11 @@ void main(){
   } else if (uMode == 2) {                            // piece shadow: the same picture in flat #1a2133, blurred, 26 %
     float a = textureLod(uTex, vUV, uLod).a;
     c = vec4(0.102, 0.129, 0.2, a * 0.26 * uAlpha);
+    c.a *= 1.0 - smoothstep(uFadeY - 40.0, uFadeY + 40.0, vW.y) * smoothstep(0.0, 0.5, uFade);   // shadows below the hero leave with the page
+  } else if (uMode == 5) {                            // logo-tile shadow: soft rounded rect (uMask rect, uMaskR radius, uLod = blur px)
+    float d = rrect(vW.xy, uMask, uMaskR);
+    c = vec4(0.102, 0.129, 0.2, 0.26 * uAlpha * (1.0 - smoothstep(-uLod, uLod, d)));
+    c.a *= 1.0 - smoothstep(uFadeY - 40.0, uFadeY + 40.0, vW.y) * smoothstep(0.0, 0.5, uFade);
   } else if (uMode == 4) {
     c = vec4(uColor, uAlpha);
   } else {
@@ -228,14 +233,21 @@ function drawScene(t) {
   // pieces: shadows first, then the pieces themselves, lowest first
   const items = P.map((p) => ({ p, s: pieceState(p, t, cs) }));
   const tiles = TILES.map((tile, k) => ({ k, s: tileState(k, tile, t) })).filter((x) => x.s && x.s.alpha > 0.002);
-  gl.uniform1i(pr.u.uMode, 2);
+  gl.uniform1i(pr.u.uMode, 5);                         // soft rounded-rect shadows (an alpha-mip shadow squares off once the blur outgrows the piece)
   for (const { p, s } of items) {
-    const z = s.z, off = [0.10 * z, 4 + 0.36 * z], blur = 7 + 0.5 * z, hh = p.ih * Math.cos(s.a);
-    gl.bindTexture(gl.TEXTURE_2D, TEX['piece-' + p.id]); gl.uniform1f(pr.u.uLod, Math.log2(Math.max(1, blur * 2 / 1.4))); gl.uniform1f(pr.u.uAlpha, s.alpha);
-    quad(pr, [p.ix + s.dx + off[0], p.cy + s.dy - hh / 2 + off[1], 0.03], [p.iw, 0, 0], [0, hh, 0]);
+    const z = s.z, off = [0.10 * z, 4 + 0.36 * z], blur = 7 + 0.5 * z, hw = p.w / 2, hh = p.h / 2 * Math.cos(s.a);
+    const cx = p.cx + s.dx + off[0], cy = p.cy + s.dy + off[1];
+    const rad = p.kind === 'button' ? Math.min(hw, hh) : p.kind === 'chip' ? Math.min(hw, hh) * 0.5 : Math.min(18, hw, hh);
+    gl.uniform4f(pr.u.uMask, cx - hw, cy - hh, cx + hw, cy + hh); gl.uniform1f(pr.u.uMaskR, rad); gl.uniform1f(pr.u.uLod, blur); gl.uniform1f(pr.u.uAlpha, s.alpha);
+    quad(pr, [cx - hw - 2 * blur, cy - hh - 2 * blur, 0.03], [2 * hw + 4 * blur, 0, 0], [0, 2 * hh + 4 * blur, 0]);
   }
-  for (const { s } of tiles) { const z = s.p[2], blur = 7 + 0.5 * z, off = [0.10 * z, 4 + 0.36 * z]; gl.bindTexture(gl.TEXTURE_2D, TEX.logo); gl.uniform1f(pr.u.uLod, Math.log2(Math.max(1, blur * 512 / s.s / 1.4))); gl.uniform1f(pr.u.uAlpha, s.alpha * clamp(1 - z / 1200));
-    quad(pr, [s.p[0] - s.s / 2 + off[0], s.p[1] - s.s / 2 + off[1], 0.03], [s.s, 0, 0], [0, s.s * Math.cos(s.a), 0]); }
+  for (const { s } of tiles) {
+    const z = s.p[2], blur = 7 + 0.5 * z, off = [0.10 * z, 4 + 0.36 * z], e = s.s * 0.44, hh = s.s * 0.44 * Math.cos(s.a);
+    const x0 = s.p[0] - e + off[0], y0 = s.p[1] - hh + off[1], x1 = s.p[0] + e + off[0], y1 = s.p[1] + hh + off[1];
+    gl.uniform4f(pr.u.uMask, x0, y0, x1, y1); gl.uniform1f(pr.u.uMaskR, Math.min(e, hh) * 0.6); gl.uniform1f(pr.u.uLod, blur); gl.uniform1f(pr.u.uAlpha, s.alpha * clamp(1 - z / 1200));
+    quad(pr, [x0 - 2 * blur, y0 - 2 * blur, 0.03], [x1 - x0 + 4 * blur, 0, 0], [0, y1 - y0 + 4 * blur, 0]);
+  }
+  gl.uniform4fv(pr.u.uMask, m.rect); gl.uniform1f(pr.u.uMaskR, m.r);
   const draws = [...items.map((x) => ({ z: x.s.z, fn: () => drawPiece(pr, x.p, x.s) })), ...tiles.map((x) => ({ z: x.s.p[2] + 0.5, fn: () => drawTile(pr, x.s) }))].sort((a, b) => a.z - b.z);
   for (const d of draws) d.fn();
   return cs;
