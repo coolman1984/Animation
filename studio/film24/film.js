@@ -153,8 +153,8 @@ function pieceState(p, t, cs) {
   let z = BASEZ[p.kind] + (p.id % 3) * 4, a = 0, dx = 0, dy = 0, alpha = 1, haze = 0;
   const d = p.cy - glideLy(t);                           // > 0: between the look-at and the lens (lower part of frame)
   if (p.kind === 'button') { const u = oC((t - 0.1 - p.id * 0.08) / 1.25); z = lerp(4, p.id ? 64 : 76, u); a = 30 * u; }
-  else if (p.id === 4) { const u = ss(1.35, 2.7, t); z = lerp(24, 112, u); a = 42 * u; }                       // the product window
-  else if (p.id === 2 || p.id === 3) { const u = ss(1.35, 2.5, t); z = lerp(30, 200, u); a = 54 * u; dx = (p.id === 2 ? -420 : 380) * oC((t - 1.35) / 1.15); dy = -60 * u; }
+  else if (p.id === 4) { const u = ss(0.9, 3.3, t); z = lerp(24, 92, u); a = 30 * u; }                       // the product window
+  else if (p.id === 2 || p.id === 3) { const u = ss(1.0, 3.0, t); z = lerp(30, 160, u); a = 44 * u; dx = (p.id === 2 ? -420 : 380) * ss(1.0, 3.0, t); dy = -60 * u; }
   else if (p.kind === 'testimonial') { const u = ss(5.45, 6.3, t); z = lerp(22, 112, u); a = 30 * u; }
   else { const u = ss(1150, 380, d); const amax = p.kind === 'photo' ? 26 : p.kind === 'chip' ? 38 : 15; a = amax * u; z = z + (p.kind === 'chip' ? 46 : p.kind === 'photo' ? 30 : 8) * u; }
   // settle for the overhead strip, and the hero pieces lie flat for the end card

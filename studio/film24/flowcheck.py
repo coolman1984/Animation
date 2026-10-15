@@ -1,5 +1,6 @@
 # Film 24 — optical-flow check of a 30 fps preview (owner brief): during the flight the speed down the page must never dip,
-# and the zoom must never turn into a zoom-in. Farneback flow on a 0.5× grey copy; centre band = the sharp, focused region.
+# and the zoom must never turn into a zoom-in. Farneback flow on a 0.5× grey copy; measured only on textured pixels
+# (edges) of the sharp upper band: blank paper and the deliberately blurred foreground carry no motion signal.
 import sys, cv2, numpy as np
 cap = cv2.VideoCapture(sys.argv[1]); fps = cap.get(cv2.CAP_PROP_FPS) or 30
 prev, rows, i = None, [], 0
@@ -9,10 +10,13 @@ while True:
     g = cv2.cvtColor(cv2.resize(fr, None, fx=0.5, fy=0.5), cv2.COLOR_BGR2GRAY)
     if prev is not None:
         f = cv2.calcOpticalFlowFarneback(prev, g, None, 0.5, 4, 25, 3, 7, 1.5, 0)
-        h, w = g.shape; band = f[int(h*0.40):int(h*0.62), int(w*0.2):int(w*0.8)]
-        vy = float(np.median(band[..., 1])) * 2           # px per frame at full size; content moves UP the frame (negative) as we glide
+        h, w = g.shape; y0, y1, x0, x1 = int(h*0.24), int(h*0.36), int(w*0.15), int(w*0.85)
+        band = f[y0:y1, x0:x1]
+        tex = cv2.magnitude(cv2.Sobel(prev, cv2.CV_32F, 1, 0), cv2.Sobel(prev, cv2.CV_32F, 0, 1))[y0:y1, x0:x1] > 40
+        if tex.sum() < 200: tex[:] = True
+        vy = float(np.median(band[..., 1][tex])) * 2           # px per frame at full size; content moves UP the frame (negative) as we glide
         xs = np.arange(band.shape[1]) - band.shape[1] / 2
-        fx = band[..., 0]; mask = np.abs(fx) < 40
+        fx = band[..., 0]; mask = (np.abs(fx) < 40) & tex
         a = float(np.polyfit(np.tile(xs, band.shape[0])[mask.ravel()], fx.ravel()[mask.ravel()], 1)[0]) if mask.sum() > 50 else 0.0
         rows.append(((i) / fps, -vy, a))                   # speed (px/frame, positive = gliding), horizontal divergence (<0 = zoom out)
     prev = g; i += 1
