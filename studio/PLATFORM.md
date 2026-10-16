@@ -92,7 +92,7 @@ Artistic DNA) is already built: `ARTISTIC_FORENSICS.md` + `reference.mjs`. Learn
 ## Any model, one studio (2026-10-16)
 One door for every agent: `AGENTS.md` (CLAUDE.md imports it), skills mirrored to `.agents/skills/`, and `mcp/server.mjs` (MCP stdio, zero
 dependencies) with client configs for Claude Code, Codex, Gemini CLI, Cursor and VS Code. The director's kit (plan, critic, eyes) moves a
-strong model's judgment into tools. Self-check: `node studio.mjs agents`. Method and limits: `ANY_MODEL.md`.
+strong model's judgment into tools. Self-check: `node studio.mjs agents`. Shot-list lint (`studio.mjs storyboard`) and the owner-calibrated taste gate on exports (`studio.mjs taste`, `taste/verdicts.json`). Method and limits: `ANY_MODEL.md`.
 
 ## Browser session modes
 - **private** (default): each render worker starts its own headless Chrome with a throwaway profile and closes it.

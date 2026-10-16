@@ -24,6 +24,8 @@ The kit turns each of those into a tool, so a smaller model follows the same jud
 | knows the shape: hook → idea → proof → payoff, one hero, music hook, drops | **director's plan**: brief → spec skeleton in the house structure; only ‹…› lines left to write | `studio.mjs director plan` / `film_plan` (`studio-engine/lib/director.mjs`) |
 | carries the owner's taste in its head | **house critic**: ~22 named rules from QUALITY_PLAYBOOK/WORKFLOW/CRAFT, each with evidence and the next edit, score /100 | `studio.mjs director review [--frames]` / `film_review` (`studio-engine/lib/critic.mjs`) |
 | looks at frames and sees composition | **eyes**: every box on screen (text, shape, image) with colour, size, contrast, focal point, balance + a character map | `studio.mjs director inspect` / `film_inspect` (`lib/scenegraph.mjs`, `window.sceneGraph()` in `lib/composer.html`) |
+| refuses a weak shot list before drawing | **storyboard lint**: each shot names a thing + what it does, ≤ 8 words, no 8 s+ shots, no text-card opening or ending | `studio.mjs storyboard <film>` / `film_storyboard` (`lib/storyboard.mjs`; also inside the critic and the production preflight) |
+| knows a dead or slideshow-like film when it sees one | **taste gate** on the finished MP4: empty mid-film frames (red), how much really moves, sagging 10 s windows — thresholds calibrated on the owner's own accepted/rejected takes (`taste/verdicts.json` → `taste calibrate`) | `studio.mjs taste <mp4 \| film>` / `film_taste` (`lib/tastegate.mjs`; runs on every engine delivery) |
 | fixes the right scene | named-scene issues with a `fix` hint | `spec_check`, `film_stills` |
 | knows when it is good enough | the same gates refuse a broken delivery; the bench compares models on fixed briefs | `bench/README.md`, `bench/briefs.json` |
 The eyes work for every composer film, hand-written ones too (`director inspect film22`). Skill: `any-model-director`.
@@ -64,7 +66,7 @@ The eyes work for every composer film, hand-written ones too (`director inspect 
 | no MCP at all | run the commands in the loop above in a shell; the output is the same text |
 
 Tools: `studio_guide` (this file) · `engine_catalog` · `film_list` · `spec_read` · `film_plan` · `spec_save` · `spec_check` · `film_review` ·
-`film_inspect` · `film_stills` (image) · `film_render` · `film_job`. Self-check: `node studio/studio.mjs agents` (door files, skill mirror, server handshake).
+`film_inspect` · `film_storyboard` · `film_stills` (image) · `film_render` · `film_job` · `film_taste`. Self-check: `node studio/studio.mjs agents` (door files, skill mirror, server handshake).
 
 ## Why it is built this way (research, 2026-10-16; details in `TECH_RADAR.md`)
 - `AGENTS.md` is the cross-tool instruction file (Codex, Copilot, Cursor, Gemini CLI, Jules, Aider, Zed, Warp…; Claude Code reads it
@@ -77,6 +79,12 @@ Tools: `studio_guide` (this file) · `engine_catalog` · `film_list` · `spec_re
 - Research on LLM animation (OmniManim, PhysicsSolutionAgent, SGA, 2026) finds layout errors are invisible in code and only show after
   rendering; repair works when diagnostics are structured and local. Hence: named-scene issues with a `fix`, a cheap stills pass before
   any render, and corrections scoped to the named scene.
+
+## Taste gate calibration (2026-10-16)
+The motion threshold starts from huashu-art-motion's fit on its own author's 13 films and can only show yellow until it is fitted on OUR
+owner: `node studio/studio.mjs taste calibrate` measures every take in `taste/verdicts.json` whose export exists on the machine (the owner's
+Windows PC holds `out/`), and writes `taste/calibration.json` only if every approved take moves more than every rejected one. Empty
+mid-film frames are a fact, not taste: red from day one. Add a verdict row whenever the owner accepts or rejects a take.
 
 ## What is and is not proven (2026-10-16)
 Proven here: every tool answers through MCP from a client with no Claude features (`test/agents.test.mjs`); a plan filled with sample copy

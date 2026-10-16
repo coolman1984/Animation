@@ -1,0 +1,13 @@
+{
+  "about": "The owner's verdicts on our own exports, the ground truth for lib/tastegate.mjs (node studio.mjs taste calibrate). Exports live on the owner's machine (out/<film>/takeNN, not in git); rows whose file is missing are skipped. 'about' says what the verdict judged: picture verdicts calibrate the picture metrics; sound verdicts are kept for the future audio gate. Add a row every time the owner accepts or rejects a take.",
+  "verdicts": [
+    { "film": "film6", "take": "take09", "verdict": "approved", "about": "picture", "source": "film6/LEDGER.md (final after music v2); house standard (owner order 2026-10-03)" },
+    { "film": "film6", "take": "take08", "verdict": "rejected", "about": "sound", "source": "film6/LEDGER.md: \"music very bad and ugly\"" },
+    { "film": "film7", "take": "take08", "verdict": "rejected", "about": "picture", "source": "film7/LEDGER.md: \"the logo-building part is very ugly\"" },
+    { "film": "film7", "take": "take09", "verdict": "approved", "about": "picture", "source": "film7/LEDGER.md owner revision; house standard" },
+    { "film": "film9", "take": "take04", "verdict": "approved", "about": "picture", "source": "film9/LEDGER.md final; house standard" },
+    { "film": "film13", "take": "take01", "verdict": "rejected", "about": "picture", "source": "film14/LEDGER.md: \"film13's 3D look rejected\"" },
+    { "film": "film14", "take": "take02", "verdict": "approved", "about": "picture", "source": "film14/LEDGER.md final" },
+    { "film": "live1", "take": "take03", "verdict": "rejected", "about": "sound", "source": "live1/LEDGER.md: \"music very bad and ugly\"" }
+  ]
+}

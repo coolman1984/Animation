@@ -5,6 +5,7 @@
 import { timeline } from './events.js';
 import { lint } from './gates.mjs';
 import { forFormat } from './spec.mjs';
+import { lintStoryboard, shotsFromSpec } from '../../lib/storyboard.mjs';
 
 const PLACEHOLDER = /[‹›]/;
 const TEXT_TYPES = new Set(['words', 'stack', 'pill', 'slab', 'slice', 'wipes', 'cards', 'hosts', 'extrude', 'lockup', 'mark']);
@@ -89,6 +90,8 @@ export function critique(base, brand, { format, frames } = {}) {
   add('no-placeholders', ph.length ? 'fail' : 'pass', 'director plan', ph.length ? ph.slice(0, 4).map((c) => `${c.scene}: ${c.text}`).join(' · ') : 'all copy written', 'Replace every ‹…› placeholder with the real line.');
   const need = ['viewer', 'problem', 'hero', 'payoff', 'cta'], miss = need.filter((k) => !spec.creative?.[k] || PLACEHOLDER.test(String(spec.creative[k])));
   add('director-brief', miss.length ? 'warn' : 'pass', 'ANY_MODEL.md step 2', miss.length ? `creative block lacks ${miss.join(', ')}` : 'viewer, problem, hero, payoff and CTA decided', 'Decide before writing: fill spec.creative.viewer/problem/hero/payoff/cta.');
+  const sb = lintStoryboard(shotsFromSpec(spec)).issues, sbRed = sb.filter((x) => x.level === 'red');
+  add('storyboard', sbRed.length ? 'fail' : sb.length ? 'warn' : 'pass', 'lib/storyboard.mjs (after huashu storyboard_lint)', sb.length ? sb.slice(0, 4).map((x) => `${x.shot}: ${x.msg}`).join(' · ') : 'every scene names a thing, an action and short copy', (sbRed[0] || sb[0])?.fix || 'Give each scene "purpose" (what the thing does) and a concrete subject.');
   add('lint', L.errors.length ? 'fail' : 'pass', 'lib/gates.mjs', L.errors.length ? L.errors.slice(0, 4).join(' · ') : 'no lint errors', 'Fix the lint errors (spec_check gives a hint for each).');
 
   // 7. rendered evidence (lib/scenegraph.mjs), when sampled frames are supplied

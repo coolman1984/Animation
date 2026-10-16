@@ -13,6 +13,7 @@ import { resolveAssets } from './lib/assets.mjs';
 import { holdSpans, gateFailures, listTakes, newTake, deliveryVideo } from './lib/pipeline.mjs';
 import { forFormat, mediaAssets, musicDecodeOptions } from './lib/spec.mjs';
 import { validateProduction } from '../lib/production.mjs';
+import { tasteGate } from '../lib/tastegate.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url)), STUDIO = resolve(HERE, '..');
 const [film, ...flags] = process.argv.slice(2);
@@ -115,7 +116,9 @@ for (const f of formats) {
     const sy = sync(spec, sfx), mo = motion(video, tl, { holds });
     say(sy.checked ? `sync: ${sy.checked - sy.missed.length}/${sy.checked} events on an audible onset${sy.missed.length ? ' · missed: ' + sy.missed.slice(0, 5).join('; ') : ''}` : 'sync: UNCHECKED — no eligible hard-hit events');
     say(`motion: ${mo.length ? mo.join('; ') : 'no still span > 0.7 s'}`);
+    const tg = tasteGate(video); for (const l of tg.lights.filter((x) => x.light !== 'info')) say(`taste ${l.id}: ${l.light.toUpperCase()} · ${l.why}`);
     if (gateFailures({ sync: sy, motion: mo }).length) { failed = true; say('delivery rejected by sync/motion gates'); }
+    else if (tg.lights.some((x) => x.light === 'red')) { failed = true; say('delivery rejected by the taste gate (lib/tastegate.mjs)'); }
     else say(`deliverable: ${video}`);
     } catch (error) { failed = true; say(`delivery rejected: ${error.message}`); }
   }

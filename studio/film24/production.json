@@ -83,7 +83,8 @@
           "logo:5",
           "camera",
           "depth"
-        ]
+        ],
+        "oner": true
       }
     },
     {

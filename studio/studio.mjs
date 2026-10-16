@@ -13,6 +13,8 @@
 //   node studio.mjs cleanup                     kill browsers left by crashed runs, remove their temp profiles, show memory headroom
 //   node studio.mjs director plan <film> --placement=reels|youtube --duration=15 [--brand= --cta= --problem= --promise= --viewer= --logo=]
 //   node studio.mjs director review <film> [--format=reel|youtube] [--frames]   ·   director inspect <film | path/film.js> [--times=1,2.5]
+//   node studio.mjs taste <video.mp4 | film> [--json]  ·  taste calibrate     the owner-calibrated taste gate on a finished export
+//   node studio.mjs storyboard <film>                 shot-list check before any render (production.json or engine spec)
 //   node studio.mjs agents [--sync]             any-model door: AGENTS.md, skill mirror for other agents, MCP client configs + server handshake (ANY_MODEL.md)
 // Films are then built with make.mjs (WORKFLOW.md). Registry: capabilities.json. Architecture: PLATFORM.md.
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
@@ -302,6 +304,40 @@ async function directorCmd([sub, film], opt) {
   console.log('usage: node studio.mjs director plan|review|inspect … (ANY_MODEL.md)');
 }
 
+// Taste gate (lib/tastegate.mjs) and storyboard lint (lib/storyboard.mjs): judgments any model can run, calibrated on the owner's verdicts.
+async function tasteCmd([target], opt) {
+  const tg = await import('./lib/tastegate.mjs'), { readdirSync: rd, existsSync: ex, readFileSync: rf, writeFileSync: wf } = await import('node:fs');
+  const latest = (film) => { const base = join(STUDIO, 'out', film); if (!ex(base)) return null; const takes = rd(base).filter((d) => /^take\d+$/.test(d)).sort((a, b) => +a.slice(4) - +b.slice(4)); for (const t of takes.reverse()) { const v = rd(join(base, t)).filter((f) => f.endsWith('.mp4')).sort((a, b) => (/-share-/.test(b) ? 1 : 0) - (/-share-/.test(a) ? 1 : 0))[0]; if (v) return join(base, t, v); } return null; };
+  const takeFile = (film, take) => { const d = join(STUDIO, 'out', film, take); if (!ex(d)) return null; const v = rd(d).filter((f) => f.endsWith('.mp4')).sort((a, b) => (/-share-/.test(b) ? 1 : 0) - (/-share-/.test(a) ? 1 : 0))[0]; return v ? join(d, v) : null; };
+  if (target === 'calibrate') {
+    const V = JSON.parse(rf(join(STUDIO, 'taste', 'verdicts.json'), 'utf8')).verdicts, rows = [];
+    for (const v of V) { const f = takeFile(v.film, v.take); console.log(`${pad(v.film + ' ' + v.take, 18)} ${pad(v.verdict, 9)} ${pad(v.about, 8)} ${f ? 'measuring…' : 'export not on this machine — skipped'}`); if (f && v.about !== 'sound') rows.push({ ...v, metrics: tg.measure(tg.decodeGray(f)) }); }
+    for (const r of rows) console.log(`  ${pad(r.film + ' ' + r.take, 16)} fast ${r.metrics.fastRatio} · blank ${r.metrics.blankRunS} s · still ${r.metrics.stillRunS} s`);
+    const c = tg.calibrate(rows); console.log(c.note);
+    if (rows.length) { wf(join(STUDIO, 'taste', 'calibration.json'), JSON.stringify({ date: new Date().toISOString().slice(0, 10), ...c, rows: rows.map(({ film, take, verdict, metrics }) => ({ film, take, verdict, fastRatio: metrics.fastRatio, blankRunS: metrics.blankRunS })) }, null, 2) + '\n'); console.log('wrote taste/calibration.json'); }
+    return;
+  }
+  const file = target && ex(target) ? target : target ? latest(target) : null;
+  if (!file) throw new Error('usage: node studio.mjs taste <video.mp4 | film with out/<film>/takeNN> [--json] · taste calibrate');
+  const r = tg.tasteGate(file);
+  if (opt.json) { console.log(JSON.stringify(r, null, 2)); return; }
+  console.log(`${file}\n${r.verdict}`);
+  for (const l of r.lights) console.log(`${pad(l.light.toUpperCase(), 7)} ${pad(l.id, 15)} ${l.why}`);
+  process.exitCode = r.lights.some((l) => l.light === 'red') ? 1 : 0;
+}
+async function storyboardCmd([film]) {
+  const sb = await import('./lib/storyboard.mjs'), { existsSync: ex, readFileSync: rf } = await import('node:fs');
+  let shots;
+  if (film && ex(join(STUDIO, film, 'production.json'))) shots = sb.shotsFromProduction(JSON.parse(rf(join(STUDIO, film, 'production.json'), 'utf8')));
+  else if (film && ex(join(STUDIO, 'studio-engine', 'films', film, 'spec.json'))) shots = sb.shotsFromSpec(JSON.parse(rf(join(STUDIO, 'studio-engine', 'films', film, 'spec.json'), 'utf8')));
+  else throw new Error('usage: node studio.mjs storyboard <film folder with production.json | engine film>');
+  const r = sb.lintStoryboard(shots);
+  for (const s of shots) console.log(`${pad(s.id, 14)} ${pad(`${(+s.start).toFixed(1)}–${(+s.end).toFixed(1)} s`, 12)} ${String(s.subject || '—').slice(0, 40)} → ${String(s.action || '—').slice(0, 50)}`);
+  console.log(r.ok ? (r.issues.length ? 'storyboard OK, with notes:' : 'storyboard OK') : 'storyboard has RED issues: fix before any render');
+  for (const x of r.issues) console.log(`${pad(x.level.toUpperCase(), 7)} ${pad(x.shot, 14)} ${x.msg}\n        → ${x.fix}`);
+  process.exitCode = r.ok ? 0 : 1;
+}
+
 // Any model, one studio (ANY_MODEL.md): every agent must see the same rules, skills and tools.
 async function agentsCmd(opt) {
   const ag = await import('./lib/agents.mjs');
@@ -332,6 +368,8 @@ if (isMain(import.meta.url)) {
   else if (cmd === 'build') await buildCmd(args);
   else if (cmd === 'cleanup') await cleanupCmd();
   else if (cmd === 'agents') await agentsCmd(flags(args));
+  else if (cmd === 'taste') await tasteCmd(args.filter(a => !a.startsWith('--')), flags(args));
+  else if (cmd === 'storyboard') await storyboardCmd(args);
   else if (cmd === 'director') await directorCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'sfx') await sfxCmd(args.filter(a => !a.startsWith('--')).join(' '), flags(args));
   else if (cmd === 'sounds') { const { searchSounds } = await import('./lib/sounds.mjs'); for (const s of searchSounds(args[0] || '')) console.log(`${pad(s.id, 20)}${pad(s.category, 11)}${pad(s.kind, 7)}${s.use}  [${s.rights}]`); }

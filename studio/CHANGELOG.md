@@ -5,6 +5,16 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-16 — Taste gate + storyboard lint, from the owner's shared repos (DONE)
+Owner shared posts on HyperFrames, Lemo-Opuscar and huashu-art-motion and chose steps 1–2. **Taste gate** `lib/tastegate.mjs` (after huashu's
+`film_gate.py`, rewritten on ffmpeg only): empty mid-film frames → red; fast-motion ratio inside shots and sagging 10 s windows → thresholds from
+`taste/calibration.json`, fitted by `node studio.mjs taste calibrate` on the owner's verdicts (`taste/verdicts.json`, 8 rows from the LEDGERs);
+until fitted, motion is provisional and yellow at most. Runs on every engine delivery (`run.mjs`), as `studio.mjs taste <mp4|film>` and MCP `film_taste`.
+**Storyboard lint** `lib/storyboard.mjs` (after huashu's `storyboard_lint.py`): a thing + an action per shot, copy ≤ 8 words, no 8 s+ shots, no
+text-card first/last shot, camera repetition; in the production preflight (warnings), the critic (rule `storyboard`), `studio.mjs storyboard` and
+MCP `film_storyboard`. On our films: house films 6, 7, 9, 22, 23 pass; film 24's one-take flight is now marked `craft.oner`. Test: `test/taste.test.mjs`.
+Not verified: calibration (no exports on this machine — run `taste calibrate` on the owner's PC).
+
 ## 2026-10-16 — Any model, one studio: door + director's kit (DONE)
 Owner challenge: make the repo let any model make animation films with the same competence as Claude (research online; later: no film now).
 **Door:** `AGENTS.md` (shared rules; CLAUDE.md imports it), `.agents/skills/` mirror (`studio.mjs agents [--sync]` self-check), `mcp/server.mjs`
