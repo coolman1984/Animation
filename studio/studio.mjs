@@ -15,6 +15,7 @@
 //   node studio.mjs director review <film> [--format=reel|youtube] [--frames]   ·   director inspect <film | path/film.js> [--times=1,2.5]
 //   node studio.mjs taste <video.mp4 | film> [--json]  ·  taste calibrate     the owner-calibrated taste gate on a finished export
 //   node studio.mjs storyboard <film>                 shot-list check before any render (production.json or engine spec)
+//   node studio.mjs styles [slug]                     house style cards from our delivered films (styles/README.md)
 //   node studio.mjs agents [--sync]             any-model door: AGENTS.md, skill mirror for other agents, MCP client configs + server handshake (ANY_MODEL.md)
 // Films are then built with make.mjs (WORKFLOW.md). Registry: capabilities.json. Architecture: PLATFORM.md.
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
@@ -255,6 +256,7 @@ async function directorCmd([sub, film], opt) {
     const { plan } = await import('./studio-engine/lib/director.mjs');
     const r = plan({ ...opt, duration: opt.duration ? +opt.duration : undefined });
     mk(dir, { recursive: true }); wf(join(dir, 'spec.json'), JSON.stringify(r.spec, null, 2) + '\n');
+    if (opt.style) { const { brandFor } = await import('./lib/styles.mjs'); wf(join(dir, 'brand.json'), JSON.stringify(brandFor(opt.style), null, 2) + '\n'); console.log(`style ${opt.style}: palette and fonts → studio-engine/films/${film}/brand.json (card: styles/${opt.style}/STYLE.md)`); }
     console.log(`studio-engine/films/${film}/spec.json — ${r.arc.seconds} s: hook ${r.arc.hook} beats · chapters ${r.arc.chapters.join('+')} · payoff ${r.arc.payoff}\nWrite these (${r.todo.length}):`);
     for (const t of r.todo) console.log(`  ${pad(t.path, 34)} ${t.write}`);
     console.log('Then: node studio.mjs director review ' + film + ' → node studio-engine/run.mjs ' + film + ' --stage=stills');
@@ -369,6 +371,7 @@ if (isMain(import.meta.url)) {
   else if (cmd === 'cleanup') await cleanupCmd();
   else if (cmd === 'agents') await agentsCmd(flags(args));
   else if (cmd === 'taste') await tasteCmd(args.filter(a => !a.startsWith('--')), flags(args));
+  else if (cmd === 'styles') { const st = await import('./lib/styles.mjs'); if (args[0]) console.log(st.readStyle(args[0])); else for (const s of st.listStyles()) console.log(`${pad(s.slug, 17)}${pad(s.route, 9)}${pad(s.from.join(', '), 34)}${s.bestFor}`); }
   else if (cmd === 'storyboard') await storyboardCmd(args);
   else if (cmd === 'director') await directorCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'sfx') await sfxCmd(args.filter(a => !a.startsWith('--')).join(' '), flags(args));

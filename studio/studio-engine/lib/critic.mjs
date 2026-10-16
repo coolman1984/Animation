@@ -6,6 +6,30 @@ import { timeline } from './events.js';
 import { lint } from './gates.mjs';
 import { forFormat } from './spec.mjs';
 import { lintStoryboard, shotsFromSpec } from '../../lib/storyboard.mjs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const FILMS = join(dirname(fileURLToPath(import.meta.url)), '..', 'films');
+export const EXAMPLES = ['aixhr', 'demo', 'form-function'];   // worked examples a new film must not repeat (Lemo-Opuscar: "not the demo again")
+// what a scene's camera really does (labels from craft.camera, else read from the engine fields)
+export function cameraOf(s) {
+  if (s.craft?.camera) return String(s.craft.camera).toLowerCase().split(/[,(]/)[0].trim();
+  const els = s.elements || [];
+  if (els.some((e) => e.type === 'lockup' && e.orbit !== false)) return 'orbit';
+  if (els.some((e) => e.type === 'ring' && e.pushAt != null)) return 'push-through';
+  if (s.camera && (s.camera.from ?? 0) !== (s.camera.to ?? 0)) return (s.camera.to ?? 0) > (s.camera.from ?? 0) ? 'push in' : 'pull back';
+  if (s.transition === 'wipe' || els.some((e) => e.type === 'wipes')) return 'whip';
+  if (s.breathe) return 'slow push';
+  return 'locked';
+}
+// six things that make a film itself; ≥ 3 equal to a worked example = the demo again
+export function fingerprint(spec) {
+  const sc = spec.scenes || [], types = (s) => [...new Set((s?.elements || []).map((e) => e.type))].sort().join('+');
+  const heroes = {}; sc.forEach((s) => (s.elements || []).forEach((e) => { if (!['words', 'stack', 'pill'].includes(e.type)) heroes[e.type] = (heroes[e.type] || 0) + 1; }));
+  return { opening: types(sc[0]), hero: Object.entries(heroes).sort((a, b) => b[1] - a[1])[0]?.[0] || 'none', transitions: sc.slice(1).map((s) => s.transition || 'cut').join(' '),
+    structure: sc.map((s) => s.beats).join('-'), ending: types(sc.at(-1)), music: JSON.stringify([spec.music?.progression, spec.music?.hook]) };
+}
 
 const PLACEHOLDER = /[‹›]/;
 const TEXT_TYPES = new Set(['words', 'stack', 'pill', 'slab', 'slice', 'wipes', 'cards', 'hosts', 'extrude', 'lockup', 'mark']);
@@ -92,6 +116,21 @@ export function critique(base, brand, { format, frames } = {}) {
   add('director-brief', miss.length ? 'warn' : 'pass', 'ANY_MODEL.md step 2', miss.length ? `creative block lacks ${miss.join(', ')}` : 'viewer, problem, hero, payoff and CTA decided', 'Decide before writing: fill spec.creative.viewer/problem/hero/payoff/cta.');
   const sb = lintStoryboard(shotsFromSpec(spec)).issues, sbRed = sb.filter((x) => x.level === 'red');
   add('storyboard', sbRed.length ? 'fail' : sb.length ? 'warn' : 'pass', 'lib/storyboard.mjs (after huashu storyboard_lint)', sb.length ? sb.slice(0, 4).map((x) => `${x.shot}: ${x.msg}`).join(' · ') : 'every scene names a thing, an action and short copy', (sbRed[0] || sb[0])?.fix || 'Give each scene "purpose" (what the thing does) and a concrete subject.');
+  // 8. direction (after Lemo-Opuscar's DIRECTOR.md, MIT): treatment, benchmark, camera variety, a breath before the peak, not the demo again
+  const cr = spec.creative || {}, filled = (v) => typeof v === 'string' && v.trim() && !PLACEHOLDER.test(v);
+  const st = Array.isArray(cr.structures) ? cr.structures.filter(filled) : [];
+  add('three-structures', st.length >= 3 && filled(cr.choice) ? 'pass' : 'warn', 'DIRECTOR (Lemo-Opuscar) §4 · creative-director', `${st.length} candidate structure(s)${filled(cr.choice) ? ', choice given' : ', no choice'}`, 'Write three different structures (journey, before/after, countdown…) in creative.structures and the chosen one + why in creative.choice.');
+  add('benchmark', filled(cr.benchmark?.learn) && filled(cr.benchmark?.avoid) ? 'pass' : 'warn', 'DIRECTOR (Lemo-Opuscar) §2', filled(cr.benchmark?.learn) ? 'benchmark set' : 'no benchmark', 'Name one or two reference works: creative.benchmark.learn (pacing, camera, colour) and .avoid (never copy designs, melodies, shots).');
+  const cams = [...new Set(scenes.map(cameraOf))], needCams = Math.min(4, n - 1);
+  add('camera-variety', n < 3 || cams.length >= needCams ? 'pass' : 'warn', 'DIRECTOR (Lemo-Opuscar) §8 · camera-director', `${cams.length} camera move(s): ${cams.join(', ')}`, 'Use different motivated moves (push in, pull back, orbit, whip, locked hold): scene.camera {from,to}, a lockup orbit, a ring push, breathe.');
+  const peak = scenes.reduce((m, s, i) => (s.drop && i > 0 ? i : m), -1);
+  const breath = peak > 0 && ['build', 'breath'].includes(scenes[peak - 1].music);
+  add('breath-before-peak', n < 4 || breath ? 'pass' : 'warn', 'DIRECTOR (Lemo-Opuscar) §6', breath ? `${scenes[peak - 1].id} (${scenes[peak - 1].music}) drops out before ${scenes[peak].id}` : 'no near-silence before the last drop', 'Give the scene before the payoff music "build" (the beat drops out in its last bar) or "breath": the first sound after the silence is the biggest.');
+  const linger = copy.filter((c) => ['words', 'stack', 'pill'].includes(c.type) && c.b - c.a < Math.max(1.8, [...c.text.replace(/\s/g, '')].length / 15 + 1.5) - 0.05);
+  add('read-hold', linger.length ? 'warn' : 'pass', 'DIRECTOR (Lemo-Opuscar) §7 readcheck', linger.length ? linger.slice(0, 3).map((c) => `"${c.text}" ${(c.b - c.a).toFixed(1)} s`).join(', ') : 'every line holds letters ÷ 15 + 1.5 s', 'Hold each line about letters ÷ 15 + 1.5 s (≥ 1.8 s): fewer words per screen, not faster cuts.');
+  const me = fingerprint(base), sameAs = [];
+  for (const ex of EXAMPLES) { const p = join(FILMS, ex, 'spec.json'); if (!existsSync(p) || base.title === JSON.parse(readFileSync(p, 'utf8')).title) continue; const f = fingerprint(JSON.parse(readFileSync(p, 'utf8'))), same = Object.keys(me).filter((k) => me[k] === f[k]); if (same.length >= 3) sameAs.push(`${ex} (${same.join(', ')})`); }
+  add('not-the-demo', sameAs.length ? 'warn' : 'pass', 'DIRECTOR (Lemo-Opuscar) §11 "not the demo again"', sameAs.length ? `shares ≥ 3 of 6 with ${sameAs.join('; ')}` : 'differs from every worked example in at least 4 of 6 (opening, hero, transitions, structure, ending, music)', 'Change the opening, the hero, the transition grammar, the structure, the ending or the music until at least four differ.');
   add('lint', L.errors.length ? 'fail' : 'pass', 'lib/gates.mjs', L.errors.length ? L.errors.slice(0, 4).join(' · ') : 'no lint errors', 'Fix the lint errors (spec_check gives a hint for each).');
 
   // 7. rendered evidence (lib/scenegraph.mjs), when sampled frames are supplied

@@ -24,6 +24,8 @@ The kit turns each of those into a tool, so a smaller model follows the same jud
 | knows the shape: hook → idea → proof → payoff, one hero, music hook, drops | **director's plan**: brief → spec skeleton in the house structure; only ‹…› lines left to write | `studio.mjs director plan` / `film_plan` (`studio-engine/lib/director.mjs`) |
 | carries the owner's taste in its head | **house critic**: ~22 named rules from QUALITY_PLAYBOOK/WORKFLOW/CRAFT, each with evidence and the next edit, score /100 | `studio.mjs director review [--frames]` / `film_review` (`studio-engine/lib/critic.mjs`) |
 | looks at frames and sees composition | **eyes**: every box on screen (text, shape, image) with colour, size, contrast, focal point, balance + a character map | `studio.mjs director inspect` / `film_inspect` (`lib/scenegraph.mjs`, `window.sceneGraph()` in `lib/composer.html`) |
+| picks a proven look instead of inventing one | **house style cards** from our delivered films (look, motion, camera grammar, sound, pitfalls, how to build) | `studio.mjs styles [slug]` / `style_list`, `style_read`; `director plan --style=<slug>` writes the palette and fonts (`styles/`, `lib/styles.mjs`) |
+| directs like a director: options, a benchmark, varied camera, a breath before the peak, never repeating the demo | **direction rules** in the critic: three-structures, benchmark, camera-variety, breath-before-peak, read-hold, not-the-demo (after Lemo-Opuscar's DIRECTOR.md) | `director review` / `film_review`; the plan fills the camera moves and the breath itself |
 | refuses a weak shot list before drawing | **storyboard lint**: each shot names a thing + what it does, ≤ 8 words, no 8 s+ shots, no text-card opening or ending | `studio.mjs storyboard <film>` / `film_storyboard` (`lib/storyboard.mjs`; also inside the critic and the production preflight) |
 | knows a dead or slideshow-like film when it sees one | **taste gate** on the finished MP4: empty mid-film frames (red), how much really moves, sagging 10 s windows — thresholds calibrated on the owner's own accepted/rejected takes (`taste/verdicts.json` → `taste calibrate`) | `studio.mjs taste <mp4 \| film>` / `film_taste` (`lib/tastegate.mjs`; runs on every engine delivery) |
 | fixes the right scene | named-scene issues with a `fix` hint | `spec_check`, `film_stills` |
@@ -65,7 +67,7 @@ The eyes work for every composer film, hand-written ones too (`director inspect 
 | anything else with MCP over stdio | command `node`, args `["studio/mcp/server.mjs"]`, working directory = repo root |
 | no MCP at all | run the commands in the loop above in a shell; the output is the same text |
 
-Tools: `studio_guide` (this file) · `engine_catalog` · `film_list` · `spec_read` · `film_plan` · `spec_save` · `spec_check` · `film_review` ·
+Tools: `studio_guide` (this file) · `engine_catalog` · `film_list` · `spec_read` · `style_list` · `style_read` · `film_plan` · `spec_save` · `spec_check` · `film_review` ·
 `film_inspect` · `film_storyboard` · `film_stills` (image) · `film_render` · `film_job` · `film_taste`. Self-check: `node studio/studio.mjs agents` (door files, skill mirror, server handshake).
 
 ## Why it is built this way (research, 2026-10-16; details in `TECH_RADAR.md`)

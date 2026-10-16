@@ -1,5 +1,5 @@
 {
-  "about": "Studio Engine element catalog: the vocabulary of spec.json, written for any model. Times are BEATS from the scene start (120 BPM: 1 beat = 0.5 s). x/y are 0..1 of the frame; sizes are px at a 1080 short side. Colours are brand roles (primary, accent, glow, ice, warm, muted, paper, ink, text) or #RRGGBB. Source of truth: lib/modules.js; lint: lib/gates.mjs.",
+  "about": "Studio Engine element catalog: the vocabulary of spec.json, written for any model. Times are BEATS from the scene start (120 BPM: 1 beat = 0.5 s). x/y are 0..1 of the frame; sizes are px at a 1080 short side. Colours are brand roles (primary, accent, glow, ice, warm, muted, paper, ink = the scene background, text; accentHi = the bright end of the accent pill) or #RRGGBB. Source of truth: lib/modules.js; lint: lib/gates.mjs.",
   "spec": {
     "required": ["title", "scenes"],
     "fields": {

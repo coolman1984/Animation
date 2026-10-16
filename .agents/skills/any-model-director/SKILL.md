@@ -6,9 +6,10 @@ description: Make a house-standard film with ANY model through the Studio Engine
 # any-model-director
 Read `studio/ANY_MODEL.md` (the ladder and the loop). Owner taste: `studio/QUALITY_PLAYBOOK.md` §0.
 
+0. **Pick a house style:** `node studio/studio.mjs styles` → read one card (`styles <slug>`, MCP `style_list`/`style_read`); pass `--style=<slug>` to the plan. The card's source film is a benchmark, never a template.
 1. **Plan, don't invent structure:** `node studio/studio.mjs director plan <film> --placement=reels|youtube --duration=N --brand=… --cta=… --problem=…`
    (MCP `film_plan`). The skeleton already has the hook in 2 s, one hero carried by `morphTo`, proof chapters on whole bars, the payoff with
-   the brand whole and one action, a music hook and drops. Write every ‹…› line in natural Egyptian Arabic (Arabic and Latin never in one line).
+   the brand whole and one action, a music hook and drops. Write every ‹…› line in natural Egyptian Arabic (Arabic and Latin never in one line), including the treatment: three structures + the choice, and a benchmark (learn / avoid).
 1b. **Storyboard before code:** `node studio/studio.mjs storyboard <film>` (MCP `film_storyboard`): every scene names a concrete thing and what it does (scene `purpose`), ≤ 8 words, no text-card opening or ending. Red blocks.
 2. **Critic before pixels:** `node studio/studio.mjs director review <film>` (MCP `film_review`). Fix every FAIL; read every WARN. Each rule names
    its source in the playbook and the next edit.

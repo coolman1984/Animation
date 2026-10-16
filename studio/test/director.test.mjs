@@ -67,3 +67,27 @@ test('eyes: contrast, overlap, safe box, empty frame and the character map', () 
   assert.ok(map.includes('T') && map.includes('#'));
   assert.equal(map.split('\n').length, 10);
 });
+
+test('direction rules: the plan moves its camera, breathes before the peak, and copies are caught as "the demo again"', async () => {
+  const { plan } = await import('../studio-engine/lib/director.mjs');
+  const { spec } = plan({ placement: 'reels', duration: 30, brand: 'نور', cta: 'احجز' });
+  const r = critique(fillAll(spec), brand), get = (id) => r.rules.find((x) => x.id === id);
+  for (const id of ['camera-variety', 'breath-before-peak', 'not-the-demo']) assert.equal(get(id).status, 'pass', `${id}: ${get(id).evidence}`);
+  assert.equal(critique(spec, brand).rules.find((x) => x.id === 'three-structures').status, 'warn');   // placeholders are not a treatment
+  const copy = JSON.parse(readFileSync(join(STUDIO, 'studio-engine/films/aixhr/spec.json'), 'utf8')); copy.title = 'my new film';
+  assert.equal(critique(copy, brand).rules.find((x) => x.id === 'not-the-demo').status, 'warn');
+});
+
+test('styles: every card exists, its fonts are registered in the composer, and the brand merges over the default', async () => {
+  const { listStyles, readStyle, brandFor } = await import('../lib/styles.mjs');
+  const composer = readFileSync(join(STUDIO, 'lib/composer.html'), 'utf8');
+  const rows = listStyles(); assert.ok(rows.length >= 6);
+  for (const s of rows) {
+    assert.match(readStyle(s.slug), /## 1\. Essence[\s\S]*## 10\. How to build it here/);
+    const b = brandFor(s.slug);
+    for (const f of Object.values(b.fonts)) assert.ok(composer.includes(`font-family: '${f}'`), `${s.slug}: font ${f} not registered`);
+    for (const c of Object.values(b.colors)) assert.match(c, /^#[0-9A-Fa-f]{6}$/);
+    assert.ok(b.export?.formats?.reel);
+  }
+  assert.throws(() => readStyle('nope'));
+});

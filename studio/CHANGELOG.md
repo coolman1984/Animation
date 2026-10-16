@@ -5,6 +5,17 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-16 — House style cards + direction rules (DONE)
+Owner chose steps 3–4. **Style cards** `styles/` (format after Lemo-Opuscar's `STYLE.md`, MIT): six looks from our own delivered films — one-dot-hero
+(films 6, 16), living-window (23), terminal-cursor (22), page-flyover (24), calm-decode (9), glass-room-3d (11 / aixhr) — each with essence/not, materials,
+colour, type, motion, camera grammar, sound, native moves, pitfalls, how to build it here; `styles/index.json` carries engine brand tokens.
+`lib/styles.mjs`, `studio.mjs styles [slug]`, `director plan --style=` (writes `films/<film>/brand.json`), MCP `style_list` / `style_read`.
+**Direction rules** in the critic (after Lemo-Opuscar's DIRECTOR.md): three-structures, benchmark, camera-variety, breath-before-peak, read-hold
+(letters ÷ 15 + 1.5 s), not-the-demo (≥ 3 of 6 equal to a worked example → warn). The plan now moves a real camera per chapter (push in / pull back /
+locked / whip / slow push), builds before the payoff, drops the vignette and asks for the treatment fields. Engine: brand `accentHi` replaces the
+pill's fixed yellow. A one-dot-hero skeleton filled with sample copy passes stills and text gates (paper world, readable card text).
+Not verified: a full film in any style card through the engine; bespoke cards only point to their reference builds.
+
 ## 2026-10-16 — Taste gate + storyboard lint, from the owner's shared repos (DONE)
 Owner shared posts on HyperFrames, Lemo-Opuscar and huashu-art-motion and chose steps 1–2. **Taste gate** `lib/tastegate.mjs` (after huashu's
 `film_gate.py`, rewritten on ffmpeg only): empty mid-film frames → red; fast-motion ratio inside shots and sagging 10 s windows → thresholds from

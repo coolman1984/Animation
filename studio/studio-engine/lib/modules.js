@@ -207,7 +207,7 @@ export const MODULES = {
   // ---------- a pill / bar with text (CTA, captions); parts let Arabic and Latin sit side by side without bidi bugs ----------
   pill(ctx, e) {
     const k = K(ctx), B = ctx.brand.colors, w = Math.min((e.w ?? 1240) * k, ctx.safe[2] - ctx.safe[0]), h = (e.h ?? 120) * k, X = (e.x ?? 0.5) * ctx.W, Y = (e.y ?? 0.82) * ctx.H;
-    const bg = { white: 'linear-gradient(160deg, #FFFFFF, #DCE6FF)', accent: `linear-gradient(90deg, ${B.accentDark}, ${B.accent} 40%, #FFE97A)`, glass: 'rgba(8,24,70,0.7)' }[e.bg || 'white'] || e.bg;
+    const bg = { white: 'linear-gradient(160deg, #FFFFFF, #DCE6FF)', accent: `linear-gradient(90deg, ${B.accentDark}, ${B.accent} 40%, ${B.accentHi || '#FFE97A'})`, glass: 'rgba(8,24,70,0.7)' }[e.bg || 'white'] || e.bg;
     const box = div(ctx.root, { left: px(X - w / 2), top: px(Y - h / 2), width: px(w), height: px(h), borderRadius: px(h / 2), background: bg, border: e.border ? `4px solid ${col(ctx.brand, e.border)}` : 'none', zIndex: '9', boxShadow: `0 0 70px ${B.glow}99` });
     const shine = div(box, { width: px(h * 1.6), height: px(h), background: 'linear-gradient(100deg, transparent, rgba(255,255,255,0.55), transparent)', transform: 'skewX(-20deg)', mixBlendMode: 'overlay' }); box.style.overflow = 'hidden';
     const parts = (e.parts || [{ text: e.text }]).map((p) => (typeof p === 'string' ? { text: p } : p)), n = parts.length;   // lint accepts string parts too
