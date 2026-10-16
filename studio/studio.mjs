@@ -359,7 +359,7 @@ async function webCmd([sub, name], opt) {
   const site = JSON.parse(rf(file, 'utf8'));
   if (sub === 'build') { const r = W.build(site, dist, { siteDir: dir }); console.log(`built web/sites/${name}/dist: ${r.files.length} files, ${Math.round(r.bytes / 1024)} KB`); for (const w of r.warnings) console.log(`note: ${w}`); return; }
   if (sub === 'check') {
-    if (!ex(join(dist, 'index.html'))) W.build(site, dist, { siteDir: dir });
+    W.build(site, dist, { siteDir: dir });   // always check the current site.json, never an older build
     const { checkSite } = await import('./web/lib/check.mjs'), out = join(STUDIO, 'takes', 'web', name), r = await checkSite({ dir: dist, outDir: out });
     console.log(`${name}: ${r.verdict}`); for (const l of r.lights) console.log(`${pad(l.light.toUpperCase(), 7)} ${pad(l.id, 20)} ${l.why}`);
     console.log(`screenshots: ${r.viewports.filter((v) => v.sheet).map((v) => v.sheet).join(' · ')}`);

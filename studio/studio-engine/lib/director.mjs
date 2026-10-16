@@ -8,7 +8,7 @@ const ICONS = ['spark', 'bolt', 'check', 'star', 'rocket', 'chat', 'clock', 'gea
 const P = (what) => `‹${what}›`;
 
 export function arc(duration) {
-  if (!Number.isInteger(duration) || duration < 6 || duration > 90) throw new Error('duration must be whole seconds between 6 and 90');
+  if (!Number.isInteger(duration) || duration < 8 || duration > 90) throw new Error('duration must be whole seconds between 8 and 90 (shorter leaves a chapter too short to read)');
   const total = duration * 2, hook = duration <= 15 ? 4 : 8, payoff = duration <= 10 ? 6 : duration <= 20 ? 8 : 12;
   let middle = total - hook - payoff;
   const chapters = [];

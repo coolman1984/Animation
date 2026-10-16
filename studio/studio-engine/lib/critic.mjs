@@ -59,7 +59,7 @@ export function critique(base, brand, { format, frames } = {}) {
   // 1. structure the owner asked for: hook → idea → payoff (QUALITY_PLAYBOOK §0 "Shape of every film")
   const first = copy.reduce((m, c) => Math.min(m, c.a), Infinity);
   add('hook-2s', first <= 2.0 ? 'pass' : 'fail', 'QUALITY_PLAYBOOK §0', first === Infinity ? 'no copy at all' : `first line at ${first.toFixed(2)} s`, 'Open with a line that names the viewer\'s problem within 2 s.');
-  const last = scenes.at(-1), tail = scenes.filter((s) => s.a >= dur * 0.7);
+  const last = scenes.at(-1), tail = scenes.filter((s) => s.b > dur * 0.7);   // scenes that overlap the last 30 % (a short film's payoff starts just before it)
   const payoff = tail.some((s) => (s.elements || []).some((e) => PAYOFF_TYPES.has(e.type) || (e.type === 'image' && e.role === 'logo')));
   const action = tail.some((s) => (s.elements || []).some((e) => e.type === 'pill'));
   add('payoff', payoff ? 'pass' : 'fail', 'QUALITY_PLAYBOOK §0', payoff ? `payoff in ${tail.map((s) => s.id).join(', ')}` : 'no logo / lock-up / CTA in the last 30 %', 'End on the brand whole (image role logo, lockup or mark) and one action.');

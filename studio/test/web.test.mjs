@@ -23,6 +23,8 @@ test('validate: honesty and accessibility rules', () => {
   const e = validate(bad).errors.join('\n');
   assert.match(e, /needs its source/); assert.match(e, /quote needs the real person/); assert.match(e, /imageAlt/);
   assert.match(validate({ ...base, style: 'nope' }).errors.join(), /unknown/);
+  for (const p of ['../assets/logo.png', '/etc/passwd', 'a/../../b.png', 'C:\\x.png', 'file:///x']) assert.match(validate({ ...base, brand: { ...base.brand, logo: p, logoAlt: 'x' } }).errors.join(), /inside the site folder/, p);
+  assert.deepEqual(validate({ ...base, brand: { ...base.brand, logo: 'img/logo.png', logoAlt: 'x' } }).errors, []);
 });
 
 test('build: lang/dir, every section, styles fonts copied, no placeholders, small', () => {

@@ -39,6 +39,10 @@ export function plan(brief = {}) {
   return { site, todo };
 }
 
+// media: relative paths that stay inside the site folder (copied into dist at the same path), or https URLs
+const mediaOf = (site) => [site.brand?.logo, ...(site.sections || []).flatMap((s) => [s?.image, ...(Array.isArray(s?.items) ? s.items : []).map((it) => it?.image)])].filter((p) => typeof p === 'string' && p);
+export const safeMedia = (p) => /^https:\/\//.test(p) || (!/^([a-z]+:|\/|\\)/i.test(p) && !p.split(/[\\/]/).includes('..'));
+
 // ---------- validate ----------
 export function validate(site) {
   const errors = [], warnings = [], E = (m) => errors.push(m), W = (m) => warnings.push(m);
@@ -64,6 +68,7 @@ export function validate(site) {
     if ((s.title || '').split(/\s+/).length > 12) W(`${at}: title has ${(s.title || '').split(/\s+/).length} words — headlines read best under 10`);
   });
   if (site.brand?.logo && !site.brand.logoAlt) E('brand.logo needs brand.logoAlt');
+  for (const m of mediaOf(site)) if (!safeMedia(m)) E(`image path "${m}" must be a relative path inside the site folder (no "..", no absolute path) or an https URL`);
   if (!site.description || site.description.length > 170) W('description should be one sentence ≤ 155 characters (search results)');
   if (!site.sections.some((s) => s.cta)) E('no call to action anywhere: give the hero or the closing section a cta');
   return { errors, warnings };
@@ -99,7 +104,7 @@ export function build(site, outDir, { siteDir } = {}) {
   writeFileSync(join(outDir, 'assets', 'site.css'), `${faces}\n${vars}\n${readFileSync(join(WEB, 'motion', 'site.css'), 'utf8')}`);
   copyFileSync(join(WEB, 'motion', 'motion.js'), join(outDir, 'assets', 'motion.js'));
   // site images (logo, hero, ring items) are copied from the site folder; only local relative paths are allowed
-  const media = [site.brand?.logo, ...site.sections.flatMap((s) => [s.image, ...(s.items || []).map((it) => it?.image)])].filter((p) => p && !/^https?:/.test(p));
+  const media = mediaOf(site).filter((p) => !/^https:/.test(p));
   for (const m of media) { if (!siteDir || !existsSync(join(siteDir, m))) throw new Error(`missing image ${m} (put it next to site.json)`); mkdirSync(dirname(join(outDir, m)), { recursive: true }); copyFileSync(join(siteDir, m), join(outDir, m)); }
   const nav = site.sections.filter((s) => s.id && s.label && s.type !== 'hero').map((s) => `<a href="#${esc(s.id)}">${esc(s.label)}</a>`).join('');
   const html = `<!doctype html>

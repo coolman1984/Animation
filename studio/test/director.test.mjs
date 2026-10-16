@@ -14,12 +14,12 @@ const brand = JSON.parse(readFileSync(join(STUDIO, 'studio-engine/brand/brand.js
 const fillAll = (o) => typeof o === 'string' && /^‹.*›$/.test(o) ? 'نص تجريبي' : Array.isArray(o) ? o.map(fillAll) : o && typeof o === 'object' ? Object.fromEntries(Object.entries(o).map(([k, v]) => [k, fillAll(v)])) : o;
 
 test('arc: whole bars that add up, hook first, payoff last', () => {
-  for (const d of [6, 10, 15, 20, 30, 45, 60]) { const a = arc(d); assert.equal(a.hook + a.chapters.reduce((s, b) => s + b, 0) + a.payoff, d * 2, `${d} s`); assert.ok(a.hook <= 8 && a.payoff >= 6); }
-  assert.throws(() => arc(5.5));
+  for (const d of [8, 9, 10, 15, 20, 30, 45, 60]) { const a = arc(d); assert.equal(a.hook + a.chapters.reduce((s, b) => s + b, 0) + a.payoff, d * 2, `${d} s`); assert.ok(a.hook <= 8 && a.payoff >= 6); }
+  assert.throws(() => arc(5.5)); assert.throws(() => arc(6));
 });
 
 test('plan: a skeleton with the house structure, one hero chain, and placeholders that block rendering', () => {
-  for (const placement of ['reels', 'youtube']) for (const duration of [10, 15, 30]) {
+  for (const placement of ['reels', 'youtube']) for (const duration of [8, 9, 10, 15, 30]) {
     const { spec, todo } = plan({ placement, duration, brand: 'نور', cta: 'احجز' });
     const tl = timeline(spec);
     assert.equal(tl.duration, duration);
