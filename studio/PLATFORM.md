@@ -89,6 +89,11 @@ Artistic DNA) is already built: `ARTISTIC_FORENSICS.md` + `reference.mjs`. Learn
 | Research | technology-scout | TECH_RADAR.md, capabilities.json |
 | Machine | studio-doctor | `studio.mjs doctor` |
 
+## Any model, one studio (2026-10-16)
+One door for every agent: `AGENTS.md` (CLAUDE.md imports it), skills mirrored to `.agents/skills/`, and `mcp/server.mjs` (MCP stdio, zero
+dependencies) with client configs for Claude Code, Codex, Gemini CLI, Cursor and VS Code. The director's kit (plan, critic, eyes) moves a
+strong model's judgment into tools. Self-check: `node studio.mjs agents`. Method and limits: `ANY_MODEL.md`.
+
 ## Browser session modes
 - **private** (default): each render worker starts its own headless Chrome with a throwaway profile and closes it.
 - **attach**: set `STUDIO_CDP_URL=http://127.0.0.1:<port>` when Chrome must be started by an approved launcher with `--remote-debugging-port`.

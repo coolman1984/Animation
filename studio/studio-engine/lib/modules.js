@@ -210,7 +210,7 @@ export const MODULES = {
     const bg = { white: 'linear-gradient(160deg, #FFFFFF, #DCE6FF)', accent: `linear-gradient(90deg, ${B.accentDark}, ${B.accent} 40%, #FFE97A)`, glass: 'rgba(8,24,70,0.7)' }[e.bg || 'white'] || e.bg;
     const box = div(ctx.root, { left: px(X - w / 2), top: px(Y - h / 2), width: px(w), height: px(h), borderRadius: px(h / 2), background: bg, border: e.border ? `4px solid ${col(ctx.brand, e.border)}` : 'none', zIndex: '9', boxShadow: `0 0 70px ${B.glow}99` });
     const shine = div(box, { width: px(h * 1.6), height: px(h), background: 'linear-gradient(100deg, transparent, rgba(255,255,255,0.55), transparent)', transform: 'skewX(-20deg)', mixBlendMode: 'overlay' }); box.style.overflow = 'hidden';
-    const parts = e.parts || [{ text: e.text }], n = parts.length;
+    const parts = (e.parts || [{ text: e.text }]).map((p) => (typeof p === 'string' ? { text: p } : p)), n = parts.length;   // lint accepts string parts too
     const Ls = parts.map((p, i) => words(ctx.root, p.text, ctx, { size: (p.size ?? e.size ?? 56) * k, weight: 900, color: col(ctx.brand, p.color || e.color, '#0A1A52'), cx: X - w / 2 + w * (i + 0.5) / n, cy: Y, width: w / n * 0.94, z: 10 }));
     const a = tin(ctx, e), o = e.out != null ? ctx.T(e.out) : 1e9;
     return (t) => {

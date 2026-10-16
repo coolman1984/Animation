@@ -177,3 +177,8 @@ A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs th
 4. **Motion blur before depth of field:** summing 16 scene subframes in linear light (colour + coc/depth) and blurring once costs one gather instead of sixteen and looks the same on a still-for-still comparison.
 5. **Blurred shadows need their own shape:** a shadow made from a piece's alpha mip turns into a hard square once the blur outgrows the piece (the quad clips it). Draw it as a soft rounded-rect SDF on a quad padded by twice the blur, and fade it with whatever fades its piece.
 6. **Long renders outlive the session's task clock:** background jobs stop at 2 h and a resume reuses only whole slices; launch long builds detached (`setsid nohup … &`) and watch the log.
+
+## Any model, one studio (2026-10-16)
+1. **Judgment transfers as tools, not as prose:** a smaller model ignores a long guide but obeys a check that names the scene, the rule and the next edit. Put taste into the critic and structure into the plan; keep prose for the why.
+2. **Read the frame back, not the script:** layout errors only show after rendering (OmniManim/SGA research); the scene graph read from the DOM gives a model without vision the same evidence as a contact sheet.
+3. **A skeleton must pass its own critic:** the first plan tripped the template-repetition rule and a colour morph through grey; generators get tested against the same rules the films are judged by.

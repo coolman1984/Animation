@@ -9,6 +9,7 @@ Architecture and engine choice: PLATFORM.md. Before choosing an engine run `node
 |---|---|---|
 | Which engine for a layer? What is installed? | — | `node studio.mjs caps` / `route`; capabilities.json; PLATFORM.md |
 | Browser 3D (Three.js) / 20k+ particles (PixiJS) | motion-composer, camera-director | examples/three-study, examples/pixi-study (EXPERIMENTAL; config.gpu: true) |
+| A non-Claude model makes or judges a film; plan / critic / eyes; model bench | any-model-director | ANY_MODEL.md, `studio.mjs director plan\|review\|inspect`, mcp/server.mjs, bench/ |
 | New tool or trend: worth adding? | technology-scout | TECH_RADAR.md (dated), LEARN / ADAPT / INTEGRATE |
 | Speech, transcripts, narration, dubbing, sound mix | voice-director | VOICE_STUDIO.md, lib/transcript.mjs, lib/voice.mjs, voice/voices.json, voice/lexicon.json, lib/mixcheck.mjs, sounds/library.json |
 | Watch and approve an export | qa-judge | `node studio.mjs review <film>` (lib/review-player.html, lib/review-server.mjs) |

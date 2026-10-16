@@ -89,6 +89,43 @@
       if (!rs.length) return null;
       return { text: l.dataset.text || [...l.querySelectorAll('.word')].map((w) => w.textContent).join(' '), x0: Math.min(...rs.map((r) => r.left)), y0: Math.min(...rs.map((r) => r.top)), x1: Math.max(...rs.map((r) => r.right)), y1: Math.max(...rs.map((r) => r.bottom)) };
     }).filter(Boolean);
+  // Scene graph for models that cannot see (lib/scenegraph.mjs): every visible thing on screen as a box with its kind, colour and
+  // effective opacity, read back from the DOM after render. Text lines are one item; their words are not walked again.
+  window.sceneGraph = () => {
+    const out = [], S = stage.getBoundingClientRect(), area = S.width * S.height;
+    const solid = (c) => c && !/^transparent$/.test(c) && !/rgba\([^)]*,\s*0(\.0+)?\)$/.test(c);
+    const paint = (cs) => { const img = cs.backgroundImage;
+      if (img && img !== 'none' && !img.startsWith('url(')) return { color: (img.match(/rgba?\([^)]*\)|#[0-9a-f]{3,8}/gi) || []).find(solid) || null, texture: img.startsWith('repeating-') };
+      if (solid(cs.backgroundColor)) return { color: cs.backgroundColor };
+      return cs.borderTopWidth !== '0px' && cs.borderTopStyle !== 'none' && solid(cs.borderTopColor) ? { color: cs.borderTopColor, outline: true } : null; };
+    const walk = (n, op, z) => {
+      for (const c of n.children) {
+        const cs = getComputedStyle(c);
+        if (cs.display === 'none' || cs.visibility === 'hidden') continue;
+        const o = op * +cs.opacity; if (o < 0.04) continue;
+        const r = c.getBoundingClientRect(), x0 = Math.max(r.left, S.left) - S.left, y0 = Math.max(r.top, S.top) - S.top, x1 = Math.min(r.right, S.right) - S.left, y1 = Math.min(r.bottom, S.bottom) - S.top;
+        const visible = x1 - x0 > 1 && y1 - y0 > 1, blur = +(/blur\(([\d.]+)px\)/.exec(cs.filter)?.[1] || 0);
+        const box = { x0: Math.round(x0), y0: Math.round(y0), x1: Math.round(x1), y1: Math.round(y1), cut: r.left < S.left - 2 || r.top < S.top - 2 || r.right > S.right + 2 || r.bottom > S.bottom + 2, opacity: +o.toFixed(2), z: z + (+cs.zIndex || 0), ...(blur ? { blur } : {}) };
+        const tag = c.tagName.toLowerCase();
+        if (c.classList.contains('line')) {
+          const ws = [...c.querySelectorAll('.word')].filter((w) => +getComputedStyle(w).opacity > 0.3);
+          if (ws.length && visible) { const w0 = getComputedStyle(ws[0]), rs = ws.map((w) => w.getBoundingClientRect());
+            const g = { x0: Math.round(Math.min(...rs.map((q) => q.left)) - S.left), y0: Math.round(Math.min(...rs.map((q) => q.top)) - S.top), x1: Math.round(Math.max(...rs.map((q) => q.right)) - S.left), y1: Math.round(Math.max(...rs.map((q) => q.bottom)) - S.top) };
+            out.push({ kind: 'text', text: c.dataset.text || ws.map((w) => w.textContent).join(' '), size: Math.round(parseFloat(w0.fontSize)), weight: w0.fontWeight, font: w0.fontFamily.split(',')[0].replace(/['"]/g, ''), color: w0.color, ...box, ...g, cut: g.x0 < -2 || g.y0 < -2 || g.x1 > S.width + 2 || g.y1 > S.height + 2, opacity: +(o * +w0.opacity).toFixed(2) }); }
+          continue;
+        }
+        if (visible) {
+          if (tag === 'img') out.push({ kind: 'image', src: (c.getAttribute('src') || '').split('/').pop(), ...box });
+          else if (tag === 'svg') { const p = c.querySelector('[stroke]:not([stroke="none"]),[fill]:not([fill="none"])'); out.push({ kind: 'vector', color: p ? (p.getAttribute('stroke') && p.getAttribute('stroke') !== 'none' ? p.getAttribute('stroke') : p.getAttribute('fill')) : cs.color, ...box }); }
+          else if (tag === 'canvas') out.push({ kind: 'canvas', ...box });
+          else { const p = paint(cs); if (p?.color) out.push({ kind: (x1 - x0) * (y1 - y0) > area * 0.9 ? 'backdrop' : p.texture ? 'texture' : p.outline ? 'outline' : 'shape', color: p.color, radius: cs.borderTopLeftRadius, ...box }); }
+        }
+        if (tag !== 'svg' && tag !== 'canvas') walk(c, o, box.z);
+      }
+    };
+    walk(stage, 1, 0);
+    return out;
+  };
   window.ready = (async () => {
     await document.fonts.ready;
     await Promise.all([...document.fonts].map((f) => f.load()));

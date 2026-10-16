@@ -2,7 +2,8 @@
 
 This file is the one door for every model and tool (Claude Code imports it from `CLAUDE.md`; Codex, GitHub Copilot, Cursor, Gemini CLI,
 Jules, Aider, Zed, Warp, goose, OpenCode and other AGENTS.md readers load it directly). Rules here bind every agent equally.
-**Not Claude? Start with `studio/ANY_MODEL.md`:** the ladder (what to build for your model's strengths), the film loop and the MCP tools.
+**Not Claude? Start with `studio/ANY_MODEL.md`:** the ladder (what to build for your model's strengths), the film loop, the MCP tools and the
+director's kit (`node studio/studio.mjs director plan|review|inspect`: house-method plan, house critic, eyes for models without vision).
 
 **New films are made with the Studio Engine:** read `studio/studio-engine/STUDIO.md` first (one spec file + one command, 30 fps default, formats youtube | reel).
 Read `STATUS.md` first for current scope, verification evidence and the finite completion contract.

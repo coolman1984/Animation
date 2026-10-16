@@ -5,6 +5,17 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-16 — Any model, one studio: door + director's kit (DONE)
+Owner challenge: make the repo let any model make animation films with the same competence as Claude (research online; later: no film now).
+**Door:** `AGENTS.md` (shared rules; CLAUDE.md imports it), `.agents/skills/` mirror (`studio.mjs agents [--sync]` self-check), `mcp/server.mjs`
+(MCP stdio, zero dependencies, 12 tools; `mcp/job.mjs` background renders) with configs `.mcp.json`, `.codex/config.toml`, `.gemini/settings.json`,
+`.cursor/mcp.json`, `.vscode/mcp.json`; `studio-engine/catalog.json`; `ANY_MODEL.md` (ladder, loop, limits). **Director's kit:** `studio-engine/lib/director.mjs`
+(house-method plan), `studio-engine/lib/critic.mjs` (house critic, ~22 rules), `lib/scenegraph.mjs` + `window.sceneGraph()` (eyes), `studio.mjs director
+plan|review|inspect`, `bench/` (fixed briefs + score table), skill `any-model-director`. Engine fixes found on the way: `pill.parts` strings crashed the
+browser; lint now refuses ‹…› placeholders. `lib/render.mjs` exports `openFilm`. Tests: `test/agents.test.mjs`, `test/director.test.mjs`.
+Evidence: MCP handshake and calls from a non-Claude client; plan skeletons filled with sample copy pass lint, critic and stills text gates (reels 15/30, YouTube 30);
+critic on AI × HR 83/100. Openverse (`api.openverse.org`) is blocked by this container's network policy. Not verified: a film made by another model; no new assets.
+
 ## 2026-10-16 — Openverse audio search, Openverse-first rule (DONE)
 Owner request (from an X post by Elliot Padfield): give the studio Openverse's 5M+ free audio files. New `lib/openverse.mjs` (Node built-ins, global fetch, no key) and `studio.mjs sfx "words" [--effects|--music] [--any-license] [--download=<film> --pick=N]`: commercial-use licences by default, top results with title, duration, licence, creator and source URL; a download lands in `<film>/assets/sfx/` with `CREDITS.json` + `CREDITS.md` (attribution text, licence URL, source). `test/openverse.test.mjs` uses a mocked fetch. CLAUDE.md gains the mandatory Openverse-first rule. Live check: 'whoosh' → 240 commercial results, one CC0 file downloaded with its credit (scratch folder). Not verified: used in a film; downloaded audio files are not committed.
 

@@ -115,6 +115,36 @@ export const TOOLS = [
       mkdirSync(dir, { recursive: true }); writeFileSync(join(dir, 'spec.json'), JSON.stringify(spec, null, 2) + '\n');
       return [text({ saved: true, path: `studio/studio-engine/films/${film}/spec.json`, next: 'spec_check, then film_stills', ...r })];
     } },
+  { name: 'film_plan', description: 'Director\'s plan: turn a brief into a spec skeleton that already follows the house method (hook in 2 s, one hero carried by morphTo, proof chapters on whole bars, payoff with the brand whole and one action). Saves it and lists the ‹…› lines you must write. Use this instead of inventing structure.', inputSchema: { type: 'object', properties: { film: FILM, placement: { type: 'string', enum: ['reels', 'youtube'] }, duration: { type: 'integer', minimum: 6, maximum: 90 }, brand: { type: 'string' }, cta: { type: 'string', description: 'the client\'s own CTA words' }, problem: { type: 'string' }, promise: { type: 'string' }, viewer: { type: 'string' }, logo: { type: 'string', description: 'logo file path relative to the film folder' }, force: { type: 'boolean' } }, required: ['film', 'placement', 'duration'] },
+    run: async ({ film, force, ...brief }) => {
+      const dir = filmDir(film); if (existsSync(join(dir, 'spec.json')) && !force) throw new Error(`${film} already has a spec; pass force: true to replace it`);
+      const { plan } = await import('../studio-engine/lib/director.mjs'), r = plan(brief);
+      mkdirSync(dir, { recursive: true }); writeFileSync(join(dir, 'spec.json'), JSON.stringify(r.spec, null, 2) + '\n');
+      return [text({ saved: `studio/studio-engine/films/${film}/spec.json`, arc: r.arc, write: r.todo, spec: r.spec, next: 'replace every ‹…› (spec_save with the whole spec), then film_review' })];
+    } },
+  { name: 'film_review', description: 'The house critic: the owner\'s taste and the studio\'s craft rules as a scorecard (hook in 2 s, one hero, one idea per bar, reading time, type size, payoff + one action, music hook, honesty…), each with evidence and the next edit. frames: true also renders sampled frames and reads them back (~20 s).', inputSchema: { type: 'object', properties: { film: FILM, format: FORMAT, frames: { type: 'boolean' } }, required: ['film'] },
+    run: async ({ film, format, frames }) => {
+      const p = join(filmDir(film), 'spec.json'); if (!existsSync(p)) throw new Error(`no spec for ${film}`);
+      const spec = readJSON(p), fmt = format || spec.format || 'youtube', brand = brandOf(film), { critique } = await import('../studio-engine/lib/critic.mjs');
+      let sampled;
+      if (frames) {
+        const e = await engine(film, ['--stage=check', `--format=${fmt}`]); if (e.code !== 0) return [text({ ok: false, issues: engineIssues(e.out) })];
+        const { inspect } = await import('../lib/scenegraph.mjs'), tl = timeline(forFormat(spec, fmt)), F = brand.export.formats[fmt];
+        const times = tl.scenes.flatMap((s) => [s.a + (s.b - s.a) * 0.5, s.b - 0.3]).map((t) => +Math.max(0.05, Math.min(tl.duration - 0.05, t)).toFixed(2));
+        sampled = await inspect({ film: join(ENGINE, `b-${film}-${fmt}`, 'film.js'), times, w: F.w, h: F.h, safe: F.safe });
+      }
+      return [text(critique(spec, brand, { format: fmt, frames: sampled }))];
+    } },
+  { name: 'film_inspect', description: 'Eyes for any model: what is on screen at given times — every text/shape/image box with colour, size, contrast, the focal point, balance, findings, and a character map of the frame (T text, # shape, @ image, * vector, + safe-box corners). Works without vision.', inputSchema: { type: 'object', properties: { film: FILM, format: FORMAT, times: { type: 'array', items: { type: 'number' }, maxItems: 24 } }, required: ['film', 'times'] },
+    run: async ({ film, format, times }) => {
+      const p = join(filmDir(film), 'spec.json'); if (!existsSync(p)) throw new Error(`no spec for ${film}`);
+      if (!Array.isArray(times) || !times.length || times.some((t) => !Number.isFinite(t) || t < 0)) throw new Error('times must be seconds');
+      const spec = readJSON(p), fmt = format || spec.format || 'youtube', F = brandOf(film).export.formats[fmt];
+      const e = await engine(film, ['--stage=check', `--format=${fmt}`]); if (e.code !== 0) return [text({ ok: false, issues: engineIssues(e.out) })];
+      const { inspect } = await import('../lib/scenegraph.mjs');
+      const r = await inspect({ film: join(ENGINE, `b-${film}-${fmt}`, 'film.js'), times: times.slice(0, 24), w: F.w, h: F.h, safe: F.safe });
+      return r.map((f) => text(`t ${f.t} s · focal ${JSON.stringify(f.focal)} · balance ${JSON.stringify(f.balance)}\n${f.map}\nitems ${JSON.stringify(f.items)}\nfindings ${JSON.stringify(f.findings)}`));
+    } },
   { name: 'spec_check', description: 'Full engine check of a saved spec (lint, assets, production plan) without a browser — about a second.', inputSchema: { type: 'object', properties: { film: FILM, format: FORMAT }, required: ['film'] },
     run: async ({ film, format }) => {
       const p = join(filmDir(film), 'spec.json'); if (!existsSync(p)) throw new Error(`no spec for ${film}; spec_save first`);
@@ -155,7 +185,7 @@ async function handle(m) {
   if (m.method === 'initialize') {
     const asked = m.params?.protocolVersion;
     return { protocolVersion: VERSIONS.includes(asked) ? asked : VERSIONS[0], capabilities: { tools: { listChanged: false } }, serverInfo: { name: 'animation-studio', version: '1.0.0' },
-      instructions: 'A code-driven film studio. Call studio_guide first, then engine_catalog. Make a film by saving ONE spec (spec_save), checking it (spec_check, film_stills) and rendering it (film_render, film_job).' };
+      instructions: 'A code-driven film studio. Call studio_guide first, then engine_catalog. Make a film: film_plan (house-method skeleton) → write the ‹…› lines → spec_save → spec_check → film_review (house critic) → film_stills / film_inspect (eyes) → film_render → film_job.' };
   }
   if (m.method === 'ping') return {};
   if (m.method === 'tools/list') return { tools: TOOLS.map(({ name, description, inputSchema }) => ({ name, description, inputSchema })) };

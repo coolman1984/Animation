@@ -1,0 +1,69 @@
+// Director's kit for any model (ANY_MODEL.md): plan → critic → eyes. Pure functions only (no browser).
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { plan, arc } from '../studio-engine/lib/director.mjs';
+import { critique } from '../studio-engine/lib/critic.mjs';
+import { lint } from '../studio-engine/lib/gates.mjs';
+import { timeline } from '../studio-engine/lib/events.js';
+import { analyze, asciiMap, contrastOf } from '../lib/scenegraph.mjs';
+import { STUDIO } from '../lib/capabilities.mjs';
+
+const brand = JSON.parse(readFileSync(join(STUDIO, 'studio-engine/brand/brand.json'), 'utf8'));
+const fillAll = (o) => typeof o === 'string' && /^‹.*›$/.test(o) ? 'نص تجريبي' : Array.isArray(o) ? o.map(fillAll) : o && typeof o === 'object' ? Object.fromEntries(Object.entries(o).map(([k, v]) => [k, fillAll(v)])) : o;
+
+test('arc: whole bars that add up, hook first, payoff last', () => {
+  for (const d of [6, 10, 15, 20, 30, 45, 60]) { const a = arc(d); assert.equal(a.hook + a.chapters.reduce((s, b) => s + b, 0) + a.payoff, d * 2, `${d} s`); assert.ok(a.hook <= 8 && a.payoff >= 6); }
+  assert.throws(() => arc(5.5));
+});
+
+test('plan: a skeleton with the house structure, one hero chain, and placeholders that block rendering', () => {
+  for (const placement of ['reels', 'youtube']) for (const duration of [10, 15, 30]) {
+    const { spec, todo } = plan({ placement, duration, brand: 'نور', cta: 'احجز' });
+    const tl = timeline(spec);
+    assert.equal(tl.duration, duration);
+    assert.ok(todo.length > 3);
+    assert.ok(lint(spec, brand).errors.some((e) => /placeholder left/.test(e)), 'placeholders must stop the engine');
+    const ids = new Set(spec.scenes.flatMap((s) => s.elements.map((e) => e.id)).filter(Boolean));
+    for (const s of spec.scenes) for (const e of s.elements) if (e.morphTo) assert.ok(ids.has(e.morphTo), `${s.id} morphTo ${e.morphTo}`);
+    const filled = fillAll(spec);
+    assert.deepEqual(lint(filled, brand).errors, [], `${placement} ${duration}`);
+    const r = critique(filled, brand);
+    assert.deepEqual(r.rules.filter((x) => x.status === 'fail').map((x) => x.id), [], `${placement} ${duration}`);
+    for (const id of ['hook-2s', 'payoff', 'one-action', 'one-hero', 'settled-end', 'drops', 'music-hook', 'no-template']) assert.equal(r.rules.find((x) => x.id === id).status, 'pass', `${placement} ${duration} ${id}`);
+  }
+});
+
+test('critic: names the broken house rule with evidence and a fix', () => {
+  const bad = { title: 'x', format: 'reel', scenes: [
+    { id: 'a', beats: 8, elements: [{ type: 'words', text: 'سطر', size: 120, at: 6 }] },
+    { id: 'b', beats: 8, elements: [{ type: 'words', text: 'سطر صغير', size: 28, at: 0 }, { type: 'sparks' }] },
+    { id: 'c', beats: 8, elements: [{ type: 'words', text: '٥٠٪ خصم', size: 120, y: 0.8 }] }] };
+  const r = critique(bad, brand), get = (id) => r.rules.find((x) => x.id === id);
+  assert.equal(get('hook-2s').status, 'fail'); assert.match(get('hook-2s').evidence, /3\.00 s/);
+  assert.equal(get('payoff').status, 'fail');
+  assert.equal(get('type-size').status, 'fail');
+  assert.equal(get('reel-band').status, 'warn');
+  assert.equal(get('numbers-sourced').status, 'warn');
+  assert.equal(get('taste-guard').status, 'warn');
+  assert.ok(r.rules.every((x) => x.source && x.fix));
+  assert.ok(r.score < 70);
+});
+
+test('eyes: contrast, overlap, safe box, empty frame and the character map', () => {
+  assert.equal(contrastOf('rgb(255, 255, 255)', 'rgb(0, 0, 0)'), 21);
+  const items = [
+    { kind: 'backdrop', color: 'rgb(10, 10, 10)', x0: 0, y0: 0, x1: 100, y1: 200, opacity: 1, z: 0 },
+    { kind: 'shape', color: 'rgb(255, 210, 31)', x0: 20, y0: 120, x1: 80, y1: 180, opacity: 1, z: 1 },
+    { kind: 'text', text: 'أ', size: 20, color: 'rgb(255, 230, 60)', x0: 30, y0: 140, x1: 70, y1: 160, opacity: 1, z: 2 },
+    { kind: 'text', text: 'ب', size: 40, color: 'rgb(255, 255, 255)', x0: 2, y0: 10, x1: 60, y1: 40, opacity: 1, z: 2 },
+    { kind: 'text', text: 'ج', size: 40, color: 'rgb(255, 255, 255)', x0: 40, y0: 20, x1: 90, y1: 50, opacity: 1, z: 2 },
+  ];
+  const a = analyze(items, { w: 100, h: 200, safe: [5, 5, 95, 195] }), rules = a.findings.map((f) => f.rule);
+  for (const r of ['contrast', 'overlap', 'safe-area']) assert.ok(rules.includes(r), r);
+  assert.equal(analyze([items[0]], { w: 100, h: 200 }).findings[0].rule, 'empty');
+  const map = asciiMap(items, { w: 100, h: 200, cols: 10 });
+  assert.ok(map.includes('T') && map.includes('#'));
+  assert.equal(map.split('\n').length, 10);
+});
