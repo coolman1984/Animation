@@ -1,0 +1,107 @@
+{
+  "about": "Website styles (studio/web/WEB.md). tokens become CSS variables; faces are vendored fonts copied into each site (OFL, see studio/ASSETS.md). Text contrast is checked by `node studio/studio.mjs web check`.",
+  "styles": [
+    {
+      "slug": "paper-editorial",
+      "name": "Paper Editorial",
+      "bestFor": "services, education, clinics, consultants: calm, premium, very readable",
+      "mood": "light paper, ink type, one burnt-orange accent",
+      "tokens": {
+        "bg": "#F4F1EA",
+        "ink": "#16140F",
+        "muted": "#5E5A52",
+        "accent": "#B8430F",
+        "accent-ink": "#FFFFFF",
+        "card": "#FFFFFF",
+        "card-ink": "#16140F",
+        "line": "#E2DDD2",
+        "radius": "22px"
+      },
+      "fonts": {
+        "display": "Readex Pro",
+        "text": "Readex Pro",
+        "label": "Space Mono"
+      }
+    },
+    {
+      "slug": "ink-studio",
+      "name": "Ink Studio",
+      "bestFor": "tech, AI, agencies, launches: dark, sharp, energetic",
+      "mood": "near-black, warm white type, lime signal",
+      "tokens": {
+        "bg": "#0C0D10",
+        "ink": "#F2F0EA",
+        "muted": "#A3A39C",
+        "accent": "#D4FF3A",
+        "accent-ink": "#0C0D10",
+        "card": "#15171C",
+        "card-ink": "#F2F0EA",
+        "line": "#262931",
+        "radius": "18px"
+      },
+      "fonts": {
+        "display": "Alexandria",
+        "text": "Alexandria",
+        "label": "Space Mono"
+      }
+    },
+    {
+      "slug": "clay-3d",
+      "name": "Clay 3D",
+      "bestFor": "products, portfolios, cafés, design studios: warm, tactile, playful depth",
+      "mood": "terracotta clay ground, cream and ink cards, a 3D ring",
+      "tokens": {
+        "bg": "#C27A4E",
+        "ink": "#1B1A17",
+        "muted": "#2A1A10",
+        "accent": "#1B1A17",
+        "accent-ink": "#F6EFE6",
+        "card": "#F6EFE6",
+        "card-ink": "#1B1A17",
+        "line": "#A9643B",
+        "radius": "20px"
+      },
+      "fonts": {
+        "display": "Alexandria",
+        "text": "Readex Pro",
+        "label": "Space Mono"
+      }
+    }
+  ],
+  "faces": {
+    "Readex Pro": [
+      {
+        "file": "ReadexPro-arabic.woff2",
+        "weight": "160 700",
+        "range": "U+0600-06FF, U+0750-077F, U+FB50-FDFF, U+FE70-FEFF, U+200C-200F"
+      },
+      {
+        "file": "ReadexPro-latin.woff2",
+        "weight": "160 700",
+        "range": "U+0000-00FF, U+2000-206F"
+      }
+    ],
+    "Alexandria": [
+      {
+        "file": "Alexandria-arabic.woff2",
+        "weight": "100 900",
+        "range": "U+0600-06FF, U+0750-077F, U+FB50-FDFF, U+FE70-FEFF, U+200C-200F"
+      },
+      {
+        "file": "Alexandria-latin.woff2",
+        "weight": "100 900",
+        "range": "U+0000-00FF, U+2000-206F"
+      }
+    ],
+    "Space Mono": [
+      {
+        "file": "SpaceMono-Regular.ttf",
+        "weight": "400"
+      },
+      {
+        "file": "SpaceMono-Bold.ttf",
+        "weight": "700"
+      }
+    ]
+  }
+}

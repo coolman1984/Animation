@@ -11,6 +11,13 @@
 //   node studio.mjs transcript <pack>  ·  mixcheck <audio|video>  ·  color check|scopes|range  ·  sounds [category]  ·  sfx "words" [--n=8] [--music|--effects] [--any-license] [--download=filmNN --pick=1]
 //   node studio.mjs build <film> [make flags]   the safe way to render: reaps orphans, sizes workers to memory, logs everything to takes/<film>/build-full.log
 //   node studio.mjs cleanup                     kill browsers left by crashed runs, remove their temp profiles, show memory headroom
+//   node studio.mjs director plan <film> --placement=reels|youtube --duration=15 [--brand= --cta= --problem= --promise= --viewer= --logo=]
+//   node studio.mjs director review <film> [--format=reel|youtube] [--frames]   ·   director inspect <film | path/film.js> [--times=1,2.5]
+//   node studio.mjs taste <video.mp4 | film> [--json]  ·  taste calibrate     the owner-calibrated taste gate on a finished export
+//   node studio.mjs storyboard <film>                 shot-list check before any render (production.json or engine spec)
+//   node studio.mjs styles [slug]                     house style cards from our delivered films (styles/README.md)
+//   node studio.mjs web plan <site> [--brand= --style= --lang=ar|en --cta= --problem= --promise=] · web build|check|serve <site> · web styles   (web/WEB.md)
+//   node studio.mjs agents [--sync]             any-model door: AGENTS.md, skill mirror for other agents, MCP client configs + server handshake (ANY_MODEL.md)
 // Films are then built with make.mjs (WORKFLOW.md). Registry: capabilities.json. Architecture: PLATFORM.md.
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -239,6 +246,144 @@ async function sfxCmd(q, opt) {
   }
 }
 
+// The director's kit for any model (ANY_MODEL.md): a house-method plan, the house critic, and eyes (scene graph + character map).
+async function directorCmd([sub, film], opt) {
+  const { readFileSync: rf, existsSync: ex, mkdirSync: mk, writeFileSync: wf } = await import('node:fs');
+  const ENG = join(STUDIO, 'studio-engine'), dir = film && join(ENG, 'films', film);
+  const brandOf = () => JSON.parse(rf(ex(join(dir, 'brand.json')) ? join(dir, 'brand.json') : join(ENG, 'brand', 'brand.json'), 'utf8'));
+  if (sub === 'plan') {
+    if (!film || !/^[a-z0-9][a-z0-9_-]*$/.test(film)) throw new Error('usage: director plan <film> --placement=reels|youtube --duration=15');
+    if (ex(join(dir, 'spec.json')) && !opt.force) throw new Error(`${film} already has a spec (use --force to replace it)`);
+    const { plan } = await import('./studio-engine/lib/director.mjs');
+    const r = plan({ ...opt, duration: opt.duration ? +opt.duration : undefined });
+    mk(dir, { recursive: true }); wf(join(dir, 'spec.json'), JSON.stringify(r.spec, null, 2) + '\n');
+    if (opt.style) { const { brandFor } = await import('./lib/styles.mjs'); wf(join(dir, 'brand.json'), JSON.stringify(brandFor(opt.style), null, 2) + '\n'); console.log(`style ${opt.style}: palette and fonts → studio-engine/films/${film}/brand.json (card: styles/${opt.style}/STYLE.md)`); }
+    console.log(`studio-engine/films/${film}/spec.json — ${r.arc.seconds} s: hook ${r.arc.hook} beats · chapters ${r.arc.chapters.join('+')} · payoff ${r.arc.payoff}\nWrite these (${r.todo.length}):`);
+    for (const t of r.todo) console.log(`  ${pad(t.path, 34)} ${t.write}`);
+    console.log('Then: node studio.mjs director review ' + film + ' → node studio-engine/run.mjs ' + film + ' --stage=stills');
+    return;
+  }
+  if (sub === 'review') {
+    const { critique } = await import('./studio-engine/lib/critic.mjs');
+    const spec = JSON.parse(rf(join(dir, 'spec.json'), 'utf8')), brand = brandOf(), format = opt.format || spec.format || 'youtube';
+    let frames;
+    if (opt.frames) {
+      const pkg = spawnSync(process.execPath, ['studio-engine/run.mjs', film, '--stage=check', `--format=${format}`], { cwd: STUDIO, encoding: 'utf8' });
+      if (pkg.status !== 0) throw new Error('spec check failed:\n' + pkg.stdout + pkg.stderr);
+      const { inspect } = await import('./lib/scenegraph.mjs'), { timeline } = await import('./studio-engine/lib/events.js'), { forFormat } = await import('./studio-engine/lib/spec.mjs');
+      const tl = timeline(forFormat(spec, format)), fmt = brand.export.formats[format];
+      const times = tl.scenes.flatMap((s) => [s.a + (s.b - s.a) * 0.5, s.b - 0.3]).map((t) => +Math.max(0.05, Math.min(tl.duration - 0.05, t)).toFixed(2));
+      frames = await inspect({ film: join(ENG, `b-${film}-${format}`, 'film.js'), times, w: fmt.w, h: fmt.h, safe: fmt.safe });
+    }
+    const r = critique(spec, brand, { format, frames });
+    if (opt.json) { console.log(JSON.stringify(r, null, 2)); return; }
+    console.log(`${film} · ${format} · house score ${r.score}/100 — ${r.verdict}`);
+    for (const x of r.rules) console.log(`${x.status === 'pass' ? 'PASS' : x.status === 'warn' ? 'WARN' : 'FAIL'}  ${pad(x.id, 22)} ${x.evidence}${x.status !== 'pass' && x.fix ? `\n      → ${x.fix}` : ''}`);
+    process.exitCode = r.rules.some((x) => x.status === 'fail') ? 1 : 0;
+    return;
+  }
+  if (sub === 'inspect') {
+    const { inspect } = await import('./lib/scenegraph.mjs');
+    let path, w, h, safe, duration;
+    if (film && ex(join(STUDIO, film, 'config.mjs'))) {
+      const cfg = (await import(pathToFileURL(join(STUDIO, film, 'config.mjs')).href)).default, d = cfg.deliveries?.[0] || {};
+      path = join(STUDIO, cfg.film); w = cfg.w; h = cfg.h; safe = d.safe; duration = d.duration || cfg.ownerRequest?.duration;
+    } else if (film && ex(join(dir, 'spec.json'))) {
+      const spec = JSON.parse(rf(join(dir, 'spec.json'), 'utf8')), format = opt.format || spec.format || 'youtube', fmt = brandOf().export.formats[format];
+      const pkg = spawnSync(process.execPath, ['studio-engine/run.mjs', film, '--stage=check', `--format=${format}`], { cwd: STUDIO, encoding: 'utf8' });
+      if (pkg.status !== 0) throw new Error('spec check failed:\n' + pkg.stdout + pkg.stderr);
+      const { timeline } = await import('./studio-engine/lib/events.js'); duration = timeline(spec).duration;
+      path = join(ENG, `b-${film}-${format}`, 'film.js'); ({ w, h, safe } = fmt);
+    } else throw new Error('usage: director inspect <studio film folder | engine film> [--times=1,2.5]');
+    const times = opt.times ? String(opt.times).split(',').map(Number) : Array.from({ length: Math.max(1, Math.floor(duration || 10)) }, (_, i) => i + 0.5);
+    for (const f of await inspect({ film: path, times, w, h, safe })) {
+      console.log(`\n── ${f.t} s · focal ${f.focal ? f.focal.kind + (f.focal.text ? ` "${f.focal.text}"` : '') : 'none'} · balance x ${f.balance.x} y ${f.balance.y}`);
+      console.log(f.map);
+      for (const i of f.items.filter((i) => i.kind === 'text')) console.log(`  T "${i.text}" ${i.size}px ${i.color} on ${i.on || '?'} contrast ${i.contrast ?? '?'} box ${[i.x0, i.y0, i.x1, i.y1].join(',')}`);
+      for (const x of f.findings) console.log(`  ${x.level.toUpperCase()} ${x.rule}: ${x.msg}`);
+    }
+    return;
+  }
+  console.log('usage: node studio.mjs director plan|review|inspect … (ANY_MODEL.md)');
+}
+
+// Taste gate (lib/tastegate.mjs) and storyboard lint (lib/storyboard.mjs): judgments any model can run, calibrated on the owner's verdicts.
+async function tasteCmd([target], opt) {
+  const tg = await import('./lib/tastegate.mjs'), { readdirSync: rd, existsSync: ex, readFileSync: rf, writeFileSync: wf } = await import('node:fs');
+  const latest = (film) => { const base = join(STUDIO, 'out', film); if (!ex(base)) return null; const takes = rd(base).filter((d) => /^take\d+$/.test(d)).sort((a, b) => +a.slice(4) - +b.slice(4)); for (const t of takes.reverse()) { const v = rd(join(base, t)).filter((f) => f.endsWith('.mp4')).sort((a, b) => (/-share-/.test(b) ? 1 : 0) - (/-share-/.test(a) ? 1 : 0))[0]; if (v) return join(base, t, v); } return null; };
+  const takeFile = (film, take) => { const d = join(STUDIO, 'out', film, take); if (!ex(d)) return null; const v = rd(d).filter((f) => f.endsWith('.mp4')).sort((a, b) => (/-share-/.test(b) ? 1 : 0) - (/-share-/.test(a) ? 1 : 0))[0]; return v ? join(d, v) : null; };
+  if (target === 'calibrate') {
+    const V = JSON.parse(rf(join(STUDIO, 'taste', 'verdicts.json'), 'utf8')).verdicts, rows = [];
+    for (const v of V) { const f = takeFile(v.film, v.take); console.log(`${pad(v.film + ' ' + v.take, 18)} ${pad(v.verdict, 9)} ${pad(v.about, 8)} ${f ? 'measuring…' : 'export not on this machine — skipped'}`); if (f && v.about !== 'sound') rows.push({ ...v, metrics: tg.measure(tg.decodeGray(f)) }); }
+    for (const r of rows) console.log(`  ${pad(r.film + ' ' + r.take, 16)} fast ${r.metrics.fastRatio} · blank ${r.metrics.blankRunS} s · still ${r.metrics.stillRunS} s`);
+    const c = tg.calibrate(rows); console.log(c.note);
+    if (rows.length) { wf(join(STUDIO, 'taste', 'calibration.json'), JSON.stringify({ date: new Date().toISOString().slice(0, 10), ...c, rows: rows.map(({ film, take, verdict, metrics }) => ({ film, take, verdict, fastRatio: metrics.fastRatio, blankRunS: metrics.blankRunS })) }, null, 2) + '\n'); console.log('wrote taste/calibration.json'); }
+    return;
+  }
+  const file = target && ex(target) ? target : target ? latest(target) : null;
+  if (!file) throw new Error('usage: node studio.mjs taste <video.mp4 | film with out/<film>/takeNN> [--json] · taste calibrate');
+  const r = tg.tasteGate(file);
+  if (opt.json) { console.log(JSON.stringify(r, null, 2)); return; }
+  console.log(`${file}\n${r.verdict}`);
+  for (const l of r.lights) console.log(`${pad(l.light.toUpperCase(), 7)} ${pad(l.id, 15)} ${l.why}`);
+  process.exitCode = r.lights.some((l) => l.light === 'red') ? 1 : 0;
+}
+async function storyboardCmd([film]) {
+  const sb = await import('./lib/storyboard.mjs'), { existsSync: ex, readFileSync: rf } = await import('node:fs');
+  let shots;
+  if (film && ex(join(STUDIO, film, 'production.json'))) shots = sb.shotsFromProduction(JSON.parse(rf(join(STUDIO, film, 'production.json'), 'utf8')));
+  else if (film && ex(join(STUDIO, 'studio-engine', 'films', film, 'spec.json'))) shots = sb.shotsFromSpec(JSON.parse(rf(join(STUDIO, 'studio-engine', 'films', film, 'spec.json'), 'utf8')));
+  else throw new Error('usage: node studio.mjs storyboard <film folder with production.json | engine film>');
+  const r = sb.lintStoryboard(shots);
+  for (const s of shots) console.log(`${pad(s.id, 14)} ${pad(`${(+s.start).toFixed(1)}–${(+s.end).toFixed(1)} s`, 12)} ${String(s.subject || '—').slice(0, 40)} → ${String(s.action || '—').slice(0, 50)}`);
+  console.log(r.ok ? (r.issues.length ? 'storyboard OK, with notes:' : 'storyboard OK') : 'storyboard has RED issues: fix before any render');
+  for (const x of r.issues) console.log(`${pad(x.level.toUpperCase(), 7)} ${pad(x.shot, 14)} ${x.msg}\n        → ${x.fix}`);
+  process.exitCode = r.ok ? 0 : 1;
+}
+
+// Web department (web/WEB.md): plan → write → build → check (phone / tablet / desktop) → serve.
+async function webCmd([sub, name], opt) {
+  const W = await import('./web/lib/site.mjs'), { existsSync: ex, readFileSync: rf, writeFileSync: wf, mkdirSync: mk } = await import('node:fs');
+  if (sub === 'styles') { for (const s of W.STYLES().styles) console.log(`${pad(s.slug, 18)}${pad(s.mood, 52)}${s.bestFor}`); return; }
+  if (!name || !/^[a-z0-9][a-z0-9_-]*$/.test(name)) throw new Error('usage: node studio.mjs web plan|build|check|serve <site> (lowercase folder name) · web styles');
+  const dir = join(STUDIO, 'web', 'sites', name), file = join(dir, 'site.json'), dist = join(dir, 'dist');
+  if (sub === 'plan') {
+    if (ex(file) && !opt.force) throw new Error(`${name} already has a site.json (use --force to replace it)`);
+    const r = W.plan(opt); mk(dir, { recursive: true }); wf(file, JSON.stringify(r.site, null, 2) + '\n');
+    console.log(`web/sites/${name}/site.json — style ${r.site.style}, ${r.site.sections.length} sections. First answer the ambition questions, then write these (${r.todo.length}):`);
+    for (const t of r.todo) console.log(`  ${pad(t.path, 30)} ${t.write}`);
+    console.log(`Then: node studio.mjs web build ${name} → node studio.mjs web check ${name}`);
+    return;
+  }
+  if (!ex(file)) throw new Error(`no web/sites/${name}/site.json (node studio.mjs web plan ${name})`);
+  const site = JSON.parse(rf(file, 'utf8'));
+  if (sub === 'build') { const r = W.build(site, dist, { siteDir: dir }); console.log(`built web/sites/${name}/dist: ${r.files.length} files, ${Math.round(r.bytes / 1024)} KB`); for (const w of r.warnings) console.log(`note: ${w}`); return; }
+  if (sub === 'check') {
+    W.build(site, dist, { siteDir: dir });   // always check the current site.json, never an older build
+    const { checkSite } = await import('./web/lib/check.mjs'), out = join(STUDIO, 'takes', 'web', name), r = await checkSite({ dir: dist, outDir: out });
+    console.log(`${name}: ${r.verdict}`); for (const l of r.lights) console.log(`${pad(l.light.toUpperCase(), 7)} ${pad(l.id, 20)} ${l.why}`);
+    console.log(`screenshots: ${r.viewports.filter((v) => v.sheet).map((v) => v.sheet).join(' · ')}`);
+    process.exitCode = r.lights.some((l) => l.light === 'red') ? 1 : 0; return;
+  }
+  if (sub === 'serve') { if (!ex(join(dist, 'index.html'))) W.build(site, dist, { siteDir: dir }); const { serve } = await import('./lib/serve.mjs'); const s = await serve(dist); console.log(`http://127.0.0.1:${s.port}/index.html  (Ctrl+C to stop)`); return; }
+  throw new Error('usage: node studio.mjs web plan|build|check|serve <site> · web styles');
+}
+
+// Any model, one studio (ANY_MODEL.md): every agent must see the same rules, skills and tools.
+async function agentsCmd(opt) {
+  const ag = await import('./lib/agents.mjs');
+  if (opt.sync) { const r = ag.syncSkills(); console.log(`skills mirrored to .agents/skills: ${r.skills} (${r.wrote.length} file(s) written${r.removed.length ? `, removed ${r.removed.join(', ')}` : ''})`); }
+  const door = ag.doorCheck();
+  for (const i of door.items) console.log(`${i.ok ? 'PASS' : 'FAIL'}  ${i.what}${i.detail ? ` — ${i.detail}` : ''}`);
+  try {
+    const h = await ag.handshake();
+    const tools = h.tools.result?.tools?.map((t) => t.name) || [];
+    console.log(`${tools.length ? 'PASS' : 'FAIL'}  MCP server: protocol ${h.initialize.result?.protocolVersion}, ${tools.length} tools (${tools.join(', ')})`);
+    if (!tools.length) door.ok = false;
+  } catch (e) { console.log(`FAIL  MCP server: ${e.message}`); door.ok = false; }
+  process.exitCode = door.ok ? 0 : 1;
+}
+
 if (isMain(import.meta.url)) {
   const [cmd, ...args] = process.argv.slice(2);
   if (cmd === 'caps') caps();
@@ -253,6 +398,12 @@ if (isMain(import.meta.url)) {
   else if (cmd === 'color') await colorCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'build') await buildCmd(args);
   else if (cmd === 'cleanup') await cleanupCmd();
+  else if (cmd === 'agents') await agentsCmd(flags(args));
+  else if (cmd === 'taste') await tasteCmd(args.filter(a => !a.startsWith('--')), flags(args));
+  else if (cmd === 'styles') { const st = await import('./lib/styles.mjs'); if (args[0]) console.log(st.readStyle(args[0])); else for (const s of st.listStyles()) console.log(`${pad(s.slug, 17)}${pad(s.route, 9)}${pad(s.from.join(', '), 34)}${s.bestFor}`); }
+  else if (cmd === 'web') await webCmd(args.filter(a => !a.startsWith('--')), flags(args));
+  else if (cmd === 'storyboard') await storyboardCmd(args);
+  else if (cmd === 'director') await directorCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'sfx') await sfxCmd(args.filter(a => !a.startsWith('--')).join(' '), flags(args));
   else if (cmd === 'sounds') { const { searchSounds } = await import('./lib/sounds.mjs'); for (const s of searchSounds(args[0] || '')) console.log(`${pad(s.id, 20)}${pad(s.category, 11)}${pad(s.kind, 7)}${s.use}  [${s.rights}]`); }
   else console.log(readFileSync(new URL(import.meta.url), 'utf8').split('\n').slice(1, 12).map(l => l.replace(/^\/\/ ?/, '')).join('\n'));

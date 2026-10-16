@@ -177,3 +177,16 @@ A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs th
 4. **Motion blur before depth of field:** summing 16 scene subframes in linear light (colour + coc/depth) and blurring once costs one gather instead of sixteen and looks the same on a still-for-still comparison.
 5. **Blurred shadows need their own shape:** a shadow made from a piece's alpha mip turns into a hard square once the blur outgrows the piece (the quad clips it). Draw it as a soft rounded-rect SDF on a quad padded by twice the blur, and fade it with whatever fades its piece.
 6. **Long renders outlive the session's task clock:** background jobs stop at 2 h and a resume reuses only whole slices; launch long builds detached (`setsid nohup … &`) and watch the log.
+
+## Any model, one studio (2026-10-16)
+1. **Judgment transfers as tools, not as prose:** a smaller model ignores a long guide but obeys a check that names the scene, the rule and the next edit. Put taste into the critic and structure into the plan; keep prose for the why.
+2. **Read the frame back, not the script:** layout errors only show after rendering (OmniManim/SGA research); the scene graph read from the DOM gives a model without vision the same evidence as a contact sheet.
+3. **A skeleton must pass its own critic:** the first plan tripped the template-repetition rule and a colour morph through grey; generators get tested against the same rules the films are judged by.
+4. **Calibrate taste on the owner, not on a stranger:** a borrowed threshold (huashu's 13 films) may only warn; a gate earns the right to reject when every take the owner approved beats every take he rejected (`taste calibrate`). Facts (an empty frame mid-film) can reject on day one.
+5. **A style card is a benchmark, not a template:** cards come from our delivered films, and the critic warns when a new film shares three of six traits (opening, hero, transitions, structure, ending, music) with a worked example.
+6. **A light style needs its own semantic colours:** "ink" is the scene background in the engine; a paper world flips ink/text and sets a dark support colour, or the card text and the vignette go muddy (caught on the first one-dot-hero stills).
+
+## Web department (2026-10-16)
+1. **A phone widens the page instead of scrolling it sideways:** one 3D card poking past the edge zoomed the whole site out by 27 px; measure overflow against `visualViewport`, and clip decorative 3D sections.
+2. **Check the first screen without scrolling:** a scroll-driven reveal that ends deep in the cover range leaves above-the-fold buttons half-faded forever; end reveals at `entry 100%`.
+3. **Python `open(p,'w').write(open(p).read()…)` empties the file before reading it:** read first, then write (it silently emptied a test file).

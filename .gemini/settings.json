@@ -1,0 +1,6 @@
+{
+  "context": { "fileName": ["AGENTS.md", "GEMINI.md"] },
+  "mcpServers": {
+    "animation-studio": { "command": "node", "args": ["studio/mcp/server.mjs"], "cwd": "." }
+  }
+}

@@ -5,6 +5,51 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-16 — Web department: complete animated sites from one site.json (DONE)
+Owner: "the repo should help build complete, beautiful websites with detail and motion" (from posts on a scroll/3D site prompt library and
+the "be ambitious" agent prompt); owner chose steps 1–4. `web/`: **plan** (`web/lib/site.mjs`: ambition questions + house structure, ‹…›
+placeholders), **motion library** (`web/motion/motion.js` + `site.css`: scroll reveals with native CSS scroll timelines and an observer
+fallback, word-split headlines, parallax, sticky steps, a 3D card ring with drag/wheel/keys, sourced count-ups, magnetic buttons, progress,
+marquee; reduced motion everywhere), **styles** (`web/styles/index.json`: paper-editorial, ink-studio, clay-3d), **static build** (zero
+dependencies, RTL/LTR, fonts vendored, honesty validation), **real-browser check** (`web/lib/check.mjs`, 390/820/1440 + reduced motion,
+screenshot strips). `studio.mjs web plan|build|check|serve|styles`; MCP `web_plan`, `web_save`, `web_check`; skill `web-director`;
+`lib/serve.mjs` serves CSS. Example: `web/sites/example` (fictional café) — check READY after fixing what the check found: clay muted
+contrast 3.97:1, small tap targets, a ring that widened the phone page by 27 px, hero buttons half-faded on the first screen; the check was
+re-run on the broken version and catches both. Tests: `test/web.test.mjs`; `test/agents.test.mjs` restored (an earlier edit had emptied it).
+Not verified: real phones, a real client's content, live hosting.
+
+## 2026-10-16 — House style cards + direction rules (DONE)
+Owner chose steps 3–4. **Style cards** `styles/` (format after Lemo-Opuscar's `STYLE.md`, MIT): six looks from our own delivered films — one-dot-hero
+(films 6, 16), living-window (23), terminal-cursor (22), page-flyover (24), calm-decode (9), glass-room-3d (11 / aixhr) — each with essence/not, materials,
+colour, type, motion, camera grammar, sound, native moves, pitfalls, how to build it here; `styles/index.json` carries engine brand tokens.
+`lib/styles.mjs`, `studio.mjs styles [slug]`, `director plan --style=` (writes `films/<film>/brand.json`), MCP `style_list` / `style_read`.
+**Direction rules** in the critic (after Lemo-Opuscar's DIRECTOR.md): three-structures, benchmark, camera-variety, breath-before-peak, read-hold
+(letters ÷ 15 + 1.5 s), not-the-demo (≥ 3 of 6 equal to a worked example → warn). The plan now moves a real camera per chapter (push in / pull back /
+locked / whip / slow push), builds before the payoff, drops the vignette and asks for the treatment fields. Engine: brand `accentHi` replaces the
+pill's fixed yellow. A one-dot-hero skeleton filled with sample copy passes stills and text gates (paper world, readable card text).
+Not verified: a full film in any style card through the engine; bespoke cards only point to their reference builds.
+
+## 2026-10-16 — Taste gate + storyboard lint, from the owner's shared repos (DONE)
+Owner shared posts on HyperFrames, Lemo-Opuscar and huashu-art-motion and chose steps 1–2. **Taste gate** `lib/tastegate.mjs` (after huashu's
+`film_gate.py`, rewritten on ffmpeg only): empty mid-film frames → red; fast-motion ratio inside shots and sagging 10 s windows → thresholds from
+`taste/calibration.json`, fitted by `node studio.mjs taste calibrate` on the owner's verdicts (`taste/verdicts.json`, 8 rows from the LEDGERs);
+until fitted, motion is provisional and yellow at most. Runs on every engine delivery (`run.mjs`), as `studio.mjs taste <mp4|film>` and MCP `film_taste`.
+**Storyboard lint** `lib/storyboard.mjs` (after huashu's `storyboard_lint.py`): a thing + an action per shot, copy ≤ 8 words, no 8 s+ shots, no
+text-card first/last shot, camera repetition; in the production preflight (warnings), the critic (rule `storyboard`), `studio.mjs storyboard` and
+MCP `film_storyboard`. On our films: house films 6, 7, 9, 22, 23 pass; film 24's one-take flight is now marked `craft.oner`. Test: `test/taste.test.mjs`.
+Not verified: calibration (no exports on this machine — run `taste calibrate` on the owner's PC).
+
+## 2026-10-16 — Any model, one studio: door + director's kit (DONE)
+Owner challenge: make the repo let any model make animation films with the same competence as Claude (research online; later: no film now).
+**Door:** `AGENTS.md` (shared rules; CLAUDE.md imports it), `.agents/skills/` mirror (`studio.mjs agents [--sync]` self-check), `mcp/server.mjs`
+(MCP stdio, zero dependencies, 12 tools; `mcp/job.mjs` background renders) with configs `.mcp.json`, `.codex/config.toml`, `.gemini/settings.json`,
+`.cursor/mcp.json`, `.vscode/mcp.json`; `studio-engine/catalog.json`; `ANY_MODEL.md` (ladder, loop, limits). **Director's kit:** `studio-engine/lib/director.mjs`
+(house-method plan), `studio-engine/lib/critic.mjs` (house critic, ~22 rules), `lib/scenegraph.mjs` + `window.sceneGraph()` (eyes), `studio.mjs director
+plan|review|inspect`, `bench/` (fixed briefs + score table), skill `any-model-director`. Engine fixes found on the way: `pill.parts` strings crashed the
+browser; lint now refuses ‹…› placeholders. `lib/render.mjs` exports `openFilm`. Tests: `test/agents.test.mjs`, `test/director.test.mjs`.
+Evidence: MCP handshake and calls from a non-Claude client; plan skeletons filled with sample copy pass lint, critic and stills text gates (reels 15/30, YouTube 30);
+critic on AI × HR 83/100. Openverse (`api.openverse.org`) is blocked by this container's network policy. Not verified: a film made by another model; no new assets.
+
 ## 2026-10-16 — Openverse audio search, Openverse-first rule (DONE)
 Owner request (from an X post by Elliot Padfield): give the studio Openverse's 5M+ free audio files. New `lib/openverse.mjs` (Node built-ins, global fetch, no key) and `studio.mjs sfx "words" [--effects|--music] [--any-license] [--download=<film> --pick=N]`: commercial-use licences by default, top results with title, duration, licence, creator and source URL; a download lands in `<film>/assets/sfx/` with `CREDITS.json` + `CREDITS.md` (attribution text, licence URL, source). `test/openverse.test.mjs` uses a mocked fetch. CLAUDE.md gains the mandatory Openverse-first rule. Live check: 'whoosh' → 240 commercial results, one CC0 file downloaded with its credit (scratch folder). Not verified: used in a film; downloaded audio files are not committed.
 

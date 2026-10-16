@@ -1,0 +1,8 @@
+{
+  "about": "Fixed briefs for comparing models on the same work (bench/README.md). Fictional clients: no real claims. Every model gets the same text.",
+  "briefs": [
+    { "id": "cafe15", "placement": "reels", "duration": 15, "brand": "نور", "subject": "a neighbourhood coffee roastery", "viewer": "office workers downtown", "problem": "قهوتك بقت عادية؟", "promise": "قهوة بتصحّي يومك", "cta": "احجز ترابيزتك", "facts": ["roasts every morning", "order ahead in the app"], "honesty": "no prices, no numbers, no awards" },
+    { "id": "app30", "placement": "youtube", "duration": 30, "brand": "Sahla", "subject": "an invoicing app for freelancers", "viewer": "Egyptian freelancers who chase payments", "problem": "لسه بتلاحق فلوسك؟", "promise": "فواتيرك بتتبعت وتتحصّل لوحدها", "cta": "جرّب سهلة مجاناً", "facts": ["one-click invoice", "automatic reminders", "payment link"], "honesty": "no customer counts or ratings" },
+    { "id": "event10", "placement": "reels", "duration": 10, "brand": "Cairo Motion Day", "subject": "a one-day motion design meetup", "viewer": "designers and animators in Cairo", "problem": "بتتعلم أنيميشن لوحدك؟", "promise": "يوم كامل مع ناس بتعمل زيك", "cta": "سجّل مكانك", "facts": ["talks", "live workshops"], "honesty": "no date, venue or speaker names" }
+  ]
+}

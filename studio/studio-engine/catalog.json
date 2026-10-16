@@ -1,0 +1,66 @@
+{
+  "about": "Studio Engine element catalog: the vocabulary of spec.json, written for any model. Times are BEATS from the scene start (120 BPM: 1 beat = 0.5 s). x/y are 0..1 of the frame; sizes are px at a 1080 short side. Colours are brand roles (primary, accent, glow, ice, warm, muted, paper, ink = the scene background, text; accentHi = the bright end of the accent pill) or #RRGGBB. Source of truth: lib/modules.js; lint: lib/gates.mjs.",
+  "spec": {
+    "required": ["title", "scenes"],
+    "fields": {
+      "title": "string",
+      "format": "youtube (1920×1080) | reel (1080×1920); --format=both renders both",
+      "bpm": "number, default 120 (sets the clock; beats → seconds)",
+      "duration": "optional seconds; must equal sum(scene.beats) × 60 / bpm",
+      "music": "{ progression: [chords], final: chord, hook: 'pop332' } — original score from lib/sound.mjs",
+      "audio": "{ music: 'file.mp3', voice: 'vo.wav', musicRights, licenseScope, voiceRights, musicOffset } — optional supplied audio; tempo and word timings are extracted",
+      "assets": "[{ name, kind: 'image', prompt, refs, rights }] — files listed once; missing ones are written to assets-todo.json",
+      "background": "room (default glass room) | any BG key",
+      "vignette": "false for clean geometric staging",
+      "creative": "free object copied into the production plan (direction, palette, reasons)",
+      "reel / youtube": "any object (spec, scene or element) may carry { reel: {...} } or { youtube: {...} } overrides for that format"
+    }
+  },
+  "scene": {
+    "required": ["id", "beats", "elements"],
+    "fields": {
+      "id": "unique string; gate messages name it",
+      "beats": "length in beats (> 0)",
+      "music": "intro | drop | chorus | hosts | verse | build | drop2 | finale | breath",
+      "drop": "true = musical drop on the scene start",
+      "transition": "cut (default) | flash | smash | fade | wipe",
+      "bg": "room | blue | ink | light | #RRGGBB",
+      "world": "{ speed: 1, tint: 0, bright: 1 } — the travelling room",
+      "camera": "{ persp: 1500, from: 0, to: 0, drift: false }",
+      "hold": "true = an intentional still read at the end (the motion gate allows it)",
+      "breathe": "true = slow push-in while reading",
+      "craft": "free object merged into the production plan (scale, camera, focal, transition, layers…)"
+    }
+  },
+  "elements": {
+    "words": { "purpose": "one kinetic line (Arabic or Latin, never both)", "required": ["text", "size"], "optional": { "x": 0.5, "y": 0.5, "at": 0, "out": "scene end", "style": "slam | rise | pop", "color": "text", "on": "colour the text sits on (contrast gate)", "accent": "{ wordIndex: colour }", "weight": 900, "width": "px", "font": "display | text | label | formal | family", "stagger": 0.07, "blur": 22, "s0": 2.2, "shadow": "css or false", "sayAt": "word in the voice-over that times it" }, "sound": "slam (rise/pop: tick)" },
+    "stack": { "purpose": "several lines with automatic vertical rhythm (no overlaps)", "required": ["lines"], "optional": { "y": 0.5, "x": 0.5, "at": 0, "gap": 0.12, "size": 120, "style": "slam", "lines[]": "{ text, size, weight, color, at, style, accent }" }, "sound": "slam per line" },
+    "extrude": { "purpose": "3D extruded word that flies out of the camera, spins and settles; optional implosion", "required": ["text"], "optional": { "size": 520, "layers": 26, "step": 4, "face": ["#FFFFFF", "#9FE6FF"], "side": "primary", "sideDark": "#071B66", "glow": "rgba", "halo": "false to hide rings", "spin": 220, "implodeAt": "beat", "x": 0.5, "y": 0.5, "at": 0 }, "sound": "impact (+ implode)" },
+    "lockup": { "purpose": "A × B 3D title with orbiting camera and floor reflection", "required": ["parts"], "optional": { "parts": "[left, symbol, right]", "size": 560, "gap": 445, "y": 0.42, "at": 0, "midAt": "beat", "orbit": true, "reflection": true }, "sound": "impact + spin" },
+    "mark": { "purpose": "small 3D lock-up (end card corner)", "required": ["parts"], "optional": { "y": 0.5, "size": 200 } },
+    "storm": { "purpose": "paper tunnel of flying words", "required": ["texts"], "optional": { "count": 40, "speed": 1, "ramp": "beats" } },
+    "slice": { "purpose": "word cut in two by a slab", "required": ["text"], "optional": { "size": 300, "x": 0.5, "y": 0.5, "color": "text", "at": 0, "cutAt": "at + 1" }, "sound": "glitch + slash + land" },
+    "cards": { "purpose": "before/after cards that turn one by one", "required": ["items"], "optional": { "header": "[before label, after label]", "sub": "[before sub, after sub]", "start": 1, "step": 5, "badge": "string", "items[]": "{ title, titleAr, old, oldAr, new, newAr, oldIcons: [icon], newIcons: [icon] }" }, "sound": "flip per card" },
+    "ring": { "purpose": "3D cylinder of cards around a glowing core, optional push-through", "required": ["items"], "optional": { "items[]": "[latin, arabic, icon]", "radius": 760, "core": "text", "pushAt": "beat", "at": 0 }, "sound": "whirl (+ push)" },
+    "pill": { "purpose": "call-to-action pill; parts keep Arabic and Latin apart", "required": ["text or parts"], "optional": { "parts": "[string | { text, size, color }]", "w": "px", "h": "px", "x": 0.5, "y": 0.5, "bg": "accent", "border": "css", "size": 70, "color": "ink", "grow": "beats", "at": 0, "out": "beat" }, "sound": "confirm" },
+    "wipes": { "purpose": "full-frame colour wipes, each with a big word and optional icon", "required": ["items"], "optional": { "items[]": "{ at, bg, fg, text, size, icon, stripe }" }, "sound": "wipe per item" },
+    "slab": { "purpose": "smash block with lines", "required": ["lines"], "optional": { "h": "px", "y": 0.5, "at": 0, "lines[]": "{ text, size, color, at }" }, "sound": "smash + impact per extra line" },
+    "hosts": { "purpose": "people names (each person gets a beat)", "required": ["people"], "optional": { "people[]": "{ first, last, role }", "symbol": "×", "at": 0 }, "sound": "line + slam per person" },
+    "sparks": { "purpose": "burst of square sparks", "required": [], "optional": { "x": 0.5, "y": 0.52, "count": 120, "at": 0 }, "sound": "sparks" },
+    "shape": { "purpose": "box / pill / circle that MORPHS through keyed states and can carry the eye into the next scene", "required": [], "optional": { "id": "name for morphTo", "x": 0.5, "y": 0.5, "w": 200, "h": 200, "r": 0, "rot": 0, "color": "primary", "glow": "colour", "z": 7, "at": 0, "morph[]": "{ at, dur: 1, w, h, r, x, y, color, rot } — unspecified keys inherit", "morphTo": "id of a shape in the next scene", "sound": "optional event kind" } },
+    "path": { "purpose": "SVG path morph between icons or path strings", "required": ["paths"], "optional": { "paths[]": "icon name or SVG d in a 0..100 box", "times": "beats, one per path, increasing", "size": 400, "x": 0.5, "y": 0.5, "fill": "colour", "stroke": "glow", "width": 3, "dur": 0.8 } },
+    "icon": { "purpose": "icon pop", "required": ["name"], "optional": { "name": "doc mag stack check pen grid bars clip radar clock gear spark board chat people live cases tmpl hands qa gift mega star bolt heart rocket globe", "size": 200, "x": 0.5, "y": 0.5, "color": "accent", "width": 4, "at": 0, "out": "beat" } },
+    "image": { "purpose": "an asset with depth drift (generated once or supplied)", "required": ["asset"], "optional": { "w": 800, "h": 800, "x": 0.5, "y": 0.5, "fit": "cover", "r": 0, "z": 5, "drift": 40, "role": "logo (max 22 % of the frame)", "at": 0, "out": "beat" } },
+    "ribbon": { "purpose": "analytic depth-sorted 3D ribbon surface (twist, fold, material)", "required": [], "optional": { "count": "1..24", "cols": "1..24", "x": 0.5, "y": 0.5, "width": "px", "radius": "px", "twist": "turns", "fold": "0..1", "tilt": "deg", "rotate": "deg", "speed": 1, "color": "colour", "shadow": true } },
+    "cursor": { "purpose": "beat-timed pointer path with a click (cause for a change)", "required": ["points"], "optional": { "points[]": "{ at, x, y }", "clickAt": 4, "color": "#202638", "at": 0 }, "sound": "tick on click" }
+  },
+  "rules": [
+    "Never mix Arabic and Latin words in one line: use two elements or pill.parts.",
+    "≥ 1.8 s per line; ~17 characters per second of visibility.",
+    "Text contrast ≥ 3:1 against the scene background (set `on` when text sits on a shape).",
+    "Every scene needs at least one element; `at` must be inside the scene.",
+    "Keep text inside the format's safe box; the stills stage names the scene that breaks it.",
+    "Logos whole (pop or blur-resolve), never assembled from pieces.",
+    "Only the client's words, claims and numbers."
+  ]
+}

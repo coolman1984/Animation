@@ -1,0 +1,5 @@
+{
+  "servers": {
+    "animation-studio": { "type": "stdio", "command": "node", "args": ["${workspaceFolder}/studio/mcp/server.mjs"] }
+  }
+}

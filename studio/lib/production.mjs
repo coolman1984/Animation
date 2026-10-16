@@ -3,6 +3,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { creativeIssues, validateCraft, validateCreative, lookOverlap } from './creative.mjs';
 import { validateCues } from './cues.mjs';
+import { lintStoryboard, shotsFromProduction } from './storyboard.mjs';
 const filled = value => typeof value === 'string' && value.trim().length > 0;
 
 export function copyIssues(text, duration, { minDwell = 1.8, maxCps = 17, maxWords = 7 } = {}) {
@@ -77,6 +78,7 @@ export function validateProduction(plan, { root, final = false } = {}) {
   for (const e of cues.errors) add(`cues: ${e}`); for (const w of cues.warnings) add(`cues: ${w}`, false);
   const creative = validateCreative(plan);
   for (const e of creative.errors) add(`creative: ${e}`); for (const w of creative.warnings) add(`creative: ${w}`, false);
+  if (Array.isArray(plan.shots)) for (const x of lintStoryboard(shotsFromProduction(plan)).issues) add(`storyboard ${x.level} ${x.shot}: ${x.msg} → ${x.fix}`, false);   // ANY_MODEL.md: shot-list check before any render
   if (plan.musicMap !== undefined) {
     if (!filled(plan.musicMap)) add('musicMap must be a local path to a music map JSON');
     else if (root && !existsSync(resolve(root, plan.musicMap))) add(`musicMap not found: ${plan.musicMap} (run node lib/musicmap.mjs analyze)`, false);

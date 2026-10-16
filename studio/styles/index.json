@@ -1,0 +1,211 @@
+{
+  "about": "House style cards (styles/README.md). brand = Studio Engine colour/font tokens merged over studio-engine/brand/brand.json by `director plan --style`.",
+  "styles": [
+    {
+      "slug": "one-dot-hero",
+      "name": "One Dot Hero",
+      "from": [
+        "film6",
+        "film16"
+      ],
+      "route": "engine",
+      "placement": "reels or youtube",
+      "bestFor": "a brand with a mark, a dot, a symbol; services or features told as chapters",
+      "avoidFor": "films that must show real footage or many people",
+      "brand": {
+        "colors": {
+          "ink": "#F2F0EB",
+          "deep": "#E6E3DC",
+          "primary": "#0A66FF",
+          "primaryDark": "#0849B8",
+          "glow": "#18B6FF",
+          "ice": "#4A5560",
+          "text": "#1F2328",
+          "accent": "#0A66FF",
+          "accentDark": "#0849B8",
+          "warm": "#F2F0EB",
+          "muted": "#8D949E",
+          "paper": "#F2F0EB",
+          "accentHi": "#18B6FF"
+        },
+        "fonts": {
+          "display": "Alexandria",
+          "text": "Alexandria",
+          "label": "Space Mono",
+          "formal": "Alexandria"
+        }
+      }
+    },
+    {
+      "slug": "living-window",
+      "name": "Living Window",
+      "from": [
+        "film23"
+      ],
+      "route": "bespoke",
+      "placement": "youtube",
+      "bestFor": "a product, course or app: one page/window that wakes and morphs through every feature",
+      "avoidFor": "brands with no interface or document to show",
+      "brand": {
+        "colors": {
+          "ink": "#FFFFFF",
+          "deep": "#F7F7F8",
+          "primary": "#2F5FE6",
+          "primaryDark": "#2348B8",
+          "glow": "#4A77F2",
+          "ice": "#4A4B53",
+          "text": "#111114",
+          "accent": "#2F5FE6",
+          "accentDark": "#2348B8",
+          "warm": "#F7F7F8",
+          "muted": "#85868F",
+          "paper": "#FFFFFF",
+          "accentHi": "#4A77F2"
+        },
+        "fonts": {
+          "display": "Plex Arabic",
+          "text": "Plex Arabic",
+          "label": "Space Mono",
+          "formal": "Plex Arabic"
+        }
+      }
+    },
+    {
+      "slug": "terminal-cursor",
+      "name": "Terminal Cursor",
+      "from": [
+        "film22"
+      ],
+      "route": "bespoke",
+      "placement": "reels, 10–15 s",
+      "bestFor": "developer tools, AI agents, anything that types and runs",
+      "avoidFor": "warm consumer brands, long explainers",
+      "brand": {
+        "colors": {
+          "ink": "#15130F",
+          "deep": "#12100D",
+          "primary": "#D97757",
+          "primaryDark": "#B9553A",
+          "glow": "#D97757",
+          "ice": "#F4EFE6",
+          "text": "#F4EFE6",
+          "accent": "#D97757",
+          "accentDark": "#B9553A",
+          "warm": "#F4EFE6",
+          "muted": "#8A8174",
+          "paper": "#F4EFE6",
+          "accentHi": "#F0A585"
+        },
+        "fonts": {
+          "display": "Alexandria",
+          "text": "Alexandria",
+          "label": "Space Mono",
+          "formal": "Alexandria"
+        }
+      }
+    },
+    {
+      "slug": "page-flyover",
+      "name": "Page Fly-over",
+      "from": [
+        "film24"
+      ],
+      "route": "bespoke",
+      "placement": "youtube or landscape web",
+      "bestFor": "a real landing page or long document shown as a 3D set in one continuous camera",
+      "avoidFor": "short punchy Reels ads, brands without a page",
+      "brand": {
+        "colors": {
+          "ink": "#F9FBFB",
+          "deep": "#F2F3F6",
+          "primary": "#2F5FE6",
+          "primaryDark": "#2348B8",
+          "glow": "#4A77F2",
+          "ice": "#4A4F5A",
+          "text": "#16181D",
+          "accent": "#2F5FE6",
+          "accentDark": "#2348B8",
+          "warm": "#F9FBFB",
+          "muted": "#7A7F8A",
+          "paper": "#F9FBFB",
+          "accentHi": "#4A77F2"
+        },
+        "fonts": {
+          "display": "Alexandria",
+          "text": "Alexandria",
+          "label": "Space Mono",
+          "formal": "Instrument Serif"
+        }
+      }
+    },
+    {
+      "slug": "calm-decode",
+      "name": "Calm Decode (no music)",
+      "from": [
+        "film9"
+      ],
+      "route": "bespoke",
+      "placement": "reels",
+      "bestFor": "education, medicine, science pages; owners who ask for no music",
+      "avoidFor": "energetic sales ads (the owner wants a beat there)",
+      "brand": {
+        "colors": {
+          "ink": "#0E1A24",
+          "deep": "#0A131B",
+          "primary": "#2E8C8C",
+          "primaryDark": "#1F6666",
+          "glow": "#7FD1C8",
+          "ice": "#E6F2F0",
+          "text": "#F4F1EA",
+          "accent": "#E8B44A",
+          "accentDark": "#B88A2E",
+          "warm": "#F4F1EA",
+          "muted": "#8A9AA3",
+          "paper": "#F4F1EA",
+          "accentHi": "#F5D58A"
+        },
+        "fonts": {
+          "display": "Plex Arabic",
+          "text": "Plex Arabic",
+          "label": "Space Mono",
+          "formal": "Lora"
+        }
+      }
+    },
+    {
+      "slug": "glass-room-3d",
+      "name": "Glass Room 3D",
+      "from": [
+        "film11",
+        "studio-engine/films/aixhr"
+      ],
+      "route": "engine",
+      "placement": "reels or youtube",
+      "bestFor": "workshops, events, launches: extruded 3D titles, a paper storm, a × lock-up, hosts' names",
+      "avoidFor": "calm premium brands, product UI stories",
+      "brand": {
+        "colors": {
+          "ink": "#030818",
+          "deep": "#071336",
+          "primary": "#1E6BFF",
+          "primaryDark": "#0B3FCB",
+          "glow": "#4FD8FF",
+          "ice": "#BFEFFF",
+          "text": "#FFFFFF",
+          "accent": "#FFD21F",
+          "accentDark": "#E8A800",
+          "warm": "#EFE6D2",
+          "muted": "#8CA0C8",
+          "paper": "#F4EBD9",
+          "accentHi": "#FFE97A"
+        },
+        "fonts": {
+          "display": "Alexandria",
+          "text": "Alexandria",
+          "label": "Space Mono",
+          "formal": "El Messiri"
+        }
+      }
+    }
+  ]
+}

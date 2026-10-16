@@ -27,7 +27,7 @@ export function run(cmd, args, { input, quiet = true, cwd, env } = {}) {
 
 // WebGL via SwiftShader (CPU, deterministic) for films that declare gpu: true. Off by default.
 export const GPU_ARGS = ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'];
-async function openFilm(port, film, { w, h, variant, segments, fadeOut, scale = 1, gpu = false }) {
+export async function openFilm(port, film, { w, h, variant, segments, fadeOut, scale = 1, gpu = false }) {
   const client = await launch({ width: w, height: h, scale, extraArgs: gpu ? GPU_ARGS : [] });
   try {
     const query = new URLSearchParams({ film: '/' + slash(relative(STUDIO, film)), w: String(w), h: String(h), variant: variant || 'hero' });

@@ -39,6 +39,7 @@ export function lint(spec, brand) {
       if (e.at != null && e.at > s.beats) errors.push(`${where}: ${e.type} starts after the scene ends`);
       const texts = [e.text, ...(e.lines || []).map((l) => l.text), ...(e.parts || []).map((p) => (typeof p === 'string' ? p : p.text))].filter(Boolean);
       if (texts.some((t) => typeof t !== 'string')) { errors.push(`${where}: text must be a string`); continue; }
+      for (const t of texts) if (/[‹›]/.test(t)) errors.push(`${where}: placeholder left in "${t}" — write the real line`);
       for (const t of texts) { const lat = t.match(/[A-Za-z][A-Za-z&-]*/g) || []; if (e.type !== 'cards' && ARABIC.test(t) && (lat.length > 1 || lat.some((w) => w.length > 4))) warns.push(`${where}: "${t}" mixes Arabic with Latin words — bidi can reorder them; use pill parts or two lines`); }
       if (e.type === 'words') { const vis = ((e.out ?? s.beats) - (e.at ?? 0)) * tl.B, need = Math.max(0.8, [...e.text].length / 17); if (vis < need) warns.push(`${where}: "${e.text}" is readable ${vis.toFixed(1)} s, needs ~${need.toFixed(1)} s`);
         const c = contrast(hex(e.color, B.text), e.on ? hex(e.on) : bgOf(s)); /* `on` = what the text sits on */ if (!Number.isFinite(c)) errors.push(`${where}: words.color/on must resolve to a six-digit hex color`); else if (c < 3) errors.push(`${where}: "${e.text}" contrast ${c.toFixed(1)}:1 on the scene background`); }

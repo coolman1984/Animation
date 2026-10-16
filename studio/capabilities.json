@@ -107,6 +107,12 @@
     { "id": "lottie", "name": "Lottie / Rive runtimes", "department": "motion", "maturity": "LEARN", "kind": "reference",
       "check": {}, "serves": [], "bestFor": "importing designer-made vector loops; seek with goToAndStop", "license": "MIT runtimes; asset rights separate" },
     { "id": "gsap", "name": "GSAP", "department": "motion", "maturity": "LEARN", "kind": "reference",
-      "check": {}, "serves": [], "bestFor": "motion vocabulary (timelines, motion paths, stagger) — ours: lib/kinetics.js", "license": "GSAP standard licence (not MIT): check use case" }
+      "check": {}, "serves": [], "bestFor": "motion vocabulary (timelines, motion paths, stagger) — ours: lib/kinetics.js", "license": "GSAP standard licence (not MIT): check use case" },
+    { "id": "any-model", "name": "Any-model door + director's kit", "department": "platform", "maturity": "EXPERIMENTAL", "kind": "native",
+      "check": { "file": "mcp/server.mjs" }, "serves": [], "bestFor": "non-Claude models making or judging films: AGENTS.md, MCP tools, plan, critic, scene-graph eyes (ANY_MODEL.md)",
+      "note": "Not yet proven with a film made end to end by another model; compare with bench/." },
+    { "id": "web-sites", "name": "Web department (site.json → static animated site)", "department": "web", "maturity": "EXPERIMENTAL", "kind": "native",
+      "check": { "file": "web/lib/site.mjs" }, "serves": [], "bestFor": "landing, company, café, product and portfolio sites with scroll motion and a 3D ring, checked at phone/tablet/desktop (web/WEB.md)",
+      "note": "Example site passes the real-browser check; no real client site or live hosting yet." }
   ]
 }

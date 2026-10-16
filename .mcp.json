@@ -1,0 +1,5 @@
+{
+  "mcpServers": {
+    "animation-studio": { "command": "node", "args": ["studio/mcp/server.mjs"] }
+  }
+}
