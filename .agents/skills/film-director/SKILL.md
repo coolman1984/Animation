@@ -1,0 +1,32 @@
+---
+name: film-director
+description: Route a film from a concise brief through one proof clip to verified delivery; load departments only as needed.
+---
+<!-- generated from .claude/skills by `node studio/studio.mjs agents --sync`; edit the source, not this copy -->
+# film-director
+Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `studio/SKILLS.md`.
+
+
+**House method first (owner order 2026-10-03):** read `studio/QUALITY_PLAYBOOK.md` §0 "Owner taste" before choosing a direction, music or logo treatment; it overrides older taste advice.
+
+Read studio/WORKFLOW.md first, then studio/QUALITY_PLAYBOOK.md (one hero object, measured references, stills → strips → critique, finish checks); studio/SKILLS.md routes optional departments. Do not re-read the historical prompt.
+
+If a reference film is supplied, invoke reference-reverse-engineer via SKILLS.md before inferring its techniques. If the film uses real footage of people, load live-action-editor (studio/LIVE_ACTION.md). Do not load the reference lab for ordinary films.
+
+1. Record viewer, real evidence, one promise, CTA, duration/placements and asset limitations. Owner-authorized work proceeds without repeated approval.
+2. If concept is open, load creative-director. Compare at most three genuinely different directions; pick one. Three style frames: hook, proof, payoff. Fill shot craft metadata before expensive motion.
+3. Start a new film with `node studio/studio.mjs new <film> --placement=reels|youtube|feed|square --duration=N` (writes config with ownerRequest, production.json, film.js, score.mjs, BRIEF, LEDGER). Share shot times with picture and sound. Give every shot `craft.layers` (e.g. ["text","particles:20000","3d"]) and run `node studio/studio.mjs route <film>`: it picks the most mature installed engine per layer (studio/PLATFORM.md). Prefer CORE/PRODUCTION engines; an EXPERIMENTAL engine needs a reason in the craft block.
+4. Prepare only needed assets/layers. Use animation-lab/camera-director when needed, not all skills.
+5. Run production preflight first; creative repetition/overload findings are warnings to inspect, not taste scores. Then build one 8–12s proof with one real transition. Draft is silent; review profile is required to judge sound.
+6. Expand, then fix changed ranges plus entry/exit. Render long builds through `node studio/studio.mjs build <film> --profile=review|final` in the background (memory-sized workers, orphan reaping, resume, full log in `takes/<film>/build-full.log`); never a second render or browser job in parallel.
+7. One separate final critique: frames + actual motion/audio playback, brief and ledger. A fresh reviewer is preferred when available.
+8. Close blocker/major findings and report verified output plus any limitation. No unbounded review loops.
+
+Targets are starting points: clear first 2–3s, recognisable brand early, readable Arabic and one easy action.
+No mandatory motion in every shot, SFX on every cut, quota of ideas or quota of revision rounds.
+Report in concise Egyptian Arabic: ready/not ready, file links, meaningful changes, remaining unverified issue.
+Technical gate success alone never means artistically ready. Keep client photos/plates, licensed audio and renders out of public git.
+
+**Documentation duty (2026-10-02):** a film is not closed until STATUS.md, studio/CHANGELOG.md, CRAFT.md (0–3 lessons), TECHNIQUES.md, ASSETS.md and the film's LEDGER.md are updated in the same commit. For an owner-supplied video to match, follow WORKFLOW.md → Reference-matched reel.
+
+**Owner production policy:** read `studio/AUTONOMOUS_FILM.md` first for new films. The owner requests subject + placement/size; the Claude Code agent does ALL analysis, direction, internal JSON, review, corrections and export. No ordinary approval pauses or manual owner tasks. Deliver one finished video link. Use config.ownerRequest to enforce the single requested canvas/duration/fps.

@@ -1,0 +1,29 @@
+---
+name: sound-designer
+description: Choose, audition, arrange and measure music/SFX; recorded licensed music and original scoring are both supported.
+---
+<!-- generated from .claude/skills by `node studio/studio.mjs agents --sync`; edit the source, not this copy -->
+# sound-designer
+Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `studio/SKILLS.md`.
+
+
+Read CRAFT_GUIDE.md → Music and sound. Match two candidates at most under the same proof clip; listen before choosing.
+Select character/instrumentation/phrase ending, then tempo. Don't default every brand to café bossa or equate code synthesis with quality.
+lib/music.mjs prepareMusic trims/fades/measures recorded tracks. Example: node studio/lib/music.mjs source.wav output.wav 25 12.
+Record creator, source, rights and paid-social scope in production.assets/sound. No silent padding or automatic looping of short tracks.
+score.mjs writes takes/<film>/{music,sfx,mix}.wav. Declare all external recordings as production assets/cacheInputs.
+Use lib/audio.mjs when original synthesis serves the treatment. Original work still needs an ownership/source record.
+Shot craft.audioCue records the intended sonic event in the same shot plan used by picture. Shared cues synchronize picture and selected accents. No compulsory SFX at every visual event; no fixed SFX ×2.6 rule.
+Use measured mastering: default −14 LUFS / −1.5dBTP / LRA<8 are project targets. Empty/unmeasurable audio must fail early.
+Check ending, transient clicks, voice masking, phone/mono translation and exported AAC. Waveforms cannot judge musical taste.
+If playback/listening isn't available, label music selection unverified instead of saying it sounds excellent.
+
+**Code-scored reels:** derive hit times from the same beat grid as picture (beat 60/BPM, bar = 4 beats, 1/8 = beat/2) and place them with `placeCues`; riser into the first impact, breakdown before the drop, linear-frequency sweep for a 'linear' word, fade to silence on the last frame. Leave headroom: mastered result was −14.1 LUFS / −3.2 dBTP. Without playback, report the music as unverified by ear (studio/showreel2/score.mjs).
+
+**Film 5 additions:** darbuka maqsum on an eighth grid, D-hijaz arps/pads, `lpSweep()` time-varying low-pass (radio opening into the drop, tape spinning down), dotted-eighth stabs for cards, ping-pong stabs, accelerating snare roll; never duplicate a cue-sheet impact in the score (identical seeds double the level).
+
+**Dialogue films (2026-10-03):** `lib/dialogue.mjs` — `polish()` (high-pass → afftdn/arnndn → de-ess → compressor; denoise before compression), `duck()` (sidechaincompress keyed by the voice; pad the voice with `apad` to the film length or the ducked music ends with the voice), `stitch()` for jump-cut audio with 10 ms fades. Music 8–12 dB under speech. See `studio/LIVE_ACTION.md` §3.
+
+**Voice & sound department (2026-10-03):** narration, transcripts, dubbing, ducking and mix QA live in skill `voice-director` / `studio/VOICE_STUDIO.md`. Sound library with rights: `studio/sounds/library.json` (`node studio.mjs sounds <category>`). Before delivery: `node studio.mjs mixcheck <mix>` (clipping, mono fold-down, phone speaker, phase).
+
+**Owner taste (2026-10-03, authoritative):** default to Western music with energy, a real beat and one returning hook locked to the cuts; soft beds were rejected twice. "No music" means effects only + low room tone + soft-limited peaks (film 9). See `studio/QUALITY_PLAYBOOK.md` §0.

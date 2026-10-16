@@ -11,6 +11,7 @@
 //   node studio.mjs transcript <pack>  ·  mixcheck <audio|video>  ·  color check|scopes|range  ·  sounds [category]  ·  sfx "words" [--n=8] [--music|--effects] [--any-license] [--download=filmNN --pick=1]
 //   node studio.mjs build <film> [make flags]   the safe way to render: reaps orphans, sizes workers to memory, logs everything to takes/<film>/build-full.log
 //   node studio.mjs cleanup                     kill browsers left by crashed runs, remove their temp profiles, show memory headroom
+//   node studio.mjs agents [--sync]             any-model door: AGENTS.md, skill mirror for other agents, MCP client configs + server handshake (ANY_MODEL.md)
 // Films are then built with make.mjs (WORKFLOW.md). Registry: capabilities.json. Architecture: PLATFORM.md.
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -239,6 +240,21 @@ async function sfxCmd(q, opt) {
   }
 }
 
+// Any model, one studio (ANY_MODEL.md): every agent must see the same rules, skills and tools.
+async function agentsCmd(opt) {
+  const ag = await import('./lib/agents.mjs');
+  if (opt.sync) { const r = ag.syncSkills(); console.log(`skills mirrored to .agents/skills: ${r.skills} (${r.wrote.length} file(s) written${r.removed.length ? `, removed ${r.removed.join(', ')}` : ''})`); }
+  const door = ag.doorCheck();
+  for (const i of door.items) console.log(`${i.ok ? 'PASS' : 'FAIL'}  ${i.what}${i.detail ? ` — ${i.detail}` : ''}`);
+  try {
+    const h = await ag.handshake();
+    const tools = h.tools.result?.tools?.map((t) => t.name) || [];
+    console.log(`${tools.length ? 'PASS' : 'FAIL'}  MCP server: protocol ${h.initialize.result?.protocolVersion}, ${tools.length} tools (${tools.join(', ')})`);
+    if (!tools.length) door.ok = false;
+  } catch (e) { console.log(`FAIL  MCP server: ${e.message}`); door.ok = false; }
+  process.exitCode = door.ok ? 0 : 1;
+}
+
 if (isMain(import.meta.url)) {
   const [cmd, ...args] = process.argv.slice(2);
   if (cmd === 'caps') caps();
@@ -253,6 +269,7 @@ if (isMain(import.meta.url)) {
   else if (cmd === 'color') await colorCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'build') await buildCmd(args);
   else if (cmd === 'cleanup') await cleanupCmd();
+  else if (cmd === 'agents') await agentsCmd(flags(args));
   else if (cmd === 'sfx') await sfxCmd(args.filter(a => !a.startsWith('--')).join(' '), flags(args));
   else if (cmd === 'sounds') { const { searchSounds } = await import('./lib/sounds.mjs'); for (const s of searchSounds(args[0] || '')) console.log(`${pad(s.id, 20)}${pad(s.category, 11)}${pad(s.kind, 7)}${s.use}  [${s.rights}]`); }
   else console.log(readFileSync(new URL(import.meta.url), 'utf8').split('\n').slice(1, 12).map(l => l.replace(/^\/\/ ?/, '')).join('\n'));
