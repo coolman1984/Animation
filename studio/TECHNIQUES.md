@@ -316,3 +316,18 @@ Focused check: `node --test --test-isolation=none studio-engine/test/review.test
 - **Diff fix:** strike grows left→right, the green line is clip-revealed behind a flat 10 px orange front (no glow).
 - **A caption that must stay inside the safe band:** put it on the stage root, not in the scaled camera layer, and keep centre ≤ 1212 px for 28 px Arabic (its line box is taller than the glyphs).
 - **Hold the typing beat alive:** a continuous camera push (1.00→1.065 over the typing) cleared the frozen-span gate that tiny text changes did not.
+
+## One page that becomes a product window (2026-10-14; film `film23/`)
+- **Morph chain for one container:** keep a list `[t0, chapterRect, ζ, ω]` and spring from the previous rect to the next (`film23/motion.js winRect`). Content for each chapter is authored in that chapter's rect and *follows* the live rect with `translate + scale` around the rect centre, so overshoot carries the content instead of leaving it behind.
+- **Text lines → badges:** each grey line of the page springs (ζ 0.62, ω 15, staggered 0.05 s) to a 26 px badge with a 70 px arc lift and speed blur (`|Δp|·240·0.4`, capped 5 px), colour mixing from grey to the unit colour on the click. Reads as "the page's content became the structure".
+- **Feathered theme flip:** reveal the dark (or light) world with `mask-image: radial-gradient(circle at toggle, #000 r, transparent r+140px)`, r growing over 0.75 s (out-cubic). A hard `clip-path` circle bands into rings under 4 subframes. Drive each element's theme from the radius at *its own distance* from the toggle (window ≈ 420 px, copy column ≈ 1250 px), not from a timer.
+- **Mosaic and implosion:** 41 tiles pop in staggered 8 ms each, light in reading order over 0.75 s (one pentatonic tick per page in the score), then fly to the logo with a start delay proportional to distance (0.18 s across the frame), in-cubic over 0.36 s, scale to 0.18, small alternating rotation, blur peaking mid-flight; the logo tile pops whole on the drop.
+- **Row → card:** the clicked list row springs (ζ 0.78) into the full card rect while the other rows fade; the card's content fades in only after 60 % of the morph.
+
+## A web page as a 3D set (2026-10-15; film `film24/`)
+- **Capture:** Playwright at the target width, device scale 2, reduced motion; hide chrome (top bar, sidebar); mark floating pieces with `data-layer`; screenshot the page in 2048 px tiles with pieces hidden, then each piece on transparency with padding; write `capture/layout.json` (page size, tiles, piece rects). Lock the page before timing anything.
+- **Scene:** one textured quad per tile on a gradient floor, each piece its own quad at its height, drawn lowest first with no depth buffer; rounded-rect mask in the shader; pieces fade into the haze colour before going transparent.
+- **Camera:** look-at point on the page, tilt θ from straight down, distance D, focal F. Screen y of a page point = `576 + F·cosθ·a / (D − a·sinθ)` with `a = py − ly`; pin an edge at a screen row by solving for `a`. Speed curve integrated in a 1/2000 s table so position is a pure function of t.
+- **Depth of field:** MRT scene target (RGBA8 colour + RGBA16F coc/depth), 40-tap golden-angle gather, LOD matched to blur, and a reach rule so far taps never smear over nearer ones. Near blur strong (75·Δz/z), far blur weak (6·Δz/z).
+- **Motion blur:** sum the subframes' scene colour (linear) and coc/depth, then run depth of field once (`film24/film.js sumInto` + `dofInto`). Long frames on CPU WebGL need `STUDIO_SHOT_TIMEOUT` (ms) above the default 4 s screenshot wait.
+- **Check:** `python3 film24/flowcheck.py preview.mp4 flow.csv` — Farneback flow on textured pixels of a fixed band: cruise speed, dips, zoom-in frames.

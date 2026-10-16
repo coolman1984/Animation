@@ -162,3 +162,18 @@ A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs th
 3. **Arabic line boxes are taller than glyphs:** two stacked 190/138 px headlines overlapped by 21 px until the centres moved apart; a 28 px label needed centre ≤ 1212 to stay inside y 1248.
 4. **Small typing changes do not count as motion:** a 1 s typing beat tripped the frozen-span gate; a slow camera push fixed it without hurting reading.
 5. **Subframe blur makes a 300 px/frame hop read as speed:** with S = 4 the cursor's first hop (213 px in one frame) looks like a streak, not a jump.
+
+## Film 23 — AI Essentials Academy 30 s (2026-10-14)
+1. **The product's own page can be the hero:** a grey book page whose lines become the units and which becomes the app window made every chapter change a cause, not a cut.
+2. **Never put a middle dot next to Arabic-Indic digits:** «٣٥ · ١٣» reads as «٣٥٠ ١٣٠» because «·» looks like the Arabic zero «٠». Use the Arabic comma «،» (or Latin digits) between counts.
+3. **A hard circle reveal bands under subframe blur:** four averaged captures of a fast clip-path edge show stepped rings; a 140 px feathered radial mask reads as one smooth sweep.
+4. **Theme each element when the reveal reaches it:** drive colour from the circle's radius at the element's own distance from the toggle, not from a timer, or the window stays light over a dark world.
+5. **An eased push still freezes at its ends:** an in-out sine push is nearly flat in its last second; the frozen gate caught it. Give the hold a meaningful motion (a reading sweep, pulses along a line) or log it as a hold.
+
+## Film 24 — landing-page fly-over (2026-10-15)
+1. **Measure the camera, not the scene:** optical flow over the whole centre reads blank paper and deliberately blurred foreground as "stopped" and raised pieces as "surges". Measure only textured pixels in one fixed band inside the focus, and check the camera path analytically too (`timing.js camera(t)` gave a flat 582 px/s).
+2. **A standing piece adds speed to the glide:** a large card that tilts up while the camera accelerates reads as a surge. Start its stand earlier, make it shallower (42°→30°) and longer (2.4 s) so the page's own speed stays the felt speed.
+3. **Retime to the real page, not to the brief's numbers:** the brief assumed a longer page; keeping its 8.2 s flight meant a slower cruise (≈ 582 px/s, not ≈ 770) instead of breaking the pinned bottom edge at the handover.
+4. **Motion blur before depth of field:** summing 16 scene subframes in linear light (colour + coc/depth) and blurring once costs one gather instead of sixteen and looks the same on a still-for-still comparison.
+5. **Blurred shadows need their own shape:** a shadow made from a piece's alpha mip turns into a hard square once the blur outgrows the piece (the quad clips it). Draw it as a soft rounded-rect SDF on a quad padded by twice the blur, and fade it with whatever fades its piece.
+6. **Long renders outlive the session's task clock:** background jobs stop at 2 h and a resume reuses only whole slices; launch long builds detached (`setsid nohup … &`) and watch the log.
