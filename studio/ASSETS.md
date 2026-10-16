@@ -57,7 +57,7 @@ Voice & sound department (2026-10-03): `python tools/live.py models --asr=turbo 
 - Piper ar_JO-kareem (see its model card; scratch use)
 - pyannote segmentation 3.0 ONNX (MIT) and the 3D-Speaker ERes2Net embedding (Apache-2.0)
 
-Draft voices: the Windows built-in voices (Microsoft Hoda ar-EG, David/Zira en-US) are not cleared commercially here (`voice/voices.json`). The sound library (`sounds/library.json`) currently lists only code-synthesised sounds (original, no licence). Recordings added later must carry their licence and source.
+Draft voices: the Windows built-in voices (Microsoft Hoda ar-EG, David/Zira en-US) are not cleared commercially here (`voice/voices.json`). The sound library (`sounds/library.json`) currently lists only code-synthesised sounds (original, no licence). Recordings added later must carry their licence and source. Openverse downloads (`studio.mjs sfx --download`) carry their licence and attribution in `<film>/assets/sfx/CREDITS.json`/`CREDITS.md`.
 
 Platform v1 (2026-10-03): `node studio.mjs setup gpu` installs **Three.js 0.186.1 (MIT)** and **PixiJS 8.22.0 (MIT)** from npm into `studio/vendor/` (git-ignored, reinstallable, pinned in `capabilities.json`). `setup color` installed **opencolorio 2.6.0 (BSD-3-Clause), OpenImageIO 3.1.18.1 (Apache-2.0) and OpenEXR 3.5.2 (BSD-3-Clause)** into the user's Python; there is no studio adapter yet. The study scenes (`examples/three-study`, `examples/pixi-study`) use only procedural geometry and the vendored Alexandria font.
 

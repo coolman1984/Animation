@@ -8,7 +8,7 @@
 //   node studio.mjs new <film> --placement=reels|youtube|feed|square --duration=30 [--fps=30]
 //   node studio.mjs review <film | out/<film>/takeNN>     playback review: frame steps, A/B, timed notes, hash-bound approval
 //   node studio.mjs voice [status | say <text> --lang=ar | script <film>]   voice studio (VOICE_STUDIO.md)
-//   node studio.mjs transcript <pack>  ·  mixcheck <audio|video>  ·  color check|scopes|range  ·  sounds [category]
+//   node studio.mjs transcript <pack>  ·  mixcheck <audio|video>  ·  color check|scopes|range  ·  sounds [category]  ·  sfx "words" [--n=8] [--music|--effects] [--any-license] [--download=filmNN --pick=1]
 //   node studio.mjs build <film> [make flags]   the safe way to render: reaps orphans, sizes workers to memory, logs everything to takes/<film>/build-full.log
 //   node studio.mjs cleanup                     kill browsers left by crashed runs, remove their temp profiles, show memory headroom
 // Films are then built with make.mjs (WORKFLOW.md). Registry: capabilities.json. Architecture: PLATFORM.md.
@@ -225,6 +225,20 @@ async function reviewCmd(target, opt) {
   if (!opt['no-open']) spawnSync(WINDOWS ? 'cmd' : process.platform === 'darwin' ? 'open' : 'xdg-open', WINDOWS ? ['/c', 'start', '', urls[0]] : [urls[0]], { stdio: 'ignore' });
 }
 
+// Openverse first (owner rule 2026-10-16): search free licensed audio, optionally download one with its credit record.
+async function sfxCmd(q, opt) {
+  const ov = await import('./lib/openverse.mjs');
+  const category = opt.music ? 'music' : opt.effects ? 'sound_effect' : undefined;
+  const { total, results } = await ov.searchAudio(q, { n: opt.n, anyLicense: !!opt['any-license'], category });
+  console.log(`Openverse: ${total} results for "${q}" (${opt['any-license'] ? 'ANY licence: check before use' : 'commercial-use licences'})`);
+  results.forEach((r, i) => console.log(`${pad(i + 1, 3)}${pad(r.title.slice(0, 44), 46)}${pad(ov.fmtDur(r.duration), 9)}${pad(r.license, 12)}${pad(r.creator.slice(0, 20), 22)}${r.page || r.url}`));
+  if (opt.download) {
+    const pick = results[(+opt.pick || 1) - 1]; if (!pick) throw new Error(`no result #${opt.pick || 1}`);
+    const d = await ov.downloadAudio(pick, String(opt.download), { query: q });
+    console.log(`saved ${d.path} (${d.record.license}); credit added to ${String(opt.download)}/assets/sfx/CREDITS.md`);
+  }
+}
+
 if (isMain(import.meta.url)) {
   const [cmd, ...args] = process.argv.slice(2);
   if (cmd === 'caps') caps();
@@ -239,6 +253,7 @@ if (isMain(import.meta.url)) {
   else if (cmd === 'color') await colorCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'build') await buildCmd(args);
   else if (cmd === 'cleanup') await cleanupCmd();
+  else if (cmd === 'sfx') await sfxCmd(args.filter(a => !a.startsWith('--')).join(' '), flags(args));
   else if (cmd === 'sounds') { const { searchSounds } = await import('./lib/sounds.mjs'); for (const s of searchSounds(args[0] || '')) console.log(`${pad(s.id, 20)}${pad(s.category, 11)}${pad(s.kind, 7)}${s.use}  [${s.rights}]`); }
   else console.log(readFileSync(new URL(import.meta.url), 'utf8').split('\n').slice(1, 12).map(l => l.replace(/^\/\/ ?/, '')).join('\n'));
 }

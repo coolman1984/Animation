@@ -27,6 +27,7 @@ python tools/live.py ingest <video> <pack> … ; python tools/live.py diarize <p
 node studio.mjs transcript <pack> [--translation=en.json --layer=en]   # canonical transcript + SRT/VTT/ASS/TXT/JSON (+ bilingual)
 node studio.mjs mixcheck takes/<film>/mix.wav                 # clipping / mono / phone / phase notes
 node studio.mjs sounds whoosh                                 # sound library search with rights
+node studio.mjs sfx whoosh --effects                          # Openverse FIRST: free licensed audio (commercial by default); --download=<film> --pick=N saves + credits
 ```
 
 ## Speech ingest and transcription

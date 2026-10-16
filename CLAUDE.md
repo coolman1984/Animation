@@ -47,6 +47,12 @@ Reusable recipes: `studio/TECHNIQUES.md`. Quality method: `studio/QUALITY_PLAYBO
 
 **Owner production policy:** read `studio/AUTONOMOUS_FILM.md` first for new films. The owner requests subject + placement/size; the Claude Code agent does ALL analysis, direction, internal JSON, review, corrections and export. No ordinary approval pauses or manual owner tasks. Deliver one finished video link. Use config.ownerRequest to enforce the single requested canvas/duration/fps.
 
+**Openverse first — MANDATORY (owner order, 2026-10-16):** whenever a film needs sound, SFX, ambience or music, search Openverse FIRST with
+`node studio/studio.mjs sfx "<words>"` (add `--effects` or `--music`; `--download=<film> --pick=N` saves the file to `<film>/assets/sfx/` and
+appends its licence + attribution to `CREDITS.json`/`CREDITS.md`) before any other source (sound library, synthesis, other sites).
+Record licence and attribution for every file used (in the film's LEDGER too). Ads and paid use: commercial-safe licences only (the default
+filter; CC0 / BY / BY-SA; never NC/ND, never `--any-license`). If nothing fits, say so in the LEDGER, then use the house synths (`lib/sfx.mjs`).
+
 **AI mailbox (owner order, 2026-10-10):** Claude, Codex and Grok share the private repo `coolman1984/Inbox`. At the start of
 every session, attach it (add_repo) and read the open messages in `inbox/claude/` before other work. When you need something you
 cannot reach (blocked websites, downloads), leave a request in `inbox/grok/` or `inbox/codex/` following its README, and tell the owner in one line.
