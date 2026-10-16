@@ -16,6 +16,7 @@
 //   node studio.mjs taste <video.mp4 | film> [--json]  ·  taste calibrate     the owner-calibrated taste gate on a finished export
 //   node studio.mjs storyboard <film>                 shot-list check before any render (production.json or engine spec)
 //   node studio.mjs styles [slug]                     house style cards from our delivered films (styles/README.md)
+//   node studio.mjs web plan <site> [--brand= --style= --lang=ar|en --cta= --problem= --promise=] · web build|check|serve <site> · web styles   (web/WEB.md)
 //   node studio.mjs agents [--sync]             any-model door: AGENTS.md, skill mirror for other agents, MCP client configs + server handshake (ANY_MODEL.md)
 // Films are then built with make.mjs (WORKFLOW.md). Registry: capabilities.json. Architecture: PLATFORM.md.
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
@@ -340,6 +341,34 @@ async function storyboardCmd([film]) {
   process.exitCode = r.ok ? 0 : 1;
 }
 
+// Web department (web/WEB.md): plan → write → build → check (phone / tablet / desktop) → serve.
+async function webCmd([sub, name], opt) {
+  const W = await import('./web/lib/site.mjs'), { existsSync: ex, readFileSync: rf, writeFileSync: wf, mkdirSync: mk } = await import('node:fs');
+  if (sub === 'styles') { for (const s of W.STYLES().styles) console.log(`${pad(s.slug, 18)}${pad(s.mood, 52)}${s.bestFor}`); return; }
+  if (!name || !/^[a-z0-9][a-z0-9_-]*$/.test(name)) throw new Error('usage: node studio.mjs web plan|build|check|serve <site> (lowercase folder name) · web styles');
+  const dir = join(STUDIO, 'web', 'sites', name), file = join(dir, 'site.json'), dist = join(dir, 'dist');
+  if (sub === 'plan') {
+    if (ex(file) && !opt.force) throw new Error(`${name} already has a site.json (use --force to replace it)`);
+    const r = W.plan(opt); mk(dir, { recursive: true }); wf(file, JSON.stringify(r.site, null, 2) + '\n');
+    console.log(`web/sites/${name}/site.json — style ${r.site.style}, ${r.site.sections.length} sections. First answer the ambition questions, then write these (${r.todo.length}):`);
+    for (const t of r.todo) console.log(`  ${pad(t.path, 30)} ${t.write}`);
+    console.log(`Then: node studio.mjs web build ${name} → node studio.mjs web check ${name}`);
+    return;
+  }
+  if (!ex(file)) throw new Error(`no web/sites/${name}/site.json (node studio.mjs web plan ${name})`);
+  const site = JSON.parse(rf(file, 'utf8'));
+  if (sub === 'build') { const r = W.build(site, dist, { siteDir: dir }); console.log(`built web/sites/${name}/dist: ${r.files.length} files, ${Math.round(r.bytes / 1024)} KB`); for (const w of r.warnings) console.log(`note: ${w}`); return; }
+  if (sub === 'check') {
+    if (!ex(join(dist, 'index.html'))) W.build(site, dist, { siteDir: dir });
+    const { checkSite } = await import('./web/lib/check.mjs'), out = join(STUDIO, 'takes', 'web', name), r = await checkSite({ dir: dist, outDir: out });
+    console.log(`${name}: ${r.verdict}`); for (const l of r.lights) console.log(`${pad(l.light.toUpperCase(), 7)} ${pad(l.id, 20)} ${l.why}`);
+    console.log(`screenshots: ${r.viewports.filter((v) => v.sheet).map((v) => v.sheet).join(' · ')}`);
+    process.exitCode = r.lights.some((l) => l.light === 'red') ? 1 : 0; return;
+  }
+  if (sub === 'serve') { if (!ex(join(dist, 'index.html'))) W.build(site, dist, { siteDir: dir }); const { serve } = await import('./lib/serve.mjs'); const s = await serve(dist); console.log(`http://127.0.0.1:${s.port}/index.html  (Ctrl+C to stop)`); return; }
+  throw new Error('usage: node studio.mjs web plan|build|check|serve <site> · web styles');
+}
+
 // Any model, one studio (ANY_MODEL.md): every agent must see the same rules, skills and tools.
 async function agentsCmd(opt) {
   const ag = await import('./lib/agents.mjs');
@@ -372,6 +401,7 @@ if (isMain(import.meta.url)) {
   else if (cmd === 'agents') await agentsCmd(flags(args));
   else if (cmd === 'taste') await tasteCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'styles') { const st = await import('./lib/styles.mjs'); if (args[0]) console.log(st.readStyle(args[0])); else for (const s of st.listStyles()) console.log(`${pad(s.slug, 17)}${pad(s.route, 9)}${pad(s.from.join(', '), 34)}${s.bestFor}`); }
+  else if (cmd === 'web') await webCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'storyboard') await storyboardCmd(args);
   else if (cmd === 'director') await directorCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'sfx') await sfxCmd(args.filter(a => !a.startsWith('--')).join(' '), flags(args));

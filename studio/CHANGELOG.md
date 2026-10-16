@@ -5,6 +5,19 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-16 — Web department: complete animated sites from one site.json (DONE)
+Owner: "the repo should help build complete, beautiful websites with detail and motion" (from posts on a scroll/3D site prompt library and
+the "be ambitious" agent prompt); owner chose steps 1–4. `web/`: **plan** (`web/lib/site.mjs`: ambition questions + house structure, ‹…›
+placeholders), **motion library** (`web/motion/motion.js` + `site.css`: scroll reveals with native CSS scroll timelines and an observer
+fallback, word-split headlines, parallax, sticky steps, a 3D card ring with drag/wheel/keys, sourced count-ups, magnetic buttons, progress,
+marquee; reduced motion everywhere), **styles** (`web/styles/index.json`: paper-editorial, ink-studio, clay-3d), **static build** (zero
+dependencies, RTL/LTR, fonts vendored, honesty validation), **real-browser check** (`web/lib/check.mjs`, 390/820/1440 + reduced motion,
+screenshot strips). `studio.mjs web plan|build|check|serve|styles`; MCP `web_plan`, `web_save`, `web_check`; skill `web-director`;
+`lib/serve.mjs` serves CSS. Example: `web/sites/example` (fictional café) — check READY after fixing what the check found: clay muted
+contrast 3.97:1, small tap targets, a ring that widened the phone page by 27 px, hero buttons half-faded on the first screen; the check was
+re-run on the broken version and catches both. Tests: `test/web.test.mjs`; `test/agents.test.mjs` restored (an earlier edit had emptied it).
+Not verified: real phones, a real client's content, live hosting.
+
 ## 2026-10-16 — House style cards + direction rules (DONE)
 Owner chose steps 3–4. **Style cards** `styles/` (format after Lemo-Opuscar's `STYLE.md`, MIT): six looks from our own delivered films — one-dot-hero
 (films 6, 16), living-window (23), terminal-cursor (22), page-flyover (24), calm-decode (9), glass-room-3d (11 / aixhr) — each with essence/not, materials,

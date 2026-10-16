@@ -94,6 +94,9 @@ One door for every agent: `AGENTS.md` (CLAUDE.md imports it), skills mirrored to
 dependencies) with client configs for Claude Code, Codex, Gemini CLI, Cursor and VS Code. The director's kit (plan, critic, eyes) moves a
 strong model's judgment into tools. Self-check: `node studio.mjs agents`. Shot-list lint (`studio.mjs storyboard`) and the owner-calibrated taste gate on exports (`studio.mjs taste`, `taste/verdicts.json`). Method and limits: `ANY_MODEL.md`.
 
+## Web department (2026-10-16)
+Sites from one `site.json`: `web/lib/site.mjs` (plan, validate, static build), `web/motion/` (motion.js + site.css), `web/styles/`, `web/lib/check.mjs` (real-browser gate at 390/820/1440). Guide: `web/WEB.md`.
+
 ## Browser session modes
 - **private** (default): each render worker starts its own headless Chrome with a throwaway profile and closes it.
 - **attach**: set `STUDIO_CDP_URL=http://127.0.0.1:<port>` when Chrome must be started by an approved launcher with `--remote-debugging-port`.

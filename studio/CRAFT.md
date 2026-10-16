@@ -185,3 +185,8 @@ A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs th
 4. **Calibrate taste on the owner, not on a stranger:** a borrowed threshold (huashu's 13 films) may only warn; a gate earns the right to reject when every take the owner approved beats every take he rejected (`taste calibrate`). Facts (an empty frame mid-film) can reject on day one.
 5. **A style card is a benchmark, not a template:** cards come from our delivered films, and the critic warns when a new film shares three of six traits (opening, hero, transitions, structure, ending, music) with a worked example.
 6. **A light style needs its own semantic colours:** "ink" is the scene background in the engine; a paper world flips ink/text and sets a dark support colour, or the card text and the vignette go muddy (caught on the first one-dot-hero stills).
+
+## Web department (2026-10-16)
+1. **A phone widens the page instead of scrolling it sideways:** one 3D card poking past the edge zoomed the whole site out by 27 px; measure overflow against `visualViewport`, and clip decorative 3D sections.
+2. **Check the first screen without scrolling:** a scroll-driven reveal that ends deep in the cover range leaves above-the-fold buttons half-faded forever; end reveals at `entry 100%`.
+3. **Python `open(p,'w').write(open(p).read()…)` empties the file before reading it:** read first, then write (it silently emptied a test file).
