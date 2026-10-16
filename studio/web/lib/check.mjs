@@ -18,7 +18,7 @@ const PROBE = `(async () => {
   for (let y = 0; y <= H(); y += innerHeight * 0.6) { scrollTo({ top: y, behavior: 'instant' }); await wait(140); }
   scrollTo({ top: H(), behavior: 'instant' }); await wait(500);
   const clipped = (el) => { for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) { const o = getComputedStyle(p); if (/(hidden|clip)/.test(o.overflowX + o.overflow) || p.closest('.ring, .marquee')) return true; } return false; };
-  const solid = (c) => { const m = c.match(/[\\d.]+/g); return m && (m[3] === undefined || +m[3] > 0.9) ? m.slice(0, 3).map(Number) : null; };
+  const solid = (c) => { const m = c.match(/[\\d.]+/g); if (!m) return null; const k = /^color\\(srgb/.test(c) ? 255 : 1; const a = c.includes('/') ? +m[3] : m[3]; return a === undefined || +a > 0.9 ? m.slice(0, 3).map((v) => +v * k) : null; };   // rgb() and color(srgb …) (what color-mix computes to)
   const bgOf = (el) => { for (let p = el; p; p = p.parentElement) { const cs = getComputedStyle(p); if (cs.backgroundImage !== 'none' && !p.matches('body, html')) return null; const s = solid(cs.backgroundColor); if (s) return s; } return solid(getComputedStyle(document.body).backgroundColor) || [255, 255, 255]; };
   const lum = (c) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]); };
   const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
@@ -28,7 +28,8 @@ const PROBE = `(async () => {
   for (const el of document.querySelectorAll('body *')) {
     const r = el.getBoundingClientRect(); if (!r.width || !r.height) continue;
     const cs = getComputedStyle(el); if (cs.visibility === 'hidden' || cs.display === 'none') continue;
-    if ((r.right > VW + 1 || r.left < -1) && !clipped(el) && !el.matches('.progress, .skip')) out.wide.push(el.tagName.toLowerCase() + (el.className ? '.' + String(el.className).split(' ')[0] : ''));
+    // fully off-screen = an off-canvas drawer (intentional); only a box that straddles the edge widens the page
+    if ((r.right > VW + 1 || r.left < -1) && r.left < VW && r.right > 0 && !clipped(el) && !el.matches('.progress, .skip')) out.wide.push(el.tagName.toLowerCase() + (el.className ? '.' + String(el.className).split(' ')[0] : ''));
     const own = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
     if (own && !el.closest('[aria-hidden="true"]') && !el.matches('.skip')) {
       const fs = parseFloat(cs.fontSize), color = solid(cs.color), bg = bgOf(el), text = el.textContent.trim().slice(0, 40);
@@ -48,6 +49,8 @@ const PROBE = `(async () => {
   out.meta = { title: document.title, description: document.querySelector('meta[name=description]')?.content || '', lang: document.documentElement.lang, dir: document.documentElement.dir, arabic: ar, viewport: !!document.querySelector('meta[name=viewport]') };
   out.running = document.getAnimations().filter((a) => a.playState === 'running').length;
   out.loadMs = Math.round(performance.getEntriesByType('navigation')[0]?.duration || 0);
+  // what the page really downloads (the document + every resource it requested), not the folder it sits in
+  out.pageBytes = [...performance.getEntriesByType('navigation'), ...performance.getEntriesByType('resource')].reduce((s, e) => s + (e.decodedBodySize || e.encodedBodySize || 0), 0);
   out.height = H();
   return out;
 })()`;
@@ -60,9 +63,9 @@ async function visit(client, url, vp, { reduce = false } = {}) {
   return client.eval(PROBE);
 }
 
-export async function checkSite({ dir, outDir }) {
+export async function checkSite({ dir, outDir, page = 'index.html' }) {
   mkdirSync(outDir, { recursive: true });
-  const srv = await serve(dir), url = `http://127.0.0.1:${srv.port}/index.html`, errors = [];
+  const srv = await serve(dir), url = `http://127.0.0.1:${srv.port}/${page}`, errors = [];
   let client;
   const viewports = [];
   try {
@@ -101,8 +104,8 @@ export async function checkSite({ dir, outDir }) {
   const meta = d.meta, metaBad = [!meta.title && 'title', !meta.description && 'description', !meta.lang && 'lang', meta.arabic && meta.dir !== 'rtl' && 'dir="rtl" for Arabic', !meta.viewport && 'viewport'].filter(Boolean);
   add('meta', metaBad.length ? 'red' : 'green', metaBad.length ? `missing: ${metaBad.join(', ')}` : 'title, description, lang, direction and viewport set');
   add('script-errors', errors.length ? 'red' : 'green', errors.slice(0, 3).join(' · ') || 'no script errors');
-  const kb = Math.round(sizeOf(dir) / 1024);
-  add('weight', kb > 1500 ? 'red' : kb > 700 ? 'yellow' : 'green', `${kb} KB in total (target ≤ 700 KB before photos)`);
+  const kb = Math.round((d.pageBytes || sizeOf(dir)) / 1024);
+  add('weight', kb > 1500 ? 'red' : kb > 700 ? 'yellow' : 'green', `${kb} KB downloaded by the page (target ≤ 700 KB before photos; a deliberate offline single file can exceed it — say so)`);
   const reds = lights.filter((l) => l.light === 'red').length;
   return { lights, verdict: reds ? `not ready: ${reds} red light(s)` : lights.some((l) => l.light === 'yellow') ? 'ready; read the yellow notes' : 'ready', viewports: viewports.map(({ wide, small, lowContrast, tiny, hidden, ...v }) => v) };
 }
