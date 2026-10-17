@@ -11,7 +11,7 @@
 //   node studio.mjs transcript <pack>  ·  mixcheck <audio|video>  ·  color check|scopes|range  ·  sounds [category]  ·  sfx "words" [--n=8] [--music|--effects] [--any-license] [--download=filmNN --pick=1]
 //   node studio.mjs build <film> [make flags]   the safe way to render: reaps orphans, sizes workers to memory, logs everything to takes/<film>/build-full.log
 //   node studio.mjs cleanup                     kill browsers left by crashed runs, remove their temp profiles, show memory headroom
-//   node studio.mjs director plan <film> --placement=reels|youtube --duration=15 [--brand= --cta= --problem= --promise= --viewer= --logo=]
+//   node studio.mjs director plan <film> --placement=reels|youtube --duration=15 [--mode=showreel|product|launch-story|explainer --brand= --cta= --problem= --promise= --viewer= --endState= --logo=]
 //   node studio.mjs director review <film> [--format=reel|youtube] [--frames]   ·   director inspect <film | path/film.js> [--times=1,2.5]
 //   node studio.mjs taste <video.mp4 | film> [--json]  ·  taste calibrate     the owner-calibrated taste gate on a finished export
 //   node studio.mjs storyboard <film>                 shot-list check before any render (production.json or engine spec)
@@ -275,7 +275,7 @@ async function directorCmd([sub, film], opt) {
       const times = tl.scenes.flatMap((s) => [s.a + (s.b - s.a) * 0.5, s.b - 0.3]).map((t) => +Math.max(0.05, Math.min(tl.duration - 0.05, t)).toFixed(2));
       frames = await inspect({ film: join(ENG, `b-${film}-${format}`, 'film.js'), times, w: fmt.w, h: fmt.h, safe: fmt.safe });
     }
-    const r = critique(spec, brand, { format, frames });
+    const r = critique(spec, brand, { format, frames, facts: ex(join(dir, 'facts.json')) ? JSON.parse(rf(join(dir, 'facts.json'), 'utf8')) : undefined });
     if (opt.json) { console.log(JSON.stringify(r, null, 2)); return; }
     console.log(`${film} · ${format} · house score ${r.score}/100 — ${r.verdict}`);
     for (const x of r.rules) console.log(`${x.status === 'pass' ? 'PASS' : x.status === 'warn' ? 'WARN' : 'FAIL'}  ${pad(x.id, 22)} ${x.evidence}${x.status !== 'pass' && x.fix ? `\n      → ${x.fix}` : ''}`);

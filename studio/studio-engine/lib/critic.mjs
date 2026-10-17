@@ -1,7 +1,8 @@
 // Studio Engine — the house critic: the owner's taste and the studio's craft rules as checks any model can run (ANY_MODEL.md).
 // A strong model carries these in its head; here each one is a named rule with its source, the evidence and the next edit.
-//   critique(spec, brand, { format, frames }) → { score, verdict, rules: [{ id, status: pass|warn|fail, source, evidence, fix }] }
+//   critique(spec, brand, { format, frames, facts }) → { score, verdict, rules: [{ id, status: pass|warn|fail, source, evidence, fix }] }
 // frames = optional output of lib/scenegraph.mjs inspect() at sampled times (rendered evidence, not intent).
+// facts = optional films/<film>/facts.json { claims: [{ id, text, source, sentence }], copy: [approved lines] } (QUALITY_PLAYBOOK §10).
 import { timeline } from './events.js';
 import { lint } from './gates.mjs';
 import { forFormat } from './spec.mjs';
@@ -39,22 +40,38 @@ const PAYOFF_TYPES = new Set(['pill', 'lockup', 'mark', 'extrude']);
 export function copyOf(e) {
   const at = e.at ?? 0, out = [];
   if (e.type === 'words' && e.text) out.push({ text: e.text, size: e.size, at, end: e.out });
-  if (e.type === 'stack') for (const [i, l] of (e.lines || []).entries()) out.push({ text: l.text, size: l.size || e.size || 120, at: l.at ?? at + i * 0.5, end: e.out });
+  if (e.type === 'stack') for (const [i, l] of (e.lines || []).entries()) out.push({ text: l.text, size: l.size || e.size || 120, at: l.at ?? at + i * 0.5, end: e.out, fact: l.fact });
   if (e.type === 'pill') { const parts = (e.parts || [e.text]).filter(Boolean); out.push({ text: parts.map((p) => (typeof p === 'string' ? p : p.text)).join(' '), size: Math.min(...parts.map((p) => (typeof p === 'object' && p.size) || e.size || 70)), at, end: e.out }); }
-  if (e.type === 'slab') for (const l of e.lines || []) out.push({ text: l.text, size: l.size || 120, at: l.at ?? at, end: e.out });
+  if (e.type === 'slab') for (const l of e.lines || []) out.push({ text: l.text, size: l.size || 120, at: l.at ?? at, end: e.out, fact: l.fact });
   if (['slice', 'extrude'].includes(e.type) && e.text) out.push({ text: e.text, size: e.size || 300, at, end: e.out });
-  if (e.type === 'wipes') for (const w of e.items || []) out.push({ text: w.text, size: w.size || 250, at: w.at, end: w.at + 2 });
-  if (e.type === 'cards') for (const [i, it] of (e.items || []).entries()) for (const [k, size] of [['title', 76], ['titleAr', 48], ['old', 46], ['oldAr', 40], ['new', 46], ['newAr', 40]]) if (it?.[k]) out.push({ text: it[k], size, at: (e.start ?? 1) + i * (e.step ?? 5), end: (e.start ?? 1) + (i + 1) * (e.step ?? 5) });
+  if (e.type === 'wipes') for (const w of e.items || []) out.push({ text: w.text, size: w.size || 250, at: w.at, end: w.at + 2, fact: w.fact });
+  if (e.type === 'cards') for (const [i, it] of (e.items || []).entries()) for (const [k, size] of [['title', 76], ['titleAr', 48], ['old', 46], ['oldAr', 40], ['new', 46], ['newAr', 40]]) if (it?.[k]) out.push({ text: it[k], size, at: (e.start ?? 1) + i * (e.step ?? 5), end: (e.start ?? 1) + (i + 1) * (e.step ?? 5), fact: it.fact });
   if (['lockup', 'mark'].includes(e.type)) out.push({ text: (e.parts || []).join(' '), size: e.size || 300, at, end: e.out });
   return out.filter((c) => typeof c.text === 'string' && c.text.trim());
 }
 
-export function critique(base, brand, { format, frames } = {}) {
+// pace of new compositions per mode (motion-director prompt 2026-10-17): the longest gap with nothing new entering or morphing
+export const PACE = { showreel: [1, 2.5], product: [1.4, 3.5] };
+export function compositionGaps(s, B) {
+  const t = new Set([0, s.b - s.a]), beat = (v) => { if (Number.isFinite(v)) t.add(Math.min(s.b - s.a, v * B)); };
+  for (const e of s.elements || []) {
+    beat(e.at ?? 0); beat(e.out); beat(e.clickAt); beat(e.pushAt); beat(e.implodeAt); beat(e.midAt);
+    for (const k of [...(e.morph || []), ...(e.items || []), ...(e.lines || []), ...(e.points || [])]) beat(k?.at);
+    for (const v of e.times || []) beat(v);
+    if (e.type === 'cards') (e.items || []).forEach((_, i) => beat((e.start ?? 1) + i * (e.step ?? 5)));
+  }
+  const ts = [...t].sort((a, b) => a - b);
+  return ts.slice(1).reduce((m, v, i) => (v - ts[i] > m.gap ? { gap: v - ts[i], at: s.a + ts[i] } : m), { gap: 0, at: s.a });
+}
+const digits = (x) => (String(x).replace(/[٠-٩]/g, (d) => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).match(/\d+(?:[.,٫]\d+)?/g) || []).map((n) => n.replace(/[,٫]/, '.'));
+const norm = (x) => String(x).replace(/[\u064B-\u0652\u0640]/g, '').replace(/\s+/g, ' ').trim();
+
+export function critique(base, brand, { format, frames, facts } = {}) {
   const rules = [], add = (id, status, source, evidence, fix = '') => rules.push({ id, status, source, evidence, fix });
   const fmt = format || base.format || 'youtube', spec = forFormat(base, fmt), portrait = fmt === 'reel';
   let tl; try { tl = timeline(spec); } catch (e) { return { score: 0, verdict: 'broken spec', rules: [{ id: 'spec', status: 'fail', source: 'catalog.json', evidence: e.message, fix: 'Fix the spec structure first (spec_check).' }] }; }
   const L = lint(spec, brand), scenes = tl.scenes, n = scenes.length, dur = tl.duration;
-  const copy = scenes.flatMap((s) => (s.elements || []).flatMap((e) => copyOf(e).map((c) => ({ ...c, scene: s.id, a: s.a + c.at * tl.B, b: c.end != null ? s.a + c.end * tl.B : s.b, y: e.y ?? 0.5, type: e.type }))));
+  const copy = scenes.flatMap((s) => (s.elements || []).flatMap((e) => copyOf(e).map((c) => ({ ...c, fact: c.fact ?? e.fact, scene: s.id, a: s.a + c.at * tl.B, b: c.end != null ? s.a + c.end * tl.B : s.b, y: e.y ?? 0.5, type: e.type }))));
 
   // 1. structure the owner asked for: hook → idea → payoff (QUALITY_PLAYBOOK §0 "Shape of every film")
   const first = copy.reduce((m, c) => Math.min(m, c.a), Infinity);
@@ -91,6 +108,12 @@ export function critique(base, brand, { format, frames } = {}) {
   const tr = scenes.slice(1).map((s) => s.transition || 'cut');
   const run3 = tr.some((x, i) => x !== 'cut' && i >= 2 && tr[i - 1] === x && tr[i - 2] === x);
   add('transition-variety', run3 ? 'warn' : 'pass', 'WORKFLOW creative variety', `transitions: ${tr.join(' → ') || 'none'}`, 'Motivate each transition by an object (morphTo, wipe from the hero); avoid the same effect three times in a row.');
+  const mode = spec.mode || spec.creative?.mode, pace = PACE[mode];
+  if (pace) {
+    const slow = scenes.filter((s) => !s.hold && s.music !== 'breath').map((s) => ({ s, ...compositionGaps(s, tl.B) })).filter((g) => g.gap > pace[1] + 0.05);
+    const breaths = scenes.filter((s) => s.hold || s.music === 'breath').length;
+    add('edit-pace', slow.length || breaths > 2 ? 'warn' : 'pass', 'QUALITY_PLAYBOOK §10 (motion-director prompt)', `${mode}: a new composition every ${pace[0]}–${pace[1]} s; ${slow.length ? slow.slice(0, 3).map((g) => `${g.s.id} holds ${g.gap.toFixed(1)} s from ${g.at.toFixed(1)} s`).join(', ') : 'no gap too long'}${breaths > 2 ? `; ${breaths} held scenes (at most two breaths)` : ''}`, 'Bring something new in (an element, a morph keyframe, a cursor click, a wipe) inside the gap, or shorten the scene; keep at most two held breaths.');
+  }
   const sets = scenes.map((s) => [...new Set((s.elements || []).map((e) => e.type))].sort().join('+'));
   const rep = sets.findIndex((x, i) => i >= 2 && x === sets[i - 1] && x === sets[i - 2]);
   add('no-template', rep < 0 ? 'pass' : 'warn', 'WORKFLOW creative variety', rep < 0 ? 'scene compositions change' : `scenes ${scenes[rep - 2].id}, ${scenes[rep - 1].id}, ${scenes[rep].id} use the same elements (${sets[rep]})`, 'Change scale, camera or composition between neighbouring scenes.');
@@ -109,11 +132,21 @@ export function critique(base, brand, { format, frames } = {}) {
 
   // 6. honesty and finish (data-honesty, catalog rules)
   const nums = copy.filter((c) => /[0-9٠-٩]/.test(c.text));
-  add('numbers-sourced', !nums.length || spec.honesty || spec.creative?.sources ? 'pass' : 'warn', 'skill data-honesty', nums.length ? `${nums.length} line(s) with numbers${spec.honesty ? '; honesty note present' : ''}` : 'no numbers in copy', 'Numbers must be the client\'s: name their source in spec.honesty (or creative.sources).');
+  add('numbers-sourced', !nums.length || nums.every((c) => c.fact) || spec.honesty || spec.creative?.sources ? 'pass' : 'warn', 'skill data-honesty', nums.length ? `${nums.length} line(s) with numbers${spec.honesty ? '; honesty note present' : ''}` : 'no numbers in copy', 'Numbers must be the client\'s: name their source in spec.honesty (or creative.sources).');
+  if (facts) {
+    const claims = new Map((facts.claims || []).map((c) => [c.id, c])), ok = new Set([...(facts.claims || []).map((c) => norm(c.text)), ...(facts.copy || []).map(norm)]);
+    const broken = [...claims.values()].filter((c) => !c.id || !c.source || !c.sentence).map((c) => c.id || norm(c.text || '?'));
+    const ids = (f) => (Array.isArray(f) ? f : f ? [f] : []), unknown = copy.flatMap((c) => ids(c.fact).filter((id) => !claims.has(id)).map((id) => `${c.scene}: "${c.text}" → ${id}`));
+    const loose = copy.filter((c) => !ids(c.fact).length && !ok.has(norm(c.text)));
+    // a tagged line may paraphrase its claim, but every number it shows must be in the claim's text or source sentence
+    const off = copy.filter((c) => ids(c.fact).length && ids(c.fact).every((id) => claims.has(id))).flatMap((c) => { const have = new Set(ids(c.fact).flatMap((id) => [...digits(claims.get(id).text), ...digits(claims.get(id).sentence)])); return digits(c.text).filter((n) => !have.has(n)).map((n) => `${c.scene}: "${c.text}" shows ${n}, not in ${ids(c.fact).join('+')}`); });
+    unknown.push(...off);
+    add('facts-traced', broken.length || unknown.length ? 'fail' : loose.length ? 'warn' : 'pass', 'QUALITY_PLAYBOOK §10 · skill data-honesty', broken.length ? `claim(s) without source URL + exact sentence: ${broken.slice(0, 4).join(', ')}` : unknown.length ? `unknown fact id or number not in its claim: ${unknown.slice(0, 3).join(' · ')}` : loose.length ? `${loose.length} line(s) not traced: ${loose.slice(0, 3).map((c) => `${c.scene}: "${c.text}"`).join(' · ')}` : `${copy.length} line(s) traced to ${claims.size} claim(s)`, 'Give each line "fact": "<claim id>" from facts.json (claim = id, text, source URL, the exact source sentence) or list brand-approved copy (tagline, CTA) in facts.copy.');
+  }
   const ph = copy.filter((c) => PLACEHOLDER.test(c.text));
   add('no-placeholders', ph.length ? 'fail' : 'pass', 'director plan', ph.length ? ph.slice(0, 4).map((c) => `${c.scene}: ${c.text}`).join(' · ') : 'all copy written', 'Replace every ‹…› placeholder with the real line.');
-  const need = ['viewer', 'problem', 'hero', 'payoff', 'cta'], miss = need.filter((k) => !spec.creative?.[k] || PLACEHOLDER.test(String(spec.creative[k])));
-  add('director-brief', miss.length ? 'warn' : 'pass', 'ANY_MODEL.md step 2', miss.length ? `creative block lacks ${miss.join(', ')}` : 'viewer, problem, hero, payoff and CTA decided', 'Decide before writing: fill spec.creative.viewer/problem/hero/payoff/cta.');
+  const need = ['viewer', 'problem', 'endState', 'hero', 'payoff', 'cta'], miss = need.filter((k) => !spec.creative?.[k] || PLACEHOLDER.test(String(spec.creative[k])));
+  add('director-brief', miss.length ? 'warn' : 'pass', 'ANY_MODEL.md step 2', miss.length ? `creative block lacks ${miss.join(', ')}` : 'viewer, problem, hero, payoff and CTA decided', 'Decide before writing: fill spec.creative.viewer/problem/endState (what they feel, know or do in the last second)/hero/payoff/cta.');
   const sb = lintStoryboard(shotsFromSpec(spec)).issues, sbRed = sb.filter((x) => x.level === 'red');
   add('storyboard', sbRed.length ? 'fail' : sb.length ? 'warn' : 'pass', 'lib/storyboard.mjs (after huashu storyboard_lint)', sb.length ? sb.slice(0, 4).map((x) => `${x.shot}: ${x.msg}`).join(' · ') : 'every scene names a thing, an action and short copy', (sbRed[0] || sb[0])?.fix || 'Give each scene "purpose" (what the thing does) and a concrete subject.');
   // 8. direction (after Lemo-Opuscar's DIRECTOR.md, MIT): treatment, benchmark, camera variety, a breath before the peak, not the demo again
@@ -136,7 +169,7 @@ export function critique(base, brand, { format, frames } = {}) {
   // 7. rendered evidence (lib/scenegraph.mjs), when sampled frames are supplied
   if (frames?.length) {
     const by = {}; for (const f of frames) for (const x of f.findings) (by[x.rule] ||= []).push(`${f.t} s`);
-    const level = (rule) => frames.flatMap((f) => f.findings).find((x) => x.rule === rule)?.level;
+    const level = (rule) => (frames.some((f) => f.findings.some((x) => x.rule === rule && x.level === 'fail')) ? 'fail' : 'warn');
     for (const rule of ['contrast', 'safe-area', 'overlap', 'small-type', 'empty', 'competing-focus', 'one-idea']) {
       const hits = by[rule] || [];
       add(`frame-${rule}`, !hits.length ? 'pass' : level(rule) === 'fail' ? 'fail' : 'warn', 'lib/scenegraph.mjs (rendered frames)', hits.length ? `${hits.length}/${frames.length} sampled frames: ${hits.slice(0, 5).join(', ')}` : `clean in ${frames.length} sampled frames`, frames.flatMap((f) => f.findings).find((x) => x.rule === rule)?.fix || '');

@@ -25,3 +25,5 @@ Fix blocker/major issues, then verify only affected evidence. Two failed attempt
 **Finish check for dark/blue gradients (film 6):** extract the frame from the exported master AND the share copy, crop the glow, boost levels (`-level 0%,18%`); rings at a 5.5× boost that are faintly visible at 1:1 are a finish defect — fix with `config.dither`, not with picture-side noise.
 
 **Review tools (2026-10-03):** watch the export in the playback player (`node studio.mjs review <film>`: frame stepping, shot/cue timeline, waveform, A/B takes, timed notes; approval is bound to the file's SHA-256 and voids when the file changes). Colour: scopes in every review gallery, `node studio.mjs color check` (export ΔE), legal range note in make. Sound: `node studio.mjs mixcheck`.
+
+**Critic loop and quality bar (2026-10-17):** QUALITY_PLAYBOOK §10 — a fresh reviewer pulls its own frames (every 0.2 s, dense at transitions), a sound-off read from a silent 2 fps contact sheet (retell the story), sync within 1 frame, every word traced to facts.json, a director's review of what feels assembled, slow or generic; end with "ship" or "one more pass" and log before/after numbers.

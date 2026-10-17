@@ -30,7 +30,8 @@ export function analyze(items, { w, h, safe = [0, 0, w, h] } = {}) {
   for (const t of text) {
     const cx = (t.x0 + t.x1) / 2, cy = (t.y0 + t.y1) / 2, bg = under(items, cx, cy, t), c = contrastOf(t.color, bg?.color);
     t.on = bg?.color || null; t.contrast = c;
-    if (c != null && c < 3) add('fail', 'contrast', `"${t.text}" contrast ${c}:1 on ${bg.color}`, 'Raise contrast to ≥ 3:1 (4.5:1 for small text): change the text colour or what it sits on.');
+    if (c != null && c < 3) add('fail', 'contrast', `"${t.text}" contrast ${c}:1 on ${bg.color}`, 'Raise contrast to ≥ 4.5:1: change the text colour or what it sits on.');
+    else if (c != null && c < 4.5) add('warn', 'contrast', `"${t.text}" contrast ${c}:1 on ${bg.color} (house bar 4.5:1)`, 'Reach 4.5:1 (QUALITY_PLAYBOOK §10): a darker plate, a brighter colour, or a text shadow over busy picture.');
     if (t.size < Math.min(w, h) * 0.031) add('warn', 'small-type', `"${t.text}" is ${t.size} px`, `On a phone keep text ≥ ${Math.round(Math.min(w, h) * 0.031)} px (Arabic body ≥ 34 px at 1080).`);
     if (t.x0 < safe[0] - 2 || t.y0 < safe[1] - 2 || t.x1 > safe[2] + 2 || t.y1 > safe[3] + 2) add('fail', 'safe-area', `"${t.text}" leaves the safe box`, 'Move it toward the centre or make it smaller.');
     if (t.blur > 3 && t.opacity > 0.8) add('note', 'blurred-text', `"${t.text}" is blurred ${t.blur}px at full opacity`, 'Fine during an entrance; it must be sharp while it is read.');

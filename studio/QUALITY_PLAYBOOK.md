@@ -87,3 +87,27 @@ together with `WORKFLOW.md` (process authority) and `AUTONOMOUS_FILM.md` (owner 
 - Variable-weight Arabic headlines (Alexandria 100–900) animated by weight instead of scale.
 - A "before/after" scrubber between a flat idea and the finished design, driven by the cursor.
 - Sound-reactive pixel grid (dot lift = drum envelope from the score's own kick list).
+
+## 10. Measured bar and the critic loop (owner's motion-director prompt, 2026-10-17)
+Adopted from the prompt the owner shared; where it clashes with §0 (music taste, logos whole) §0 wins.
+- **Brief lines the agent decides:** mode (showreel | product | launch-story | explainer), viewer, end state (what they feel, know or do in
+  the last second), facts, sound, sign-off. A blank line is decided by the agent with a one-line reason in `spec.creative.decisions`
+  (or the film's BRIEF.md). `studio-engine/brief-template.md` lists them. MCP clients send the facts with `spec_save` (`facts`).
+- **Facts first:** `films/<film>/facts.json` = `{ claims: [{ id, text, source: URL, sentence: the exact source sentence }], copy: [brand-approved
+  lines such as the tagline and CTA] }`. Each text element (or stack/slab line, wipes/cards item) carries `"fact": "<claim id>"`. The critic
+  rule `facts-traced` fails on a claim without URL + sentence, an unknown id, or a number the tagged claim does not contain, and warns on any line that is neither a claim nor approved copy.
+- **Edit pace by mode:** showreel = a new composition every 1–2.5 s, product = every 1.4–3.5 s, with at most two held breaths
+  (`hold: true` or music `breath`). Critic rule `edit-pace` measures the longest gap inside each scene with nothing entering, leaving,
+  morphing, clicking or wiping. Launch-story and explainer set no pace (characters and narration own the time).
+- **Text contrast 4.5:1:** the eyes (`lib/scenegraph.mjs`) now warn from 3:1 to 4.5:1 and fail under 3:1; over busy picture use a plate.
+- **Already measured by the gates (no change):** exact size/fps/duration; no still span over 0.7 s outside declared holds (`gates.motion`);
+  sync of hits to onsets; loudness −14 LUFS with true peak ≤ −1.5 dBTP (stricter than the prompt's −1); a music-only file (`make.mjs`).
+- **Critic loop for a final film:** a fresh reviewer that did not build the film pulls its own frames (every 0.2 s, dense around
+  transitions) and returns ranked problems with timestamps, ending in "ship" or "one more pass". Every full render also gets:
+  (1) a **sound-off read** — the reviewer sees only a silent 2 fps contact sheet (`ffmpeg -i share.mp4 -vf "fps=2,scale=270:-2,tile=8x8" -an sheet.png`)
+  and retells the story; if the retelling misses the promise, the picture is not carrying it; (2) **sync** within 1 frame of the beat grid;
+  (3) **fact check** — every word traced (`facts-traced`); (4) a **director's review** of what feels assembled, slow or generic.
+  Fix the biggest problem first and log before/after numbers in the LEDGER. The two-round budget in WORKFLOW.md still caps the loop.
+- **Craft reminders from the prompt worth keeping:** frame one is a finished still; one object carries the film and lands on the same pixels on
+  both sides of every handoff; hard cuts only when size, direction and subject match, on a beat; nothing starts or stops all at once; no linear
+  easing; ~0.3 s per word on screen (0.7 s minimum) as the floor under our own read-hold rule; 3D only where it explains something spatial.

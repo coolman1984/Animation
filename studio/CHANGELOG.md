@@ -5,6 +5,18 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-17 — Quality bar from the owner's motion-director prompt (DONE)
+Owner shared a motion-director prompt (brief lines, modes, craft, audio, critic loop, measured quality bar) and asked to use it to raise
+quality. Compared it with what the studio already measures (size/fps/duration, still spans ≤ 0.7 s, sync, −14 LUFS / −1.5 dBTP, music-only
+file) and added only what was missing: critic rules **facts-traced** (`films/<film>/facts.json`, `"fact"` on each line; fails on a claim
+without URL + exact sentence, an unknown id, or a number missing from the tagged claim; MCP `spec_save` takes `facts`) and **edit-pace** (`spec.mode`: showreel 1–2.5 s, product 1.4–3.5 s, ≤ 2 held breaths);
+`numbers-sourced` passes when every number line carries a fact; `director-brief` asks for `endState`; the eyes warn on text contrast 3–4.5:1
+(fail stays < 3:1) and a rule's level is now "fail" if any sampled frame fails (it took the first frame's level before). `director plan`
+writes `mode` (default product) and `creative.endState`; CLI `--mode= --endState=`; `director review` and MCP `film_review` load facts.json.
+Docs: QUALITY_PLAYBOOK §10 (brief lines, facts, pace, critic loop with a sound-off 2 fps sheet), brief template lines 6–10, catalog, ANY_MODEL,
+skills data-honesty and qa-judge. Tests: `test/director.test.mjs`; quick suite green. The three worked examples score as before (80/79/74).
+Not verified: a full film made under the new rules; gate thresholds were not changed (no render was run).
+
 ## 2026-10-16 — Web department: complete animated sites from one site.json (DONE)
 Owner: "the repo should help build complete, beautiful websites with detail and motion" (from posts on a scroll/3D site prompt library and
 the "be ambitious" agent prompt); owner chose steps 1–4. `web/`: **plan** (`web/lib/site.mjs`: ambition questions + house structure, ‹…›

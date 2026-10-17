@@ -190,3 +190,7 @@ A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs th
 1. **A phone widens the page instead of scrolling it sideways:** one 3D card poking past the edge zoomed the whole site out by 27 px; measure overflow against `visualViewport`, and clip decorative 3D sections.
 2. **Check the first screen without scrolling:** a scroll-driven reveal that ends deep in the cover range leaves above-the-fold buttons half-faded forever; end reveals at `entry 100%`.
 3. **Python `open(p,'w').write(open(p).read()…)` empties the file before reading it:** read first, then write (it silently emptied a test file).
+
+## Motion-director prompt (2026-10-17)
+1. **A rule from someone else's prompt enters as a check or not at all:** of the prompt's quality bar, the studio already measured size, stills, sync and loudness; what was missing (fact sources, edit pace by mode, 4.5:1 contrast) became critic rules with evidence and a fix, the rest became a reviewer's checklist.
+2. **"Every word traced" needs an escape hatch for the brand's own words:** taglines and CTAs have no outside source; list them in `facts.copy` so the rule stays strict on claims without nagging about the sign-off.
