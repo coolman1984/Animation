@@ -17,6 +17,7 @@ Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `s
 5. Third-party brands visible in owner photos: shown as-is, no claims, listed as an owner decision; offer to blur.
 6. No real people's face/voice without explicit permission; no scraping.
 7. The final report lists what is staged, unverified, approximate.
+8. Studio Engine films keep claims in `films/<film>/facts.json` (id, text, source URL, exact sentence; brand lines in `copy`) and mark each line `"fact": "<id>"`; `director review` rule `facts-traced` checks it (QUALITY_PLAYBOOK §10).
 
 ## Checklist
 1. Proof list or never-claim list exists. 2. Each on-screen number traced. 3. Labels on staged items.

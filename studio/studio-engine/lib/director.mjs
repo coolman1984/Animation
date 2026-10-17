@@ -2,7 +2,7 @@
 // Structure is the hard part a strong model does by instinct; here it is given: hook in the first 2 s → the idea on a drop →
 // proof chapters on whole bars → payoff with the brand whole and ONE action, one hero object carried through every scene by
 // morphTo, a hook in the music, holds that breathe. The model only writes the words (‹…› placeholders) and picks icons.
-//   plan({ title, subject, viewer, problem, promise, cta, brand, logo, placement, duration, style }) → { spec, todo }
+//   plan({ title, subject, mode, viewer, problem, endState, promise, cta, brand, logo, placement, duration, style }) → { spec, todo }
 // Treatment fields (after Lemo-Opuscar's DIRECTOR.md): three candidate structures + the chosen one, and a benchmark (learn / avoid).
 const ICONS = ['spark', 'bolt', 'check', 'star', 'rocket', 'chat', 'clock', 'gear', 'heart', 'globe', 'people', 'doc', 'mag', 'board', 'bars'];
 const P = (what) => `‹${what}›`;
@@ -66,10 +66,11 @@ export function plan(brief = {}) {
     ] });
   const spec = {
     title: brief.title || brief.subject || P('film title'), format: portrait ? 'reel' : 'youtube', bpm: 120,
+    mode: ['showreel', 'product', 'launch-story', 'explainer'].includes(brief.mode) ? brief.mode : 'product',   // sets the edit pace the critic checks
     background: 'ink', grid: false, vignette: false,   // a clean stage: the brand (films/<film>/brand.json, skill brand-kit) supplies the look
     music: { progression: ['Am', 'F', 'C', 'G'], final: 'C', hook: 'pop332' },
     honesty: 'only the client\'s words, claims and numbers (QUALITY_PLAYBOOK §0, skill data-honesty)',
-    creative: { viewer: brief.viewer || P('who watches, in one line'), problem: brief.problem || P('their problem, the hook'), hero: P('ONE object that does every job, e.g. the logo\'s dot'), idea: P('the brand\'s name or method as motion'), payoff: P('logo whole + promise'), cta: brief.cta || P('one action'), music: 'western, a real beat, one hook that returns every chapter (owner taste)',
+    creative: { viewer: brief.viewer || P('who watches, in one line'), problem: brief.problem || P('their problem, the hook'), endState: brief.endState || P('what they feel, know or do in the last second'), hero: P('ONE object that does every job, e.g. the logo\'s dot'), idea: P('the brand\'s name or method as motion'), payoff: P('logo whole + promise'), cta: brief.cta || P('one action'), music: 'western, a real beat, one hook that returns every chapter (owner taste)',
       ...(brief.style ? { style: brief.style } : {}),
       structures: [P('structure A in one line, e.g. a single journey of the hero'), P('structure B, e.g. before / after'), P('structure C, e.g. a countdown or a list that turns')],
       choice: P('which structure and why, one line'),

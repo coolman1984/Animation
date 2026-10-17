@@ -139,7 +139,8 @@ export const TOOLS = [
         const times = tl.scenes.flatMap((s) => [s.a + (s.b - s.a) * 0.5, s.b - 0.3]).map((t) => +Math.max(0.05, Math.min(tl.duration - 0.05, t)).toFixed(2));
         sampled = await inspect({ film: join(ENGINE, `b-${film}-${fmt}`, 'film.js'), times, w: F.w, h: F.h, safe: F.safe });
       }
-      return [text(critique(spec, brand, { format: fmt, frames: sampled }))];
+      const fp = join(filmDir(film), 'facts.json');
+      return [text(critique(spec, brand, { format: fmt, frames: sampled, facts: existsSync(fp) ? readJSON(fp) : undefined }))];
     } },
   { name: 'film_inspect', description: 'Eyes for any model: what is on screen at given times — every text/shape/image box with colour, size, contrast, the focal point, balance, findings, and a character map of the frame (T text, # shape, @ image, * vector, + safe-box corners). Works without vision.', inputSchema: { type: 'object', properties: { film: FILM, format: FORMAT, times: { type: 'array', items: { type: 'number' }, maxItems: 24 } }, required: ['film', 'times'] },
     run: async ({ film, format, times }) => {

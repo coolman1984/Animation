@@ -12,7 +12,9 @@
       "assets": "[{ name, kind: 'image', prompt, refs, rights }] — files listed once; missing ones are written to assets-todo.json",
       "background": "room (default glass room) | any BG key",
       "vignette": "false for clean geometric staging",
-      "creative": "free object copied into the production plan (direction, palette, reasons)",
+      "mode": "showreel | product | launch-story | explainer — sets the edit pace the critic checks (showreel: new composition every 1–2.5 s, product 1.4–3.5 s)",
+      "creative": "free object copied into the production plan (direction, palette, reasons; viewer, problem, endState, hero, payoff, cta; decisions: one-line reason for each brief line the agent decided)",
+      "facts": "films/<film>/facts.json (not in the spec): { claims: [{ id, text, source: URL, sentence: exact source sentence }], copy: [brand-approved lines] }; any text element (or stack/slab line, wipes/cards item) carries \"fact\": \"<claim id>\"",
       "reel / youtube": "any object (spec, scene or element) may carry { reel: {...} } or { youtube: {...} } overrides for that format"
     }
   },

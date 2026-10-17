@@ -91,3 +91,31 @@ test('styles: every card exists, its fonts are registered in the composer, and t
   }
   assert.throws(() => readStyle('nope'));
 });
+
+test('quality bar (motion-director prompt): facts traced, edit pace per mode, contrast 4.5:1', async () => {
+  const { compositionGaps } = await import('../studio-engine/lib/critic.mjs');
+  const spec = { title: 'facts', format: 'youtube', mode: 'product', scenes: [
+    { id: 'a', beats: 8, elements: [{ type: 'words', text: 'وفّر ٣٠٪', size: 120, at: 0, out: 6, fact: 'c1' }, { type: 'stack', lines: [{ text: 'احجز دلوقتي', size: 96 }, { text: 'سطر حر', size: 90 }] }] },
+    { id: 'b', beats: 12, elements: [{ type: 'words', text: 'وفّر ٣٠٪', size: 120, at: 0, fact: 'nope' }] }] };
+  const facts = { claims: [{ id: 'c1', text: 'وفّر ٣٠٪', source: 'https://example.com/offer', sentence: 'وفّر ٣٠٪ على أول طلب' }], copy: ['احجز دلوقتي'] };
+  const get = (r, id) => r.rules.find((x) => x.id === id);
+  let r = critique(spec, brand, { facts });
+  assert.equal(get(r, 'facts-traced').status, 'fail'); assert.match(get(r, 'facts-traced').evidence, /nope/);
+  spec.scenes[1].elements[0].fact = 'c1';
+  r = critique(spec, brand, { facts });
+  assert.equal(get(r, 'facts-traced').status, 'warn'); assert.match(get(r, 'facts-traced').evidence, /سطر حر/);
+  assert.equal(get(r, 'numbers-sourced').status, 'pass');
+  facts.copy.push('سطر حر'); assert.equal(get(critique(spec, brand, { facts }), 'facts-traced').status, 'pass');
+  assert.equal(get(critique(spec, brand, { facts: { claims: [{ id: 'c1', text: 'x' }] } }), 'facts-traced').status, 'fail');   // no source / sentence
+  assert.equal(get(critique(spec, brand), 'facts-traced'), undefined);   // no facts file: the rule stays out
+  // pace: scene b holds 6 s with nothing new → too slow for product (≤ 3.5 s), fine once a morph lands mid-scene
+  assert.ok(Math.abs(compositionGaps({ a: 0, b: 6, elements: spec.scenes[1].elements }, 0.5).gap - 6) < 1e-9);
+  assert.equal(get(r, 'edit-pace').status, 'warn'); assert.match(get(r, 'edit-pace').evidence, /b holds 6\.0 s/);
+  spec.scenes[1].elements.push({ type: 'shape', x: 0.5, y: 0.6, w: 100, h: 100, at: 4, morph: [{ at: 8, w: 200 }] });
+  assert.equal(get(critique(spec, brand, { facts }), 'edit-pace').status, 'pass');
+  delete spec.mode; assert.equal(get(critique(spec, brand), 'edit-pace'), undefined);
+  // eyes: 3:1–4.5:1 is a warning, under 3:1 a failure
+  const grey = analyze([{ kind: 'backdrop', color: 'rgb(0, 0, 0)', x0: 0, y0: 0, x1: 100, y1: 100, opacity: 1, z: 0 },
+    { kind: 'text', text: 'x', size: 40, color: 'rgb(110, 110, 110)', x0: 10, y0: 10, x1: 90, y1: 50, opacity: 1, z: 1 }], { w: 100, h: 100 });
+  assert.deepEqual(grey.findings.filter((f) => f.rule === 'contrast').map((f) => f.level), ['warn']);
+});

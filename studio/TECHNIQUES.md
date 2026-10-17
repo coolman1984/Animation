@@ -343,3 +343,8 @@ Focused check: `node --test --test-isolation=none studio-engine/test/review.test
 - Reveal: `@supports (animation-timeline: view())` → `animation-timeline: view(); animation-range: entry 0% entry 100%`, else IntersectionObserver (`rootMargin: 0 0 -12% 0`) adds `.in`; blur 8 px + 28–40 px rise; words split on spaces with 70 ms stagger.
 - 3D ring: cards `rotateY(i·360/n) translateZ(r)`, r = clamp(200, 0.38·width, 520), opacity 0.25 + 0.75·front, blur on the back half, drag velocity with 0.95 decay, arrow keys step one card; section `overflow: clip`.
 - Check thresholds: overflow vs `visualViewport`; contrast 4.5:1 (3:1 for ≥ 24 px or bold ≥ 18.66 px); text ≥ 14 px; taps ≥ 44 px below 900 px wide; weight ≤ 700 KB before photos.
+
+## Quality bar from the motion-director prompt (2026-10-17; QUALITY_PLAYBOOK §10)
+- facts.json: `{ "claims": [{ "id": "c1", "text": "…", "source": "https://…", "sentence": "exact sentence" }], "copy": ["tagline", "CTA"] }`; element `"fact": "c1"` (or `["c1","c2"]`). Lines are matched to claims/copy after removing tashkeel/tatweel and extra spaces.
+- Edit pace: per scene, change times = 0, end, every element `at`/`out`/`clickAt`/`pushAt`/`implodeAt`/`midAt`, `morph[].at`, `items[].at`, `lines[].at`, `points[].at`, `times[]`, cards steps (beats × 60/bpm); longest gap > mode max + 0.05 s → warn. Scenes with `hold: true` or music `breath` are exempt; more than two of them → warn.
+- Sound-off sheet: `ffmpeg -i share.mp4 -vf "fps=2,scale=270:-2,tile=8x8" -an -frames:v 1 sheet.png` (one sheet per 32 s).
