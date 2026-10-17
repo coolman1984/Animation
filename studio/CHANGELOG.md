@@ -9,7 +9,7 @@ lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 Owner shared a motion-director prompt (brief lines, modes, craft, audio, critic loop, measured quality bar) and asked to use it to raise
 quality. Compared it with what the studio already measures (size/fps/duration, still spans ≤ 0.7 s, sync, −14 LUFS / −1.5 dBTP, music-only
 file) and added only what was missing: critic rules **facts-traced** (`films/<film>/facts.json`, `"fact"` on each line; fails on a claim
-without URL + exact sentence or an unknown id) and **edit-pace** (`spec.mode`: showreel 1–2.5 s, product 1.4–3.5 s, ≤ 2 held breaths);
+without URL + exact sentence, an unknown id, or a number missing from the tagged claim; MCP `spec_save` takes `facts`) and **edit-pace** (`spec.mode`: showreel 1–2.5 s, product 1.4–3.5 s, ≤ 2 held breaths);
 `numbers-sourced` passes when every number line carries a fact; `director-brief` asks for `endState`; the eyes warn on text contrast 3–4.5:1
 (fail stays < 3:1) and a rule's level is now "fail" if any sampled frame fails (it took the first frame's level before). `director plan`
 writes `mode` (default product) and `creative.endState`; CLI `--mode= --endState=`; `director review` and MCP `film_review` load facts.json.

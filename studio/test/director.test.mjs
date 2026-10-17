@@ -107,6 +107,10 @@ test('quality bar (motion-director prompt): facts traced, edit pace per mode, co
   assert.equal(get(r, 'numbers-sourced').status, 'pass');
   facts.copy.push('سطر حر'); assert.equal(get(critique(spec, brand, { facts }), 'facts-traced').status, 'pass');
   assert.equal(get(critique(spec, brand, { facts: { claims: [{ id: 'c1', text: 'x' }] } }), 'facts-traced').status, 'fail');   // no source / sentence
+  spec.scenes[1].elements[0].text = 'خصم ٩٩٪';   // a valid id does not launder a different number
+  r = critique(spec, brand, { facts }); assert.equal(get(r, 'facts-traced').status, 'fail'); assert.match(get(r, 'facts-traced').evidence, /shows 99/);
+  spec.scenes[1].elements[0].text = 'خصم 30٪';   // same number in Latin digits, paraphrased words: fine
+  assert.equal(get(critique(spec, brand, { facts }), 'facts-traced').status, 'pass');
   assert.equal(get(critique(spec, brand), 'facts-traced'), undefined);   // no facts file: the rule stays out
   // pace: scene b holds 6 s with nothing new → too slow for product (≤ 3.5 s), fine once a morph lands mid-scene
   assert.ok(Math.abs(compositionGaps({ a: 0, b: 6, elements: spec.scenes[1].elements }, 0.5).gap - 6) < 1e-9);

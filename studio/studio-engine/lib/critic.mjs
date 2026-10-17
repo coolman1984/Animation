@@ -63,6 +63,7 @@ export function compositionGaps(s, B) {
   const ts = [...t].sort((a, b) => a - b);
   return ts.slice(1).reduce((m, v, i) => (v - ts[i] > m.gap ? { gap: v - ts[i], at: s.a + ts[i] } : m), { gap: 0, at: s.a });
 }
+const digits = (x) => (String(x).replace(/[٠-٩]/g, (d) => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).match(/\d+(?:[.,٫]\d+)?/g) || []).map((n) => n.replace(/[,٫]/, '.'));
 const norm = (x) => String(x).replace(/[\u064B-\u0652\u0640]/g, '').replace(/\s+/g, ' ').trim();
 
 export function critique(base, brand, { format, frames, facts } = {}) {
@@ -137,7 +138,10 @@ export function critique(base, brand, { format, frames, facts } = {}) {
     const broken = [...claims.values()].filter((c) => !c.id || !c.source || !c.sentence).map((c) => c.id || norm(c.text || '?'));
     const ids = (f) => (Array.isArray(f) ? f : f ? [f] : []), unknown = copy.flatMap((c) => ids(c.fact).filter((id) => !claims.has(id)).map((id) => `${c.scene}: "${c.text}" → ${id}`));
     const loose = copy.filter((c) => !ids(c.fact).length && !ok.has(norm(c.text)));
-    add('facts-traced', broken.length || unknown.length ? 'fail' : loose.length ? 'warn' : 'pass', 'QUALITY_PLAYBOOK §10 · skill data-honesty', broken.length ? `claim(s) without source URL + exact sentence: ${broken.slice(0, 4).join(', ')}` : unknown.length ? `unknown fact id: ${unknown.slice(0, 3).join(' · ')}` : loose.length ? `${loose.length} line(s) not traced: ${loose.slice(0, 3).map((c) => `${c.scene}: "${c.text}"`).join(' · ')}` : `${copy.length} line(s) traced to ${claims.size} claim(s)`, 'Give each line "fact": "<claim id>" from facts.json (claim = id, text, source URL, the exact source sentence) or list brand-approved copy (tagline, CTA) in facts.copy.');
+    // a tagged line may paraphrase its claim, but every number it shows must be in the claim's text or source sentence
+    const off = copy.filter((c) => ids(c.fact).length && ids(c.fact).every((id) => claims.has(id))).flatMap((c) => { const have = new Set(ids(c.fact).flatMap((id) => [...digits(claims.get(id).text), ...digits(claims.get(id).sentence)])); return digits(c.text).filter((n) => !have.has(n)).map((n) => `${c.scene}: "${c.text}" shows ${n}, not in ${ids(c.fact).join('+')}`); });
+    unknown.push(...off);
+    add('facts-traced', broken.length || unknown.length ? 'fail' : loose.length ? 'warn' : 'pass', 'QUALITY_PLAYBOOK §10 · skill data-honesty', broken.length ? `claim(s) without source URL + exact sentence: ${broken.slice(0, 4).join(', ')}` : unknown.length ? `unknown fact id or number not in its claim: ${unknown.slice(0, 3).join(' · ')}` : loose.length ? `${loose.length} line(s) not traced: ${loose.slice(0, 3).map((c) => `${c.scene}: "${c.text}"`).join(' · ')}` : `${copy.length} line(s) traced to ${claims.size} claim(s)`, 'Give each line "fact": "<claim id>" from facts.json (claim = id, text, source URL, the exact source sentence) or list brand-approved copy (tagline, CTA) in facts.copy.');
   }
   const ph = copy.filter((c) => PLACEHOLDER.test(c.text));
   add('no-placeholders', ph.length ? 'fail' : 'pass', 'director plan', ph.length ? ph.slice(0, 4).map((c) => `${c.scene}: ${c.text}`).join(' · ') : 'all copy written', 'Replace every ‹…› placeholder with the real line.');

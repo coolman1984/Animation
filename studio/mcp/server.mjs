@@ -106,15 +106,17 @@ export const TOOLS = [
     run: () => [text(readdirSync(FILMS).filter((d) => existsSync(join(FILMS, d, 'spec.json'))).map((d) => { const s = readJSON(join(FILMS, d, 'spec.json')); return { film: d, title: s.title, format: s.format || 'youtube', scenes: s.scenes?.length }; }))] },
   { name: 'spec_read', description: 'Read a film\'s spec.json.', inputSchema: { type: 'object', properties: { film: FILM }, required: ['film'] },
     run: ({ film }) => { const p = join(filmDir(film), 'spec.json'); if (!existsSync(p)) throw new Error(`no spec for ${film}`); return [text(readFileSync(p, 'utf8'))]; } },
-  { name: 'spec_save', description: 'Validate a spec and save it as studio/studio-engine/films/<film>/spec.json. Refuses (and saves nothing) while it has errors; every issue carries a "fix" hint.', inputSchema: { type: 'object', properties: { film: FILM, spec: { type: 'object', description: 'the whole spec (see engine_catalog)' }, format: FORMAT }, required: ['film', 'spec'] },
-    run: ({ film, spec, format }) => {
+  { name: 'spec_save', description: 'Validate a spec and save it as studio/studio-engine/films/<film>/spec.json. Refuses (and saves nothing) while it has errors; every issue carries a "fix" hint.', inputSchema: { type: 'object', properties: { film: FILM, spec: { type: 'object', description: 'the whole spec (see engine_catalog)' }, format: FORMAT, facts: { type: 'object', description: 'optional facts.json { claims: [{ id, text, source: URL, sentence: exact source sentence }], copy: [brand-approved lines] }; lines carry "fact": "<id>" (QUALITY_PLAYBOOK §10)' } }, required: ['film', 'spec'] },
+    run: ({ film, spec, format, facts }) => {
       const dir = filmDir(film);
       if (!spec || typeof spec !== 'object' || Array.isArray(spec)) throw new Error('spec must be an object');
+      if (facts != null && (typeof facts !== 'object' || Array.isArray(facts) || (facts.claims != null && !Array.isArray(facts.claims)) || (facts.copy != null && !Array.isArray(facts.copy)))) throw new Error('facts must be { claims: [...], copy: [...] }');
       if (JSON.stringify(spec).length > 400000) throw new Error('spec is larger than 400 kB');
       const r = check(spec, film, format);
       if (!r.ok) return [text({ saved: false, ...r })];
       mkdirSync(dir, { recursive: true }); writeFileSync(join(dir, 'spec.json'), JSON.stringify(spec, null, 2) + '\n');
-      return [text({ saved: true, path: `studio/studio-engine/films/${film}/spec.json`, next: 'spec_check, then film_stills', ...r })];
+      if (facts) writeFileSync(join(dir, 'facts.json'), JSON.stringify(facts, null, 2) + '\n');
+      return [text({ saved: true, path: `studio/studio-engine/films/${film}/spec.json`, ...(facts ? { facts: `studio/studio-engine/films/${film}/facts.json` } : {}), next: 'spec_check, then film_stills', ...r })];
     } },
   { name: 'style_list', description: 'House style cards taken from the studio\'s own delivered films (look, motion, camera grammar, sound, pitfalls). Pick one before planning instead of inventing a look.', inputSchema: { type: 'object', properties: {} },
     run: async () => { const { listStyles } = await import('../lib/styles.mjs'); return [text(listStyles())]; } },

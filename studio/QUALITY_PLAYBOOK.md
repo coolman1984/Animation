@@ -92,10 +92,10 @@ together with `WORKFLOW.md` (process authority) and `AUTONOMOUS_FILM.md` (owner 
 Adopted from the prompt the owner shared; where it clashes with §0 (music taste, logos whole) §0 wins.
 - **Brief lines the agent decides:** mode (showreel | product | launch-story | explainer), viewer, end state (what they feel, know or do in
   the last second), facts, sound, sign-off. A blank line is decided by the agent with a one-line reason in `spec.creative.decisions`
-  (or the film's BRIEF.md). `studio-engine/brief-template.md` lists them.
+  (or the film's BRIEF.md). `studio-engine/brief-template.md` lists them. MCP clients send the facts with `spec_save` (`facts`).
 - **Facts first:** `films/<film>/facts.json` = `{ claims: [{ id, text, source: URL, sentence: the exact source sentence }], copy: [brand-approved
   lines such as the tagline and CTA] }`. Each text element (or stack/slab line, wipes/cards item) carries `"fact": "<claim id>"`. The critic
-  rule `facts-traced` fails on a claim without URL + sentence or an unknown id, and warns on any line that is neither a claim nor approved copy.
+  rule `facts-traced` fails on a claim without URL + sentence, an unknown id, or a number the tagged claim does not contain, and warns on any line that is neither a claim nor approved copy.
 - **Edit pace by mode:** showreel = a new composition every 1–2.5 s, product = every 1.4–3.5 s, with at most two held breaths
   (`hold: true` or music `breath`). Critic rule `edit-pace` measures the longest gap inside each scene with nothing entering, leaving,
   morphing, clicking or wiping. Launch-story and explainer set no pace (characters and narration own the time).
