@@ -15,6 +15,8 @@ No universal entrance duration, required grain/vignette, compulsory animation on
 Readability takes priority: establish the frame, move attention, settle. Text outside scene focus layers; words never split into letters.
 Check backward seeking and worker-independent frames. QA changed intervals plus transitions; full artistic review only at delivery.
 
+**Move library (2026-10-18, studio/library/README.md):** 120 named moves with exact specs and Canvas code (Motion Prompt #001–#120) and 273 measured techniques (Cinetic). `node studio/studio.mjs moves search <words>` (English/Arabic), `moves show 12`, `moves code 12`; in film.js `drawCard(ctx, pack, no, u, {x, y, scale})` from `lib/mpcard.js` with `holdU`/`loopU`. Keep the move's numbers, port it into our own layers with our colours and Arabic type; the card's look is the sample's.
+
 **Showreel-proven recipes (see studio/TECHNIQUES.md):** the SVG helper `el()` only draws tags in its list (text/textPath/polyline/polygon added) — test a new tag on a frame. Directional blur = per-id `feGaussianBlur stdDeviation="x y"` driven by velocity, zero when settled. Variable-width type via `fontVariationSettings 'wdth'`; letters as spans, never Arabic letter-splitting. Measure text only while visible (hidden = 0 px). Declare intentional dark openings with `darkSpans`, stillness with `holds`.
 
 **Film 5 additions (studio/TECHNIQUES.md → Film 5 recipes):** marquee bands for the unsafe zones of a Reel, FLIP card fly (labels above moving cards), arch portal via clip-path path(), diagonal split swap, blurred-cover + faded window for portrait macros from a square photo, decorative words above (not behind) the product, exit animations must not cross the safe edge.

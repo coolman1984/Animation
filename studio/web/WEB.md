@@ -22,6 +22,7 @@ in a real browser the way a top studio checks before launch. Same philosophy as 
    (publishing needs the owner's account; say so, never claim a site is live without the URL).
 
 ## Motion vocabulary (web/motion/motion.js + site.css, opt-in by data attributes)
+Names and exact timings for more web effects and UI parts: Motion Prompt #049–#096 (`node studio/studio.mjs moves search <words> --library=motion-prompt`; `../library/README.md`).
 `data-reveal` rise from blur on entry (native CSS scroll timeline where supported, IntersectionObserver otherwise) · `data-split` headline
 words one by one (split on spaces: Arabic letters stay joined) · `data-parallax` · `data-steps` sticky scrollytelling · `data-ring` 3D card
 ring (drag, wheel, arrow keys; auto-spin until touched) · `data-count` count-up for SOURCED numbers · `data-magnetic` buttons · reading

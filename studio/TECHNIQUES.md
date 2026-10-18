@@ -344,6 +344,11 @@ Focused check: `node --test --test-isolation=none studio-engine/test/review.test
 - 3D ring: cards `rotateY(i·360/n) translateZ(r)`, r = clamp(200, 0.38·width, 520), opacity 0.25 + 0.75·front, blur on the back half, drag velocity with 0.95 decay, arrow keys step one card; section `overflow: clip`.
 - Check thresholds: overflow vs `visualViewport`; contrast 4.5:1 (3:1 for ≥ 24 px or bold ≥ 18.66 px); text ≥ 14 px; taps ≥ 44 px below 900 px wide; weight ≤ 700 KB before photos.
 
+## Named moves from the move library (2026-10-18; `library/README.md`)
+- Find: `node studio/studio.mjs moves search <words>` (English, Arabic, Japanese; both libraries) → `moves show <#id | technique-id>`.
+- Place a Motion Prompt card: `drawCard(ctx, pack, no, u, { x, y, scale })` (`lib/mpcard.js`); `u = holdU(t - start, uHold)` for an entrance that stays, `loopU(t, cycle)` for a loop; cards are 539×208 (ui 542×191), cycles 4.5–9.4 s. Photo cells #105/#106/#111 cache scratch canvases on first call: `drawCard` warms every cell across its cycle first, so slices rendered in fresh browsers match.
+- Plan: `moves draw --format=<launch|feature|loop|sting|walkthrough|vertical> --seconds=N [--energy=calm]` → about one technique per 3.5 s calm (2.5 s otherwise), weights role (workhorse 3, accent 2, signature 1) × proof (1 + evidence/4, ≤ 3) × energy fit; calm never draws a high-energy entry; one signature move (two from 10 picks). Log the seed.
+
 ## Quality bar from the motion-director prompt (2026-10-17; QUALITY_PLAYBOOK §10)
 - facts.json: `{ "claims": [{ "id": "c1", "text": "…", "source": "https://…", "sentence": "exact sentence" }], "copy": ["tagline", "CTA"] }`; element `"fact": "c1"` (or `["c1","c2"]`). Lines are matched to claims/copy after removing tashkeel/tatweel and extra spaces; a tagged line may paraphrase, but each number it shows (Arabic digits read as Latin) must appear in the claim's text or sentence. MCP: `spec_save` takes `facts` and writes facts.json.
 - Edit pace: per scene, change times = 0, end, every element `at`/`out`/`clickAt`/`pushAt`/`implodeAt`/`midAt`, `morph[].at`, `items[].at`, `lines[].at`, `points[].at`, `times[]`, cards steps (beats × 60/bpm); longest gap > mode max + 0.05 s → warn. Scenes with `hold: true` or music `breath` are exempt; more than two of them → warn.
