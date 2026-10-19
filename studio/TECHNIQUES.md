@@ -348,3 +348,11 @@ Focused check: `node --test --test-isolation=none studio-engine/test/review.test
 - facts.json: `{ "claims": [{ "id": "c1", "text": "…", "source": "https://…", "sentence": "exact sentence" }], "copy": ["tagline", "CTA"] }`; element `"fact": "c1"` (or `["c1","c2"]`). Lines are matched to claims/copy after removing tashkeel/tatweel and extra spaces; a tagged line may paraphrase, but each number it shows (Arabic digits read as Latin) must appear in the claim's text or sentence. MCP: `spec_save` takes `facts` and writes facts.json.
 - Edit pace: per scene, change times = 0, end, every element `at`/`out`/`clickAt`/`pushAt`/`implodeAt`/`midAt`, `morph[].at`, `items[].at`, `lines[].at`, `points[].at`, `times[]`, cards steps (beats × 60/bpm); longest gap > mode max + 0.05 s → warn. Scenes with `hold: true` or music `breath` are exempt; more than two of them → warn.
 - Sound-off sheet: `ffmpeg -i share.mp4 -vf "fps=2,scale=270:-2,tile=8x8" -an -frames:v 1 sheet.png` (one sheet per 32 s).
+
+## Web taste lights (2026-10-19; `web/lib/check.mjs`)
+- Headline lines = round(box height ÷ computed line-height) for h1/h2 at 390/820/1440. Typefaces = first family of every text node outside code/tables/forms/`[data-ui]`.
+- Untinted neutral: max−min channel < 6 on a background covering ≥ ¼ screen (not white, not near-white) or pure #000 text. Grey on colour: neutral text (40–215) on a ground with chroma > 60.
+- Bounce: any `cubic-bezier` y value outside −0.05…1.05 in transition/animation timing. Long line: p/li/blockquote > 120 characters and width ÷ (0.5 em) > 95.
+- Blank stretch: merge the document-y spans of text, media, buttons and scroll scenes (`[data-steps]`, `[data-ring]`); any gap > ½ screen height.
+- Hero media: on-screen area of img/video/canvas/svg/ring larger than 50×50 px in the first desktop screen ÷ screen area.
+- Audit compare: each light carries `n` (findings count; KB for weight; shortfall for typefaces > 2, moving < 8, hero media < 40 %). A colour step decides; within one colour a larger `n` is worse (weight: > 10 % larger).

@@ -95,7 +95,7 @@ dependencies) with client configs for Claude Code, Codex, Gemini CLI, Cursor and
 strong model's judgment into tools. Self-check: `node studio.mjs agents`. Shot-list lint (`studio.mjs storyboard`) and the owner-calibrated taste gate on exports (`studio.mjs taste`, `taste/verdicts.json`). Method and limits: `ANY_MODEL.md`.
 
 ## Web department (2026-10-16)
-Sites from one `site.json`: `web/lib/site.mjs` (plan, validate, static build), `web/motion/` (motion.js + site.css), `web/styles/`, `web/lib/check.mjs` (real-browser gate at 390/820/1440). Guide: `web/WEB.md`.
+Sites from one `site.json`: `web/lib/site.mjs` (plan, validate, static build), `web/motion/` (motion.js + site.css), `web/styles/`, `web/lib/check.mjs` (real-browser gate at 390/820/1440). Guide: `web/WEB.md`. `studio.mjs web audit <label> --dir=<folder> [--before=<label>]` measures an existing site before and after an improvement (`compareAudits`). Every site runs the one workflow A–D with a DESIGN.md (`web/templates/DESIGN.md`; WEB.md).
 
 ## Browser session modes
 - **private** (default): each render worker starts its own headless Chrome with a throwaway profile and closes it.

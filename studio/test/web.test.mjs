@@ -39,3 +39,27 @@ test('build: lang/dir, every section, styles fonts copied, no placeholders, smal
   for (const s of STYLES().styles) for (const f of Object.values(s.fonts)) assert.ok(STYLES().faces[f], `${s.slug}: no faces for ${f}`);
   assert.throws(() => build(plan({}).site, mkdtempSync(join(tmpdir(), 'web-'))), /placeholder/);
 });
+
+test('audit compare: before → after names what got better and what got worse', async () => {
+  const { compareAudits } = await import('../web/lib/check.mjs');
+  const c = compareAudits({ lights: [{ id: 'contrast', light: 'red' }, { id: 'taste-easing', light: 'green' }] },
+    { lights: [{ id: 'contrast', light: 'green' }, { id: 'taste-easing', light: 'yellow' }, { id: 'weight', light: 'green' }] });
+  assert.equal(c.better, 1); assert.deepEqual(c.worse, ['taste-easing']);
+  assert.equal(c.rows.find((r) => r.id === 'weight').change, 'new');
+  // inside the same colour the measure decides: more tap-target misses, or weight up > 10 %, is worse
+  const d = compareAudits({ lights: [{ id: 'tap-targets', light: 'yellow', n: 1 }, { id: 'weight', light: 'yellow', n: 701 }] },
+    { lights: [{ id: 'tap-targets', light: 'yellow', n: 6 }, { id: 'weight', light: 'yellow', n: 1499 }] });
+  assert.deepEqual(d.worse, ['tap-targets', 'weight']);
+});
+
+test('design record: build and check need DESIGN.md with stages A–D and no placeholders', async () => {
+  const { designRecord } = await import('../web/lib/site.mjs');
+  const dir = mkdtempSync(join(tmpdir(), 'design-'));
+  try {
+    assert.equal(designRecord(dir).ok, false);
+    const { writeFileSync } = await import('node:fs');
+    writeFileSync(join(dir, 'DESIGN.md'), readFileSync(join(STUDIO, 'web/templates/DESIGN.md'), 'utf8'));
+    const t = designRecord(dir); assert.equal(t.ok, false); assert.match(t.errors[0], /placeholder/);
+    assert.equal(designRecord(join(STUDIO, 'web/sites/example')).ok, true, 'the example site carries a filled record');
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});

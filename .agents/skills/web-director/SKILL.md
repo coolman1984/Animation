@@ -4,11 +4,13 @@ description: Build a complete, beautiful, animated static website (landing pages
 ---
 <!-- generated from .claude/skills by `node studio/studio.mjs agents --sync`; edit the source, not this copy -->
 # web-director
-Read `studio/web/WEB.md`. Honesty rules: skill `data-honesty` (client's words and real numbers only; sources for stats and quotes).
+Read `studio/web/WEB.md`. **Owner orders (2026-10-19): every site or web animation runs WEB.md "One workflow" — A creative direction (taste-skill: three real directions, pick one) → B design system (UI UX Pro Max) → C build + animate from the motion storyboard with the minimum tech → D critique and polish (Impeccable) — recorded in `web/sites/<site>/DESIGN.md`; WEB.md says how each runs, installed or not. Done = the visual quality loop passed, never "it compiled".** Honesty rules: skill `data-honesty` (client's words and real numbers only; sources for stats and quotes).
 
 1. Answer the ambition questions first (best studio in the field · rawest real material · methods and tools), then pick a style: `node studio/studio.mjs web styles`.
 2. `node studio/studio.mjs web plan <site> --brand=… --style=… --lang=ar|en --cta=… --problem=… --promise=…` (MCP `web_plan`); shape the sections to the client.
 3. Write every ‹…›; `web build <site>` refuses placeholders, unsourced numbers/quotes and missing alt text (MCP `web_save` validates first).
-4. `node studio/studio.mjs web check <site>` (MCP `web_check`): fix every red light, read the yellow ones, LOOK at the phone/tablet/desktop strips.
+   Taste pass (WEB.md): write the idea sentence and pass the competitor test; one claim per section; no eyebrows, pill badges, icon-card rows, gradients, glows or glass by default.
+4. `node studio/studio.mjs web check <site>` (MCP `web_check`): fix every red light, read the yellow ones, LOOK at the phone/tablet/desktop strips. Taste lights are yellow: fix each or defend it in one sentence; then fix the top three problems you see on the strips (two rounds at most).
 5. Preview `web serve <site>`; publishing needs the owner's hosting account — never claim a site is live without its URL.
-Report in Egyptian Arabic, conclusion first; say what was not checked (real devices, real content, live hosting).
+**Improving an existing site:** `web audit <site>-before --dir=<folder>` first (keep the original, list what must survive) → stages A → B → C (keep content and function) → D → `web audit <site>-after --dir=<new> --before=<site>-before` (nothing may get worse).
+Deliver: working site, tested animations, DESIGN.md, before/after strips for a redesign. Report in Egyptian Arabic, say which way each stage ran, conclusion first; say what was not checked (real devices, real content, live hosting).

@@ -5,6 +5,35 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-19 — One web workflow A–D + DESIGN.md per site (DONE)
+Owner brief "world-class web design & motion engine": one unified, permanent workflow — A creative direction (taste-skill, three real
+directions), B design architecture (UI UX Pro Max), C build + animate from a motion storyboard with the minimum tech (CSS / Motion /
+GSAP+ScrollTrigger / Three.js / SVG-Canvas), D design director (Impeccable) — plus a mandatory visual quality loop and a delivery list.
+`web/WEB.md` "One workflow", `web/templates/DESIGN.md` (written into every new site by `web plan` / MCP `web_plan`), AGENTS.md, skill
+`web-director`, SKILLS, PLATFORM, TECH_RADAR (Motion LEARN, GSAP PILOT). Install of the three repos: blocked in this cloud session
+(third-party code); the owner installs them in Claude Code with the `/plugin` commands in WEB.md, and the studio adaptation runs otherwise.
+Review fixes (Codex): build/check/serve now refuse a site without a filled DESIGN.md (`--draft` for a labelled preview; the example
+site carries a real record written after the fact); `web audit --before` compares each light's measure inside the same colour (finding
+count; weight +10 %), so 1 → 6 small tap targets or 701 → 1499 KB now count as worse. Not verified: a full site made through stages A–D.
+
+## 2026-10-19 — The three together for every site + `web audit` (DONE)
+Owner order: "if I give you a site to improve, you must use them together." AGENTS.md, WEB.md ("The three together": taste & identity →
+industry design system → audit & polish; installed in the host or through the studio adaptation, said in the report), skill `web-director`,
+SKILLS.md, PLATFORM.md and TECH_RADAR now make it binding for every agent. New: `studio.mjs web audit <label> --dir=<folder>
+[--page=] [--before=<label>]` checks ANY existing built site (not only site.json sites), saves `takes/web/<label>/audit.json`, and compares
+before → after (any light that gets worse fails); MCP `web_check` takes `dir`. Test: `test/web.test.mjs` (compareAudits). Ran on the example
+build twice (before/after: 0 better, 0 worse). Not verified: a real client site improved end to end.
+
+## 2026-10-19 — Web taste pass from three owner-recommended design skills (DONE)
+Owner asked to add taste-skill (Leonxlnx, MIT), UI UX Pro Max (nextlevelbuilder, MIT) and Impeccable (Paul Bakaus, Apache-2.0) to the web
+factory. Read as web pages (cloning third-party code was blocked; house rule learn → adapt → integrate). `web/lib/check.mjs` gained ten
+measured **taste lights**, all yellow (borrowed thresholds warn, never block): headlines ≤ 2 lines, ≤ 2 typefaces, decorative
+gradients/shadows/glows, untinted neutrals and grey on colour, tiny tracked caps and long lines, bounce easing, blank stretches over half a
+screen (scroll scenes excepted), ≥ 8 moving elements, hero media share. WEB.md and skill `web-director` gained the taste pass (idea sentence
++ competitor test, one claim per section, look-and-fix). TECH_RADAR 2026-10-19 records each repo and why nothing was installed (Impeccable's
+binary + roll-API telemetry; UI UX Pro Max's large Latin-font dataset and premium tier). Example site: still READY, with four honest yellows
+(three typefaces incl. Space Mono labels, shadows on buttons/ring cards, a type-led hero). Not verified: a client site built under the pass.
+
 ## 2026-10-17 — Quality bar from the owner's motion-director prompt (DONE)
 Owner shared a motion-director prompt (brief lines, modes, craft, audio, critic loop, measured quality bar) and asked to use it to raise
 quality. Compared it with what the studio already measures (size/fps/duration, still spans ≤ 0.7 s, sync, −14 LUFS / −1.5 dBTP, music-only
