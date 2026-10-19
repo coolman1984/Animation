@@ -355,3 +355,4 @@ Focused check: `node --test --test-isolation=none studio-engine/test/review.test
 - Bounce: any `cubic-bezier` y value outside −0.05…1.05 in transition/animation timing. Long line: p/li/blockquote > 120 characters and width ÷ (0.5 em) > 95.
 - Blank stretch: merge the document-y spans of text, media, buttons and scroll scenes (`[data-steps]`, `[data-ring]`); any gap > ½ screen height.
 - Hero media: on-screen area of img/video/canvas/svg/ring larger than 50×50 px in the first desktop screen ÷ screen area.
+- Audit compare: each light carries `n` (findings count; KB for weight; shortfall for typefaces > 2, moving < 8, hero media < 40 %). A colour step decides; within one colour a larger `n` is worse (weight: > 10 % larger).

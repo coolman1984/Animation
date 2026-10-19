@@ -44,6 +44,16 @@ const mediaOf = (site) => [site.brand?.logo, ...(site.sections || []).flatMap((s
 export const safeMedia = (p) => /^https:\/\//.test(p) || (!/^([a-z]+:|\/|\\)/i.test(p) && !p.split(/[\\/]/).includes('..'));
 
 // ---------- validate ----------
+// The site's design record (WEB.md "One workflow"): stages A–D written, no ‹…› left. Builds and checks refuse without it (draft excepted).
+export function designRecord(siteDir) {
+  const p = join(siteDir, 'DESIGN.md');
+  if (!existsSync(p)) return { ok: false, errors: ['no DESIGN.md: copy web/templates/DESIGN.md and fill stages A–D (WEB.md "One workflow")'] };
+  const md = readFileSync(p, 'utf8'), left = (md.match(/‹[^›]*›/g) || []).length;
+  const missing = ['## A.', '## B.', '## C.', '## D.'].filter((h) => !md.includes(h));
+  const errors = [...(left ? [`DESIGN.md: ${left} ‹…› placeholder(s) left`] : []), ...missing.map((h) => `DESIGN.md: section "${h}" missing`)];
+  return { ok: !errors.length, errors };
+}
+
 export function validate(site) {
   const errors = [], warnings = [], E = (m) => errors.push(m), W = (m) => warnings.push(m);
   if (!site || typeof site !== 'object') return { errors: ['site.json must be an object'], warnings };

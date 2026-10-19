@@ -27,7 +27,8 @@ in a real browser the way a top studio checks before launch. Same philosophy as 
 
 ## One workflow — mandatory for every site and web animation (owner orders, 2026-10-19)
 Every website or web animation we build or **improve** runs four stages, each owned by one tool, recorded in `web/sites/<site>/DESIGN.md`
-(written by `web plan`; template `web/templates/DESIGN.md`). Conflicts are settled by the client's brief and brand → DESIGN.md → the
+(written by `web plan`; template `web/templates/DESIGN.md`). `web build|check|serve` and MCP `web_check` refuse a site whose DESIGN.md
+is missing, lacks a stage or still holds a ‹…›; `--draft` (MCP `draft: true`) gives a preview labelled DRAFT, never a delivery. Conflicts are settled by the client's brief and brand → DESIGN.md → the
 owner's taste (`QUALITY_PLAYBOOK.md` §0) → any tool's suggestion. Existing projects keep all business logic, data, functions and brand
 rules unless the owner asks otherwise. Free tools only; never a paid API without the owner's approval.
 
@@ -69,7 +70,7 @@ check again — at most two correction rounds per scope (AGENTS.md), then DONE o
 1. **Before:** keep the original untouched; list what must survive (pages, links, forms, data, analytics, SEO titles, brand rules);
    `node studio/studio.mjs web audit <site>-before --dir=<built site folder>` (MCP `web_check` with `dir`) → lights + strips.
 2. **Stages A → B → C:** keep the stack and the content; change design, structure and motion.
-3. **Stage D + after:** `web audit <site>-after --dir=<new build> --before=<site>-before` → what got better, what got worse (worse = not done).
+3. **Stage D + after:** `web audit <site>-after --dir=<new build> --before=<site>-before` → what got better, what got worse (worse = not done). Inside the same colour the measure decides: more findings, or weight up > 10 %, is worse.
 4. A live URL is audited from a local copy or its built output; publishing still needs the owner's hosting account.
 
 **Final delivery:** the working site; implemented and tested animations; DESIGN.md (the reusable design system); before/after screenshots

@@ -95,7 +95,11 @@ async function visit(client, url, vp, { reduce = false } = {}) {
 const RANK = { green: 0, yellow: 1, red: 2 };
 export function compareAudits(before, after) {
   const was = Object.fromEntries((before?.lights || []).map((l) => [l.id, l.light]));
-  const rows = (after?.lights || []).map((l) => ({ id: l.id, before: was[l.id] || 'new', after: l.light, change: was[l.id] == null ? 'new' : RANK[l.light] < RANK[was[l.id]] ? 'better' : RANK[l.light] > RANK[was[l.id]] ? 'worse' : 'same' }));
+  // a colour step decides; inside the same colour the measure decides (more findings, or weight up > 10 %, is worse)
+  const n0 = Object.fromEntries((before?.lights || []).map((l) => [l.id, l.n ?? 0]));
+  const within = (id, a, b) => (id === 'weight' ? (b > a * 1.1 ? 'worse' : b < a * 0.9 ? 'better' : 'same') : b > a ? 'worse' : b < a ? 'better' : 'same');
+  const rows = (after?.lights || []).map((l) => ({ id: l.id, before: was[l.id] || 'new', after: l.light, n: [n0[l.id] ?? null, l.n ?? 0],
+    change: was[l.id] == null ? 'new' : RANK[l.light] < RANK[was[l.id]] ? 'better' : RANK[l.light] > RANK[was[l.id]] ? 'worse' : within(l.id, n0[l.id] ?? 0, l.n ?? 0) }));
   return { rows, better: rows.filter((r) => r.change === 'better').length, worse: rows.filter((r) => r.change === 'worse').map((r) => r.id) };
 }
 
@@ -124,37 +128,37 @@ export async function checkSite({ dir, outDir, page = 'index.html' }) {
     const r = await visit(client, url, VIEWPORTS[0], { reduce: true });
     viewports.push({ name: 'phone (reduced motion)', reduced: true, running: r.running, hidden: r.hidden });
   } finally { await client?.close(); srv.close(); }
-  const lights = [], add = (id, light, why) => lights.push({ id, light, why });
+  const lights = [], add = (id, light, why, n = 0) => lights.push({ id, light, why, n });   // n = the measure behind the light (count of findings, KB): compared before → after
   const all = (k) => [...new Set(viewports.filter((v) => !v.reduced).flatMap((v) => (v[k] || []).map((x) => `${v.name}: ${x}`)))];
   const over = viewports.filter((v) => !v.reduced && (v.overflowPx > 1 || v.wide.length));
-  add('no-sideways-scroll', over.length ? 'red' : 'green', over.length ? over.map((v) => `${v.name}: ${v.overflowPx}px wider (${v.wide.slice(0, 3).join(', ')})`).join(' · ') : 'nothing wider than the screen at 390 / 820 / 1440 px');
-  add('images', all('noAlt').length || all('broken').length ? 'red' : 'green', [...all('noAlt').map((x) => 'no alt ' + x), ...all('broken').map((x) => 'broken ' + x)].slice(0, 5).join(' · ') || 'every image loads and has alt text');
-  add('contrast', all('lowContrast').length ? 'red' : 'green', all('lowContrast').slice(0, 5).join(' · ') || 'all text meets WCAG AA (4.5:1, large 3:1)');
-  add('readable-size', all('small').length ? 'yellow' : 'green', all('small').slice(0, 5).join(' · ') || 'no text under 14 px');
-  add('tap-targets', all('tiny').length ? 'yellow' : 'green', all('tiny').slice(0, 5).join(' · ') || 'buttons and links ≥ 44 px on phone and tablet');
-  add('motion-never-hides', all('hidden').length ? 'red' : 'green', all('hidden').slice(0, 4).join(' · ') || 'every revealed element is visible after scrolling');
+  add('no-sideways-scroll', over.length ? 'red' : 'green', over.length ? over.map((v) => `${v.name}: ${v.overflowPx}px wider (${v.wide.slice(0, 3).join(', ')})`).join(' · ') : 'nothing wider than the screen at 390 / 820 / 1440 px', over.reduce((m, v) => Math.max(m, v.overflowPx || 0, v.wide.length), 0));
+  add('images', all('noAlt').length || all('broken').length ? 'red' : 'green', [...all('noAlt').map((x) => 'no alt ' + x), ...all('broken').map((x) => 'broken ' + x)].slice(0, 5).join(' · ') || 'every image loads and has alt text', all('noAlt').length + all('broken').length);
+  add('contrast', all('lowContrast').length ? 'red' : 'green', all('lowContrast').slice(0, 5).join(' · ') || 'all text meets WCAG AA (4.5:1, large 3:1)', all('lowContrast').length);
+  add('readable-size', all('small').length ? 'yellow' : 'green', all('small').slice(0, 5).join(' · ') || 'no text under 14 px', all('small').length);
+  add('tap-targets', all('tiny').length ? 'yellow' : 'green', all('tiny').slice(0, 5).join(' · ') || 'buttons and links ≥ 44 px on phone and tablet', all('tiny').length);
+  add('motion-never-hides', all('hidden').length ? 'red' : 'green', all('hidden').slice(0, 4).join(' · ') || 'every revealed element is visible after scrolling', all('hidden').length);
   const red = viewports.find((v) => v.reduced);
-  add('reduced-motion', red.running || red.hidden.length ? 'red' : 'green', red.running || red.hidden.length ? `${red.running} animation(s) still running, ${red.hidden.length} element(s) hidden with reduced motion` : 'reduced-motion visitors get a still, complete page');
+  add('reduced-motion', red.running || red.hidden.length ? 'red' : 'green', red.running || red.hidden.length ? `${red.running} animation(s) still running, ${red.hidden.length} element(s) hidden with reduced motion` : 'reduced-motion visitors get a still, complete page', red.running + red.hidden.length);
   const d = viewports[0];
-  add('structure', d.h1 === 1 && !d.headingSkips.length ? 'green' : 'yellow', `${d.h1} h1${d.headingSkips.length ? ', heading level skips at ' + d.headingSkips.slice(0, 3).join(', ') : ''}`);
+  add('structure', d.h1 === 1 && !d.headingSkips.length ? 'green' : 'yellow', `${d.h1} h1${d.headingSkips.length ? ', heading level skips at ' + d.headingSkips.slice(0, 3).join(', ') : ''}`, Math.abs(d.h1 - 1) + d.headingSkips.length);
   const meta = d.meta, metaBad = [!meta.title && 'title', !meta.description && 'description', !meta.lang && 'lang', meta.arabic && meta.dir !== 'rtl' && 'dir="rtl" for Arabic', !meta.viewport && 'viewport'].filter(Boolean);
-  add('meta', metaBad.length ? 'red' : 'green', metaBad.length ? `missing: ${metaBad.join(', ')}` : 'title, description, lang, direction and viewport set');
-  add('script-errors', errors.length ? 'red' : 'green', errors.slice(0, 3).join(' · ') || 'no script errors');
+  add('meta', metaBad.length ? 'red' : 'green', metaBad.length ? `missing: ${metaBad.join(', ')}` : 'title, description, lang, direction and viewport set', metaBad.length);
+  add('script-errors', errors.length ? 'red' : 'green', errors.slice(0, 3).join(' · ') || 'no script errors', errors.length);
   const kb = Math.round((d.pageBytes || sizeOf(dir)) / 1024);
-  add('weight', kb > 1500 ? 'red' : kb > 700 ? 'yellow' : 'green', `${kb} KB downloaded by the page (target ≤ 700 KB before photos; a deliberate offline single file can exceed it — say so)`);
+  add('weight', kb > 1500 ? 'red' : kb > 700 ? 'yellow' : 'green', `${kb} KB downloaded by the page (target ≤ 700 KB before photos; a deliberate offline single file can exceed it — say so)`, kb);
   // taste lights (yellow only; see header): after taste-skill (MIT) and Impeccable (Apache-2.0)
-  const yellow = (id, list, ok, fix) => add(id, list.length ? 'yellow' : 'green', list.length ? list.slice(0, 4).join(' · ') + ' → ' + fix : ok);
+  const yellow = (id, list, ok, fix, n = list.length) => add(id, list.length ? 'yellow' : 'green', list.length ? list.slice(0, 4).join(' · ') + ' → ' + fix : ok, n);
   yellow('taste-headlines', all('longHead'), 'every h1/h2 fits in two lines at 390 / 820 / 1440 px', 'cut the headline (~32 characters) or lower its size');
   const fonts = [...new Set(viewports.filter((v) => !v.reduced).flatMap((v) => v.fonts || []))];
-  yellow('taste-typefaces', fonts.length > 2 ? [fonts.join(', ')] : [], `${fonts.length} typeface(s): ${fonts.join(', ')}`, 'one display and one text family');
+  yellow('taste-typefaces', fonts.length > 2 ? [fonts.join(', ')] : [], `${fonts.length} typeface(s): ${fonts.join(', ')}`, 'one display and one text family', Math.max(0, fonts.length - 2));
   yellow('taste-decoration', [...new Set([...all('gradient').map((x) => 'gradient ' + x), ...all('shadow').map((x) => 'shadow ' + x)])], 'no decorative gradients, resting shadows or glows', 'flat fills; a neutral scrim over a photo is the one exception; shadows only while something is lifted');
   yellow('taste-colour', [...new Set([...all('pure').map((x) => 'untinted neutral ' + x), ...all('greyOnColour').map((x) => 'grey on colour "' + x + '"')])], 'neutrals tinted toward the brand; no grey text on a coloured ground', 'tint blacks/greys toward the brand hue; on colour use a shade of that colour or white');
   yellow('taste-type-detail', [...new Set([...all('tinyCaps').map((x) => 'tiny tracked caps "' + x + '"'), ...all('longLines').map((x) => 'long line "' + x + '"')])], 'no tiny tracked caps; body lines ≤ ~75 characters', 'labels at reading size; set body max-width ≈ 65ch');
   yellow('taste-easing', all('bounce'), 'no bounce or elastic easing', 'ease-out curves that settle (no cubic-bezier value outside 0–1)');
   yellow('taste-rhythm', all('blank'), 'no blank stretch taller than half a screen', 'close the gap or put the next claim in it (section gaps 120–240 px on desktop)');
-  yellow('taste-motion', d.moving < 8 ? [`${d.moving} moving element(s)`] : [], `${d.moving} moving elements`, 'give at least eight elements a reveal, split, parallax, count or ring (transform/opacity only)');
+  yellow('taste-motion', d.moving < 8 ? [`${d.moving} moving element(s)`] : [], `${d.moving} moving elements`, 'give at least eight elements a reveal, split, parallax, count or ring (transform/opacity only)', Math.max(0, 8 - d.moving));
   const desk = viewports.find((v) => v.name === 'desktop');
-  yellow('taste-hero-media', desk && desk.heroMedia < 40 ? [`real media covers ${desk.heroMedia} % of the first desktop screen`] : [], `media covers ${desk?.heroMedia ?? '?'} % of the first screen`, 'top sites give the hero picture ≥ 40 % of the first screen (fine to keep a type-led hero on purpose: say why)');
+  yellow('taste-hero-media', desk && desk.heroMedia < 40 ? [`real media covers ${desk.heroMedia} % of the first desktop screen`] : [], `media covers ${desk?.heroMedia ?? '?'} % of the first screen`, 'top sites give the hero picture ≥ 40 % of the first screen (fine to keep a type-led hero on purpose: say why)', Math.max(0, 40 - (desk?.heroMedia ?? 40)));
   const reds = lights.filter((l) => l.light === 'red').length;
   return { lights, verdict: reds ? `not ready: ${reds} red light(s)` : lights.some((l) => l.light === 'yellow') ? 'ready; read the yellow notes' : 'ready', viewports: viewports.map(({ wide, small, lowContrast, tiny, hidden, longHead, gradient, shadow, pure, greyOnColour, tinyCaps, longLines, bounce, blank, ...v }) => v) };
 }

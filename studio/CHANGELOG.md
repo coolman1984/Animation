@@ -12,7 +12,9 @@ GSAP+ScrollTrigger / Three.js / SVG-Canvas), D design director (Impeccable) — 
 `web/WEB.md` "One workflow", `web/templates/DESIGN.md` (written into every new site by `web plan` / MCP `web_plan`), AGENTS.md, skill
 `web-director`, SKILLS, PLATFORM, TECH_RADAR (Motion LEARN, GSAP PILOT). Install of the three repos: blocked in this cloud session
 (third-party code); the owner installs them in Claude Code with the `/plugin` commands in WEB.md, and the studio adaptation runs otherwise.
-Not verified: a full site made through stages A–D.
+Review fixes (Codex): build/check/serve now refuse a site without a filled DESIGN.md (`--draft` for a labelled preview; the example
+site carries a real record written after the fact); `web audit --before` compares each light's measure inside the same colour (finding
+count; weight +10 %), so 1 → 6 small tap targets or 701 → 1499 KB now count as worse. Not verified: a full site made through stages A–D.
 
 ## 2026-10-19 — The three together for every site + `web audit` (DONE)
 Owner order: "if I give you a site to improve, you must use them together." AGENTS.md, WEB.md ("The three together": taste & identity →

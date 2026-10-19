@@ -346,7 +346,7 @@ async function storyboardCmd([film]) {
 async function webCmd([sub, name], opt) {
   const W = await import('./web/lib/site.mjs'), { existsSync: ex, readFileSync: rf, writeFileSync: wf, mkdirSync: mk } = await import('node:fs');
   if (sub === 'styles') { for (const s of W.STYLES().styles) console.log(`${pad(s.slug, 18)}${pad(s.mood, 52)}${s.bestFor}`); return; }
-  if (!name || !/^[a-z0-9][a-z0-9_-]*$/.test(name)) throw new Error('usage: node studio.mjs web plan|build|check|serve <site> (lowercase folder name) · web audit <label> --dir=<folder> [--page=index.html] [--before=<label>] · web styles');
+  if (!name || !/^[a-z0-9][a-z0-9_-]*$/.test(name)) throw new Error('usage: node studio.mjs web plan|build|check|serve <site> (lowercase folder name) · web audit <label> --dir=<folder> [--page=index.html] [--before=<label>] · web styles (build/check/serve need a filled DESIGN.md, or --draft)');
   if (sub === 'audit') {   // any existing static site (the owner's site, another framework's build output): measure before and after an improvement
     if (!opt.dir || !ex(join(opt.dir, opt.page || 'index.html'))) throw new Error('usage: web audit <label> --dir=<folder with index.html> [--page=…] [--before=<earlier label>]');
     const { checkSite, compareAudits } = await import('./web/lib/check.mjs'), out = join(STUDIO, 'takes', 'web', name), r = await checkSite({ dir: opt.dir, outDir: out, page: opt.page || 'index.html' });
@@ -371,6 +371,11 @@ async function webCmd([sub, name], opt) {
   }
   if (!ex(file)) throw new Error(`no web/sites/${name}/site.json (node studio.mjs web plan ${name})`);
   const site = JSON.parse(rf(file, 'utf8'));
+  if (['build', 'check', 'serve'].includes(sub)) {   // stages A–D come first (WEB.md "One workflow"); --draft previews without them, labelled
+    const d = W.designRecord(dir);
+    if (!d.ok && !opt.draft) throw new Error(`${name}: ${d.errors.join('; ')}. Fill web/sites/${name}/DESIGN.md first, or add --draft for a labelled preview.`);
+    if (!d.ok) console.log(`DRAFT (not a delivery): ${d.errors.join('; ')}`);
+  }
   if (sub === 'build') { const r = W.build(site, dist, { siteDir: dir }); console.log(`built web/sites/${name}/dist: ${r.files.length} files, ${Math.round(r.bytes / 1024)} KB`); for (const w of r.warnings) console.log(`note: ${w}`); return; }
   if (sub === 'check') {
     W.build(site, dist, { siteDir: dir });   // always check the current site.json, never an older build
