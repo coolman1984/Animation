@@ -362,8 +362,10 @@ async function webCmd([sub, name], opt) {
   if (sub === 'plan') {
     if (ex(file) && !opt.force) throw new Error(`${name} already has a site.json (use --force to replace it)`);
     const r = W.plan(opt); mk(dir, { recursive: true }); wf(file, JSON.stringify(r.site, null, 2) + '\n');
+    if (!ex(join(dir, 'DESIGN.md'))) wf(join(dir, 'DESIGN.md'), rf(join(STUDIO, 'web', 'templates', 'DESIGN.md'), 'utf8'));   // stages A–D record (WEB.md)
     console.log(`web/sites/${name}/site.json — style ${r.site.style}, ${r.site.sections.length} sections. First answer the ambition questions, then write these (${r.todo.length}):`);
     for (const t of r.todo) console.log(`  ${pad(t.path, 30)} ${t.write}`);
+    console.log(`Also fill web/sites/${name}/DESIGN.md (direction → design system → motion storyboard → critique log) before building.`);
     console.log(`Then: node studio.mjs web build ${name} → node studio.mjs web check ${name}`);
     return;
   }

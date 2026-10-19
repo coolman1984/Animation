@@ -2,7 +2,9 @@
 
 Updated: 2026-10-19.
 
-**Latest scope: DONE — The three design skills together for every site (owner 2026-10-19: "if I give you a site to improve, use them together").** Binding in AGENTS.md, `studio/web/WEB.md` "The three together" and skill `web-director`; new `node studio/studio.mjs web audit <label> --dir=<folder> --before=<label>` measures any existing site before and after (MCP `web_check` with `dir`). Not verified: a real client site improved end to end.
+**Latest scope: DONE — One web workflow A–D (owner 2026-10-19: "world-class web design & motion engine").** Every site/web animation: A direction (taste-skill) → B design system (UI UX Pro Max) → C build + motion storyboard (minimum tech) → D critique/polish (Impeccable), recorded in the site's `DESIGN.md`, real-browser loop, before/after for redesigns (`studio/web/WEB.md`). The three repos are not installed here (cloud session refuses third-party code); WEB.md gives the owner's `/plugin` install commands. Not verified: a full site through A–D.
+
+**Previous scope: DONE — The three design skills together for every site (owner 2026-10-19: "if I give you a site to improve, use them together").** Binding in AGENTS.md, `studio/web/WEB.md` "The three together" and skill `web-director`; new `node studio/studio.mjs web audit <label> --dir=<folder> --before=<label>` measures any existing site before and after (MCP `web_check` with `dir`). Not verified: a real client site improved end to end.
 
 **Previous scope: DONE — Web taste pass (owner 2026-10-19: add taste-skill, UI UX Pro Max and Impeccable to the web factory).** Their measurable rules are now yellow "taste lights" in `web check`; the idea sentence, competitor test and look-and-fix pass are in `studio/web/WEB.md` and skill `web-director`; decisions per repo in `studio/TECH_RADAR.md` (nothing third-party installed). Example site still READY. Not verified: a real client site under the new pass.
 

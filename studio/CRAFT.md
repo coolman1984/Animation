@@ -199,3 +199,4 @@ A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs th
 1. **Popular skills are rules plus a browser; take the rules, keep our browser:** all three repos ship their own installer, scripts or binary; the measurable parts (fonts, gradients, shadows, easing, line length, blank space) fit in our existing check in ~40 lines with no new dependency.
 2. **A tall scroll scene is not empty space:** the first blank-stretch measure flagged the sticky steps section; scroll scenes count as content.
 3. **An improvement is only proven against its own "before":** a redesign audited once can hide a regression; `web audit --before` fails when any light gets worse.
+4. **A tool owns a stage, not a vote:** three design skills give three opinions on the same button; give each its stage (direction, system, critique) and let DESIGN.md settle conflicts, or the site is designed by whichever ran last.

@@ -5,6 +5,15 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-19 — One web workflow A–D + DESIGN.md per site (DONE)
+Owner brief "world-class web design & motion engine": one unified, permanent workflow — A creative direction (taste-skill, three real
+directions), B design architecture (UI UX Pro Max), C build + animate from a motion storyboard with the minimum tech (CSS / Motion /
+GSAP+ScrollTrigger / Three.js / SVG-Canvas), D design director (Impeccable) — plus a mandatory visual quality loop and a delivery list.
+`web/WEB.md` "One workflow", `web/templates/DESIGN.md` (written into every new site by `web plan` / MCP `web_plan`), AGENTS.md, skill
+`web-director`, SKILLS, PLATFORM, TECH_RADAR (Motion LEARN, GSAP PILOT). Install of the three repos: blocked in this cloud session
+(third-party code); the owner installs them in Claude Code with the `/plugin` commands in WEB.md, and the studio adaptation runs otherwise.
+Not verified: a full site made through stages A–D.
+
 ## 2026-10-19 — The three together for every site + `web audit` (DONE)
 Owner order: "if I give you a site to improve, you must use them together." AGENTS.md, WEB.md ("The three together": taste & identity →
 industry design system → audit & polish; installed in the host or through the studio adaptation, said in the report), skill `web-director`,
