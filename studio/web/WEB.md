@@ -4,7 +4,7 @@ Added 2026-10-16 (owner: "the repo should help build complete websites on the in
 A site is ONE `web/sites/<name>/site.json`; the studio turns it into a fast static site (no build tools, no dependencies) and checks it
 in a real browser the way a top studio checks before launch. Same philosophy as the films: plan → write → check → deliver.
 
-## The loop
+## The loop (new site; to improve an existing one see "The three together" below)
 1. **Be ambitious first** (after Felix Rieseberg's "be ambitious" prompt): before any line, answer in `ambition`:
    what would the best studio in this field build for this client · the rawest real material to start from (the client's photos, words,
    product, menu, numbers) · the specific methods and tools they would use. Then pick a style: `node studio/studio.mjs web styles`.
@@ -25,13 +25,36 @@ in a real browser the way a top studio checks before launch. Same philosophy as 
 6. **Preview:** `node studio/studio.mjs web serve <site>`. **Publish:** `dist/` is a plain folder: GitHub Pages, Netlify or any static host
    (publishing needs the owner's account; say so, never claim a site is live without the URL).
 
-## Taste pass (2026-10-19, after taste-skill and Impeccable)
+## The three together — mandatory for every site we build or improve (owner order, 2026-10-19)
+The owner's order: whenever a website is built or **improved**, use taste-skill, UI UX Pro Max and Impeccable **together**, each for its job.
+| Lens | Repo (licence) | Its job here | How |
+|---|---|---|---|
+| 1. Taste & identity | taste-skill (Leonxlnx, MIT) | a distinct direction, not a generic AI page | inventory 8–12 things only this client has → the idea sentence + competitor test → one claim per section → its banned patterns |
+| 2. Design system | UI UX Pro Max (nextlevelbuilder, MIT) | colours, type and UX that fit the industry | look up the client's product type: style, palette, font pairing, key effects and **anti-patterns** for that industry; turn it into ≤ 6 colour tokens and 2 families (Arabic-capable: a vendored face from `ASSETS.md`); note the rule you followed |
+| 3. Audit & polish | Impeccable (Paul Bakaus, Apache-2.0) | finish: nothing that looks AI-made, nothing broken | its audit (accessibility, performance, theming, responsive, anti-patterns) then its polish (spacing, alignment, type, states: hover, focus, empty, error, loading) |
+
+**Where they run.** If the host has them installed (Claude Code: `/plugin marketplace add Leonxlnx/taste-skill`, `nextlevelbuilder/ui-ux-pro-max-skill`,
+`pbakaus/impeccable`, then install), call them directly (taste-skill's `design-taste-frontend`; UI UX Pro Max's `--design-system` search;
+`/impeccable audit` then `/impeccable polish`). If not (cloud sessions here may not install third-party code), apply the same three lenses
+with the studio's adaptation: the taste pass below, the industry lookup read from the UI UX Pro Max repository as reference data, and
+`web check` / `web audit`, whose taste lights carry the measurable detector rules of taste-skill and Impeccable. Say in the report which
+way each lens ran. Never send the client's private content to their online services; Impeccable's design roll calls impeccable.style
+(set `DO_NOT_TRACK=1` when it is installed).
+
+**Improving an existing site (redesign):**
+1. **Before:** keep the original untouched; list what must survive (pages, links, forms, data, analytics, SEO titles); `node studio/studio.mjs web audit <site>-before --dir=<built site folder>` (MCP `web_check` with `dir`) → lights + strips.
+2. **Lens 1 → lens 2 → build:** keep the stack and the content; change design, structure and motion.
+3. **Lens 3 + after:** `web audit <site>-after --dir=<new build> --before=<site>-before` → what got better, what got worse (worse = not done); every red fixed, every yellow fixed or defended in one sentence; look at the strips and fix the top three problems (two rounds at most).
+4. **Report** (Egyptian Arabic, conclusion first): before/after lights and screenshots, what was preserved, which lens ran how, what was not verified (real devices, live hosting).
+A live URL is audited from a local copy or its built output; publishing still needs the owner's hosting account.
+
+## Taste pass (2026-10-19, lens 1 + the measurable parts of lens 3)
 - **The idea sentence:** "On this site, [something only this client has] becomes [the device the style calls for]." Competitor test: if a
   rival next door could use the sentence, it is not specific enough. List 8–12 things only this client has before writing.
 - **One claim per section;** a section with no claim is deleted. Headlines ≤ ~32 characters; proof never invented.
 - **Look and fix:** open the strips, fix the top three problems, check again — inside the studio's two-round budget.
-- Not adopted (yet): the 20 dealt directions and image search of taste-skill, Impeccable's live mode and 24 commands, UI UX Pro Max's
-  palette/font database — see `TECH_RADAR.md` 2026-10-19.
+- Used directly only when installed in the host (see "The three together"): taste-skill's 20 dealt directions and image search,
+  Impeccable's live mode and 24 commands, UI UX Pro Max's palette/font database — see `TECH_RADAR.md` 2026-10-19.
 
 ## Motion vocabulary (web/motion/motion.js + site.css, opt-in by data attributes)
 `data-reveal` rise from blur on entry (native CSS scroll timeline where supported, IntersectionObserver otherwise) · `data-split` headline

@@ -91,6 +91,14 @@ async function visit(client, url, vp, { reduce = false } = {}) {
   return client.eval(PROBE);
 }
 
+// before → after for an improvement (owner order 2026-10-19: every site we improve is measured before and after)
+const RANK = { green: 0, yellow: 1, red: 2 };
+export function compareAudits(before, after) {
+  const was = Object.fromEntries((before?.lights || []).map((l) => [l.id, l.light]));
+  const rows = (after?.lights || []).map((l) => ({ id: l.id, before: was[l.id] || 'new', after: l.light, change: was[l.id] == null ? 'new' : RANK[l.light] < RANK[was[l.id]] ? 'better' : RANK[l.light] > RANK[was[l.id]] ? 'worse' : 'same' }));
+  return { rows, better: rows.filter((r) => r.change === 'better').length, worse: rows.filter((r) => r.change === 'worse').map((r) => r.id) };
+}
+
 export async function checkSite({ dir, outDir, page = 'index.html' }) {
   mkdirSync(outDir, { recursive: true });
   const srv = await serve(dir), url = `http://127.0.0.1:${srv.port}/${page}`, errors = [];

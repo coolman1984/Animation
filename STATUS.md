@@ -2,7 +2,9 @@
 
 Updated: 2026-10-19.
 
-**Latest scope: DONE — Web taste pass (owner 2026-10-19: add taste-skill, UI UX Pro Max and Impeccable to the web factory).** Their measurable rules are now yellow "taste lights" in `web check`; the idea sentence, competitor test and look-and-fix pass are in `studio/web/WEB.md` and skill `web-director`; decisions per repo in `studio/TECH_RADAR.md` (nothing third-party installed). Example site still READY. Not verified: a real client site under the new pass.
+**Latest scope: DONE — The three design skills together for every site (owner 2026-10-19: "if I give you a site to improve, use them together").** Binding in AGENTS.md, `studio/web/WEB.md` "The three together" and skill `web-director`; new `node studio/studio.mjs web audit <label> --dir=<folder> --before=<label>` measures any existing site before and after (MCP `web_check` with `dir`). Not verified: a real client site improved end to end.
+
+**Previous scope: DONE — Web taste pass (owner 2026-10-19: add taste-skill, UI UX Pro Max and Impeccable to the web factory).** Their measurable rules are now yellow "taste lights" in `web check`; the idea sentence, competitor test and look-and-fix pass are in `studio/web/WEB.md` and skill `web-director`; decisions per repo in `studio/TECH_RADAR.md` (nothing third-party installed). Example site still READY. Not verified: a real client site under the new pass.
 
 **Previous scope: DONE — Quality bar from the owner's motion-director prompt (owner 2026-10-17: "use this to improve performance and quality").** Critic rules `facts-traced` (`films/<film>/facts.json`) and `edit-pace` (`spec.mode`), endState in the brief, text contrast 4.5:1 in the eyes, and a critic loop with a sound-off read in `studio/QUALITY_PLAYBOOK.md` §10. Quick suite green. Not verified: a full film made under the new rules (no render run).
 

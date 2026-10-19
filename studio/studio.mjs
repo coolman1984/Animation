@@ -16,6 +16,7 @@
 //   node studio.mjs taste <video.mp4 | film> [--json]  ·  taste calibrate     the owner-calibrated taste gate on a finished export
 //   node studio.mjs storyboard <film>                 shot-list check before any render (production.json or engine spec)
 //   node studio.mjs styles [slug]                     house style cards from our delivered films (styles/README.md)
+//   node studio.mjs web audit <label> --dir=<existing site folder> [--before=<label>]   (improve a site: before/after; web/WEB.md)
 //   node studio.mjs web plan <site> [--brand= --style= --lang=ar|en --cta= --problem= --promise=] · web build|check|serve <site> · web styles   (web/WEB.md)
 //   node studio.mjs agents [--sync]             any-model door: AGENTS.md, skill mirror for other agents, MCP client configs + server handshake (ANY_MODEL.md)
 // Films are then built with make.mjs (WORKFLOW.md). Registry: capabilities.json. Architecture: PLATFORM.md.
@@ -345,7 +346,18 @@ async function storyboardCmd([film]) {
 async function webCmd([sub, name], opt) {
   const W = await import('./web/lib/site.mjs'), { existsSync: ex, readFileSync: rf, writeFileSync: wf, mkdirSync: mk } = await import('node:fs');
   if (sub === 'styles') { for (const s of W.STYLES().styles) console.log(`${pad(s.slug, 18)}${pad(s.mood, 52)}${s.bestFor}`); return; }
-  if (!name || !/^[a-z0-9][a-z0-9_-]*$/.test(name)) throw new Error('usage: node studio.mjs web plan|build|check|serve <site> (lowercase folder name) · web styles');
+  if (!name || !/^[a-z0-9][a-z0-9_-]*$/.test(name)) throw new Error('usage: node studio.mjs web plan|build|check|serve <site> (lowercase folder name) · web audit <label> --dir=<folder> [--page=index.html] [--before=<label>] · web styles');
+  if (sub === 'audit') {   // any existing static site (the owner's site, another framework's build output): measure before and after an improvement
+    if (!opt.dir || !ex(join(opt.dir, opt.page || 'index.html'))) throw new Error('usage: web audit <label> --dir=<folder with index.html> [--page=…] [--before=<earlier label>]');
+    const { checkSite, compareAudits } = await import('./web/lib/check.mjs'), out = join(STUDIO, 'takes', 'web', name), r = await checkSite({ dir: opt.dir, outDir: out, page: opt.page || 'index.html' });
+    wf(join(out, 'audit.json'), JSON.stringify(r, null, 2));
+    console.log(`${name}: ${r.verdict}`); for (const l of r.lights) console.log(`${pad(l.light.toUpperCase(), 7)} ${pad(l.id, 20)} ${l.why}`);
+    if (opt.before) { const p = join(STUDIO, 'takes', 'web', opt.before, 'audit.json'); if (!ex(p)) throw new Error(`no earlier audit ${opt.before}`); const c = compareAudits(JSON.parse(rf(p, 'utf8')), r);
+      console.log(`\nbefore (${opt.before}) → after (${name}): ${c.better} better, ${c.worse.length} worse${c.worse.length ? ': ' + c.worse.join(', ') : ''}`); for (const x of c.rows.filter((x) => x.change !== 'same')) console.log(`  ${pad(x.id, 20)} ${x.before} → ${x.after}`); if (c.worse.length) process.exitCode = 1; }
+    console.log(`screenshots: ${r.viewports.filter((v) => v.sheet).map((v) => v.sheet).join(' · ')}`);
+    if (r.lights.some((l) => l.light === 'red')) process.exitCode = 1;
+    return;
+  }
   const dir = join(STUDIO, 'web', 'sites', name), file = join(dir, 'site.json'), dist = join(dir, 'dist');
   if (sub === 'plan') {
     if (ex(file) && !opt.force) throw new Error(`${name} already has a site.json (use --force to replace it)`);

@@ -3,7 +3,7 @@ name: web-director
 description: Build a complete, beautiful, animated static website (landing pages, company, café, product, portfolio sites) from one site.json with any model — ambition questions, house structure, motion library (scroll reveals, sticky steps, 3D card ring), and a real-browser quality check at phone, tablet and desktop. Use for any website request.
 ---
 # web-director
-Read `studio/web/WEB.md`. Honesty rules: skill `data-honesty` (client's words and real numbers only; sources for stats and quotes).
+Read `studio/web/WEB.md`. **Owner order (2026-10-19): every site we build or improve uses the three together — taste-skill (taste & identity), UI UX Pro Max (industry design system), Impeccable (audit & polish); WEB.md "The three together" says how, installed or not.** Honesty rules: skill `data-honesty` (client's words and real numbers only; sources for stats and quotes).
 
 1. Answer the ambition questions first (best studio in the field · rawest real material · methods and tools), then pick a style: `node studio/studio.mjs web styles`.
 2. `node studio/studio.mjs web plan <site> --brand=… --style=… --lang=ar|en --cta=… --problem=… --promise=…` (MCP `web_plan`); shape the sections to the client.
@@ -11,4 +11,5 @@ Read `studio/web/WEB.md`. Honesty rules: skill `data-honesty` (client's words an
    Taste pass (WEB.md): write the idea sentence and pass the competitor test; one claim per section; no eyebrows, pill badges, icon-card rows, gradients, glows or glass by default.
 4. `node studio/studio.mjs web check <site>` (MCP `web_check`): fix every red light, read the yellow ones, LOOK at the phone/tablet/desktop strips. Taste lights are yellow: fix each or defend it in one sentence; then fix the top three problems you see on the strips (two rounds at most).
 5. Preview `web serve <site>`; publishing needs the owner's hosting account — never claim a site is live without its URL.
-Report in Egyptian Arabic, conclusion first; say what was not checked (real devices, real content, live hosting).
+**Improving an existing site:** `web audit <site>-before --dir=<folder>` first (keep the original, list what must survive) → lens 1 → lens 2 → change design/structure/motion, keep content and function → lens 3 → `web audit <site>-after --dir=<new> --before=<site>-before` (nothing may get worse).
+Report in Egyptian Arabic, say which way each of the three lenses ran, conclusion first; say what was not checked (real devices, real content, live hosting).

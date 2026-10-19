@@ -39,3 +39,11 @@ test('build: lang/dir, every section, styles fonts copied, no placeholders, smal
   for (const s of STYLES().styles) for (const f of Object.values(s.fonts)) assert.ok(STYLES().faces[f], `${s.slug}: no faces for ${f}`);
   assert.throws(() => build(plan({}).site, mkdtempSync(join(tmpdir(), 'web-'))), /placeholder/);
 });
+
+test('audit compare: before → after names what got better and what got worse', async () => {
+  const { compareAudits } = await import('../web/lib/check.mjs');
+  const c = compareAudits({ lights: [{ id: 'contrast', light: 'red' }, { id: 'taste-easing', light: 'green' }] },
+    { lights: [{ id: 'contrast', light: 'green' }, { id: 'taste-easing', light: 'yellow' }, { id: 'weight', light: 'green' }] });
+  assert.equal(c.better, 1); assert.deepEqual(c.worse, ['taste-easing']);
+  assert.equal(c.rows.find((r) => r.id === 'weight').change, 'new');
+});

@@ -5,6 +5,14 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-19 — The three together for every site + `web audit` (DONE)
+Owner order: "if I give you a site to improve, you must use them together." AGENTS.md, WEB.md ("The three together": taste & identity →
+industry design system → audit & polish; installed in the host or through the studio adaptation, said in the report), skill `web-director`,
+SKILLS.md, PLATFORM.md and TECH_RADAR now make it binding for every agent. New: `studio.mjs web audit <label> --dir=<folder>
+[--page=] [--before=<label>]` checks ANY existing built site (not only site.json sites), saves `takes/web/<label>/audit.json`, and compares
+before → after (any light that gets worse fails); MCP `web_check` takes `dir`. Test: `test/web.test.mjs` (compareAudits). Ran on the example
+build twice (before/after: 0 better, 0 worse). Not verified: a real client site improved end to end.
+
 ## 2026-10-19 — Web taste pass from three owner-recommended design skills (DONE)
 Owner asked to add taste-skill (Leonxlnx, MIT), UI UX Pro Max (nextlevelbuilder, MIT) and Impeccable (Paul Bakaus, Apache-2.0) to the web
 factory. Read as web pages (cloning third-party code was blocked; house rule learn → adapt → integrate). `web/lib/check.mjs` gained ten

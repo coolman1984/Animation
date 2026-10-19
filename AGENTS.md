@@ -25,7 +25,7 @@ The skill library is in `.claude/skills/` (Agent Skills format; mirrored to `.ag
 `.claude/skills/` only). Read `film-director` first for any video request.
 Studio tools for any MCP client: `node studio/mcp/server.mjs` (client configs: `.mcp.json`, `.codex/config.toml`, `.gemini/settings.json`,
 `.cursor/mcp.json`, `.vscode/mcp.json`).
-Websites: `studio/web/WEB.md` (skill `web-director`; `node studio/studio.mjs web plan|build|check|serve`). Never commit `studio/takes/` or `studio/out/` (or `studio/web/sites/*/dist/`). Owner speaks Egyptian Arabic and is not technical:
+Websites: `studio/web/WEB.md` (skill `web-director`; `node studio/studio.mjs web plan|build|check|serve|audit`). **Every site we build or improve uses taste-skill + UI UX Pro Max + Impeccable together (owner order, 2026-10-19; WEB.md "The three together"): taste & identity → design system → audit & polish, measured before and after with `web audit`.** Never commit `studio/takes/` or `studio/out/` (or `studio/web/sites/*/dist/`). Owner speaks Egyptian Arabic and is not technical:
 reports go conclusion-first, simple words.
 
 For production speed and art direction, read `studio/WORKFLOW.md` before the film-director phases.
