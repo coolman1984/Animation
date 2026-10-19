@@ -1,8 +1,10 @@
 # Studio status and session handoff
 
-Updated: 2026-10-17.
+Updated: 2026-10-19.
 
-**Latest scope: DONE — Quality bar from the owner's motion-director prompt (owner 2026-10-17: "use this to improve performance and quality").** Critic rules `facts-traced` (`films/<film>/facts.json`) and `edit-pace` (`spec.mode`), endState in the brief, text contrast 4.5:1 in the eyes, and a critic loop with a sound-off read in `studio/QUALITY_PLAYBOOK.md` §10. Quick suite green. Not verified: a full film made under the new rules (no render run).
+**Latest scope: DONE — Web taste pass (owner 2026-10-19: add taste-skill, UI UX Pro Max and Impeccable to the web factory).** Their measurable rules are now yellow "taste lights" in `web check`; the idea sentence, competitor test and look-and-fix pass are in `studio/web/WEB.md` and skill `web-director`; decisions per repo in `studio/TECH_RADAR.md` (nothing third-party installed). Example site still READY. Not verified: a real client site under the new pass.
+
+**Previous scope: DONE — Quality bar from the owner's motion-director prompt (owner 2026-10-17: "use this to improve performance and quality").** Critic rules `facts-traced` (`films/<film>/facts.json`) and `edit-pace` (`spec.mode`), endState in the brief, text contrast 4.5:1 in the eyes, and a critic loop with a sound-off read in `studio/QUALITY_PLAYBOOK.md` §10. Quick suite green. Not verified: a full film made under the new rules (no render run).
 
 **Previous scope: DONE — Web department (owner 2026-10-16: "help build complete, beautiful websites with detail and motion", steps 1–4).** `studio/web/`: plan with ambition questions, motion library (scroll reveals, sticky steps, 3D card ring, reduced motion), three web styles, zero-dependency static build, and a real-browser check at phone/tablet/desktop with screenshot strips; `node studio/studio.mjs web plan|build|check|serve|styles`, MCP `web_plan`/`web_save`/`web_check`, skill `web-director`. Example site `web/sites/example` passes the check. Not verified: real devices, real client content, publishing (needs the owner's hosting account). Not built: multi-page, forms/backends, brand kit from a URL, auto promo film of a site.
 

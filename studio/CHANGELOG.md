@@ -5,6 +5,16 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-19 — Web taste pass from three owner-recommended design skills (DONE)
+Owner asked to add taste-skill (Leonxlnx, MIT), UI UX Pro Max (nextlevelbuilder, MIT) and Impeccable (Paul Bakaus, Apache-2.0) to the web
+factory. Read as web pages (cloning third-party code was blocked; house rule learn → adapt → integrate). `web/lib/check.mjs` gained ten
+measured **taste lights**, all yellow (borrowed thresholds warn, never block): headlines ≤ 2 lines, ≤ 2 typefaces, decorative
+gradients/shadows/glows, untinted neutrals and grey on colour, tiny tracked caps and long lines, bounce easing, blank stretches over half a
+screen (scroll scenes excepted), ≥ 8 moving elements, hero media share. WEB.md and skill `web-director` gained the taste pass (idea sentence
++ competitor test, one claim per section, look-and-fix). TECH_RADAR 2026-10-19 records each repo and why nothing was installed (Impeccable's
+binary + roll-API telemetry; UI UX Pro Max's large Latin-font dataset and premium tier). Example site: still READY, with four honest yellows
+(three typefaces incl. Space Mono labels, shadows on buttons/ring cards, a type-led hero). Not verified: a client site built under the pass.
+
 ## 2026-10-17 — Quality bar from the owner's motion-director prompt (DONE)
 Owner shared a motion-director prompt (brief lines, modes, craft, audio, critic loop, measured quality bar) and asked to use it to raise
 quality. Compared it with what the studio already measures (size/fps/duration, still spans ≤ 0.7 s, sync, −14 LUFS / −1.5 dBTP, music-only

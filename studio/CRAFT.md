@@ -194,3 +194,7 @@ A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs th
 ## Motion-director prompt (2026-10-17)
 1. **A rule from someone else's prompt enters as a check or not at all:** of the prompt's quality bar, the studio already measured size, stills, sync and loudness; what was missing (fact sources, edit pace by mode, 4.5:1 contrast) became critic rules with evidence and a fix, the rest became a reviewer's checklist.
 2. **"Every word traced" needs an escape hatch for the brand's own words:** taglines and CTAs have no outside source; list them in `facts.copy` so the rule stays strict on claims without nagging about the sign-off.
+
+## Web taste pass (2026-10-19)
+1. **Popular skills are rules plus a browser; take the rules, keep our browser:** all three repos ship their own installer, scripts or binary; the measurable parts (fonts, gradients, shadows, easing, line length, blank space) fit in our existing check in ~40 lines with no new dependency.
+2. **A tall scroll scene is not empty space:** the first blank-stretch measure flagged the sticky steps section; scroll scenes count as content.
