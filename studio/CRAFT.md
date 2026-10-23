@@ -200,3 +200,8 @@ A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs th
 2. **A tall scroll scene is not empty space:** the first blank-stretch measure flagged the sticky steps section; scroll scenes count as content.
 3. **An improvement is only proven against its own "before":** a redesign audited once can hide a regression; `web audit --before` fails when any light gets worse.
 4. **A tool owns a stage, not a vote:** three design skills give three opinions on the same button; give each its stage (direction, system, critique) and let DESIGN.md settle conflicts, or the site is designed by whichever ran last.
+
+## Move library (2026-10-18)
+1. **A shared name beats a description:** "#012 shape morph" carries exact timings and easing that "make it morph nicely" never does; look a move up (`studio.mjs moves search`) before inventing one.
+2. **Draw the plan, don't pick it:** hand-picked moves converge on the same push-in and end card; a seeded draw (`moves draw`) forces variety and the seed keeps it reproducible.
+3. **A pure function of time can still differ on its first call:** cells that cache scratch canvases drew a different first frame (photo #105/#106/#111); warm every borrowed cell across its cycle before the first real frame, because render slices start in fresh browsers.

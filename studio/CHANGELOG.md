@@ -34,6 +34,17 @@ screen (scroll scenes excepted), ≥ 8 moving elements, hero media share. WEB.md
 binary + roll-API telemetry; UI UX Pro Max's large Latin-font dataset and premium tier). Example site: still READY, with four honest yellows
 (three typefaces incl. Space Mono labels, shadows on buttons/ring cards, a type-led hero). Not verified: a client site built under the pass.
 
+## 2026-10-18 — Move library: Motion Prompt + Cinetic (DONE)
+Owner shared two X posts (Motion Prompt's gallery of 120 named moves; Cinetic v1.1, a launch-film skill with code-made sound) and asked to
+use them. Both are MIT. `studio/library/`: Motion Prompt's catalog + five packs (upstream code wrapped as ES modules, unchanged) + our
+Arabic names (`ar.json`, with pointers to the studio tools that already do a move); Cinetic's 273-technique library + seven reference
+chapters. `lib/movelib.mjs` (search in English/Arabic/Japanese across both, element spec/prompt/code, Cinetic draw ported from pick.py with a
+seeded PRNG, sync from upstream clones), `lib/mpcard.js` (place a card in a film: `drawCard`, `holdU`, `loopU`, `onceU`; warms cells whose
+first draw differs). `node studio/studio.mjs moves search|list|show|prompt|code|draw|sync`; MCP `moves_search`, `moves_show`, `moves_draw`
+(22 tools). Skills film-director, motion-composer, camera-director, web-director; SKILLS.md, ANY_MODEL.md, WEB.md, TECHNIQUES.md, TECH_RADAR.md.
+Proof: all 120 cells drawn in headless Chromium at five times each, no errors, no blank frames, identical on repeat (after the warm-up fix);
+`test/moves.test.mjs`. Not installed: Cinetic's Remotion/HyperFrames starters, earshot and Python scripts. Not verified: a film using the library.
+
 ## 2026-10-17 — Quality bar from the owner's motion-director prompt (DONE)
 Owner shared a motion-director prompt (brief lines, modes, craft, audio, critic loop, measured quality bar) and asked to use it to raise
 quality. Compared it with what the studio already measures (size/fps/duration, still spans ≤ 0.7 s, sync, −14 LUFS / −1.5 dBTP, music-only

@@ -18,6 +18,7 @@
 //   node studio.mjs styles [slug]                     house style cards from our delivered films (styles/README.md)
 //   node studio.mjs web audit <label> --dir=<existing site folder> [--before=<label>]   (improve a site: before/after; web/WEB.md)
 //   node studio.mjs web plan <site> [--brand= --style= --lang=ar|en --cta= --problem= --promise=] · web build|check|serve <site> · web styles   (web/WEB.md)
+//   node studio.mjs moves search <words> [--library=motion-prompt|cinetic --pack= --category=] · moves show|prompt|code <#id | technique-id> · moves draw --format=launch|feature|loop|sting|walkthrough|vertical [--energy=calm --seconds=30 --seed=] · moves list   (library/README.md)
 //   node studio.mjs agents [--sync]             any-model door: AGENTS.md, skill mirror for other agents, MCP client configs + server handshake (ANY_MODEL.md)
 // Films are then built with make.mjs (WORKFLOW.md). Registry: capabilities.json. Architecture: PLATFORM.md.
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
@@ -388,6 +389,51 @@ async function webCmd([sub, name], opt) {
   throw new Error('usage: node studio.mjs web plan|build|check|serve <site> · web styles');
 }
 
+// Move library (library/README.md): Motion Prompt's 120 numbered moves + Cinetic's 273 measured techniques, offline.
+async function movesCmd([sub, ...rest], opt) {
+  const M = await import('./lib/movelib.mjs');
+  if (sub === 'search') {
+    const r = M.search(rest.join(' '), { library: opt.library || 'all', pack: opt.pack, category: opt.category, limit: +opt.limit || 12 });
+    if (!r.length) console.log('nothing matched; try other words (English, Arabic or Japanese) or: node studio.mjs moves list');
+    for (const x of r) console.log(`${pad(x.id, 34)}${pad(x.pack, 20)}${x.name}${x.ar ? ` · ${x.ar}` : ''}\n${pad('', 34)}${x.what}`);
+    return;
+  }
+  if (sub === 'list') {
+    if (opt.library !== 'cinetic') { const { packs, elements } = M.motionPrompt(); for (const p of Object.values(packs)) { if (opt.pack && p.pack !== opt.pack) continue; console.log(`\nMotion Prompt · ${p.pack} — ${p.title.en} (#${p.first}–#${p.last}, card ${p.width}x${p.height}, cycle ${p.cycle} s)`); for (const e of elements.filter((e) => e.pack === p.pack)) console.log(`  #${e.id} ${pad(e.name.en, 26)}${e.ar?.name || ''}`); } }
+    if (opt.library !== 'motion-prompt' && !opt.pack) { const t = M.cinetic().techniques; console.log(`\nCinetic: ${t.length} techniques`); for (const c of M.CATEGORIES) { if (opt.category && c !== opt.category) continue; const xs = t.filter((x) => x.category === c); console.log(`  ${pad(c, 24)}${xs.length}${opt.category ? '\n' + xs.map((x) => `    ${pad(x.id, 40)}${pad(x.role, 10)}${x.name}`).join('\n') : ''}`); } }
+    return;
+  }
+  const id = rest[0];
+  if (['show', 'prompt', 'code'].includes(sub)) {
+    if (!id) throw new Error(`usage: node studio.mjs moves ${sub} <#012 | technique-id>`);
+    const e = M.mpElement(id);
+    if (e) {
+      if (sub === 'prompt') return console.log(M.mpPrompt(id));
+      if (sub === 'code') return console.log(M.mpCode(id));
+      console.log(`#${e.id} ${e.name.en} (${e.name.ja})${e.ar ? ` · ${e.ar.name}: ${e.ar.meaning}` : ''}\npack ${e.pack} · ${e.category} · card ${e.width}x${e.height} · cycle ${e.cycle} s · demo ${e.demo}\n\n${e.summary.en}\n${e.spec.en.map((s) => `- ${s}`).join('\n')}\nUse it: ${e.use.en}\nAsk for it: ${e.ask.en}${e.ar?.studio ? `\nStudio already has: ${e.ar.studio}` : ''}\n\nIn a film: import ${e.pack} from '../library/motion-prompt/packs/${e.pack}.js'; drawCard(ctx, ${e.pack}, ${+e.no}, u, { x, y, scale }) from lib/mpcard.js`);
+      return;
+    }
+    if (sub !== 'show') throw new Error(`${id} is not a Motion Prompt number (#001–#120); Cinetic techniques have only "show"`);
+    const t = M.technique(id);
+    console.log(`${t.name}  [${t.id}]\n${t.category} · ${t.role} · energy ${t.energy} · ${t.formats.join(', ')}\n\n${t.summary}\n\nBuild: ${t.build}${t.fullLook ? `\n(Full look needs ${t.fullLookNeeds.join(', ')}: ${t.fullLook})` : ''}\nTiming (60 fps): ${t.timing}\nUse when: ${t.useWhen}\nAvoid when: ${t.avoidWhen}`);
+    return;
+  }
+  if (sub === 'draw') {
+    const r = M.draw({ format: opt.format || 'launch', energy: opt.energy || 'calm', seconds: opt.seconds, category: opt.category, n: opt.n, seed: opt.seed, exclude: String(opt.exclude || '').split(',').filter(Boolean), brandSupplied: String(opt['brand-supplied'] || '').split(',').filter(Boolean) });
+    console.log(`Drawn techniques (seed ${r.seed}: --seed=${r.seed} repeats this plan). Build the picks the concept can carry; reroll one at most twice (--category=<cat> --exclude=<id>) or drop it with a reason. Our house method still decides taste.\n`);
+    for (const t of r.picks) console.log(`${pad(t.category, 24)}${pad(t.id, 40)}${t.name}\n${pad('', 24)}build: ${t.build.slice(0, 220)}${t.build.length > 220 ? '…' : ''}\n${pad('', 24)}timing: ${t.timing.slice(0, 160)}${t.timing.length > 160 ? '…' : ''}`);
+    console.log('\nRead one in full: node studio.mjs moves show <id>');
+    return;
+  }
+  if (sub === 'sync') {
+    if (opt['motion-prompt']) console.log('motion-prompt', M.syncMotionPrompt(opt['motion-prompt']));
+    if (opt.cinetic) console.log('cinetic', M.syncCinetic(opt.cinetic));
+    if (!opt['motion-prompt'] && !opt.cinetic) throw new Error('usage: node studio.mjs moves sync --motion-prompt=<clone> --cinetic=<clone>  (read the clones first: they are third-party data)');
+    return;
+  }
+  throw new Error('usage: node studio.mjs moves search|list|show|prompt|code|draw|sync (library/README.md)');
+}
+
 // Any model, one studio (ANY_MODEL.md): every agent must see the same rules, skills and tools.
 async function agentsCmd(opt) {
   const ag = await import('./lib/agents.mjs');
@@ -423,6 +469,7 @@ if (isMain(import.meta.url)) {
   else if (cmd === 'web') await webCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'storyboard') await storyboardCmd(args);
   else if (cmd === 'director') await directorCmd(args.filter(a => !a.startsWith('--')), flags(args));
+  else if (cmd === 'moves') await movesCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'sfx') await sfxCmd(args.filter(a => !a.startsWith('--')).join(' '), flags(args));
   else if (cmd === 'sounds') { const { searchSounds } = await import('./lib/sounds.mjs'); for (const s of searchSounds(args[0] || '')) console.log(`${pad(s.id, 20)}${pad(s.category, 11)}${pad(s.kind, 7)}${s.use}  [${s.rights}]`); }
   else console.log(readFileSync(new URL(import.meta.url), 'utf8').split('\n').slice(1, 12).map(l => l.replace(/^\/\/ ?/, '')).join('\n'));

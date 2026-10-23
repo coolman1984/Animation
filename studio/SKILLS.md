@@ -17,6 +17,7 @@ Architecture and engine choice: PLATFORM.md. Before choosing an engine run `node
 | Colour accuracy, scopes, LUT grade | qa-judge, ffmpeg-master | lib/color.mjs, tools/ocio_bake.py, config.lut |
 | Chrome must be started by an approved launcher | cdp-capture | STUDIO_CDP_URL attach mode (lib/cdp.mjs) |
 | Route a film | film-director | make.mjs, production.json, QUALITY_PLAYBOOK.md (method that reached premium) |
+| Named moves: what a move is called, its exact timings, a plan draw (Motion Prompt #001–#120, Cinetic techniques) | motion-composer, camera-director, web-director, film-director | `studio.mjs moves`, library/README.md, lib/movelib.mjs, lib/mpcard.js |
 | UI-morph / showreel motion, logo assembly | motion-composer | lib/uimorph.js, tools/logo_trace.py |
 | No concept / direction yet | creative-director, idea-lab | style frames + craft metadata + creative preflight |
 | Brand / source truth | brand-kit, data-honesty | asset roles, source/rights records |
