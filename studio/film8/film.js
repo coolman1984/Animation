@@ -170,8 +170,8 @@ SC.push({ id: 'stage', a: 0, b: 25.1, z: 4, init(root) {
   const marks = [0, 1, 2].map(() => div(root, { width: '16px', height: '16px', background: C.blue, boxShadow: '0 0 14px rgba(24,182,255,0.8)', zIndex: '5', opacity: '0' }));
   // S1 copy
   const a1 = words(root, 'من الفريق الذي يعمل مع', { size: 56, weight: 400, color: C.grey, cy: 360 });
-  const a2 = words(root, 'سامسونج إلكترونيكس مصر', { size: 84, weight: 700, cy: 480, lh: 1.2 });
-  const a3 = words(root, 'SAMSUNG ELECTRONICS EGYPT', { size: 26, weight: 400, font: MONO, color: C.cyan, cy: 580, dir: 'ltr', justify: 'flex-end', track: 0.28 });
+  const a2 = words(root, 'مصنع إلكترونيات عالمي', { size: 84, weight: 700, cy: 480, lh: 1.2 });
+  const a3 = words(root, 'GLOBAL ELECTRONICS MANUFACTURER', { size: 26, weight: 400, font: MONO, color: C.cyan, cy: 580, dir: 'ltr', justify: 'flex-end', track: 0.28 });
   // --- 2. logo (white letters, blue dot and plus), particles from the work-piece pixel
   const logo = div(root, { zIndex: '7', transformOrigin: '0 0' });
   const letters = {};
@@ -214,8 +214,8 @@ SC.push({ id: 'stage', a: 0, b: 25.1, z: 4, init(root) {
     return { box, L, i };
   });
   const d1 = words(root, 'عملاؤنا اليوم', { size: 56, weight: 400, color: C.grey, cy: 360 });
-  const d2 = words(root, 'سامسونج إلكترونيكس مصر', { size: 84, weight: 700, cy: 470, lh: 1.2 });
-  const d3 = words(root, 'SAMSUNG ELECTRONICS EGYPT', { size: 26, weight: 400, font: MONO, color: C.cyan, cy: 565, dir: 'ltr', justify: 'flex-end', track: 0.28 });
+  const d2 = words(root, 'مصنع إلكترونيات عالمي', { size: 84, weight: 700, cy: 470, lh: 1.2 });
+  const d3 = words(root, 'GLOBAL ELECTRONICS MANUFACTURER', { size: 26, weight: 400, font: MONO, color: C.cyan, cy: 565, dir: 'ltr', justify: 'flex-end', track: 0.28 });
   // --- 6. on the floor
   const e1 = words(root, 'لا نقدّم عروضًا نظرية..', { size: 58, weight: 400, color: C.grey, cy: 350 });
   const e2 = words(root, 'ندخل معكم أرض المصنع', { size: 78, weight: 700, cy: 465, lh: 1.2 });

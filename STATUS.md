@@ -111,7 +111,7 @@ Updated: 2026-10-19.
 
 **Previous scope: DONE — Film 8, Pixel Plus formal factory pitch, 25 s 16:9 (owner request 2026-10-03).**
 - `studio/film8/` (BRIEF with the reference-order table, production.json, config, film.js, score.mjs, LEDGER). Final take04 (local): all gates PASS, share 13.5 MB.
-- Only the owner's real client (Samsung Electronics Egypt, TV + mobile plants) named, as text; no third-party logos. Not verified: listening, real-screen viewing.
+- Only the owner's real client (a global electronics manufacturer, TV + mobile plants) named, as text; no third-party logos. Not verified: listening, real-screen viewing.
 
 **Previous scope: DONE — Film 7 revision: logo-building section removed, 15 s (owner 2026-10-03: "the logo build is very ugly").**
 - Finished logo now pops in whole at 7.5 over the service rows; lock-up 10–15. Score spliced on the bar line. Final take09 (local): all gates PASS, share 9.64 MB. Not verified: listening.
@@ -120,7 +120,7 @@ Updated: 2026-10-19.
 - Source: `studio/film7/` (BRIEF, production.json, config, film.js, score.mjs, icon_trace.py, LEDGER). ONE delivery: 9:16, 1080×1920, 30 fps, 25.00 s (no placement named → studio default).
 - Final take: `studio/out/film7/take08/` (local, not in git): share copy 11.61 MB + master + poster. All technical gates PASS (−13.9 LUFS, TP −3.4, LRA 3.3, 24 text lines in the safe band); 2 of 2 correction rounds used.
 - Not verified: listening to the score (measured: 95.94 BPM, C major), real-speed viewing on a phone, a fresh reviewer, live Meta overlays/re-encode. Brand conflicts (3 icons, 2 descriptors) are listed in the BRIEF for the owner.
-**Parallel scope (other branch): IN PROGRESS — Film 10 (was film 7 on that branch), Pixel Plus company presentation, 3:00 YouTube 1920×1080 (owner request 2026-10-03: light theme, classy Arabic, elegant low Western music, Samsung Electronics Egypt year of work, projects focus, "GO ALL OUT").**
+**Parallel scope (other branch): IN PROGRESS — Film 10 (was film 7 on that branch), Pixel Plus company presentation, 3:00 YouTube 1920×1080 (owner request 2026-10-03: light theme, classy Arabic, elegant low Western music, a global electronics manufacturer year of work, projects focus, "GO ALL OUT").**
 - Source `studio/film10/` (BRIEF, production.json, timing.js shared clock, film.js nine chapters incl. a real-3D factory chapter, score.mjs original 80 BPM piano/harp/strings at −18 LUFS, LEDGER). Logo traced from the owner's file (13 parts, 1,699 particles).
 - Stills reviewed in five batches; builder fixes and an art-direction pass are in LEDGER.md. Full-length draft render: in progress through `node studio.mjs build film10 --range=0:180` (1 worker: see below). Next: watch the draft, correction round, review build with sound, final.
 
