@@ -7,10 +7,10 @@ system implementation and solving the real day-to-day problems of departments. M
 no presenter. The film should also work as the studio's showreel. "GO ALL OUT."
 
 ## Facts (owner-supplied, the only claims shown)
-- Pixel Plus has worked for one year inside **Samsung Electronics Egypt**, in the **TV factory** and the **Mobile factory**:
+- Pixel Plus has worked for one year inside **a global electronics manufacturer**, in the **TV factory** and the **Mobile factory**:
   AI training, projects and system implementation.
 - No other client companies yet, so none are shown. No numbers, percentages or results are claimed: every benefit is qualitative.
-- Samsung appears as **text only**: no logo, no implied endorsement.
+- The client appears as **text only**: no logo, no implied endorsement.
 
 ## Assumptions (agent's, to be corrected by the owner)
 - Project topics follow the owner's real work domain (SAP/NERP T-code reports to Excel, production/material planning with
@@ -47,7 +47,7 @@ no presenter. The film should also work as the studio's showreel. "GO ALL OUT."
 | 12–36 | The daily problem: manual reports, scattered files, copy-paste, waiting decisions («العمل اليدوي») |
 | 36–48 | Reframe: not more tools, a system («أنظمة»); the chaos snaps into an ordered grid |
 | 48–60 | Pixel Plus: who we are, three pillars: training, systems, automation |
-| 60–84 | One year inside Samsung Electronics Egypt: TV factory + Mobile factory (3D), a 12-month ribbon |
+| 60–84 | One year inside a global electronics manufacturer: TV factory + Mobile factory (3D), a 12-month ribbon |
 | 84–144 | Four projects, 15 s each: SAP report automation · production & material planning · dashboards · AI assistant + team training |
 | 144–162 | Results: less time, fewer errors, faster decisions, stronger teams |
 | 162–171 | How we work: understand → design → build → train → follow up |

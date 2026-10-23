@@ -81,7 +81,7 @@ chord(T.snap, CHD.G.v, BAR * 1.6, 0.3); strPad(T.snap, CHD.G.v, 1.6, 1.15, 1800)
 [86, 83, 81, 78].forEach((m, i) => bell(bells, T.snap + 0.05 + i * 0.09, m, 0.07, { p: -0.4 + i * 0.25, decay: 1.4 }));
 chord(barAt(15), CHD.Asus.v, BAR, 0.26); strPad(barAt(15), CHD.A.v, 1, 1.1, 1700); bassNote(barAt(15), CHD.A.root + 12, BAR, 0.28);
 harpArp(barAt(14) + 1.5, CHD.Asus.arp, 1.5, 0.2, BEAT / 3);
-// ---------- 48–84 · Pixel Plus + Samsung: the theme, a soft pulse appears ----------
+// ---------- 48–84 · Pixel Plus + the client: the theme, a soft pulse appears ----------
 for (let b = 16; b < 28; b++) {
   const c = CHD[PROG_A[(b - 16) % 4]], t0 = barAt(b);
   strPad(t0, c.v, 1, 1.0, b >= 20 ? 1900 : 1600); bassNote(t0, c.root + 12, BAR * 0.95, 0.3);

@@ -384,7 +384,7 @@ SC.push({ id: 'brand', a: CH.brand[0], b: CH.brand[1], z: 16, init(root) {
 } });
 
 // =====================================================================================================
-// SAMSUNG 60–84 — real 3D: a TV and a phone in a white studio, a slow orbit, labels drawn to the products, a 12-month ribbon;
+// CLIENT 60–84 — real 3D: a TV and a phone in a white studio, a slow orbit, labels drawn to the products, a 12-month ribbon;
 // then the camera dives into the TV screen, whose blue becomes the first project window (match cut at 83.8).
 const TV = { x: -1.05, y: 0.05, w: 3.2, h: 1.86 }, PHONE = { x: 1.55, y: -0.925, z: 0.35, w: 0.46, h: 0.95 }, FLOOR = -1.4;
 function roundedShape(w, h, r) {
@@ -456,7 +456,7 @@ function contactShadow(w, d, a = 0.5) {
 }
 // lazy: the WebGL renderer, PMREM environment and geometry are built on the first frame inside the chapter, so render workers
 // whose time slice never reaches 59–84 s never pay the ~0.5 GB SwiftShader cost (six eager copies starved a 16 GB machine).
-SC.push({ id: 'samsung', a: CH.samsung[0], b: CH.samsung[1], z: 30, lazy: true, init(root) {
+SC.push({ id: 'client', a: CH.client[0], b: CH.client[1], z: 30, lazy: true, init(root) {
   full(root, { background: PAPER_BG });
   const canvas = el('canvas', { style: { position: 'absolute', left: '0', top: '0', width: px(W), height: px(H), zIndex: '2' } }, root);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
@@ -507,7 +507,7 @@ SC.push({ id: 'samsung', a: CH.samsung[0], b: CH.samsung[1], z: 30, lazy: true, 
   });
   // DOM overlay: titles, labels with leader lines, the 12-month ribbon
   const title = line(root, 'سنة كاملة من التطبيق الفعلي', { y: 158, size: 70, weight: 700, font: DISPLAY, color: C.ink, lh: 1.25, z: 10 });
-  const latin = line(root, 'Samsung Electronics Egypt', { y: 250, size: 62, weight: 400, font: SERIF, italic: true, color: C.navy, dir: 'ltr', lh: 1.2, z: 10 });
+  const latin = line(root, 'A global electronics manufacturer', { y: 250, size: 62, weight: 400, font: SERIF, italic: true, color: C.navy, dir: 'ltr', lh: 1.2, z: 10 });
   const svg = el('svg', { width: W, height: H, viewBox: `0 0 ${W} ${H}`, style: { position: 'absolute', left: '0', top: '0', zIndex: '9', overflow: 'visible' } }, root);
   const leads = [0, 1].map(() => el('path', { d: '', stroke: C.blue, 'stroke-width': 2, fill: 'none', opacity: 0 }, svg));
   const anchors = [0, 1].map(() => el('circle', { r: 6, fill: C.blue, opacity: 0 }, svg));
@@ -518,9 +518,9 @@ SC.push({ id: 'samsung', a: CH.samsung[0], b: CH.samsung[1], z: 30, lazy: true, 
   const ticks = Array.from({ length: 12 }, (_, i) => el('rect', { x: 1640 - i * (1360 / 11) - 6, y: 952, width: 12, height: 12, rx: 3, fill: '#FFFFFF', stroke: C.blue, 'stroke-width': 2, opacity: 0 }, svg));
   const ribL = line(root, '١٢ شهر من التدريب والمشاريع والتطبيق', { y: 1000, size: 30, weight: 400, color: C.grey, z: 10 });
   void rib;
-  S.samsung = { renderer, scene, camera, tv, phone, title, latin, leads, anchors, tvL, phL, ribOn, ticks, ribL, root, tvLive, phLive, items, beltLen: BELT.len };
+  S.client = { renderer, scene, camera, tv, phone, title, latin, leads, anchors, tvL, phL, ribOn, ticks, ribL, root, tvLive, phLive, items, beltLen: BELT.len };
 }, render(t) {
-  const s = S.samsung, cam = s.camera;
+  const s = S.client, cam = s.camera;
   // circle wipe from the logo's plus (brand scene) into the studio
   const plus = S.brand.logo.toScr((923 + 1109) / 2, (679 + 859) / 2);
   s.root.style.clipPath = circleWipe(t, { a: T.wipe[0], b: T.wipe[1], x: plus[0], y: plus[1], W, H }).clip;

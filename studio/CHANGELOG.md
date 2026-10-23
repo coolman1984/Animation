@@ -194,7 +194,7 @@ Owner: a 20 s ad for an educational neuro-physiotherapy page, sound effects only
 - take04: all gates PASS. Not verified: listening.
 
 ## 2026-10-03 — Film 8: Pixel Plus formal factory pitch, 25 s 16:9 (scope DONE)
-Owner: same content and order as a supplied promo, formal, for a factory's top management; Pixel Plus's only clients are Samsung Electronics Egypt's TV and mobile plants.
+Owner: same content and order as a supplied promo, formal, for a factory's top management; Pixel Plus's only clients are a global electronics manufacturer's TV and mobile plants.
 - Reference transcribed with `tools/live.py` (VAD + Whisper turbo) to get the exact order; mapped statement by statement, "and many more" replaced by «ومصنعكم.. المحطة القادمة».
 - `film8/`: production-line rail with seven stations, the brand pixel as the work-piece, blueprint factory, template-scan → pixel-built screen, braided strands, client cards (name as text only), reticle on the floor, logo lock-up (white letters, blue dot/plus).
 - take04: all gates PASS (−16 LUFS for room playback). Not verified: listening, viewing on the real screen.

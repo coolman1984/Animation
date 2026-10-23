@@ -2,7 +2,7 @@
 // chapter change lands on its sound. 80 BPM: beat 0.75 s, bar 3 s. Pure data, no DOM.
 export const BPM = 80, BEAT = 0.75, BAR = 3, DUR = 180;
 export const CH = {
-  open: [0, 12.4], problem: [11.6, 40.4], reframe: [35.5, 48.4], brand: [47.8, 60.4], samsung: [59.0, 84.4],
+  open: [0, 12.4], problem: [11.6, 40.4], reframe: [35.5, 48.4], brand: [47.8, 60.4], client: [59.0, 84.4],
   projects: [83.6, 144.6], results: [143.6, 162.4], method: [161.8, 171.4], finale: [170.8, 180],
 };
 // HUD chapter labels (Arabic-Indic numerals only, no mixed digits).

@@ -3,7 +3,7 @@
   "duration": 25,
   "fps": 30,
   "audience": "the top management of an Egyptian factory, in a meeting room, watching the opening of a Pixel Plus presentation",
-  "promise": "Pixel Plus builds ads, animation and software from inside real factory work — today for Samsung Electronics Egypt's TV and mobile plants — and your factory can be next",
+  "promise": "Pixel Plus builds ads, animation and software from inside real factory work — today for a global electronics manufacturer's TV and mobile plants — and your factory can be next",
   "cta": "ومصنعكم.. المحطة القادمة — the presenter continues live; no contact details on screen",
   "direction": "A production line (rail) along the bottom: the brand's blue pixel travels station to station like a work-piece; every statement of the owner's reference order is a station. Blueprint line-art on deep navy, white formal Arabic (Alexandria) + Space Mono labels, Pixel Plus blue. 96 BPM original score with a machine pulse.",
   "assets": [
@@ -29,7 +29,7 @@
     "viewer": "a plant director and managers judging a supplier in a formal meeting",
     "problem": "suppliers pitch theory and templates; managers want people who understand the line",
     "promise": "solutions built from inside real factory work",
-    "evidence": "one real current client named by the owner: Samsung Electronics Egypt (TV plant, mobile plant); no logos, numbers or other clients invented",
+    "evidence": "one real current client named by the owner: a global electronics manufacturer (TV plant, mobile plant); no logos, numbers or other clients invented",
     "emotion": "respect, clarity, curiosity",
     "motif": "a production line with stations; the work-piece pixel",
     "palette": [
@@ -74,7 +74,7 @@
       "id": "experience",
       "start": 0,
       "end": 5,
-      "purpose": "who we work with (reference order 1): the team that works with Samsung Electronics Egypt; blueprint of a TV plant and a mobile plant",
+      "purpose": "who we work with (reference order 1): the team that works with a global electronics manufacturer; blueprint of a TV plant and a mobile plant",
       "assetIds": [],
       "craft": {
         "scale": "wide blueprint + statement",
@@ -89,7 +89,7 @@
         "audioCue": "machine pulse and tick; station click 0.4"
       },
       "copy": {
-        "text": "من الفريق الذي يعمل مع سامسونج إلكترونيكس مصر",
+        "text": "من الفريق الذي يعمل مع مصنع إلكترونيات عالمي",
         "start": 0.6,
         "end": 4.5
       }
@@ -172,7 +172,7 @@
       "id": "clients",
       "start": 15,
       "end": 17.5,
-      "purpose": "reference order 5 (the logo wall), honestly: our clients today — Samsung Electronics Egypt, TV plant and mobile plant (name as text, no third-party logo art)",
+      "purpose": "reference order 5 (the logo wall), honestly: our clients today — a global electronics manufacturer, TV plant and mobile plant (name as text, no third-party logo art)",
       "assetIds": [],
       "craft": {
         "scale": "two cards + statement",
@@ -187,7 +187,7 @@
         "audioCue": "two whooshes"
       },
       "copy": {
-        "text": "عملاؤنا اليوم سامسونج إلكترونيكس مصر",
+        "text": "عملاؤنا اليوم مصنع إلكترونيات عالمي",
         "start": 15.1,
         "end": 17.3
       }
