@@ -82,6 +82,12 @@ Promote to `capabilities.json` only after a passing study.
 | Scroll/3D site prompt libraries (scrolltide.co, owner post) | Value = not starting from a blank page: a catalogue of animated sections | ADAPTED as our own section vocabulary + styles (site not reachable here) | owner screenshot |
 | "Be ambitious" agent prompt (Felix Rieseberg, via Dan McAteer) | Ask what a top professional would do, from which raw material, with which methods, before acting | INTEGRATED as the `ambition` block of every site plan | owner screenshot (original not found online) |
 
+## Named-move libraries from owner posts — 2026-10-18
+| Technology | What was learned | Decision | Source |
+|---|---|---|---|
+| Motion Prompt (MIT, showheyohtaki/motion-prompt @ 770eefb) | 120 numbered moves (motion graphics, camera & cuts, UI parts, web effects, photo looks), each a pure Canvas function of time with a measured spec and a prompt; same render-at-t contract as our films | INTEGRATED: vendored `library/motion-prompt/` + Arabic names, `studio.mjs moves`, MCP `moves_*`, `lib/mpcard.js`; all 120 cells drawn in Chromium | owner X post; repo README/FORMAT.md |
+| Cinetic v1.1 (MIT, Leonxlnx/cinetic @ ecfa660) | Agent skill for launch films: 273 techniques with 60 fps timing, weighted random draw (`pick.py`), craft/timing/sound chapters; engines Remotion/HyperFrames; sound rendered in code with earshot | ADAPTED: techniques + draw ported to `lib/movelib.mjs` (Node, no Python), 7 chapters vendored as reading; its Remotion/HyperFrames starters and earshot NOT installed (our engine and `lib/sfx.mjs` cover them); its taste bans stay its own (house method wins) | owner X post; repo SKILL.md, scripts/pick.py |
+
 ## Owner-recommended web design skills — 2026-10-19
 Read as web pages only (README + skill text); nothing was cloned, installed or run (the session blocks third-party code, and the house rule is learn → adapt → integrate).
 | Technology | What was learned | Decision | Source |
