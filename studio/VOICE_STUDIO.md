@@ -6,6 +6,7 @@ Everything shares the film clock with picture: voice lines, cues, music and SFX 
 ```text
 VOICE & SOUND DIRECTOR (skill voice-director)
  ├ Speech recognition   tools/live.py vad · transcribe --lang=ar|en|auto · diarize · align (known script)
+ ├ Local captions       lib/whisper.mjs — whisper.cpp, faster-whisper, or sherpa-onnx (no cloud, no download)
  ├ Transcript editor    lib/transcript.mjs (canonical transcript, corrections log, fillers, repeats, cut points, search)
  ├ Translation          transcript layers (kind: translation) — the original words are never replaced
  ├ Subtitle engine      SRT · WebVTT · ASS · TXT · JSON · bilingual SRT (RTL marks per line)
@@ -25,6 +26,7 @@ node studio.mjs voice script <film> [--final]                 # <film>/voice.jso
 python tools/live.py models --asr=turbo --tts=1 --diar=1      # offline models (Whisper turbo, Piper, pyannote + ERes2Net)
 python tools/live.py ingest <video> <pack> … ; python tools/live.py diarize <pack> ; python tools/live.py transcribe <pack> --lang=auto
 node studio.mjs transcript <pack> [--translation=en.json --layer=en]   # canonical transcript + SRT/VTT/ASS/TXT/JSON (+ bilingual)
+node studio.mjs captions <video|audio> [--lang=ar|en|auto] [--model=…] [--backend=whisper.cpp|faster-whisper|sherpa-onnx] [--out=base]
 node studio.mjs mixcheck takes/<film>/mix.wav                 # clipping / mono / phone / phase notes
 node studio.mjs sounds whoosh                                 # sound library search with rights
 node studio.mjs sfx whoosh --effects                          # Openverse FIRST: free licensed audio (commercial by default); --download=<film> --pick=N saves + credits
@@ -40,6 +42,17 @@ node studio.mjs sfx whoosh --effects                          # Openverse FIRST:
   - Egyptian dialect words may come out in MSA spelling.
   - Brand names are often misheard. Correct them with `correct()`; every correction is logged.
 - **Known script:** `align` places the real words on the detected speech. Use it whenever a script exists.
+
+## One-step local captions (`lib/whisper.mjs`)
+`node studio.mjs captions <video|audio>` extracts a 16 kHz mono WAV with ffmpeg, transcribes it on this machine, and writes the canonical transcript (`.transcript.json`, `.srt`, `.vtt`, `.ass`, `.txt`). Arabic SRT lines get RTL embedding marks. Language defaults to `auto`.
+
+Backends, in order. All local. No cloud API.
+
+1. **whisper.cpp** (MIT) — `whisper-cli`, or the older `main` if it is actually whisper.cpp. Model file from `--model=` or `WHISPER_MODEL`. Word times come from `-ojf` token timestamps (real). One processor (`-p 1`) so those times do not reset at chunk boundaries.
+2. **faster-whisper** (MIT) — a local CTranslate2 model directory (`--model=` or `FASTER_WHISPER_MODEL`). Word times come from `word_timestamps` (real). The runner sets `local_files_only` and does not download. It decodes the 16 kHz WAV with the Python stdlib (`wave` + a float32 array, sample / 32768) and passes that array to `transcribe`, so PyAV is never used. Silero VAD stays on (`vad_filter`); a music-only clip otherwise comes back as invented speech.
+3. **sherpa-onnx** — `tools/live.py transcribe` (Apache-2.0 runtime, Whisper weights MIT). Needs a model from `python tools/live.py models --asr=turbo|base|small`. Word times stay proportional inside segments, snapped to loudness dips. The transcript records that limit.
+
+If none is ready the command prints the install commands, sizes and licences and exits 2. If a backend is installed and the run fails, it prints the failure and one hint, not that install guide. It does not download a model. `node studio.mjs setup whisper` only prints those commands.
 
 ## The canonical transcript (`lib/transcript.mjs`)
 One asset drives editing, subtitles, captions, search, translation, dubbing, word highlighting, speaker labels, jump cuts and quote extraction.

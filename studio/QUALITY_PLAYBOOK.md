@@ -111,3 +111,4 @@ Adopted from the prompt the owner shared; where it clashes with §0 (music taste
 - **Craft reminders from the prompt worth keeping:** frame one is a finished still; one object carries the film and lands on the same pixels on
   both sides of every handoff; hard cuts only when size, direction and subject match, on a beat; nothing starts or stops all at once; no linear
   easing; ~0.3 s per word on screen (0.7 s minimum) as the floor under our own read-hold rule; 3D only where it explains something spatial.
+  Disney's 12: skill `animation-principles` — the critic scores what a spec can show (`principle-*`) and lists the rest as a manual checklist, not scored.

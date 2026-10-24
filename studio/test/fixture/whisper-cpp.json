@@ -1,0 +1,37 @@
+{
+  "systeminfo": "fixture",
+  "model": { "type": "small", "multilingual": true, "vocab": 51865 },
+  "params": { "model": "models/ggml-small.bin", "language": "auto", "translate": false },
+  "result": { "language": "ar" },
+  "transcription": [
+    {
+      "timestamps": { "from": "00:00:00,000", "to": "00:00:02,400" },
+      "offsets": { "from": 0, "to": 2400 },
+      "text": " كل فكرة عظيمة.",
+      "tokens": [
+        { "text": "[_BEG_]", "timestamps": { "from": "00:00:00,000", "to": "00:00:00,000" }, "offsets": { "from": 0, "to": 0 }, "id": 50363, "p": 0.5, "t_dtw": -1 },
+        { "text": " كل", "timestamps": { "from": "00:00:00,100", "to": "00:00:00,400" }, "offsets": { "from": 100, "to": 400 }, "id": 100, "p": 0.91, "t_dtw": -1 },
+        { "text": " فكر", "timestamps": { "from": "00:00:00,400", "to": "00:00:00,700" }, "offsets": { "from": 400, "to": 700 }, "id": 101, "p": 0.8, "t_dtw": -1 },
+        { "text": "ة", "timestamps": { "from": "00:00:00,700", "to": "00:00:00,900" }, "offsets": { "from": 700, "to": 900 }, "id": 102, "p": 0.86, "t_dtw": -1 },
+        { "text": " عظيمة", "timestamps": { "from": "00:00:01,000", "to": "00:00:01,700" }, "offsets": { "from": 1000, "to": 1700 }, "id": 103, "p": 0.93, "t_dtw": -1 },
+        { "text": ".", "timestamps": { "from": "00:00:01,700", "to": "00:00:01,900" }, "offsets": { "from": 1700, "to": 1900 }, "id": 13, "p": 0.7, "t_dtw": -1 },
+        { "text": "[_TT_120]", "timestamps": { "from": "00:00:02,400", "to": "00:00:02,400" }, "offsets": { "from": 2400, "to": 2400 }, "id": 50483, "p": 0.2, "t_dtw": -1 }
+      ]
+    },
+    {
+      "timestamps": { "from": "00:00:03,200", "to": "00:00:04,800" },
+      "offsets": { "from": 3200, "to": 4800 },
+      "text": " Every great idea.",
+      "tokens": [
+        { "text": "[_BEG_]", "offsets": { "from": 3200, "to": 3200 }, "id": 50363, "p": 0.4, "t_dtw": -1 },
+        { "text": " Every", "offsets": { "from": 3300, "to": 3600 }, "id": 200, "p": 0.95, "t_dtw": -1 },
+        { "text": " gre", "offsets": { "from": 3600, "to": 3800 }, "id": 201, "p": 0.6, "t_dtw": -1 },
+        { "text": "at", "offsets": { "from": 3800, "to": 4100 }, "id": 202, "p": 0.9 },
+        { "text": " idea", "offsets": { "from": 4200, "to": 4600 }, "id": 203, "p": 0.97 },
+        { "text": ".", "offsets": { "from": 4600, "to": 4700 }, "id": 13, "p": 0.88 },
+        { "text": "[_TT_240]", "offsets": { "from": 4800, "to": 4800 }, "id": 1, "p": 0.1 },
+        { "text": "<|endoftext|>", "id": 50257, "p": 0.01 }
+      ]
+    }
+  ]
+}

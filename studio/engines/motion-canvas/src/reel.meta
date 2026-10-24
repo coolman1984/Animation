@@ -1,0 +1,20 @@
+{
+  "name": "reel",
+  "version": 1,
+  "shared": {
+    "background": "#030818",
+    "range": [0, null],
+    "size": { "x": 1080, "y": 1920 },
+    "audioOffset": 0
+  },
+  "preview": { "fps": 30, "resolutionScale": 1 },
+  "rendering": {
+    "fps": 30,
+    "resolutionScale": 1,
+    "colorSpace": "srgb",
+    "exporter": {
+      "name": "@motion-canvas/ffmpeg",
+      "options": { "fastStart": true, "includeAudio": false, "audioSampleRate": 48000 }
+    }
+  }
+}
