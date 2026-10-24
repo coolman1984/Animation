@@ -1,0 +1,30 @@
+{
+  "language": "en",
+  "language_probability": 0.97,
+  "duration": 4.8,
+  "model": "small",
+  "segments": [
+    {
+      "id": 0,
+      "start": 0.0,
+      "end": 2.2,
+      "text": " كل فكرة عظيمة.",
+      "words": [
+        { "word": " كل", "start": 0.1, "end": 0.45, "probability": 0.9 },
+        { "word": " فكرة", "start": 0.5, "end": 0.95, "probability": 0.88 },
+        { "word": " عظيمة.", "start": 1.05, "end": 1.9, "probability": 0.93 }
+      ]
+    },
+    {
+      "id": 1,
+      "start": 3.1,
+      "end": 4.7,
+      "text": " Every great idea.",
+      "words": [
+        { "word": " Every", "start": 3.2, "end": 3.55, "probability": 0.96 },
+        { "word": " great", "start": 3.6, "end": 4.0, "probability": 0.94 },
+        { "word": " idea.", "start": 4.1, "end": 4.6, "probability": 0.98 }
+      ]
+    }
+  ]
+}

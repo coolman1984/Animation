@@ -130,7 +130,9 @@ export const TOOLS = [
       if (brief.style) { const { brandFor } = await import('../lib/styles.mjs'); writeFileSync(join(dir, 'brand.json'), JSON.stringify(brandFor(brief.style), null, 2) + '\n'); }
       return [text({ saved: `studio/studio-engine/films/${film}/spec.json`, arc: r.arc, write: r.todo, spec: r.spec, next: 'replace every ‹…› (spec_save with the whole spec), then film_review' })];
     } },
-  { name: 'film_review', description: 'The house critic: the owner\'s taste and the studio\'s craft rules as a scorecard (hook in 2 s, one hero, one idea per bar, reading time, type size, payoff + one action, music hook, honesty…), each with evidence and the next edit. frames: true also renders sampled frames and reads them back (~20 s).', inputSchema: { type: 'object', properties: { film: FILM, format: FORMAT, frames: { type: 'boolean' } }, required: ['film'] },
+  { name: 'principle_read', description: 'Read one of Disney\'s 12 principles as vendored for our films (animation-principles). slug: anticipation, staging, timing, slow-in-out, arc, follow-through, or the skill folder (anticipation-mastery). The house critic scores the ones a spec can show; film_review lists the rest as principles (a manual checklist, not scored).', inputSchema: { type: 'object', properties: { slug: { type: 'string' } }, required: ['slug'] },
+    run: async ({ slug }) => { const { principleDoc } = await import('../studio-engine/lib/critic.mjs'); return [text(principleDoc(String(slug ?? '')))]; } },
+  { name: 'film_review', description: 'The house critic: the owner\'s taste and the studio\'s craft rules as a scorecard (hook in 2 s, one hero, one idea per bar, reading time, type size, payoff + one action, music hook, honesty, Disney principles a spec can show as principle-*), each with evidence and the next edit. principles lists the rest as a manual checklist (not scored). frames: true also renders sampled frames and reads them back (~20 s).', inputSchema: { type: 'object', properties: { film: FILM, format: FORMAT, frames: { type: 'boolean' } }, required: ['film'] },
     run: async ({ film, format, frames }) => {
       const p = join(filmDir(film), 'spec.json'); if (!existsSync(p)) throw new Error(`no spec for ${film}`);
       const spec = readJSON(p), fmt = format || spec.format || 'youtube', brand = brandOf(film), { critique } = await import('../studio-engine/lib/critic.mjs');
@@ -215,6 +217,13 @@ export const TOOLS = [
     } },
   { name: 'film_job', description: 'State of a render job (running / delivered / finished / failed), its gate lines and the deliverable MP4 path. Without id: the latest job.', inputSchema: { type: 'object', properties: { id: { type: 'string' } } },
     run: ({ id } = {}) => { const all = jobs(); const j = id ? all.find((x) => x.id === id) : all.at(-1); if (!j) throw new Error(id ? `no job ${id}` : 'no jobs yet'); return [text(jobView(j))]; } },
+  { name: 'cover_make', description: 'Make a cover or title card from a small JSON spec (title, optional kicker and subtitle, brand colours, font from studio/assets/fonts, optional logo, preset). Presets: youtube 1280×720, reel 1080×1920, square 1080×1080, title-card 1920×1080. Satori + resvg (node studio.mjs setup covers). The cover-study Arabic phrase shaped correctly, so Arabic stays on Satori; pass renderer only via the CLI. Writes SVG and PNG under studio/out or studio/takes (never committed) and returns the PNG.', inputSchema: { type: 'object', properties: { spec: { type: 'object', description: 'cover spec; see studio/examples/cover-study' }, out: { type: 'string', description: 'png or svg path inside studio/out or studio/takes; default studio/out/covers/<preset>.png' } }, required: ['spec'] },
+    run: async ({ spec, out } = {}) => {
+      const { writeCoverFiles, defaultCoverPaths, pathsFromOut } = await import('../lib/covers.mjs');
+      const dest = out ? pathsFromOut(out, 'cover.json') : defaultCoverPaths((spec && spec.preset) || 'cover');
+      const r = await writeCoverFiles(spec, dest);
+      return [text({ renderer: r.renderer, width: r.width, height: r.height, png: r.pngPath, svg: r.svgPath, arabic: r.arabic, ...(r.note ? { note: r.note } : {}) }), { type: 'image', data: r.png.toString('base64'), mimeType: 'image/png' }];
+    } },
 ];
 
 // ---------- JSON-RPC over stdio ----------

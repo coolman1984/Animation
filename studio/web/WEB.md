@@ -36,7 +36,7 @@ rules unless the owner asks otherwise. Free tools only; never a paid API without
 |---|---|---|
 | A. Creative direction | **taste-skill** (Leonxlnx, MIT) | business/audience/purpose, 8–12 things only this client has, references studied, **three genuinely different directions**, the chosen one + why, the idea sentence (competitor test), storytelling, composition, imagery, type and motion personality — DESIGN.md §A |
 | B. Design architecture | **UI UX Pro Max** (nextlevelbuilder, MIT) | the industry rule followed; colour tokens (≤ 6, tinted neutrals, ≥ 4.5:1), dark mode if it fits, 2 Arabic-capable families, ≤ 5 sizes, spacing/grid, components and states, phone/tablet/desktop rules — DESIGN.md §B, then `site.json` / CSS variables |
-| C. Build and animate | the animation layer (below) | pages in the project's existing technology, built from §B, moving by the **motion storyboard** (DESIGN.md §C: what moves, when, why, how it answers the user, which tech, the reduced-motion state) |
+| C. Build and animate | the animation layer (below); **GSAP** via skill `gsap-skills` only when the table's GSAP row is the one that fits | pages in the project's existing technology, built from §B, moving by the **motion storyboard** (DESIGN.md §C: what moves, when, why, how it answers the user, which tech, the reduced-motion state) |
 | D. Design director | **Impeccable** (Paul Bakaus, Apache-2.0) | independent critique during and after the build — hierarchy, type, spacing, contrast, animation quality and consistency, responsive, accessibility, generic or dated patterns; then polish and remove what is unnecessary — DESIGN.md §D log |
 
 **Choosing animation technology — the minimum that does the job (never install every library):**
@@ -44,7 +44,7 @@ rules unless the owner asks otherwise. Free tools only; never a paid API without
 |---|---|---|
 | hover, transitions, simple reveals | CSS (transitions, keyframes, scroll timelines) | `web/motion` (built in) |
 | component interactions, gestures, layout changes in a React/Vue app | Motion (motion.dev) | only when the project is already a component app |
-| cinematic sequences, scroll storytelling, pinned scenes, synchronized timelines | GSAP + ScrollTrigger (free, standard licence) | add per site, pinned version, credited |
+| cinematic sequences, scroll storytelling, pinned scenes, synchronized timelines | GSAP + ScrollTrigger (GreenSock standard no-charge licence, not MIT) | skill `gsap-skills`; add per site, pinned version, credited; check the licence for that client |
 | immersive 3D objects and scenes | Three.js | vendored by `node studio/studio.mjs setup gpu` (`capabilities.json`) |
 | custom 2D graphics, drawn lines, morphs, particles | SVG / Canvas (PixiJS for heavy 2D) | inline SVG; PixiJS in `setup gpu` |
 Every moving thing: transform/opacity first, ease-out settles (no bounce/elastic), one lead movement with overlapping secondary ones,
@@ -59,6 +59,7 @@ a still complete page under `prefers-reduced-motion`, no layout shift.
   the craft floor), run after `web check` / `web audit`, findings in DESIGN.md §D. Its engine binary is not vendored (it downloads itself); the
   owner may add the full plugin on his PC (`/plugin marketplace add pbakaus/impeccable`, `DO_NOT_TRACK=1`).
 - **A:** taste-skill stays an install on the owner's PC (`/plugin marketplace add Leonxlnx/taste-skill`) or the studio's taste pass below.
+- **C, when the GSAP row is the minimum that does the job:** skill `gsap-skills` (`studio/toolkit/gsap-skills/`, official GreenSock skills, MIT — core, timeline, scrolltrigger, plugins, utils, react, frameworks, performance). The GSAP library is not vendored and is not MIT: GreenSock's standard no-charge licence (gsap.com/standard-license). Check it per client, pin the version, credit GreenSock in DESIGN.md §C. Reduced motion stays a still complete page (`gsap.matchMedia()`).
 - **Also for sites:** skill `diagram-design` (a diagram as inline SVG), skill `img2threejs` (a real product as live Three.js, stage C 3D row),
   skill `penpot-mcp` (the client's Penpot file → §B), skill `video-shotcraft` (the site's promo film from its real pages).
 Install each tool once (no duplicate skills). Never send private client content to an online service. The report says which way each stage ran.
@@ -106,6 +107,14 @@ Tokens become CSS variables; fonts are the studio's vendored OFL faces (Readex P
 - A scroll-driven reveal that finishes at "cover 28 %" leaves the hero's buttons half-faded on a phone's first screen; reveals end at
   `entry 100%`, and the check looks at the first screen without scrolling.
 - Muted text on a coloured ground fails contrast first (clay muted had 3.97:1); the check measures every text node against its real background.
+
+## Motion lab (web/lab)
+
+A teaching page for an easing curve, a frame ruler, and the export commands this repo really accepts. Original work. Open it with `node studio/studio.mjs lab` (see web/lab/README.md).
+
+## Anatomy explainer (web/explainers/anatomy)
+
+A static page for one object's parts: procedural geometry (no downloaded model), an explode slider, hotspot labels with leader lines, a note on click, pointer and keyboard orbit, and a tour. Parts live in `parts.json` (`id`, `label`, `note`, `offset`, `colour`) so another object can reuse the page. Arabic labels stay whole strings (`lang="ar"` `dir="rtl"`). `?t=seconds` and `window.anatomyRender(t)` are a pure function of time, so a film can sample the same scene out of order. Three.js only (MIT): a tree-shaken subset of 0.186.1 lives in the folder so the audit can load it. A flat SVG diagram belongs to `diagram-design`; a mesh rebuilt from a photograph belongs to `img2threejs`. See the folder README.
 
 ## Not built yet (honest list)
 Multi-page sites with View Transitions, forms with a backend, CMS, payments, analytics, a brand kit scanned from an existing site

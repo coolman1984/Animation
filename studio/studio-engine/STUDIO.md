@@ -54,5 +54,8 @@ STUDIO_WORKERS is a bounded request. Browser HTTP and handshake startup have dea
 
 ## Any model (2026-10-16)
 Element vocabulary as data: `catalog.json`. Director's plan (`lib/director.mjs`, `node studio.mjs director plan`), house critic (`lib/critic.mjs`,
-`director review`) and the eyes (`../lib/scenegraph.mjs`, `director inspect`) — see `../ANY_MODEL.md`. Lint now refuses ‹…› placeholders;
+`director review`) and the eyes (`../lib/scenegraph.mjs`, `director inspect`) — see `../ANY_MODEL.md`. The critic also scores six of Disney's 12
+principles when the spec can show them (`principle-slow-in-out`, `principle-anticipation`, `principle-follow-through`, `principle-staging`,
+`principle-timing`, `principle-arc`; source `animation-principles: <skill>`). The other six return as `principles` (a manual checklist, not scored).
+Skill `animation-principles`; MCP `principle_read`. Lint now refuses ‹…› placeholders;
 `pill.parts` accepts plain strings (it crashed the browser before). Brand colour `accentHi` (optional) sets the bright end of the accent pill (was a fixed yellow). House style cards: `../styles/` (`--style=` on the plan). MCP server: `../mcp/server.mjs`.

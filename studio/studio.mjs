@@ -3,12 +3,13 @@
 //   node studio.mjs                          this help
 //   node studio.mjs caps                     every capability: maturity, installed?, best use
 //   node studio.mjs route text particles:4000 3d     which engine for these layers (or: route <film>)
-//   node studio.mjs setup <profile>          install a tool pack (vision, audio, live, logo, gpu, color) or show links (core, pro)
+//   node studio.mjs setup <profile>          install a tool pack (vision, audio, live, logo, gpu, color, whisper, covers) or show links (core, pro)
+//   node studio.mjs cover <spec.json> [--out=studio/out/covers/name.png] [--renderer=satori|chromium]   title card (lib/covers.mjs)
 //   node studio.mjs doctor                   full machine check (lib/doctor.mjs)
 //   node studio.mjs new <film> --placement=reels|youtube|feed|square --duration=30 [--fps=30]
 //   node studio.mjs review <film | out/<film>/takeNN>     playback review: frame steps, A/B, timed notes, hash-bound approval
 //   node studio.mjs voice [status | say <text> --lang=ar | script <film>]   voice studio (VOICE_STUDIO.md)
-//   node studio.mjs transcript <pack>  ·  mixcheck <audio|video>  ·  color check|scopes|range  ·  sounds [category]  ·  sfx "words" [--n=8] [--music|--effects] [--any-license] [--download=filmNN --pick=1]
+//   node studio.mjs transcript <pack>  ·  captions <video|audio> [--lang=ar|en|auto]  ·  mixcheck <audio|video>  ·  color check|scopes|range  ·  sounds [category]  ·  sfx "words" [--n=8] [--music|--effects] [--any-license] [--download=filmNN --pick=1]
 //   node studio.mjs build <film> [make flags]   the safe way to render: reaps orphans, sizes workers to memory, logs everything to takes/<film>/build-full.log
 //   node studio.mjs cleanup                     kill browsers left by crashed runs, remove their temp profiles, show memory headroom
 //   node studio.mjs director plan <film> --placement=reels|youtube --duration=15 [--mode=showreel|product|launch-story|explainer --brand= --cta= --problem= --promise= --viewer= --endState= --logo=]
@@ -18,6 +19,7 @@
 //   node studio.mjs styles [slug | lemo/<slug>] [--library=lemo]   house style cards (styles/README.md) + 59 Lemo-Opuscar film styles
 //   node studio.mjs web audit <label> --dir=<existing site folder> [--before=<label>]   (improve a site: before/after; web/WEB.md)
 //   node studio.mjs web plan <site> [--brand= --style= --lang=ar|en --cta= --problem= --promise=] · web build|check|serve <site> · web styles   (web/WEB.md)
+//   node studio.mjs lab                          easing curve, frame ruler, export commands (web/lab/README.md)
 //   node studio.mjs moves search <words> [--library=motion-prompt|cinetic|shotcraft --pack= --category=] · moves show|prompt|code <#id | technique-id> · moves draw --format=launch|feature|loop|sting|walkthrough|vertical [--energy=calm --seconds=30 --seed=] · moves list   (library/README.md)
 //   node studio.mjs toolkit [check | update <name> --from=<clone>]   third-party agent tools vendored whole (toolkit/README.md)
 //   node studio.mjs web system "<product, industry, mood>" [--site=<site>]   UI UX Pro Max design system for web stage B
@@ -174,6 +176,15 @@ async function transcriptCmd(src, opt) {
   console.log(`fillers ${T.fillers(t).length}, repeated phrases ${T.repeats(t).length}, best cut points: ${T.cutPoints(t).slice(0, 3).map(c => c.t + 's').join(', ')}`);
   for (const [k, f] of Object.entries(out)) console.log(`  ${pad(k, 10)} ${f}`);
 }
+async function captionsCmd(src, opt) {
+  const { caption, USAGE } = await import('./lib/whisper.mjs');
+  if (!src) { console.error(USAGE); process.exit(2); }
+  const r = caption(src, opt);
+  if (!r.ok) { console.error(r.message); process.exit(r.code || 2); }
+  console.log(`${r.backend} · ${r.model || '-'} · ${r.wordTiming}`);
+  console.log(`${r.transcript.sentences.length} sentences, ${r.transcript.words.length} words, language ${r.transcript.language}`);
+  for (const [k, f] of Object.entries(r.files)) console.log(`  ${pad(k, 10)} ${f}`);
+}
 async function colorCmd([sub, video, t], opt) {
   const c = await import('./lib/color.mjs');
   if (sub === 'check') { const r = await c.colorCheck({ dither: !!opt.dither, lut: opt.lut }); console.log(`ΔE mean ${r.meanDE}, max ${r.maxDE} over ${r.patches.length} patches (< 1 invisible, > 3 a real shift)${r.lut ? ' with LUT ' + r.lut : ''}`); return; }
@@ -283,6 +294,7 @@ async function directorCmd([sub, film], opt) {
     if (opt.json) { console.log(JSON.stringify(r, null, 2)); return; }
     console.log(`${film} · ${format} · house score ${r.score}/100 — ${r.verdict}`);
     for (const x of r.rules) console.log(`${x.status === 'pass' ? 'PASS' : x.status === 'warn' ? 'WARN' : 'FAIL'}  ${pad(x.id, 22)} ${x.evidence}${x.status !== 'pass' && x.fix ? `\n      → ${x.fix}` : ''}`);
+    if (r.principles?.length) { console.log('Manual checklist (not scored) — skill animation-principles, MCP principle_read:'); for (const p of r.principles) console.log(`  ${pad(p.id, 22)} ${p.question}`); }
     process.exitCode = r.rules.some((x) => x.status === 'fail') ? 1 : 0;
     return;
   }
@@ -343,6 +355,13 @@ async function storyboardCmd([film]) {
   console.log(r.ok ? (r.issues.length ? 'storyboard OK, with notes:' : 'storyboard OK') : 'storyboard has RED issues: fix before any render');
   for (const x of r.issues) console.log(`${pad(x.level.toUpperCase(), 7)} ${pad(x.shot, 14)} ${x.msg}\n        → ${x.fix}`);
   process.exitCode = r.ok ? 0 : 1;
+}
+
+// Motion lab (web/lab/README.md): static teaching page, served the same way as `web serve`.
+async function labCmd() {
+  const { serve } = await import('./lib/serve.mjs');
+  const s = await serve(join(STUDIO, 'web', 'lab'));
+  console.log(`http://127.0.0.1:${s.port}/index.html  (Ctrl+C to stop)`);
 }
 
 // Web department (web/WEB.md): plan → write → build → check (phone / tablet / desktop) → serve.
@@ -479,6 +498,7 @@ if (isMain(import.meta.url)) {
   else if (cmd === 'review') await reviewCmd(args[0], flags(args));
   else if (cmd === 'voice') await voiceCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'transcript') await transcriptCmd(args[0], flags(args));
+  else if (cmd === 'captions') await captionsCmd(args.find(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'mixcheck') { const { mixCheck } = await import('./lib/mixcheck.mjs'); console.log(JSON.stringify(await mixCheck(args[0]), null, 2)); }
   else if (cmd === 'color') await colorCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'build') await buildCmd(args);
@@ -488,10 +508,12 @@ if (isMain(import.meta.url)) {
   else if (cmd === 'taste') await tasteCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'styles') { const st = await import('./lib/styles.mjs'), o = flags(args), slug = args.find(a => !a.startsWith('--')); if (slug) console.log(st.readStyle(slug)); else for (const s of st.listStyles({ library: o.library })) console.log(s.library === 'lemo' ? `${pad(s.slug, 30)}${s.essence}` : `${pad(s.slug, 17)}${pad(s.route, 9)}${pad(s.from.join(', '), 34)}${s.bestFor}`); }
   else if (cmd === 'web') await webCmd(args.filter(a => !a.startsWith('--')), flags(args));
+  else if (cmd === 'lab') await labCmd();
   else if (cmd === 'storyboard') await storyboardCmd(args);
   else if (cmd === 'director') await directorCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'moves') await movesCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'sfx') await sfxCmd(args.filter(a => !a.startsWith('--')).join(' '), flags(args));
   else if (cmd === 'sounds') { const { searchSounds } = await import('./lib/sounds.mjs'); for (const s of searchSounds(args[0] || '')) console.log(`${pad(s.id, 20)}${pad(s.category, 11)}${pad(s.kind, 7)}${s.use}  [${s.rights}]`); }
-  else console.log(readFileSync(new URL(import.meta.url), 'utf8').split('\n').slice(1, 12).map(l => l.replace(/^\/\/ ?/, '')).join('\n'));
+  else if (cmd === 'cover') await (await import('./lib/covers.mjs')).coverCli(args.find(a => !a.startsWith('--')), flags(args));
+  else console.log(readFileSync(new URL(import.meta.url), 'utf8').split('\n').slice(1, 13).map(l => l.replace(/^\/\/ ?/, '')).join('\n'));
 }

@@ -152,6 +152,45 @@
       "what": "59 film-style cards (essence and what it is not, materials, colour logic, type, motion quality, camera grammar, native moves, pitfalls): art-deco, swiss-motion, ukiyoe, risograph, blueprint, hologram-hud, papercut, newsreel… Read with: node studio/studio.mjs styles --library=lemo.",
       "changed": "Text only (STYLE.md + style.json); demos, posters and subtitles stay upstream.",
       "dest": "library/lemo-styles"
+    },
+    {
+      "name": "gsap-skills",
+      "repo": "greensock/gsap-skills",
+      "commit": "aed9cfd",
+      "licence": "MIT",
+      "from": "skills",
+      "include": [
+        "gsap-core",
+        "gsap-timeline",
+        "gsap-scrolltrigger",
+        "gsap-plugins",
+        "gsap-utils",
+        "gsap-react",
+        "gsap-frameworks",
+        "gsap-performance",
+        "llms.txt"
+      ],
+      "notices": [
+        "LICENSE"
+      ],
+      "skill": "gsap-skills",
+      "department": "web",
+      "what": "Official GSAP skills for web stage C: core tweens, timelines, ScrollTrigger, plugins, utils, React, Vue/Svelte, performance. The skill text is MIT. The GSAP library itself is not vendored and is not MIT (GreenSock standard no-charge licence).",
+      "changed": "Skills only (8 gsap-* folders + llms.txt). Examples, logos and repo docs stay upstream. The GSAP library is added per site, pinned and credited; check gsap.com/standard-license for that client."
+    },
+    {
+      "name": "animation-principles",
+      "repo": "dylantarre/animation-principles",
+      "commit": "8359713",
+      "licence": "MIT",
+      "from": "skills/11-by-principle-focus",
+      "notices": [
+        "LICENSE"
+      ],
+      "skill": "animation-principles",
+      "department": "motion",
+      "what": "Disney's 12 principles, one skill each (squash and stretch, anticipation, staging, straight ahead vs pose to pose, follow through, slow in/out, arcs, secondary action, timing, exaggeration, solid drawing, appeal). The house critic scores the ones a spec can show.",
+      "changed": "The 12 principle-focus skills only. The other eleven lenses (domain, role, tool, …) stay upstream."
     }
   ],
   "notVendored": [

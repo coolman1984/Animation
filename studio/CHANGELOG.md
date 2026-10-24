@@ -5,6 +5,18 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-24 — Motion skills, physics, covers, Motion Canvas, captions, lab (DONE)
+Owner scope closed the same day as the ten-repo toolkit. Pins and licences are in `README.md` "Integrated open-source repos".
+- **Vendored:** greensock/gsap-skills @ aed9cfd (MIT; the GSAP library is the standard no-charge licence and is not copied) and dylantarre/animation-principles @ 8359713 (MIT). Critic scores six principles. Review fix: `principle-arc` no longer looks for arc/via/bend fields. A bend is two morph keys (x in one, y in the next, or an intermediate key off the line).
+- **Physics:** `@dimforge/rapier3d-compat@0.21.0` (Apache-2.0) via `setup physics`. Patterns from pmndrs/react-three-rapier @ ae5c3fe (MIT), not a port. `bake()` at 1/120 or 1/240, `sample(t)` per frame. Study `examples/physics-study`.
+- **Anatomy:** `web/explainers/anatomy`, original coffee grinder, tree-shaken Three.js 0.186.1 (MIT).
+- **Covers:** satori 0.63.2 and @resvg/resvg-js 2.6.2, both MPL-2.0, unmodified (`setup covers`). Arabic card stayed on Satori (joined letters, right alignment).
+- **Motion Canvas:** isolated `engines/motion-canvas`, npm 3.17.2, each installed LICENSE MIT. Keep the pin. Upstream @ 7b91435 marks `packages/ffmpeg` GPLv3 (same version string). No headless CLI. Vite needs the CommonJS `.default` unwrap.
+- **Captions:** `lib/whisper.mjs`. faster-whisper decodes the 16 kHz WAV with `wave` + float32/32768 and sets `vad_filter` (Silero, bundled). An installed backend that fails prints the error and one hint, not the install block.
+- **Lab:** `web/lab`, original. Playhead clipped to the plot box. Two export blocks, each with Copy.
+- **Verified in this pass:** named tests `director`, `whisper`, `lab` (19 pass). `npm test`: # tests 167 / # pass 154 / # fail 0 / # skipped 13. `toolkit check` all PASS. `web audit lab`: ready, no red; two yellows left on purpose (taste-motion wants eight reveals; taste-hero-media 21 % because the first screen is the curve). Desktop screenshot: the orange playhead stays on the plot (column y 367–813 at 1440×900, including the corner dot), not the old y 280–900. faster-whisper 1.2.1 + av 19.0.2 + Systran tiny on the 14.7 s music screen recording: 0 words (VAD on; the old path hallucinated "Thanks for watching!").
+- **Not verified:** Motion Canvas reel; no headless Motion Canvas command was run (there is none). whisper.cpp and sherpa-onnx were not run. Anatomy and physics browser checks stay as that job reported them (anatomy audit ready with one yellow; physics draft 15 frames, bake hash `627898d4c31116cd`). No full physics delivery, no anatomy tour click-through, no Chromium Arabic cover comparison, no film through `config.engine`.
+
 ## 2026-10-24 — Ten-repo toolkit: the owner's design/motion repos vendored with skills (DONE)
 Owner order (his post "10 GitHub repos to turn you into a design/motion studio"): add them with everything we can learn and every tool we
 can take, for an award-level web studio and a world-class animation studio. All ten cloned read-only, read, then:

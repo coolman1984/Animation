@@ -18,12 +18,13 @@ const AR = /[\u0600-\u06FF]/, LAT = /[A-Za-z]/;
 const END = /[.!?؟…]$/u;
 export const wordLang = (w) => (AR.test(w) ? 'ar' : LAT.test(w) ? 'en' : null);
 
-// From tools/live.py transcript.json ({ model, lang, words:[{w,start,end}], segments, wordTiming }) or a plain word list.
+// From tools/live.py transcript.json or lib/whisper.mjs ({ engine, model, lang, words:[{w,start,end,conf}], segments, wordTiming }).
+// engine is recorded as given. Omitted means the historical sherpa-onnx path (or script-alignment when model is "script").
 export function fromLive(tr, { file = null, speakers = null } = {}) {
   const words = (tr.words || []).map(x => ({ w: x.w, start: x.start, end: x.end, conf: x.conf ?? null, speaker: x.speaker ?? null, lang: wordLang(x.w) }));
   const langs = new Set(words.map(x => x.lang).filter(Boolean));
   const t = { version: 1, language: langs.size > 1 ? 'mixed' : [...langs][0] || tr.lang || 'ar',
-    source: { file, engine: tr.model === 'script' ? 'script-alignment' : 'whisper (sherpa-onnx)', model: tr.model || null, wordTiming: tr.wordTiming || null },
+    source: { file, engine: tr.engine || (tr.model === 'script' ? 'script-alignment' : 'whisper (sherpa-onnx)'), model: tr.model || null, wordTiming: tr.wordTiming || null },
     speakers: speakers || [...new Set(words.map(x => x.speaker).filter(Boolean))].map(id => ({ id, label: id })),
     words, sentences: [], layers: {}, corrections: [] };
   t.sentences = sentences(t.words, tr.segments);
