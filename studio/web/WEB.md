@@ -50,14 +50,18 @@ rules unless the owner asks otherwise. Free tools only; never a paid API without
 Every moving thing: transform/opacity first, ease-out settles (no bounce/elastic), one lead movement with overlapping secondary ones,
 a still complete page under `prefers-reduced-motion`, no layout shift.
 
-**Where the three tools run.** In a host that has them (Claude Code: `/plugin marketplace add Leonxlnx/taste-skill` → `/plugin install taste-skill@taste-skill`;
-`/plugin marketplace add nextlevelbuilder/ui-ux-pro-max-skill` → `/plugin install ui-ux-pro-max@ui-ux-pro-max-skill`; `/plugin marketplace add pbakaus/impeccable`),
-call them directly: taste-skill `design-taste-frontend` for A, UI UX Pro Max `--design-system` search for B, `/impeccable critique|audit|animate|polish`
-for D. Install each once, at user level or project level, not both (no duplicate skills); none of their names clash with `.claude/skills/`.
-Set `DO_NOT_TRACK=1` for Impeccable (its design roll calls impeccable.style) and never send private client content to an online service.
-Where they cannot be installed (cloud sessions here refuse third-party code), run the same stages with the studio's adaptation: the taste
-pass below (A), the UI UX Pro Max repository read as reference data (B), `web check` / `web audit` taste lights for the measurable detector
-rules plus a written critique (D). The report says which way each stage ran.
+**Where the tools run (updated 2026-10-24).** UI UX Pro Max and Impeccable are now vendored in the repo (`studio/toolkit/`, skills
+`ui-ux-pro-max` and `impeccable`), so every model runs stages B and D with the real tools, offline:
+- **B:** `node studio/studio.mjs web system "<product, industry, audience, mood>" --site=<site>` → `web/sites/<site>/design-system.md`
+  (pattern, style, 16 colour roles with checked "on" colours, type pair, effects, anti-patterns, checklist); write §B from it with Arabic-capable fonts.
+  Deeper searches: `python studio/toolkit/ui-ux-pro-max/scripts/search.py "<words>" --domain ux|color|typography|landing|gsap`.
+- **D:** skill `impeccable` (its `critique`, `audit`, `polish`, `typeset`, `colorize`, `layout`, `animate`, `quieter`/`bolder`, `harden` playbooks and
+  the craft floor), run after `web check` / `web audit`, findings in DESIGN.md §D. Its engine binary is not vendored (it downloads itself); the
+  owner may add the full plugin on his PC (`/plugin marketplace add pbakaus/impeccable`, `DO_NOT_TRACK=1`).
+- **A:** taste-skill stays an install on the owner's PC (`/plugin marketplace add Leonxlnx/taste-skill`) or the studio's taste pass below.
+- **Also for sites:** skill `diagram-design` (a diagram as inline SVG), skill `img2threejs` (a real product as live Three.js, stage C 3D row),
+  skill `penpot-mcp` (the client's Penpot file → §B), skill `video-shotcraft` (the site's promo film from its real pages).
+Install each tool once (no duplicate skills). Never send private client content to an online service. The report says which way each stage ran.
 
 **Mandatory visual quality loop (every project, never "done" because it compiled):**
 1. Build the complete working experience. 2. Open it in a real browser: `web check <site>` (or `web audit <label> --dir=<folder>`) at phone
@@ -82,8 +86,8 @@ unresolved limitations (not tested on real devices, not published, a stage that 
   rival next door could use the sentence, it is not specific enough. List 8–12 things only this client has before writing.
 - **One claim per section;** a section with no claim is deleted. Headlines ≤ ~32 characters; proof never invented.
 - **Look and fix:** open the strips, fix the top three problems, check again — inside the studio's two-round budget.
-- Used directly only when installed in the host (see "One workflow"): taste-skill's 20 dealt directions and image search,
-  Impeccable's live mode and 24 commands, UI UX Pro Max's palette/font database — see `TECH_RADAR.md` 2026-10-19.
+- Impeccable's 24 commands and UI UX Pro Max's database are vendored (see "One workflow"); taste-skill's 20 dealt directions and image search,
+  and Impeccable's live mode, need the install on the owner's PC — see `TECH_RADAR.md` 2026-10-19 and 2026-10-24.
 
 ## Motion vocabulary (web/motion/motion.js + site.css, opt-in by data attributes)
 Names and exact timings for more web effects and UI parts: Motion Prompt #049–#096 (`node studio/studio.mjs moves search <words> --library=motion-prompt`; `../library/README.md`).

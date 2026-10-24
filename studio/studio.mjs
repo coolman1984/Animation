@@ -15,10 +15,12 @@
 //   node studio.mjs director review <film> [--format=reel|youtube] [--frames]   ·   director inspect <film | path/film.js> [--times=1,2.5]
 //   node studio.mjs taste <video.mp4 | film> [--json]  ·  taste calibrate     the owner-calibrated taste gate on a finished export
 //   node studio.mjs storyboard <film>                 shot-list check before any render (production.json or engine spec)
-//   node studio.mjs styles [slug]                     house style cards from our delivered films (styles/README.md)
+//   node studio.mjs styles [slug | lemo/<slug>] [--library=lemo]   house style cards (styles/README.md) + 59 Lemo-Opuscar film styles
 //   node studio.mjs web audit <label> --dir=<existing site folder> [--before=<label>]   (improve a site: before/after; web/WEB.md)
 //   node studio.mjs web plan <site> [--brand= --style= --lang=ar|en --cta= --problem= --promise=] · web build|check|serve <site> · web styles   (web/WEB.md)
-//   node studio.mjs moves search <words> [--library=motion-prompt|cinetic --pack= --category=] · moves show|prompt|code <#id | technique-id> · moves draw --format=launch|feature|loop|sting|walkthrough|vertical [--energy=calm --seconds=30 --seed=] · moves list   (library/README.md)
+//   node studio.mjs moves search <words> [--library=motion-prompt|cinetic|shotcraft --pack= --category=] · moves show|prompt|code <#id | technique-id> · moves draw --format=launch|feature|loop|sting|walkthrough|vertical [--energy=calm --seconds=30 --seed=] · moves list   (library/README.md)
+//   node studio.mjs toolkit [check | update <name> --from=<clone>]   third-party agent tools vendored whole (toolkit/README.md)
+//   node studio.mjs web system "<product, industry, mood>" [--site=<site>]   UI UX Pro Max design system for web stage B
 //   node studio.mjs agents [--sync]             any-model door: AGENTS.md, skill mirror for other agents, MCP client configs + server handshake (ANY_MODEL.md)
 // Films are then built with make.mjs (WORKFLOW.md). Registry: capabilities.json. Architecture: PLATFORM.md.
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
@@ -344,9 +346,15 @@ async function storyboardCmd([film]) {
 }
 
 // Web department (web/WEB.md): plan → write → build → check (phone / tablet / desktop) → serve.
-async function webCmd([sub, name], opt) {
+async function webCmd([sub, name, ...more], opt) {
   const W = await import('./web/lib/site.mjs'), { existsSync: ex, readFileSync: rf, writeFileSync: wf, mkdirSync: mk } = await import('node:fs');
   if (sub === 'styles') { for (const s of W.STYLES().styles) console.log(`${pad(s.slug, 18)}${pad(s.mood, 52)}${s.bestFor}`); return; }
+  if (sub === 'system') {   // stage B (WEB.md): UI UX Pro Max's generator; --site saves it beside DESIGN.md for §B
+    const { designSystem } = await import('./lib/toolkit.mjs'), text = designSystem([name, ...more].join(' '), { name: opt.name || opt.site, stack: opt.stack });
+    if (opt.site) { const d = join(STUDIO, 'web', 'sites', String(opt.site)); mk(d, { recursive: true }); wf(join(d, 'design-system.md'), text); console.log(`saved web/sites/${opt.site}/design-system.md: copy what fits into DESIGN.md §B (Arabic-capable fonts, tinted neutrals, ≥ 4.5:1); the brief and the owner's taste win.`); }
+    else console.log(text);
+    return;
+  }
   if (!name || !/^[a-z0-9][a-z0-9_-]*$/.test(name)) throw new Error('usage: node studio.mjs web plan|build|check|serve <site> (lowercase folder name) · web audit <label> --dir=<folder> [--page=index.html] [--before=<label>] · web styles (build/check/serve need a filled DESIGN.md, or --draft)');
   if (sub === 'audit') {   // any existing static site (the owner's site, another framework's build output): measure before and after an improvement
     if (!opt.dir || !ex(join(opt.dir, opt.page || 'index.html'))) throw new Error('usage: web audit <label> --dir=<folder with index.html> [--page=…] [--before=<earlier label>]');
@@ -399,6 +407,7 @@ async function movesCmd([sub, ...rest], opt) {
     return;
   }
   if (sub === 'list') {
+    if (opt.library === 'shotcraft') { for (const c of M.shotcraft()) { if (opt.category && c.category !== opt.category) continue; console.log(`${pad(c.category, 14)}${pad(c.name, 36)}${c.en.slice(0, 110)}`); } return; }
     if (opt.library !== 'cinetic') { const { packs, elements } = M.motionPrompt(); for (const p of Object.values(packs)) { if (opt.pack && p.pack !== opt.pack) continue; console.log(`\nMotion Prompt · ${p.pack} — ${p.title.en} (#${p.first}–#${p.last}, card ${p.width}x${p.height}, cycle ${p.cycle} s)`); for (const e of elements.filter((e) => e.pack === p.pack)) console.log(`  #${e.id} ${pad(e.name.en, 26)}${e.ar?.name || ''}`); } }
     if (opt.library !== 'motion-prompt' && !opt.pack) { const t = M.cinetic().techniques; console.log(`\nCinetic: ${t.length} techniques`); for (const c of M.CATEGORIES) { if (opt.category && c !== opt.category) continue; const xs = t.filter((x) => x.category === c); console.log(`  ${pad(c, 24)}${xs.length}${opt.category ? '\n' + xs.map((x) => `    ${pad(x.id, 40)}${pad(x.role, 10)}${x.name}`).join('\n') : ''}`); } }
     return;
@@ -413,6 +422,8 @@ async function movesCmd([sub, ...rest], opt) {
       console.log(`#${e.id} ${e.name.en} (${e.name.ja})${e.ar ? ` · ${e.ar.name}: ${e.ar.meaning}` : ''}\npack ${e.pack} · ${e.category} · card ${e.width}x${e.height} · cycle ${e.cycle} s · demo ${e.demo}\n\n${e.summary.en}\n${e.spec.en.map((s) => `- ${s}`).join('\n')}\nUse it: ${e.use.en}\nAsk for it: ${e.ask.en}${e.ar?.studio ? `\nStudio already has: ${e.ar.studio}` : ''}\n\nIn a film: import ${e.pack} from '../library/motion-prompt/packs/${e.pack}.js'; drawCard(ctx, ${e.pack}, ${+e.no}, u, { x, y, scale }) from lib/mpcard.js`);
       return;
     }
+    const sc = M.shotCard(id);
+    if (sc && sub === 'show') return console.log(`${sc.name}  [video-shotcraft · ${sc.category}]\n${sc.en}\n${sc.file} · demo source ${M.shotDemo(sc)}\n\n${sc.text}`);
     if (sub !== 'show') throw new Error(`${id} is not a Motion Prompt number (#001–#120); Cinetic techniques have only "show"`);
     const t = M.technique(id);
     console.log(`${t.name}  [${t.id}]\n${t.category} · ${t.role} · energy ${t.energy} · ${t.formats.join(', ')}\n\n${t.summary}\n\nBuild: ${t.build}${t.fullLook ? `\n(Full look needs ${t.fullLookNeeds.join(', ')}: ${t.fullLook})` : ''}\nTiming (60 fps): ${t.timing}\nUse when: ${t.useWhen}\nAvoid when: ${t.avoidWhen}`);
@@ -432,6 +443,15 @@ async function movesCmd([sub, ...rest], opt) {
     return;
   }
   throw new Error('usage: node studio.mjs moves search|list|show|prompt|code|draw|sync (library/README.md)');
+}
+
+// Toolkit (toolkit/README.md): third-party agent tools from pinned commits, each with its licence and a wrapper skill.
+async function toolkitCmd([sub, name], opt) {
+  const T = await import('./lib/toolkit.mjs');
+  if (!sub) { for (const p of T.packages()) console.log(`${pad(p.name, 16)}${pad(p.licence, 12)}${pad(p.skill ? `skill ${p.skill}` : 'library', 24)}${p.what.slice(0, 120)}${p.what.length > 120 ? '…' : ''}`); for (const x of T.manifest().notVendored) console.log(`${pad(x.name, 22)}${pad(x.licence, 12)}${pad('not copied', 24)}${x.why.slice(0, 120)}…`); return; }
+  if (sub === 'check') { const r = T.checkToolkit(); for (const i of r.items) console.log(`${i.ok ? 'PASS' : 'FAIL'}  ${i.what}${i.detail ? ` — ${i.detail}` : ''}`); process.exitCode = r.ok ? 0 : 1; return; }
+  if (sub === 'update' && name && opt.from) { console.log(T.updatePackage(name, opt.from)); return; }
+  throw new Error('usage: node studio.mjs toolkit [check | update <name> --from=<clone>]  (read the clone first: it is third-party code)');
 }
 
 // Any model, one studio (ANY_MODEL.md): every agent must see the same rules, skills and tools.
@@ -464,8 +484,9 @@ if (isMain(import.meta.url)) {
   else if (cmd === 'build') await buildCmd(args);
   else if (cmd === 'cleanup') await cleanupCmd();
   else if (cmd === 'agents') await agentsCmd(flags(args));
+  else if (cmd === 'toolkit') await toolkitCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'taste') await tasteCmd(args.filter(a => !a.startsWith('--')), flags(args));
-  else if (cmd === 'styles') { const st = await import('./lib/styles.mjs'); if (args[0]) console.log(st.readStyle(args[0])); else for (const s of st.listStyles()) console.log(`${pad(s.slug, 17)}${pad(s.route, 9)}${pad(s.from.join(', '), 34)}${s.bestFor}`); }
+  else if (cmd === 'styles') { const st = await import('./lib/styles.mjs'), o = flags(args), slug = args.find(a => !a.startsWith('--')); if (slug) console.log(st.readStyle(slug)); else for (const s of st.listStyles({ library: o.library })) console.log(s.library === 'lemo' ? `${pad(s.slug, 30)}${s.essence}` : `${pad(s.slug, 17)}${pad(s.route, 9)}${pad(s.from.join(', '), 34)}${s.bestFor}`); }
   else if (cmd === 'web') await webCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'storyboard') await storyboardCmd(args);
   else if (cmd === 'director') await directorCmd(args.filter(a => !a.startsWith('--')), flags(args));

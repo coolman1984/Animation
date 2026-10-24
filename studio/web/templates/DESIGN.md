@@ -11,7 +11,7 @@ Conflicts between tools are settled by: the client's brief and brand → this fi
 - The idea sentence: "On this site, ‹something only this client has› becomes ‹the device›." Competitor test passed: ‹yes, because…›
 - Storytelling, composition, imagery, typography, motion personality: ‹…›
 
-## B. Design system (owner: UI UX Pro Max)
+## B. Design system (owner: UI UX Pro Max — `node studio/studio.mjs web system "<brief>" --site=<site>`, skill ui-ux-pro-max)
 - Industry rule followed (style, palette mood, type mood, anti-patterns): ‹…›
 - Colours (≤ 6 tokens, neutrals tinted; contrast ≥ 4.5:1): ‹bg, surface, text, muted, accent, accent-ink›
 - Dark mode: ‹yes/no and its tokens›
@@ -26,7 +26,7 @@ Conflicts between tools are settled by: the client's brief and brand → this fi
 | ‹hero› | ‹…› | ‹load / scroll / hover› | ‹…› | ‹…› | ‹CSS / Motion / GSAP+ScrollTrigger / Three.js / SVG / Canvas› | ‹still state› |
 Shared timing: ‹durations, easing (no bounce/elastic), stagger, rhythm›. Libraries added and why: ‹none unless needed›.
 
-## D. Critique & polish (owner: Impeccable) — log
+## D. Critique & polish (owner: Impeccable — skill impeccable: critique / audit / polish after `web check`) — log
 | Round | Evidence (audit / strips) | Top problems | Fix | After |
 |---|---|---|---|---|
 

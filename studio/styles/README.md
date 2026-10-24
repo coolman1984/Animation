@@ -12,3 +12,6 @@ and numbers, so a model picks a proven style instead of inventing one. Every car
   six things (opening, hero, transitions, structure, ending, music) to differ from the worked examples.
 - Route: `engine` = the Studio Engine spec reaches the look (rungs 1–2, ANY_MODEL.md); `bespoke` = the look needs a hand-written `film.js`
   (rung 3); its engine tokens give an honest approximation only.
+
+**More looks (2026-10-24):** Lemo-Opuscar's 59 film-style cards are vendored in `library/lemo-styles/` (MIT): `node studio/studio.mjs styles --library=lemo`,
+`styles lemo/<slug>`. They are grammar to adapt (their fonts, sample films and model tuning are theirs); a look we deliver well becomes a house card here.
