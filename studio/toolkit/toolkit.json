@@ -1,0 +1,171 @@
+{
+  "about": "Third-party agent tools vendored whole (owner order 2026-10-24: 'take everything we can learn and every tool we can use'). Each package is copied unchanged from a pinned commit except the listed removals; its licence travels with it. Front door: node studio/studio.mjs toolkit. Guide: toolkit/README.md.",
+  "updated": "2026-10-24",
+  "packages": [
+    {
+      "name": "impeccable",
+      "repo": "pbakaus/impeccable",
+      "commit": "9368675",
+      "licence": "Apache-2.0",
+      "from": "plugin/skills/impeccable",
+      "exclude": [
+        "scripts/impeccable",
+        "scripts/impeccable.cmd"
+      ],
+      "notices": [
+        "LICENSE",
+        "NOTICE.md"
+      ],
+      "skill": "impeccable",
+      "department": "web",
+      "what": "Design director: 24 commands (shape, critique, audit, polish, typeset, colorize, animate, layout, bolder, quieter, distill, harden…) with their playbooks, the craft floor and the absolute bans — web stage D.",
+      "changed": "Removed the engine launcher (scripts/impeccable, impeccable.cmd): it downloads a binary on first run. The skill's own 'Launcher unavailable' path runs instead (reads PRODUCT.md/DESIGN.md directly)."
+    },
+    {
+      "name": "ui-ux-pro-max",
+      "repo": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "commit": "d14efff",
+      "licence": "MIT",
+      "from": ".claude/skills/ui-ux-pro-max",
+      "exclude": [
+        "scripts/tests"
+      ],
+      "notices": [
+        "LICENSE"
+      ],
+      "skill": "ui-ux-pro-max",
+      "department": "web",
+      "what": "Design-system generator and searchable data: 79 styles, 192 product palettes with reasoning, 74 font pairings, 119 UX rules, GSAP presets, charts, 22 stacks (Python standard library, offline) — web stage B.",
+      "changed": "Removed the upstream test folder."
+    },
+    {
+      "name": "diagram-design",
+      "repo": "cathrynlavery/diagram-design",
+      "commit": "0b9b10c",
+      "licence": "MIT",
+      "from": "skills/diagram-design",
+      "notices": [
+        "LICENSE",
+        "THIRD_PARTY_LICENSES.md"
+      ],
+      "skill": "diagram-design",
+      "department": "design",
+      "what": "45 diagram types (architecture, flowchart, sequence, journey, Sankey, Wardley, axonometric…) as one self-contained HTML+SVG file in an editorial design system, light/dark/full/animated variants, brand onboarding.",
+      "changed": "Nothing."
+    },
+    {
+      "name": "img2threejs",
+      "repo": "img2threejs/img2threejs",
+      "commit": "954cd58",
+      "licence": "Apache-2.0",
+      "from": ".",
+      "exclude": [
+        ".git",
+        ".github",
+        "forge/tests",
+        "scripts/ci",
+        "bin/img2threejs.mjs-test.mjs"
+      ],
+      "notices": [],
+      "skill": "img2threejs",
+      "department": "3d",
+      "what": "Rebuild the object in a reference image as a code-only procedural Three.js model: staged sculpt pipeline (intake → spec → blockout … → rig), quality contract and vision self-correction (Python standard library).",
+      "changed": "Removed upstream tests and CI scripts."
+    },
+    {
+      "name": "hyperframes",
+      "repo": "heygen-com/hyperframes",
+      "commit": "8a84bed",
+      "licence": "Apache-2.0",
+      "from": "skills",
+      "include": [
+        "hyperframes",
+        "hyperframes-cli",
+        "hyperframes-registry",
+        "figma",
+        "remotion-to-hyperframes"
+      ],
+      "notices": [
+        "LICENSE"
+      ],
+      "skill": "hyperframes",
+      "department": "motion",
+      "what": "HTML → MP4 for agents: the render contract and work loop, the CLI by job, ~450 registry blocks (transitions, titles, kinetic type, captions, charts, maps, 3D, camera moves), Figma brand tokens into video, Remotion→HyperFrames porting.",
+      "changed": "Kept five of its skills; left out media-use (HeyGen paid media services) and slideshow."
+    },
+    {
+      "name": "video-shotcraft",
+      "repo": "Vincentwei1021/video-shotcraft",
+      "commit": "43bd349",
+      "licence": "Apache-2.0",
+      "from": ".",
+      "include": [
+        "SKILL.md",
+        "README.md",
+        "references",
+        "template/TEMPLATE.md",
+        "template/THEMES.md"
+      ],
+      "notices": [
+        "LICENSE"
+      ],
+      "skill": "video-shotcraft",
+      "department": "motion",
+      "what": "Product-promo craft from real page captures: 124 shot recipe cards (150 shots: camera, data, effects, interaction, opening, outro, rhythm, transition, typography, UI entrance) with tuned parameters and known pitfalls, the six-stage pipeline, aesthetic rules, beat sync, sound design, final review.",
+      "changed": "Text only: the Remotion template code, demos (TSX), gallery, audio and video assets stay upstream (links in the cards point there)."
+    },
+    {
+      "name": "blender-mcp",
+      "repo": "ahujasid/blender-mcp",
+      "commit": "febcd90",
+      "licence": "MIT",
+      "from": ".",
+      "include": [
+        "addon.py",
+        "README.md",
+        "TERMS_AND_CONDITIONS.md"
+      ],
+      "notices": [
+        "LICENSE"
+      ],
+      "skill": "blender-mcp",
+      "department": "3d",
+      "what": "Blender driven by any MCP client: the Blender add-on (socket server inside Blender) + the published server package mcp-for-blender 2.2.4 (scene info, objects, materials, Python in Blender, viewport screenshots, Poly Haven/Sketchfab assets).",
+      "changed": "Only the add-on and its terms; the server runs from PyPI pinned to 2.2.4 with telemetry off (toolkit/README.md)."
+    },
+    {
+      "name": "lemo-styles",
+      "repo": "lemomo-ai/lemo-opuscar",
+      "commit": "3961ddb",
+      "licence": "MIT",
+      "from": "styles",
+      "include": [
+        "README.md",
+        "*/STYLE.md",
+        "*/style.json"
+      ],
+      "notices": [
+        "LICENSE"
+      ],
+      "skill": "",
+      "department": "motion",
+      "what": "59 film-style cards (essence and what it is not, materials, colour logic, type, motion quality, camera grammar, native moves, pitfalls): art-deco, swiss-motion, ukiyoe, risograph, blueprint, hologram-hud, papercut, newsreel… Read with: node studio/studio.mjs styles --library=lemo.",
+      "changed": "Text only (STYLE.md + style.json); demos, posters and subtitles stay upstream.",
+      "dest": "library/lemo-styles"
+    }
+  ],
+  "notVendored": [
+    {
+      "name": "Penpot",
+      "repo": "penpot/penpot",
+      "licence": "MPL-2.0",
+      "why": "A design app, not a file set: its official MCP server runs from npm (@penpot/mcp) against the owner's Penpot account; setup in toolkit/README.md and skill penpot-mcp."
+    },
+    {
+      "name": "Remotion agent skills",
+      "repo": "remotion-dev/skills",
+      "licence": "none stated",
+      "why": "No licence file, so copying is not allowed; lessons rewritten in our words (TECHNIQUES.md 2026-10-24). Remotion itself needs a company licence above 3 people."
+    }
+  ]
+}

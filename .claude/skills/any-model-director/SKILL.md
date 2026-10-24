@@ -5,7 +5,7 @@ description: Make a house-standard film with ANY model through the Studio Engine
 # any-model-director
 Read `studio/ANY_MODEL.md` (the ladder and the loop). Owner taste: `studio/QUALITY_PLAYBOOK.md` §0.
 
-0. **Pick a house style:** `node studio/studio.mjs styles` → read one card (`styles <slug>`, MCP `style_list`/`style_read`); pass `--style=<slug>` to the plan. The card's source film is a benchmark, never a template.
+0. **Pick a house style:** `node studio/studio.mjs styles` → read one card (`styles <slug>`, MCP `style_list`/`style_read`); pass `--style=<slug>` to the plan. The card's source film is a benchmark, never a template. For a look the house cards lack, 59 film-style cards from Lemo-Opuscar: `styles --library=lemo`, `styles lemo/<slug>` (MCP `style_list {library:"lemo"}`) — adapt their grammar with our palette, fonts and Arabic.
 1. **Plan, don't invent structure:** `node studio/studio.mjs director plan <film> --placement=reels|youtube --duration=N --brand=… --cta=… --problem=…`
    (MCP `film_plan`). The skeleton already has the hook in 2 s, one hero carried by `morphTo`, proof chapters on whole bars, the payoff with
    the brand whole and one action, a music hook and drops. Write every ‹…› line in natural Egyptian Arabic (Arabic and Latin never in one line), including the treatment: three structures + the choice, and a benchmark (learn / avoid).

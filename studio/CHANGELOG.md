@@ -5,6 +5,28 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-24 — Ten-repo toolkit: the owner's design/motion repos vendored with skills (DONE)
+Owner order (his post "10 GitHub repos to turn you into a design/motion studio"): add them with everything we can learn and every tool we
+can take, for an award-level web studio and a world-class animation studio. All ten cloned read-only, read, then:
+- **Vendored whole from pinned commits** into `studio/toolkit/` (manifest `toolkit/toolkit.json`, guide `toolkit/README.md`, code
+  `lib/toolkit.mjs`, front door `node studio/studio.mjs toolkit [check|update]`): Impeccable (launcher removed), UI UX Pro Max,
+  diagram-design, img2threejs, five HyperFrames skills, video-shotcraft text, the Blender MCP add-on; Lemo-Opuscar's 59 style cards into
+  `library/lemo-styles/`. Licences beside every package; upstream `.gitignore`/caches never copied.
+- **Eight wrapper skills** (`impeccable`, `ui-ux-pro-max`, `diagram-design`, `img2threejs`, `hyperframes`, `video-shotcraft`, `blender-mcp`,
+  `penpot-mcp`) point at the copies and add the studio's rules; routed in `SKILLS.md`, mirrored to `.agents/skills/`.
+- **New commands:** `web system "<brief>" --site=<site>` (UI UX Pro Max design system for web stage B); `moves search|list|show --library=shotcraft`
+  (124 shot cards, our English one-liners in `library/shotcraft-en.json`); `styles --library=lemo` / `styles lemo/<slug>`. MCP `moves_search`,
+  `moves_show`, `style_list`, `style_read` gained the same. Capabilities: 8 new rows (6 EXPERIMENTAL, 2 PLANNED).
+- **Workflow:** web stages B and D now run the real tools for every model (`web/WEB.md`, `web/templates/DESIGN.md`, skill `web-director`);
+  film-director, creative-director and any-model-director point at shot cards, style cards, diagrams, 3D and Blender.
+- **Learned:** CRAFT.md "Ten-repo toolkit" (7 lessons) and TECHNIQUES.md recipes (3D text sharpness, readable size in pixels, beat budget,
+  mass entrances, Arabic per-letter units, design system in one command); TECH_RADAR.md dated rows for all ten.
+- **Not copied:** Penpot (a whole app → setup guide + skill), Remotion agent skills (no licence file → lessons in our words).
+- **Verified here:** `web system` generated a full design system; diagram-design `self_check.py` OK on its example; img2threejs entry points
+  answer; MCP handshake answered the new options; `toolkit check` all PASS; quick suite 131 pass / 0 fail.
+- **Not verified:** a real site or film made with any of the new tools; the HyperFrames CLI (its npm install was refused in this cloud
+  session); Blender MCP and Penpot (need the owner's PC and accounts); Impeccable's engine (not vendored).
+
 ## 2026-10-19 — One web workflow A–D + DESIGN.md per site (DONE)
 Owner brief "world-class web design & motion engine": one unified, permanent workflow — A creative direction (taste-skill, three real
 directions), B design architecture (UI UX Pro Max), C build + animate from a motion storyboard with the minimum tech (CSS / Motion /

@@ -97,4 +97,17 @@ Films 19–21 (imported 2026-10-09 from unmerged 2026-10-02 branches; originally
 Move library (2026-10-18; `studio/library/`, guide `library/README.md`): third-party, MIT, licences kept beside the files.
 - `library/motion-prompt/` — Motion Prompt by Shohei Ohtaki (showheyohtaki/motion-prompt @ 770eefb): `catalog.json`, `packs/*.js` (upstream pack code wrapped as ES modules, code unchanged), `LICENSE`, `THIRD-PARTY-NOTICES.md`. Cards use system fonts and their own sample palettes; no images or audio. `ar.json` (Arabic names) is ours.
 - `library/cinetic/` — Cinetic by Leonxlnx (Leonxlnx/cinetic @ ecfa660, v1.1): `techniques.json`, seven `references/*.md`, `LICENSE`. Text only; its starters, fonts, scripts and sound tools are not copied.
+- `library/lemo-styles/` — Lemo-Opuscar style cards by LemoLab (lemomo-ai/lemo-opuscar @ 3961ddb, MIT): 59 `STYLE.md` + `style.json`, `README.md`, `_template/`, `LICENSE`. Text only; demos, posters and subtitles not copied.
+- `library/shotcraft-en.json` — our own English one-liners for the video-shotcraft cards (studio-written, 2026-10-24).
+
+### Toolkit (2026-10-24; `toolkit/README.md`, manifest `toolkit/toolkit.json`)
+Third-party agent tools copied unchanged from pinned commits, each with its licence file beside it; we add only wrapper skills in `.claude/skills/`.
+- `toolkit/impeccable/` — Impeccable by Paul Bakaus (pbakaus/impeccable @ 9368675, Apache-2.0, `LICENSE` + `NOTICE.md`). Engine launcher removed (downloads a binary); `scripts/data/font-index.json` is font metadata, no font files.
+- `toolkit/ui-ux-pro-max/` — UI UX Pro Max by NextLevelBuilder (nextlevelbuilder/ui-ux-pro-max-skill @ d14efff, MIT). Data CSV/JSON incl. Google Fonts metadata and Phosphor icon names (no font or icon files); upstream tests removed.
+- `toolkit/diagram-design/` — diagram-design by Cathryn Lavery (cathrynlavery/diagram-design @ 0b9b10c, MIT, plus `THIRD_PARTY_LICENSES.md`: Tabler Icons MIT, Simple Icons CC0). Example HTML diagrams, templates, Python checks. Its brand icons (AWS, Docker, GitHub…) are trademarks: use them only to name that product (skill `data-honesty`).
+- `toolkit/img2threejs/` — img2threejs (img2threejs/img2threejs @ 954cd58, Apache-2.0). Pipeline code, docs, grimoire; tests and CI removed.
+- `toolkit/hyperframes/` — five HyperFrames skills by HeyGen (heygen-com/hyperframes @ 8a84bed, Apache-2.0): hyperframes, hyperframes-cli, hyperframes-registry, figma, remotion-to-hyperframes (incl. a small test corpus).
+- `toolkit/video-shotcraft/` — video-shotcraft by Vincentwei1021 (@ 43bd349, Apache-2.0): SKILL.md, README.md, `references/` (124 shot cards, pipeline, rules), `template/TEMPLATE.md`, `THEMES.md`. No code, audio, video or images.
+- `toolkit/blender-mcp/` — Blender MCP by Siddharth Ahuja (ahujasid/blender-mcp @ febcd90, MIT): `addon.py`, `README.md`, `TERMS_AND_CONDITIONS.md`. The server runs from PyPI (mcp-for-blender 2.2.4). Assets fetched through it (Poly Haven CC0, Sketchfab per model) must be recorded per film.
+
 - Keep each upstream `MIT License` header line in any code ported into a film.

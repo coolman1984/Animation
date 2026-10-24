@@ -1,8 +1,10 @@
 # Studio status and session handoff
 
-Updated: 2026-10-19.
+Updated: 2026-10-24.
 
-**Latest scope: DONE — One web workflow A–D (owner 2026-10-19: "world-class web design & motion engine").** Every site/web animation: A direction (taste-skill) → B design system (UI UX Pro Max) → C build + motion storyboard (minimum tech) → D critique/polish (Impeccable), recorded in the site's `DESIGN.md`, real-browser loop, before/after for redesigns (`studio/web/WEB.md`). The three repos are not installed here (cloud session refuses third-party code); WEB.md gives the owner's `/plugin` install commands. Not verified: a full site through A–D.
+**Latest scope: DONE — Ten-repo toolkit (owner 2026-10-24: "add these repos with everything we can learn and every tool we can take").** Impeccable, UI UX Pro Max, diagram-design, img2threejs, HyperFrames skills, video-shotcraft and the Blender MCP add-on are vendored from pinned commits in `studio/toolkit/` (licences beside them; `node studio/studio.mjs toolkit`), Lemo's 59 style cards in `studio/library/lemo-styles/`; eight wrapper skills route every model to them. New: `web system` (stage B design system), `moves … --library=shotcraft` (124 shot cards), `styles --library=lemo`. Penpot and Remotion's skills are guides/lessons only (an app; no licence). Not verified: a site or film made with the new tools; HyperFrames CLI, Blender MCP and Penpot (owner's PC/accounts).
+
+**Previous scope: DONE — One web workflow A–D (owner 2026-10-19: "world-class web design & motion engine").** Every site/web animation: A direction (taste-skill) → B design system (UI UX Pro Max) → C build + motion storyboard (minimum tech) → D critique/polish (Impeccable), recorded in the site's `DESIGN.md`, real-browser loop, before/after for redesigns (`studio/web/WEB.md`). The three repos are not installed here (cloud session refuses third-party code); WEB.md gives the owner's `/plugin` install commands. Not verified: a full site through A–D.
 
 **Previous scope: DONE — The three design skills together for every site (owner 2026-10-19: "if I give you a site to improve, use them together").** Binding in AGENTS.md, `studio/web/WEB.md` "The three together" and skill `web-director`; new `node studio/studio.mjs web audit <label> --dir=<folder> --before=<label>` measures any existing site before and after (MCP `web_check` with `dir`). Not verified: a real client site improved end to end.
 

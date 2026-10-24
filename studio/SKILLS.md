@@ -11,15 +11,24 @@ Architecture and engine choice: PLATFORM.md. Before choosing an engine run `node
 | Browser 3D (Three.js) / 20k+ particles (PixiJS) | motion-composer, camera-director | examples/three-study, examples/pixi-study (EXPERIMENTAL; config.gpu: true) |
 | A non-Claude model makes or judges a film; plan / critic / eyes; model bench | any-model-director | ANY_MODEL.md, `studio.mjs director plan\|review\|inspect`, `styles`, `storyboard`, `taste`, styles/, mcp/server.mjs, bench/ |
 | A website: landing, company, café, product or portfolio site — new or an existing one to improve | web-director | web/WEB.md ("One workflow": taste-skill → UI UX Pro Max → build + motion storyboard → Impeccable; DESIGN.md per site), `studio.mjs web plan\|build\|check\|serve\|audit`, web/styles, web/motion |
+| Web stage B: design system (palette, type pair, pattern, UX rules) from a brief | ui-ux-pro-max | `studio.mjs web system "<brief>" --site=<site>`, toolkit/ui-ux-pro-max (vendored, offline) |
+| Web stage D: independent critique and polish; a page that looks generic or AI-made | impeccable | toolkit/impeccable (vendored, launcher removed), `web check` / `web audit` taste lights |
+| A diagram (architecture, flow, journey, Sankey, Wardley, axonometric…) for a site, explainer film or report | diagram-design | toolkit/diagram-design (45 types, HTML+SVG, self_check.py) |
+| A real product/prop/character as live 3D built in code from a photo | img2threejs | toolkit/img2threejs (Python stdlib pipeline), `setup gpu` Three.js route |
+| HyperFrames as an external engine, a registry block, Figma → video | hyperframes | toolkit/hyperframes, lib/engines.mjs (`config.engine`) |
+| Product/app/site promo shots with proven numbers (124 recipe cards) | video-shotcraft | `studio.mjs moves search <words> --library=shotcraft`, `moves show <card>`, toolkit/video-shotcraft |
+| True 3D / simulation in Blender on the owner's PC | blender-mcp | toolkit/blender-mcp/addon.py, mcp-for-blender 2.2.4 (telemetry off), capabilities `blender` |
+| Client design files in Penpot (tokens, components, screens) | penpot-mcp | Penpot's official MCP server (owner's account), toolkit/README.md |
+| Any third-party tool we vendored: list, check, update | — | `studio.mjs toolkit [check\|update]`, toolkit/README.md, toolkit/toolkit.json, lib/toolkit.mjs |
 | New tool or trend: worth adding? | technology-scout | TECH_RADAR.md (dated), LEARN / ADAPT / INTEGRATE |
 | Speech, transcripts, narration, dubbing, sound mix | voice-director | VOICE_STUDIO.md, lib/transcript.mjs, lib/voice.mjs, voice/voices.json, voice/lexicon.json, lib/mixcheck.mjs, sounds/library.json |
 | Watch and approve an export | qa-judge | `node studio.mjs review <film>` (lib/review-player.html, lib/review-server.mjs) |
 | Colour accuracy, scopes, LUT grade | qa-judge, ffmpeg-master | lib/color.mjs, tools/ocio_bake.py, config.lut |
 | Chrome must be started by an approved launcher | cdp-capture | STUDIO_CDP_URL attach mode (lib/cdp.mjs) |
 | Route a film | film-director | make.mjs, production.json, QUALITY_PLAYBOOK.md (method that reached premium) |
-| Named moves: what a move is called, its exact timings, a plan draw (Motion Prompt #001–#120, Cinetic techniques) | motion-composer, camera-director, web-director, film-director | `studio.mjs moves`, library/README.md, lib/movelib.mjs, lib/mpcard.js |
+| Named moves: what a move is called, its exact timings, a plan draw (Motion Prompt #001–#120, Cinetic techniques, video-shotcraft cards) | motion-composer, camera-director, web-director, film-director | `studio.mjs moves`, library/README.md, lib/movelib.mjs, lib/mpcard.js |
 | UI-morph / showreel motion, logo assembly | motion-composer | lib/uimorph.js, tools/logo_trace.py |
-| No concept / direction yet | creative-director, idea-lab | style frames + craft metadata + creative preflight |
+| No concept / direction yet | creative-director, idea-lab | style frames + craft metadata + creative preflight; 59 film styles: `studio.mjs styles --library=lemo` |
 | Brand / source truth | brand-kit, data-honesty | asset roles, source/rights records |
 | Message, script, dialect | storyboard-writer, subtitles-rtl | copyIssues, textTimeline |
 | Cut-outs / clean plates | animation-lab | imagelab, matteSheet |

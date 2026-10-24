@@ -1,12 +1,14 @@
-# Move library — named moves any model can look up (added 2026-10-18)
+# Move library — named moves any model can look up (added 2026-10-18; shot cards and style cards 2026-10-24)
 
-Two MIT-licensed libraries the owner shared, vendored whole so the studio works offline and every model sees the same words.
+Libraries the owner shared (MIT and Apache-2.0), vendored whole so the studio works offline and every model sees the same words.
 Front door: `node studio/studio.mjs moves …` · MCP `moves_search`, `moves_show`, `moves_draw` · code: `lib/movelib.mjs`, `lib/mpcard.js`.
 
 | Library | What it gives us | Source (MIT) |
 |---|---|---|
 | `motion-prompt/` | 120 numbered moves #001–#120 in five packs: `motion` (motion-graphics moves), `camera` (camera moves and cuts), `ui` (interface parts), `lp` (landing-page and web effects), `photo` (lighting and photo looks). Each has a name (en/ja, plus our Arabic in `ar.json`), one-line meaning, spec of every timing and easing, a ready prompt, and Canvas 2D code that is a pure function of time. | [showheyohtaki/motion-prompt](https://github.com/showheyohtaki/motion-prompt) @ `770eefb` (2026-10-15), © 2026 Shohei Ohtaki. Gallery: https://showheyohtaki.github.io/motion-prompt/ |
 | `cinetic/` | 273 measured film techniques in 14 categories (opening hooks, transitions, camera, type, UI choreography, numbers, product demo, end cards, light, finish, layout, pacing, micro-interactions, depth), each with a build recipe and 60 fps timing; the weighted random draw from its `pick.py`; seven reference chapters (craft rules, timing grid, motion tokens, transitions, camera, taste and slop, code-made sound). | [Leonxlnx/cinetic](https://github.com/Leonxlnx/cinetic) @ `ecfa660` (v1.1), © 2026 Leonxlnx |
+| `../toolkit/video-shotcraft/references/shots/` (+ our `shotcraft-en.json`) | 124 product-promo shot recipe cards (150 shots) in ten categories — camera, data, effects, interaction, opening, outro, rhythm, transition, typography, UI entrance — each with intent, variants, a parameter table at 30 fps, known pitfalls (from client rejections) and its demo source upstream. Cards are Chinese; `shotcraft-en.json` holds our English one-liners so search works in English. Skill `video-shotcraft`. | [Vincentwei1021/video-shotcraft](https://github.com/Vincentwei1021/video-shotcraft) @ `43bd349`, Apache-2.0 (vendored by `studio.mjs toolkit`, `../toolkit/README.md`) |
+| `lemo-styles/` | 59 film-style cards (STYLE.md + style.json): essence and what it is not, materials, colour logic, type, motion quality, camera grammar, native moves, pitfalls. Read with `node studio/studio.mjs styles --library=lemo` · `styles lemo/<slug>` (MCP `style_list {library:"lemo"}`, `style_read`). | [lemomo-ai/lemo-opuscar](https://github.com/lemomo-ai/lemo-opuscar) @ `3961ddb`, MIT |
 
 What we changed: Motion Prompt `packs/<pack>.js` are the upstream `pack.js` wrapped as ES modules (two added lines, code unchanged);
 `catalog.json`, `LICENSE`, `THIRD-PARTY-NOTICES.md` and Cinetic's `techniques.json`, `LICENSE`, `references/*.md` are copied unchanged.
@@ -28,6 +30,8 @@ What we changed: Motion Prompt `packs/<pack>.js` are the upstream `pack.js` wrap
   layers (same numbers, our colours, Arabic type) — the card is the reference, not the final art.
 - **Websites:** `ui` and `lp` moves name what `web/motion/motion.js` does (`ar.json` "studio" points to `data-reveal`, `data-parallax`,
   `data-steps`, `data-magnetic`, `data-count`, marquee, progress bar). Anything else: rebuild with CSS/JS using the spec's numbers, respect reduced motion.
+- **Product-promo shots (video-shotcraft):** `moves search <words> --library=shotcraft` · `moves list --library=shotcraft --category=outro` ·
+  `moves show <card-name>` (the full card + its demo link). Keep the card's frame counts and limits, build it in our engine with our type and colours.
 - **Photo looks (#097–#120)** are words for image prompts and grading, not code to ship.
 - **Plan a film's moves without repeating ourselves:** `moves draw --format=launch|feature|loop|sting|walkthrough|vertical --energy=calm --seconds=30`
   draws about one technique per 3.5 s (calm) from Cinetic, weighted toward proven moves, one signature move; the seed is printed
