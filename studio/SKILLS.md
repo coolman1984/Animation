@@ -19,6 +19,8 @@ Architecture and engine choice: PLATFORM.md. Before choosing an engine run `node
 | Product/app/site promo shots with proven numbers (124 recipe cards) | video-shotcraft | `studio.mjs moves search <words> --library=shotcraft`, `moves show <card>`, toolkit/video-shotcraft |
 | True 3D / simulation in Blender on the owner's PC | blender-mcp | toolkit/blender-mcp/addon.py, mcp-for-blender 2.2.4 (telemetry off), capabilities `blender` |
 | Client design files in Penpot (tokens, components, screens) | penpot-mcp | Penpot's official MCP server (owner's account), toolkit/README.md |
+| Animate a static design / dashboard / bento cards: empty → load → every visual acts out its job in a seamless loop (UI showcase, site feature cards) | design-to-motion | toolkit/design-to-motion (vendored text), lib/uimotion.js, lib/uimorph.js |
+| A landing or campaign page: one action, structure, conversion copy, states, ship checklist, tagline word reveal | landing-page-design, web-director | toolkit/landing-page-design (vendored text), web/WEB.md |
 | Any third-party tool we vendored: list, check, update | — | `studio.mjs toolkit [check\|update]`, toolkit/README.md, toolkit/toolkit.json, lib/toolkit.mjs |
 | New tool or trend: worth adding? | technology-scout | TECH_RADAR.md (dated), LEARN / ADAPT / INTEGRATE |
 | Speech, transcripts, narration, dubbing, sound mix | voice-director | VOICE_STUDIO.md, lib/transcript.mjs, lib/voice.mjs, voice/voices.json, voice/lexicon.json, lib/mixcheck.mjs, sounds/library.json |

@@ -1,4 +1,4 @@
-# Toolkit — third-party agent tools, vendored whole (added 2026-10-24)
+# Toolkit — third-party agent tools, vendored whole (added 2026-10-24; Elaya's two skills 2026-10-25)
 
 Owner order (2026-10-24, his post "10 GitHub repos to turn you into a design/motion studio"): "add these repos with everything we can learn
 from them and every tool we can take, so our web studio can win international awards and our animation studio is world-class."
@@ -18,6 +18,8 @@ Manifest (repo, commit, licence, what was left out and why): `toolkit/toolkit.js
 | **img2threejs** 2.0 (Apache-2.0) | `toolkit/img2threejs/` — photo → procedural Three.js model, staged sculpt pipeline (Python stdlib) | `img2threejs` | Live 3D products/props in films (GPU route) and sites (Three.js row of stage C) |
 | **HyperFrames** skills (Apache-2.0) | `toolkit/hyperframes/` — render contract, CLI, ~450 registry blocks, Figma → video, Remotion porting | `hyperframes` | External engine (`lib/engines.mjs`); registry blocks as references |
 | **video-shotcraft** (Apache-2.0) | `toolkit/video-shotcraft/` — 124 shot recipe cards + pipeline, aesthetic rules, beat sync, sound design, final review | `video-shotcraft` | Product promos; `moves search <words> --library=shotcraft`, `moves show <card>` |
+| **design-to-motion** (MIT, added 2026-10-25) | `toolkit/design-to-motion/` — static design → pixel-exact showcase loop: choreography table, story per visual type, seam/rest/overflow checks, exports | `design-to-motion` | UI-promo films; web stage C for bento/feature cards |
+| **landing-page-design** (MIT, added 2026-10-25) | `toolkit/landing-page-design/` — one action, intake, structure, layout A–D, conversion copy, states, ship list, tagline word reveal | `landing-page-design` | Web stage A (strategy, copy) and D (ship checklist) for landing pages; its Latin visual system loses to the house |
 | **Lemo-Opuscar** styles (MIT) | `library/lemo-styles/` — 59 film-style cards (STYLE.md + style.json) | — (any-model-director, creative-director) | `node studio/studio.mjs styles --library=lemo` · `styles lemo/<slug>` · MCP `style_list {library:"lemo"}` |
 | **Blender MCP** (MIT) | `toolkit/blender-mcp/addon.py` + terms | `blender-mcp` | True 3D / simulation on the owner's PC, as a footage layer |
 | **Penpot** (MPL-2.0) | not copied (a whole app) | `penpot-mcp` | Client designs → DESIGN.md §B / brand kit |

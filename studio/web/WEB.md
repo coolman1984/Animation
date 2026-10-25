@@ -61,6 +61,10 @@ a still complete page under `prefers-reduced-motion`, no layout shift.
 - **A:** taste-skill stays an install on the owner's PC (`/plugin marketplace add Leonxlnx/taste-skill`) or the studio's taste pass below.
 - **Also for sites:** skill `diagram-design` (a diagram as inline SVG), skill `img2threejs` (a real product as live Three.js, stage C 3D row),
   skill `penpot-mcp` (the client's Penpot file → §B), skill `video-shotcraft` (the site's promo film from its real pages).
+- **Landing pages (added 2026-10-25):** skill `landing-page-design` feeds §A (one action, intake, above-the-fold order, layout type A–D,
+  conversion copy) and §D (states and ship checklist), and offers the tagline word-reveal row for §C; skill `design-to-motion` animates
+  bento/feature cards that pair text with a visual (intro once on scroll, one story per visual, paused off screen). Their Latin fonts,
+  gradient text and glass nav lose to §B, Impeccable and the house method.
 Install each tool once (no duplicate skills). Never send private client content to an online service. The report says which way each stage ran.
 
 **Mandatory visual quality loop (every project, never "done" because it compiled):**

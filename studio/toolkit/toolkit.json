@@ -1,6 +1,6 @@
 {
   "about": "Third-party agent tools vendored whole (owner order 2026-10-24: 'take everything we can learn and every tool we can use'). Each package is copied unchanged from a pinned commit except the listed removals; its licence travels with it. Front door: node studio/studio.mjs toolkit. Guide: toolkit/README.md.",
-  "updated": "2026-10-24",
+  "updated": "2026-10-25",
   "packages": [
     {
       "name": "impeccable",
@@ -152,6 +152,34 @@
       "what": "59 film-style cards (essence and what it is not, materials, colour logic, type, motion quality, camera grammar, native moves, pitfalls): art-deco, swiss-motion, ukiyoe, risograph, blueprint, hologram-hud, papercut, newsreel… Read with: node studio/studio.mjs styles --library=lemo.",
       "changed": "Text only (STYLE.md + style.json); demos, posters and subtitles stay upstream.",
       "dest": "library/lemo-styles"
+    },
+    {
+      "name": "design-to-motion",
+      "repo": "elayadesign/ai-design-skills",
+      "commit": "38bbe57",
+      "licence": "MIT",
+      "from": "skills/design-to-motion",
+      "notices": [
+        "LICENSE"
+      ],
+      "skill": "design-to-motion",
+      "department": "motion",
+      "what": "A static design (Figma frame, dashboard, card set, app screen) rebuilt pixel-exact in HTML, loaded from an empty state, every visual acting out its job in a seamless loop (story table per visual type), deterministic frame capture, fidelity/overflow/seam/empty-beat/rest checks, MP4 for X + website GIF + 800x500 GIF.",
+      "changed": "Nothing (one SKILL.md)."
+    },
+    {
+      "name": "landing-page-design",
+      "repo": "elayadesign/ai-design-skills",
+      "commit": "38bbe57",
+      "licence": "MIT",
+      "from": "skills/landing-page-design",
+      "notices": [
+        "LICENSE"
+      ],
+      "skill": "landing-page-design",
+      "department": "web",
+      "what": "Landing-page strategy and ship list: one offer / one audience / one action, intake in one batch, above-the-fold order, layout types A-D, conversion and copy rules, section-by-section build order, SEO/AEO, content realism, full state set, ship requirements, the tagline word-reveal section; plus a Latin-only visual system the house method overrides.",
+      "changed": "Nothing (one SKILL.md)."
     }
   ],
   "notVendored": [

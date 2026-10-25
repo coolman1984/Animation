@@ -5,6 +5,18 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-25 — Elaya's design skills vendored; 15 design resources judged (DONE)
+Owner order (two X posts): "learn and take what is useful for us".
+- **Vendored** (MIT, elayadesign/ai-design-skills @ 38bbe57) into `studio/toolkit/`: `design-to-motion` (static design → pixel-exact
+  showcase loop with per-visual stories and seam/empty-beat/rest/overflow checks) and `landing-page-design` (one action, intake, structure,
+  conversion copy, states, ship list, tagline word reveal). Wrapper skills of the same names, routed in `SKILLS.md`, 2 EXPERIMENTAL
+  capability rows, `toolkit/README.md`, `web/WEB.md`, skills `web-director` and `film-director`.
+- **House rules on top:** its Latin fonts, gradient heading text, glass nav and invented "organic" numbers lose to §B, Impeccable and
+  data-honesty; exports stay 30 fps unless the owner asks for 60.
+- **Learned:** TECHNIQUES.md "UI showcase loops and landing pages"; TECH_RADAR.md dated rows for both skills and the 15 sites.
+- **Not verified:** a film or site made with either skill; the 15 sites could not be opened from this cloud session (DNS blocked), so their
+  rows rest on the post and secondary sources.
+
 ## 2026-10-24 — Ten-repo toolkit: the owner's design/motion repos vendored with skills (DONE)
 Owner order (his post "10 GitHub repos to turn you into a design/motion studio"): add them with everything we can learn and every tool we
 can take, for an award-level web studio and a world-class animation studio. All ten cloned read-only, read, then:
