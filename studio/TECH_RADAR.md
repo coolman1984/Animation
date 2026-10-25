@@ -134,3 +134,8 @@ could not be opened from this cloud session (DNS blocked), so their rows rest on
 | iconly.design, fontinlogo.com | App-icon inspiration; fonts behind famous logos | LEARN: icon/typeface research; Arabic faces still come from §B | owner post |
 | backgrounds.supply, grainient.supply | Background and grain/gradient packs | WATCH: read each licence before any asset enters a film (ASSETS.md); gradients are banned by default on our sites | owner post |
 
+## Poster-grid music videos — 2026-10-25
+| Technology | What was learned | Decision | Source |
+|---|---|---|---|
+| Poster-grid prompts (Kōda, three variants made with Claude Opus) | 1:1 music video at the track's length; footage kept as one picture across near-square cells; centre ~6 cells in sync with distinct treatments; outer cells vary (dense layers / spreading "infection" waves / time echoes, repeats, reversals, freezes) | LEARN: recipe in TECHNIQUES.md "Poster-grid music video"; no dependency (cells = clip-paths over one footage layer in our engine) | owner X post screenshot (2026-10-25; original prompts, not reachable here) |
+

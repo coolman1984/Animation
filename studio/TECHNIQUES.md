@@ -377,3 +377,22 @@ Focused check: `node --test --test-isolation=none studio-engine/test/review.test
 - **Tagline word reveal (landing pages):** one two-line benefit statement, its own section below the hero; words go from ~30 % to full colour one at a time in reading order as they cross a trigger line, ease-out, IntersectionObserver (never an unthrottled scroll listener). Arabic: by word.
 - **Landing page order:** headline (outcome + audience) → subheadline → one CTA (verb + what they get) → one proof signal → hero visual; then problem→solution, 3–5 benefits, 3-step how-it-works, proof beside the claim, FAQ, risk reversal, the same CTA again. Build and review one section at a time.
 
+## Poster-grid music video (2026-10-25; owner post by Kōda, three prompts run on Claude Opus; written in our words)
+A square (1:1) music video whose length equals the track's. The frame is cut into near-square cells by thin grey lines (1–2 px, ~40 % grey),
+and the **source footage stays one continuous, recognisable picture across the whole grid**: each cell shows its own crop of the same frame,
+so the eye still reads one scene. Footage shorter than the music (15 s clip, 40 s track) is stretched by the cells' own time play, never by a slow-down.
+- **Centre anchors the story:** the middle ~6 cells play the footage in sync, each with one distinct treatment (duotone, posterise, halftone,
+  edge/ink, RGB split, invert). The outer cells vary independently. Effects enhance the footage, never replace it.
+- **Three variants, one per film:**
+  1. *Poster Grid* — dense, evolving layers in the outer cells: typography (a title word set big across 3–4 cells, small cell labels and
+     timecodes), icons/reticles, flashes; bursts on the beat.
+  2. *Style Infection* — a transformation starts in one cell and spreads to its neighbours like a wave (chain reaction over 4–8 cells on
+     consecutive 1/8 notes), explodes, then resets on the bar line to reveal the plain footage beneath. Bold but always temporary.
+  3. *Temporal Mosaic* — the outer cells play the footage at other times: echoes (cell n = t − n·Δ), stutter repeats, reversals, freezes on
+     impacts; the centre stays in sync so the action remains identifiable inside the controlled chaos.
+- **Build:** a cell = clip-path rect over the full-frame footage layer (same stage coordinates), its own `t` offset and filter; beats from the
+  track (`studio.mjs` audio tools / skill `audio-forensics`, one grid for picture and sound); seeded choices per cell (`hash(cell, bar)`).
+- **House limits:** this is "controlled chaos" — use it only when the owner asks for a high-energy music piece or a reel teaser; the
+  beat budget still applies to **whole-frame** hits (≤ 3 per film), per-cell bursts are free. Only footage and music we have the right to use
+  (Openverse first, licence in the LEDGER); text in Arabic is split by word, never by letter.
+

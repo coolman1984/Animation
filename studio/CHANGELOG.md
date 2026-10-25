@@ -5,6 +5,11 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-25 — Poster-grid music video recipe (DONE)
+Owner order: learn and add, from a post with three prompts (Poster Grid, Style Infection, Temporal Mosaic). Written in our words as
+TECHNIQUES.md "Poster-grid music video" (cells as clip-paths over one footage layer, centre in sync, beat-locked waves, house limits) and a
+TECH_RADAR row (LEARN, no dependency). Not verified: no poster-grid film rendered yet.
+
 ## 2026-10-25 — Elaya's design skills vendored; 15 design resources judged (DONE)
 Owner order (two X posts): "learn and take what is useful for us".
 - **Vendored** (MIT, elayadesign/ai-design-skills @ 38bbe57) into `studio/toolkit/`: `design-to-motion` (static design → pixel-exact
