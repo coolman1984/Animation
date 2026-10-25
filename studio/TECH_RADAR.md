@@ -117,3 +117,20 @@ and read before anything was copied; what fits is vendored whole with its licenc
 | Remotion agent skills @ 6c67adc | Rule files per job; the Arabic text rule (bidi base direction, joinable per-letter units with ZWJ) | LEARN only: no licence file, so no copy; Arabic rule rewritten in TECHNIQUES.md. Remotion stays LEARN (company licence) | github.com/remotion-dev/skills |
 | Lemo-Opuscar (MIT) @ 3961ddb | Now 59 style cards (was 51 on 2026-10-16) | INTEGRATED: cards vendored to `library/lemo-styles/`, `styles --library=lemo`, MCP `style_list {library:"lemo"}` | github.com/lemomo-ai/lemo-opuscar |
 | diagram-design 2.6 (MIT, ~60k★) @ 0b9b10c | 45 diagram types as one HTML+SVG file, editorial tokens, light/dark/full/animated, import from Mermaid/draw.io/Excalidraw, `self_check.py` | INTEGRATED: skill `diagram-design` over `toolkit/diagram-design/`; self-check passes on its examples here | github.com/cathrynlavery/diagram-design |
+
+## Owner posts: Elaya's design skills and 15 design resources — 2026-10-25
+Owner order: "learn and take what is useful for us". The skills repo was cloned read-only and read whole before copying; the 15 sites
+could not be opened from this cloud session (DNS blocked), so their rows rest on the post and secondary sources — re-check on the owner's PC.
+| Technology | What was learned | Decision | Source |
+|---|---|---|---|
+| design-to-motion (elayadesign/ai-design-skills @ 38bbe57, MIT) | Static design → pixel-exact HTML → empty-state load → one "story" per visual on a seamless loop; choreography and easing tables; seam / empty-beat / rest / overflow checks; deterministic fake-clock capture; MP4 + GIF exports | INTEGRATED: vendored `toolkit/design-to-motion/`, skill `design-to-motion`, capability EXPERIMENTAL; built in our engine at 30 fps unless the owner asks for 60 | github.com/elayadesign/ai-design-skills; owner X post (@elayadesigns, 2026-10-24) |
+| landing-page-design (same repo, MIT) | One offer / one audience / one action; intake batch; above-the-fold order; layout types A–D; conversion copy; states; ship list; tagline word reveal. Visual half is Latin-only and clashes with our bans (gradient text, glass nav) and honesty (invented "organic" numbers) | INTEGRATED for strategy + ship list (skill `landing-page-design`, web stages A/C/D); its visual system LEARN only, house + Impeccable win | same |
+| redesign-existing-projects (elayadesign/redesign-skill) | Companion for improving an existing site | WATCH: not read yet; our `web audit` before/after flow covers the job | upstream README link |
+| 60fps.design | 550+ app/web UI animation videos by interaction tag, glossary; a paid MCP that returns motion breakdowns | LEARN: reference for UI micro-motion; content is inspiration-only, never copied; MCP WATCH (paid, $29/month per a listing) | abduzeedo.com/60fps-curated-library-ui-animation-design; mcpservers.org/servers/60fps-design-mcp |
+| motionin.design | Interactive web sections (per the post) | LEARN: stage C reference | owner post only |
+| reelfolio.io | Tool for animated project showreels (per the post) | WATCH: compare with our showreel route before use | owner post only |
+| land-book.com, landdding.com, inspora.design, wonderlist.design, footer.design, cta.gallery, on.design | Landing-page, section, footer, CTA and design-community galleries | LEARN: stage A reference studies (DESIGN.md §A "references studied"); never copy layouts or artwork | owner post |
+| v0.app/templates | Vercel's ready-made app templates (React/Next) | LEARN: only for a client already on React/Next; licence per template | owner post |
+| iconly.design, fontinlogo.com | App-icon inspiration; fonts behind famous logos | LEARN: icon/typeface research; Arabic faces still come from §B | owner post |
+| backgrounds.supply, grainient.supply | Background and grain/gradient packs | WATCH: read each licence before any asset enters a film (ASSETS.md); gradients are banned by default on our sites | owner post |
+
