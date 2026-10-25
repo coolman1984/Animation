@@ -2,7 +2,9 @@
 
 Updated: 2026-10-25.
 
-**Latest scope: DONE — Elaya's design skills + 15 design resources (owner 2026-10-25: "learn and take what is useful").** `design-to-motion` and `landing-page-design` (MIT) vendored in `studio/toolkit/` with wrapper skills (UI showcase loops; landing-page strategy, states and ship list); house method overrides their Latin fonts, gradient text, glass nav and invented numbers. The 15 sites are LEARN/WATCH rows in `studio/TECH_RADAR.md` (not reachable from the cloud session). Not verified: a film or site made with them.
+**Latest scope: DONE — Poster-grid music video recipe (owner 2026-10-25: "learn and add").** Three prompt variants (Poster Grid, Style Infection, Temporal Mosaic) written as a recipe in `studio/TECHNIQUES.md` with house limits; TECH_RADAR row LEARN. Not verified: no film rendered with it yet.
+
+**Previous scope: DONE — Elaya's design skills + 15 design resources (owner 2026-10-25: "learn and take what is useful").** `design-to-motion` and `landing-page-design` (MIT) vendored in `studio/toolkit/` with wrapper skills (UI showcase loops; landing-page strategy, states and ship list); house method overrides their Latin fonts, gradient text, glass nav and invented numbers. The 15 sites are LEARN/WATCH rows in `studio/TECH_RADAR.md` (not reachable from the cloud session). Not verified: a film or site made with them.
 
 **Previous scope: DONE — Ten-repo toolkit (owner 2026-10-24: "add these repos with everything we can learn and every tool we can take").** Impeccable, UI UX Pro Max, diagram-design, img2threejs, HyperFrames skills, video-shotcraft and the Blender MCP add-on are vendored from pinned commits in `studio/toolkit/` (licences beside them; `node studio/studio.mjs toolkit`), Lemo's 59 style cards in `studio/library/lemo-styles/`; eight wrapper skills route every model to them. New: `web system` (stage B design system), `moves … --library=shotcraft` (124 shot cards), `styles --library=lemo`. Penpot and Remotion's skills are guides/lessons only (an app; no licence). Not verified: a site or film made with the new tools; HyperFrames CLI, Blender MCP and Penpot (owner's PC/accounts).
 
