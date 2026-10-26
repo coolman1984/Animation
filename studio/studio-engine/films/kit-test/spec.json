@@ -1,0 +1,57 @@
+{
+  "title": "And the light kept turning, so nobody walked alone.",
+  "format": "square",
+  "bpm": 80,
+  "shake": 0,
+  "grid": false,
+  "vignette": true,
+  "background": "ink",
+  "gpu": true,
+  "music": {
+    "progression": [
+      "Am",
+      "F",
+      "C",
+      "G"
+    ],
+    "final": "C"
+  },
+  "direction": "text-to-short: gouache, painted shots cut on the caption chunks",
+  "scenes": [
+    {
+      "id": "s1",
+      "beats": 6.5,
+      "music": "verse",
+      "transition": "cut",
+      "elements": [
+        {
+          "type": "painted",
+          "look": "gouache",
+          "lookWords": "",
+          "seed": 7,
+          "text": "And the light kept turning, so nobody walked alone.",
+          "draw": "lighthouse",
+          "move": "push",
+          "out": 3.5
+        },
+        {
+          "type": "painted",
+          "look": "gouache",
+          "lookWords": "",
+          "seed": 8,
+          "text": "And the light kept turning, so nobody walked alone.",
+          "draw": "friends",
+          "move": "pan-left",
+          "at": 3.5
+        },
+        {
+          "type": "caption",
+          "text": "And the light kept turning, so nobody walked alone.",
+          "at": 0.5,
+          "voiceLine": 0,
+          "style": "plain"
+        }
+      ]
+    }
+  ]
+}

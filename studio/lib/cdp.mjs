@@ -52,7 +52,7 @@ async function launchOnce({ width = 1280, height = 720, scale = 1, headless = tr
     '--allow-file-access-from-files', '--remote-debugging-port=0',
     `--force-device-scale-factor=${scale}`, `--window-size=${width},${height}`,
     `--user-data-dir=${profile}`, ...extraArgs, 'about:blank',
-  ].filter(Boolean);
+  ].filter(Boolean).filter((a) => !(a === '--disable-gpu' && extraArgs.includes('--enable-gpu')));
   const proc = spawn(bin, args, { stdio: ['ignore', 'ignore', 'pipe'] });
   live.add(proc); try { register({ pid: proc.pid, profile, kind: 'chrome' }); } catch {}
   proc.once('exit', () => { live.delete(proc); try { unregister(proc.pid); } catch {} });

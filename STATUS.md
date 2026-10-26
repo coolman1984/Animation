@@ -1,8 +1,10 @@
 # Studio status and session handoff
 
-Updated: 2026-10-26.
+Updated: 2026-10-27.
 
-**Latest scope: DONE — Text → hand-painted short (owner 2026-10-26: "build everything that is missing").** `node studio/studio-engine/story.mjs <film> --text=… --look=watercolour|oil|crayon|ink|storybook [--format=reel|youtube|square] [--voice=…]` writes a narrated, captioned, painted short; new elements `painted`/`caption`, square format. Proof film `fable-test` passed every gate (no voice). Not verified: narration from a real voice (Egyptian needs the owner's Azure key).
+**Latest scope: DONE — Painted shorts rebuilt (owner 2026-10-27: "build everything").** Our own GPU brush pass (oil/watercolour/gouache/pastel/ink), a drawing kit with posable people, 2–3 shots per line cut on ≤ 5-word caption chunks with camera moves, own-recording alignment, custom drawings per film, 4:5 format and a quick renderer `studio-engine/fast.mjs`. Not verified: a narrated film, a real recording, graphics-card speed.
+
+**Previous scope: DONE — Text → hand-painted short (owner 2026-10-26: "build everything that is missing").** `node studio/studio-engine/story.mjs <film> --text=… --look=watercolour|oil|crayon|ink|storybook [--format=reel|youtube|square] [--voice=…]` writes a narrated, captioned, painted short; new elements `painted`/`caption`, square format. Proof film `fable-test` passed every gate (no voice). Not verified: narration from a real voice (Egyptian needs the owner's Azure key).
 
 **Previous scope: DONE — Poster-grid music video recipe (owner 2026-10-25: "learn and add").** Three prompt variants (Poster Grid, Style Infection, Temporal Mosaic) written as a recipe in `studio/TECHNIQUES.md` with house limits; TECH_RADAR row LEARN. Not verified: no film rendered with it yet.
 
