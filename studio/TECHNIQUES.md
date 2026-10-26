@@ -396,3 +396,10 @@ so the eye still reads one scene. Footage shorter than the music (15 s clip, 40 
   beat budget still applies to **whole-frame** hits (≤ 3 per film), per-cell bursts are free. Only footage and music we have the right to use
   (Openverse first, licence in the LEDGER); text in Arabic is split by word, never by letter.
 
+## Text → hand-painted short (2026-10-25; `studio-engine/story.mjs`, `studio-engine/lib/painted.js`)
+- **One line = one painted scene.** The author's line breaks win; a paragraph splits at sentence ends (. ! ? ؟), long sentences at commas, ≤ 14 words a line. Words choose the composition (rain → storm sky without sun, road → a walking figure on a path, sea, mountain, night → moon and stars, sunset → dusk palette); the sky carries over from the previous line.
+- **Hand-animation boil:** paint each drawing into cached layers (far / mid / near) 12 times a second with fresh seeded edge jitter; every video frame only composites the layers with a slow parallax drift (far 0.25, mid 0.6, near 1) and a 6 % push-in, then multiplies a paper grain shifted per drawing. Drawing at 12/s and moving at 30/s keeps the hand feel without a stuttering camera. Weather (rain, snow, birds) moves continuously on top.
+- **Looks as brushes:** watercolour = several low-alpha passes + soft pigment blooms (dark blooms ≤ 0.11 alpha, or large areas read as holes) + a darker edge; oil = opaque base + short thick strokes at varied lightness; crayon = a light fill + diagonal hatching re-scribbled per drawing; ink = greyscale washes + black outlines.
+- **Captions live in the sky** (reel y 0.30, youtube 0.15, square 0.18), clear of the figure; words sit at 62 % and light to 100 % when spoken. A title holds the first 2.5 beats in the centre and the caption starts after it.
+- **Score for a story:** `verse` on every scene and `finale` on the last (an `intro` ramp pushed loudness range to 8.4 LU and failed the gate); `shake: 0`, no grid. Calm films get a yellow "barely moves" taste light — expected; raise `drift` if the owner wants more motion.
+

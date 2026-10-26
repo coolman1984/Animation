@@ -1,8 +1,10 @@
 # Studio status and session handoff
 
-Updated: 2026-10-25.
+Updated: 2026-10-26.
 
-**Latest scope: DONE — Poster-grid music video recipe (owner 2026-10-25: "learn and add").** Three prompt variants (Poster Grid, Style Infection, Temporal Mosaic) written as a recipe in `studio/TECHNIQUES.md` with house limits; TECH_RADAR row LEARN. Not verified: no film rendered with it yet.
+**Latest scope: DONE — Text → hand-painted short (owner 2026-10-26: "build everything that is missing").** `node studio/studio-engine/story.mjs <film> --text=… --look=watercolour|oil|crayon|ink|storybook [--format=reel|youtube|square] [--voice=…]` writes a narrated, captioned, painted short; new elements `painted`/`caption`, square format. Proof film `fable-test` passed every gate (no voice). Not verified: narration from a real voice (Egyptian needs the owner's Azure key).
+
+**Previous scope: DONE — Poster-grid music video recipe (owner 2026-10-25: "learn and add").** Three prompt variants (Poster Grid, Style Infection, Temporal Mosaic) written as a recipe in `studio/TECHNIQUES.md` with house limits; TECH_RADAR row LEARN. Not verified: no film rendered with it yet.
 
 **Previous scope: DONE — Elaya's design skills + 15 design resources (owner 2026-10-25: "learn and take what is useful").** `design-to-motion` and `landing-page-design` (MIT) vendored in `studio/toolkit/` with wrapper skills (UI showcase loops; landing-page strategy, states and ship list); house method overrides their Latin fonts, gradient text, glass nav and invented numbers. The 15 sites are LEARN/WATCH rows in `studio/TECH_RADAR.md` (not reachable from the cloud session). Not verified: a film or site made with them.
 

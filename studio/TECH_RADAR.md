@@ -139,3 +139,10 @@ could not be opened from this cloud session (DNS blocked), so their rows rest on
 |---|---|---|---|
 | Poster-grid prompts (Kōda, three variants made with Claude Opus) | 1:1 music video at the track's length; footage kept as one picture across near-square cells; centre ~6 cells in sync with distinct treatments; outer cells vary (dense layers / spreading "infection" waves / time echoes, repeats, reversals, freezes) | LEARN: recipe in TECHNIQUES.md "Poster-grid music video"; no dependency (cells = clip-paths over one footage layer in our engine) | owner X post screenshot (2026-10-25; original prompts, not reachable here) |
 
+## Text-to-short skills — 2026-10-25
+| Technology | What was learned | Decision | Source |
+|---|---|---|---|
+| Shorts Animator (Tobi, @tobiadonadon_, free skill for Claude Code & Codex, sent by DM on request) | Verse/quote/story + a look in words → every scene written as code and painted like hand animation, local or own voice, word-timed captions, music composed per short, vertical/square/wide, "40 s in under a minute" (claim) | ADAPTED as our own: `studio-engine/story.mjs` + elements `painted`/`caption` (no copy; the skill itself was not obtained) | owner X screenshots (2026-10-25) |
+| Azure AI Speech neural TTS (ar-EG Salma / Shakir) | Native Egyptian neural voices; official pricing page lists 0.5 M characters free per month (F0); paid rate not readable here (third parties say $15–24 per 1 M) | RECOMMENDED to the owner for Egyptian narration; adapter in `lib/voice.mjs` stays unverified until his key is set | azure.microsoft.com pricing/speech-services; json2video.com voice list |
+| ElevenLabs (Arabic, incl. Egyptian-labelled voices) | More expressive, 10 k characters free per month, paid plans | PILOT after a listening test against Azure | elevenlabs.io/blog/best-arabic-text-to-speech |
+

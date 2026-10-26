@@ -48,6 +48,7 @@ for (const f of formats) {
     const w = voiceWords(spec.audio.voice, join(TAKES, 'voice'));
     if (w?.error) say(`voice timing unavailable (${w.error}); elements with sayAt keep their beats`);
     else { const words = (w.words || w).map((x) => ({ t: x.start ?? x.t, w: (x.w || x.word || x.text || '').trim() })); const tl0 = timeline(spec);
+      for (const s of tl0.scenes) for (const e of spec.scenes[s.index].elements || []) if (e.type === 'caption' && e.voiceLine != null) { const ws = words.filter((x) => x.t >= s.a - 0.2 && x.t < s.b); if (ws.length) e.wordTimes = ws.map((x) => +Math.max(0, x.t - s.a).toFixed(3)); }
       for (const s of tl0.scenes) for (const e of spec.scenes[s.index].elements || []) if (e.sayAt) { const hit = words.find((x) => x.w.includes(e.sayAt) && x.t >= s.a - 0.5 && x.t < s.b); if (hit) e.at = Math.min(s.beats, Math.max(0, Math.round(((hit.t - s.a) / tl0.B) * 4) / 4)); }
       say(`voice: ${words.length} words aligned`); }
   }

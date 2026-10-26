@@ -40,7 +40,7 @@ export function makeFilm(spec, brand) {
       W = w; H = h; st.style.background = B.ink;
       // load every face the film uses before building, so text is measured with the real glyphs
       const fams = [...new Set(Object.values(brand.fonts))]; try { await Promise.all(fams.flatMap((f) => [400, 600, 800, 900].map((wt) => document.fonts.load(`${wt} 100px '${f}'`, 'AaHR مرحبا')))); await document.fonts.ready; } catch {}
-      const portrait = H > W, fmt = brand.export.formats[portrait ? 'reel' : 'youtube'], safe = fmt && fmt.w === W ? fmt.safe : [W * 0.05, H * 0.05, W * 0.95, H * 0.95];
+      const portrait = H > W, fmt = Object.values(brand.export.formats).find((f) => f.w === W && f.h === H), safe = fmt ? fmt.safe : [W * 0.05, H * 0.05, W * 0.95, H * 0.95];
       shell = div(st, { width: px(W), height: px(H), overflow: 'hidden', zIndex: '1' });
       // world
       const wr = div(shell, { width: px(W), height: px(H), zIndex: '1' });
