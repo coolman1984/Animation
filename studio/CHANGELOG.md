@@ -5,6 +5,17 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-26 — Text → hand-painted short: story.mjs + painted/caption elements + square format (DONE)
+Owner order: "build everything that is missing" for shorts like Tobi's Shorts Animator (a verse or story + a look → painted, narrated, captioned, scored).
+- **New:** `studio-engine/story.mjs` (text → spec: line split, word-driven composition, voice per line via `lib/voice.mjs` mixed into `voice.wav`,
+  scene lengths from the voice or reading speed, calm score); elements `painted` (watercolour / oil / crayon / ink / storybook landscape that boils
+  12×/s, parallax drift, paper grain, rain/snow/birds, a figure) and `caption` (word-lit line; `run.mjs` passes voice word times);
+  `square` 1080×1080 format; the player picks the safe area of whichever format matches the frame.
+- **Proof:** `films/fable-test` (3 Arabic lines, watercolour, reel, 12.4 s, no voice) passed every build gate: −14.2 LUFS, LRA 2 LU, safe-area text, no
+  frozen span; taste lights yellow on motion (a calm film). `films/looks-test` stills: oil, crayon, ink in square. `test/story.test.mjs` 4/4,
+  engine tests 25/25.
+- **Not verified:** a narrated film (no voice model or key in this cloud session); word-timed captions from a real voice; Azure/ElevenLabs.
+
 ## 2026-10-25 — Poster-grid music video recipe (DONE)
 Owner order: learn and add, from a post with three prompts (Poster Grid, Style Infection, Temporal Mosaic). Written in our words as
 TECHNIQUES.md "Poster-grid music video" (cells as clip-paths over one footage layer, centre in sync, beat-locked waves, house limits) and a

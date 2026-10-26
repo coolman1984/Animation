@@ -1,0 +1,135 @@
+{
+  "title": "الطريق",
+  "format": "reel",
+  "bpm": 80,
+  "shake": 0,
+  "grid": false,
+  "vignette": true,
+  "background": "ink",
+  "music": {
+    "progression": [
+      "Am",
+      "F",
+      "C",
+      "G"
+    ],
+    "final": "C"
+  },
+  "direction": "text-to-short: watercolour, one painted scene per narrated line",
+  "scenes": [
+    {
+      "id": "s1",
+      "beats": 7.5,
+      "music": "verse",
+      "transition": "cut",
+      "elements": [
+        {
+          "type": "painted",
+          "look": "watercolour",
+          "scene": {
+            "sky": "storm",
+            "sun": null,
+            "mountains": false,
+            "sea": false,
+            "city": false,
+            "trees": 0,
+            "field": true,
+            "path": true,
+            "rain": true,
+            "snow": false,
+            "birds": false,
+            "figure": "walk",
+            "hills": true
+          },
+          "seed": 7,
+          "text": "مشى وحيدًا على الطريق تحت المطر."
+        },
+        {
+          "type": "caption",
+          "text": "مشى وحيدًا على الطريق تحت المطر.",
+          "at": 3,
+          "voiceLine": 0
+        },
+        {
+          "type": "words",
+          "text": "الطريق",
+          "size": 150,
+          "y": 0.42,
+          "at": 0,
+          "out": 2.5,
+          "style": "rise",
+          "weight": 800,
+          "shadow": "0 2px 30px rgba(0,0,0,0.55)"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "beats": 4,
+      "music": "verse",
+      "transition": "fade",
+      "elements": [
+        {
+          "type": "painted",
+          "look": "watercolour",
+          "scene": {
+            "sky": "dusk",
+            "sun": "sun",
+            "mountains": false,
+            "sea": true,
+            "city": false,
+            "trees": 0,
+            "field": false,
+            "path": false,
+            "rain": false,
+            "snow": false,
+            "birds": false,
+            "figure": null
+          },
+          "seed": 8,
+          "text": "وصل إلى البحر عند الغروب."
+        },
+        {
+          "type": "caption",
+          "text": "وصل إلى البحر عند الغروب.",
+          "at": 0.5,
+          "voiceLine": 1
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "beats": 5,
+      "music": "finale",
+      "transition": "fade",
+      "elements": [
+        {
+          "type": "painted",
+          "look": "watercolour",
+          "scene": {
+            "sky": "night",
+            "sun": "moon",
+            "mountains": true,
+            "sea": false,
+            "city": false,
+            "trees": 0,
+            "field": true,
+            "path": false,
+            "rain": false,
+            "snow": false,
+            "birds": false,
+            "figure": null
+          },
+          "seed": 9,
+          "text": "وفي الليل، لمعت النجوم فوق الجبل."
+        },
+        {
+          "type": "caption",
+          "text": "وفي الليل، لمعت النجوم فوق الجبل.",
+          "at": 0.5,
+          "voiceLine": 2
+        }
+      ]
+    }
+  ]
+}

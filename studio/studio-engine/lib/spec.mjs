@@ -10,7 +10,7 @@ export function forFormat(spec, format) {
   const visit = (v) => {
     if (Array.isArray(v)) return v.map(visit);
     if (!object(v)) return v;
-    const base = Object.fromEntries(Object.entries(v).filter(([k]) => !['reel', 'youtube'].includes(k)));
+    const base = Object.fromEntries(Object.entries(v).filter(([k]) => !['reel', 'youtube', 'square'].includes(k)));
     return Object.fromEntries(Object.entries(v[format] ? merge(base, v[format]) : base).map(([k, x]) => [k, visit(x)]));
   };
   const out = visit(spec);

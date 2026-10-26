@@ -1,0 +1,7 @@
+{ "title": "looks test", "format": "square", "bpm": 80, "shake": 0, "grid": false, "background": "ink",
+  "music": { "progression": ["Am", "F", "C", "G"], "final": "C" },
+  "scenes": [
+    { "id": "oil", "beats": 4, "music": "intro", "elements": [ { "type": "painted", "look": "oil", "text": "a man walks the road by the trees at sunset" }, { "type": "caption", "text": "a man walks the road at sunset", "at": 0.5 } ] },
+    { "id": "crayon", "beats": 4, "music": "verse", "transition": "cut", "elements": [ { "type": "painted", "look": "crayon", "text": "birds over the field in the morning", "seed": 3 }, { "type": "caption", "text": "العصافير فوق الحقل الصبح", "at": 0.5 } ] },
+    { "id": "ink", "beats": 4, "music": "finale", "transition": "cut", "elements": [ { "type": "painted", "look": "ink", "text": "snow on the mountain, alone", "seed": 5 }, { "type": "caption", "text": "ثلج على الجبل", "at": 0.5 } ] }
+  ] }

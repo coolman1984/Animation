@@ -3,6 +3,7 @@
 // so two films built from the same modules can look unrelated. Times in a spec are BEATS from the scene start.
 import { clamp, lerp, ramp, hash, px, oE, ioC, ioQ, sm, spr, div, T3, setBlur, obj, words, kinetic, extrude, icon, IC, col, canvas, isArabic, el } from './core.js';
 import { ribbon } from './ribbon.js';
+import { painted, caption } from './painted.js';
 
 const K = (ctx) => Math.min(ctx.W, ctx.H) / 1080;                       // size unit: px at a 1080 short side
 const tin = (ctx, e, d = 0) => ctx.T(e.at ?? d), tout = (ctx, e) => (e.out != null ? ctx.T(e.out) : ctx.b - 0.12);
@@ -10,6 +11,8 @@ const shadowOf = (e) => (e.shadow === false ? '' : e.shadow || '0 0 40px rgba(0,
 
 export const MODULES = {
   ribbon,
+  painted,          // hand-painted story scene (lib/painted.js)
+  caption,          // the narrated line, lit word by word
   // A deterministic pointer gesture: the spec shares its click beat with the target's morph.
   cursor(ctx, e) {
     const k = K(ctx), n = el('svg', { viewBox: '0 0 40 48', style: { position: 'absolute', width: px(40*k), height: px(48*k), zIndex: '15', overflow: 'visible' } }, ctx.root);
