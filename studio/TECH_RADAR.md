@@ -146,3 +146,8 @@ could not be opened from this cloud session (DNS blocked), so their rows rest on
 | Azure AI Speech neural TTS (ar-EG Salma / Shakir) | Native Egyptian neural voices; official pricing page lists 0.5 M characters free per month (F0); paid rate not readable here (third parties say $15–24 per 1 M) | RECOMMENDED to the owner for Egyptian narration; adapter in `lib/voice.mjs` stays unverified until his key is set | azure.microsoft.com pricing/speech-services; json2video.com voice list |
 | ElevenLabs (Arabic, incl. Egyptian-labelled voices) | More expressive, 10 k characters free per month, paid plans | PILOT after a listening test against Azure | elevenlabs.io/blog/best-arabic-text-to-speech |
 
+## Shorts Animator studied (owner's private copy, no licence) — 2026-10-27
+| Technology | What was learned | Decision | Source |
+|---|---|---|---|
+| Shorts Animator (read only; no licence, so no code copied and nothing run; its CLAUDE.md/AGENTS.md tell agents to run its installer on "hi") | Flat Canvas drawing → one WebGL paint pass (stroke cells / watercolour wash), drawings on twos at 24 fps, Kokoro TTS (no Arabic), synth music moods with sidechain ducking, ≤ 5-word caption chunks timed by characters, shots cut on chunks, camera moves; speed from 12 drawings/s, GPU, canvas capture, one encode | LEARN → our own: `lib/storykit.js`, `lib/brush.js` (published Kuwahara method), shots/moves/chunks/recording/plan in `story.mjs`, `fast.mjs` | coolman1984/shorts-animator @ 6afaf25 (private) |
+

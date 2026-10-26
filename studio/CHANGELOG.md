@@ -5,6 +5,16 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-27 — Painted shorts rebuilt after studying Shorts Animator (DONE)
+Owner order: "build everything" from the comparison with Shorts Animator (read only; no licence, nothing copied or run).
+- **New:** `lib/brush.js` (our GPU brush pass: oil/gouache by anisotropic Kuwahara + stroke cells, watercolour, ink, pastel, flat; looks + words → numbers),
+  `lib/storykit.js` (drawing kit with a jointed figure rig and 12 poses), `painted` rebuilt as flat drawing → paint pass with camera moves and shot
+  windows, `caption` in ≤ 5-word chunks (box or plain), `story.mjs` shots on caption chunks, moves, close-ups, `--recording`, `--plan` + `scenes.js`,
+  `--style`, `--captions`, `post` 4:5 format, `fast.mjs` quick render; `STUDIO_GPU=hardware` for the graphics card; run.mjs passes gpu, scenes.js and paint scale.
+- **Proof:** stills of fable-test (oil, 6 shots) and kit-test (custom lighthouse + two people, gouache, square) looked at; fast.mjs rendered fable-test
+  (16.1 s, 194 drawings, −13.5 LUFS, 287 s on this CPU box); story tests 9/9, engine tests 33 total pass.
+- **Not verified:** a narrated film with a real voice; `--recording` on a real file; the speed on a graphics card; run.mjs final gates on the new painted path.
+
 ## 2026-10-26 — Text → hand-painted short: story.mjs + painted/caption elements + square format (DONE)
 Owner order: "build everything that is missing" for shorts like Tobi's Shorts Animator (a verse or story + a look → painted, narrated, captioned, scored).
 - **New:** `studio-engine/story.mjs` (text → spec: line split, word-driven composition, voice per line via `lib/voice.mjs` mixed into `voice.wav`,

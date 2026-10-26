@@ -6,6 +6,7 @@
   "grid": false,
   "vignette": true,
   "background": "ink",
+  "gpu": true,
   "music": {
     "progression": [
       "Am",
@@ -15,17 +16,20 @@
     ],
     "final": "C"
   },
-  "direction": "text-to-short: watercolour, one painted scene per narrated line",
+  "direction": "text-to-short: oil, painted shots cut on the caption chunks",
   "scenes": [
     {
       "id": "s1",
-      "beats": 7.5,
+      "beats": 10,
       "music": "verse",
       "transition": "cut",
       "elements": [
         {
           "type": "painted",
-          "look": "watercolour",
+          "look": "oil",
+          "lookWords": "",
+          "seed": 7,
+          "text": "مشى وحيدًا على الطريق تحت المطر، وكان قلبه مليان أسئلة.",
           "scene": {
             "sky": "storm",
             "sun": null,
@@ -39,16 +43,46 @@
             "snow": false,
             "birds": false,
             "figure": "walk",
+            "pose": null,
+            "fireflies": false,
             "hills": true
           },
-          "seed": 7,
-          "text": "مشى وحيدًا على الطريق تحت المطر."
+          "move": "push",
+          "out": 6
+        },
+        {
+          "type": "painted",
+          "look": "oil",
+          "lookWords": "",
+          "seed": 8,
+          "text": "مشى وحيدًا على الطريق تحت المطر، وكان قلبه مليان أسئلة.",
+          "scene": {
+            "sky": "storm",
+            "sun": null,
+            "mountains": false,
+            "sea": false,
+            "city": false,
+            "trees": 0,
+            "field": true,
+            "path": true,
+            "rain": true,
+            "snow": false,
+            "birds": false,
+            "figure": "walk",
+            "pose": null,
+            "fireflies": false,
+            "hills": true,
+            "close": true
+          },
+          "move": "pan-left",
+          "at": 6
         },
         {
           "type": "caption",
-          "text": "مشى وحيدًا على الطريق تحت المطر.",
+          "text": "مشى وحيدًا على الطريق تحت المطر، وكان قلبه مليان أسئلة.",
           "at": 3,
-          "voiceLine": 0
+          "voiceLine": 0,
+          "style": "plain"
         },
         {
           "type": "words",
@@ -67,11 +101,14 @@
       "id": "s2",
       "beats": 4,
       "music": "verse",
-      "transition": "fade",
+      "transition": "cut",
       "elements": [
         {
           "type": "painted",
-          "look": "watercolour",
+          "look": "oil",
+          "lookWords": "",
+          "seed": 14,
+          "text": "وصل إلى البحر عند الغروب.",
           "scene": {
             "sky": "dusk",
             "sun": "sun",
@@ -84,28 +121,33 @@
             "rain": false,
             "snow": false,
             "birds": false,
-            "figure": null
+            "figure": null,
+            "pose": null,
+            "fireflies": false
           },
-          "seed": 8,
-          "text": "وصل إلى البحر عند الغروب."
+          "move": "rise"
         },
         {
           "type": "caption",
           "text": "وصل إلى البحر عند الغروب.",
           "at": 0.5,
-          "voiceLine": 1
+          "voiceLine": 1,
+          "style": "plain"
         }
       ]
     },
     {
       "id": "s3",
-      "beats": 5,
+      "beats": 7.5,
       "music": "finale",
       "transition": "fade",
       "elements": [
         {
           "type": "painted",
-          "look": "watercolour",
+          "look": "oil",
+          "lookWords": "",
+          "seed": 21,
+          "text": "وفي الليل، لمعت النجوم فوق الجبل، فعرف إن الطريق لسه طويل.",
           "scene": {
             "sky": "night",
             "sun": "moon",
@@ -114,20 +156,75 @@
             "city": false,
             "trees": 0,
             "field": true,
-            "path": false,
+            "path": true,
             "rain": false,
             "snow": false,
             "birds": false,
-            "figure": null
+            "figure": "walk",
+            "pose": null,
+            "fireflies": false
           },
-          "seed": 9,
-          "text": "وفي الليل، لمعت النجوم فوق الجبل."
+          "move": "pull",
+          "out": 3
+        },
+        {
+          "type": "painted",
+          "look": "oil",
+          "lookWords": "",
+          "seed": 22,
+          "text": "وفي الليل، لمعت النجوم فوق الجبل، فعرف إن الطريق لسه طويل.",
+          "scene": {
+            "sky": "night",
+            "sun": "moon",
+            "mountains": true,
+            "sea": false,
+            "city": false,
+            "trees": 0,
+            "field": true,
+            "path": true,
+            "rain": false,
+            "snow": false,
+            "birds": false,
+            "figure": "walk",
+            "pose": null,
+            "fireflies": false,
+            "close": true
+          },
+          "move": "pan-right",
+          "at": 3,
+          "out": 5
+        },
+        {
+          "type": "painted",
+          "look": "oil",
+          "lookWords": "",
+          "seed": 23,
+          "text": "وفي الليل، لمعت النجوم فوق الجبل، فعرف إن الطريق لسه طويل.",
+          "scene": {
+            "sky": "night",
+            "sun": "moon",
+            "mountains": true,
+            "sea": false,
+            "city": false,
+            "trees": 0,
+            "field": true,
+            "path": true,
+            "rain": false,
+            "snow": false,
+            "birds": false,
+            "figure": "walk",
+            "pose": null,
+            "fireflies": false
+          },
+          "move": "drift",
+          "at": 5
         },
         {
           "type": "caption",
-          "text": "وفي الليل، لمعت النجوم فوق الجبل.",
+          "text": "وفي الليل، لمعت النجوم فوق الجبل، فعرف إن الطريق لسه طويل.",
           "at": 0.5,
-          "voiceLine": 2
+          "voiceLine": 2,
+          "style": "plain"
         }
       ]
     }

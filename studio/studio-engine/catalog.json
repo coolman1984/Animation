@@ -7,7 +7,7 @@
   ],
   "fields": {
    "title": "string",
-   "format": "youtube (1920×1080) | reel (1080×1920) | square (1080×1080); --format=both renders youtube + reel",
+   "format": "youtube (1920×1080) | reel (1080×1920) | square (1080×1080) | post (1080×1350, 4:5); --format=both renders youtube + reel",
    "bpm": "number, default 120 (sets the clock; beats → seconds)",
    "duration": "optional seconds; must equal sum(scene.beats) × 60 / bpm",
    "music": "{ progression: [chords], final: chord, hook: 'pop332' } — original score from lib/sound.mjs",
@@ -363,22 +363,29 @@
    "sound": "tick on click"
   },
   "painted": {
-   "purpose": "a full-frame landscape painted in code for story shorts: sky, sun/moon, mountains, hills, sea, field, path, trees, city, a figure, rain/snow/birds; lines boil 12 times a second like hand animation while the camera drifts",
+   "purpose": "one painted shot: a flat drawing (storykit.js, or a function from the film's scenes.js) painted by the GPU brush pass (brush.js); a new drawing 12 times a second; several shots may cut inside one scene with at/out",
    "required": [],
    "optional": {
-    "look": "watercolour | oil | crayon | ink | storybook",
+    "look": "oil | watercolour | gouache | pastel | crayon | ink | storybook | flat, or { base, radius, strokeLen, valJ, wash, bleed, outline, posterize, sat, contrast, warm, vig … }",
     "text": "words that choose the composition (Arabic or English: rain, sea, mountain, night, road, sunset, tree, city, snow, birds…)",
-    "scene": "{ sky: day|dawn|dusk|night|storm|mist, sun: sun|moon|null, mountains, hills, sea, city, field, path, trees: n, rain, snow, birds, figure: walk|stand } — overrides text",
+    "scene": "{ sky: day|dawn|dusk|night|storm|mist, sun: sun|moon|null, mountains, hills, sea, city, field, path, trees: n, rain, snow, birds, fireflies, figure: walk|stand, pose, robe, close, focus: [x, y] } — overrides text",
     "seed": 7,
     "drift": 1,
     "boil": 12,
     "sunX": 0.68,
-    "z": 1
+    "z": 1,
+    "lookWords": "words about the look (thick, swirly, dreamy, vintage, comic, kids …) that move the numbers",
+    "draw": "name of a drawing in films/<film>/scenes.js",
+    "move": "push | pull | pan-left | pan-right | rise | fall | drift | still",
+    "amount": 1,
+    "at": "beat the shot starts (default scene start)",
+    "out": "beat it ends (default scene end)",
+    "paintScale": "0.25..1 (default 0.5 on the CPU, 1 with STUDIO_GPU=hardware)"
    },
    "sound": "none"
   },
   "caption": {
-   "purpose": "the narrated line, each word lit in reading order when it is spoken (voice word times from run.mjs, else evenly spaced); Arabic stays whole words",
+   "purpose": "the narrated line in chunks of ≤ 5 words (balanced, breaking at punctuation, '/' forces a break), one chunk on screen at a time, each word lit when spoken",
    "required": [
     "text"
    ],
@@ -389,7 +396,11 @@
     "size": 64,
     "weight": 600,
     "color": "#FFFFFF",
-    "voiceLine": "index of the narrated line (story.mjs sets it)"
+    "voiceLine": "index of the narrated line (story.mjs sets it)",
+    "style": "plain | box",
+    "words": "max words per chunk (5)",
+    "chunks": "false shows the whole line",
+    "box": "css colour behind a boxed chunk"
    },
    "sound": "none"
   }

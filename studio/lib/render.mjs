@@ -26,7 +26,11 @@ export function run(cmd, args, { input, quiet = true, cwd, env } = {}) {
 }
 
 // WebGL via SwiftShader (CPU, deterministic) for films that declare gpu: true. Off by default.
-export const GPU_ARGS = ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'];
+// STUDIO_GPU=hardware uses the machine's graphics card instead (much faster for shader passes such as the story brush pass;
+// pixels may differ slightly between machines, so reviews and finals of one film should use one mode).
+export const GPU_ARGS = process.env.STUDIO_GPU === 'hardware'
+  ? ['--enable-gpu', '--ignore-gpu-blocklist', '--enable-gpu-rasterization', `--use-angle=${process.platform === 'win32' ? 'd3d11' : process.platform === 'darwin' ? 'metal' : 'default'}`]
+  : ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'];
 export async function openFilm(port, film, { w, h, variant, segments, fadeOut, scale = 1, gpu = false }) {
   const client = await launch({ width: w, height: h, scale, extraArgs: gpu ? GPU_ARGS : [] });
   try {

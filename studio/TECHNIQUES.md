@@ -403,3 +403,16 @@ so the eye still reads one scene. Footage shorter than the music (15 s clip, 40 
 - **Captions live in the sky** (reel y 0.30, youtube 0.15, square 0.18), clear of the figure; words sit at 62 % and light to 100 % when spoken. A title holds the first 2.5 beats in the centre and the caption starts after it.
 - **Score for a story:** `verse` on every scene and `finale` on the last (an `intro` ramp pushed loudness range to 8.4 LU and failed the gate); `shake: 0`, no grid. Calm films get a yellow "barely moves" taste light — expected; raise `drift` if the owner wants more motion.
 
+## Painted shorts, rebuilt: flat drawing → GPU brush pass, shots on caption chunks, quick render (2026-10-27)
+- **Two layers of work:** draw flat and readable (storykit: big shapes, strong value contrast, silhouettes that read on a phone), then paint the whole
+  frame in one shader pass. Texture never belongs in the drawing.
+- **Oil without copying anyone:** anisotropic Kuwahara (structure tensor → direction, 8 elliptical sectors, keep the calmest) flattens colour along
+  the forms; on top, stroke-shaped cells in that direction smear the colour along their length and carry their own value/warmth; a share of cells is
+  re-laid every drawing (boil). 5×5 sector samples keep it ~1.3 s per half-resolution drawing on the CPU (11 s at 9×9 full resolution).
+- **Watercolour:** the rim of a wash is where the sharp image is darker than its blur; displace the lookup with slow noise (bleed), add low-frequency
+  density blooms, high-frequency granulation and dry-brush gaps where the rim breaks.
+- **Cut on the words:** 2–3 shots per narrated line, cut where a caption chunk begins (chunk lengths by characters, or the voice's word times); each shot
+  its own move; the second shot a close-up on the figure. One caption chunk on screen at a time, with a 0.15 s gap — two chunks overlapping read as noise.
+- **Quick render:** capture only the drawings (12/s) and let the encoder repeat them to 24 fps; one encode with the score and voice; check a one-frame-per-
+  second sheet and the loudness. Measured: 16 s reel, 194 drawings, 287 s on a CPU-only cloud box.
+
