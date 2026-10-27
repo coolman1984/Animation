@@ -416,3 +416,11 @@ so the eye still reads one scene. Footage shorter than the music (15 s clip, 40 
 - **Quick render:** capture only the drawings (12/s) and let the encoder repeat them to 24 fps; one encode with the score and voice; check a one-frame-per-
   second sheet and the loudness. Measured: 16 s reel, 194 drawings, 287 s on a CPU-only cloud box.
 
+
+## Frame triage: measure everything, look at little (2026-10-27; `lib/triage.mjs`, idea from SageCut by levantolabs)
+- **Order of cost:** numbers on every frame (free) → a flag list → the expensive eye (a vision model or a person) only on flagged frames. On the baker
+  reel 169 frames became 5 views; a "look at every frame" review would have spent ~34× more.
+- **Locate text, don't read it:** a tiny text *detector* (PP-OCRv3 det, 2.4 MB) answers "where is text and how tall" for Arabic and Latin alike; size,
+  edge and safe-area checks need nothing more. Box height ≈ type size + 8 px, so the 36 px floor at a 1080 short side ≈ 26–28 px type.
+- **A flag is "look here":** neighbouring flags of one kind collapse into one moment; the worst 12 are drawn with a box and handed over with a short
+  brief (`CRITIC.md`) and the owner's own yes/no questions (`--ask`). A missing tool reports "not measured", never "pass".

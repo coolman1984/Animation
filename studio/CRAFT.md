@@ -214,3 +214,8 @@ A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs th
 5. **Rules borrowed from video-shotcraft's rework log (each came from a real client rejection):** first cuts are almost always too fast (default one notch slower; a hero action arc ≥ 3 s; demos at human speed); speed comes from acceleration, never constant velocity; whole-frame beat hits ≤ 3 per film, ≥ 16 beats apart, everything else moves only the element layer; light sweeps ≤ 2 per film, one per hero, clipped to its rounded corners; fly-ins land in a real layout slot, never floating above the page.
 6. **Text is texture or it is read, never in between:** a caption must measure ≥ 5 % of the frame height in the rendered pixels (after every scale and perspective), helpers ≥ 3 %; smaller text is blurred/dimmed as texture or deleted (shotcraft Q11, matching our phone-view checks).
 7. **The browser's own surfaces show whether a page was built or assembled:** text selection, caret, scrollbars, focus rings, underline offset and tabular numerals ship with defaults; theme them from the palette (Impeccable craft floor).
+
+## Frame triage (2026-10-27; `lib/triage.mjs`)
+1. **Hand-made text finders fail on paintings:** strokes, contrast, flat fill, baseline peaks — every rule either flagged oil-paint texture as text or
+   missed pink type on an olive wall. A 2.4 MB trained detector boxed every caption with no false box on the same frames; pay for the small model.
+2. **Test material must be readable to a person first:** heavy colour noise hid a 9 px caption even from the eye; a test the human cannot pass proves nothing.

@@ -60,6 +60,8 @@
       "check": { "file": "reference.mjs" }, "serves": [], "bestFor": "learning a supplied film's grammar and Artistic DNA (ARTISTIC_FORENSICS.md)", "docs": "REFERENCE_LAB.md, ARTISTIC_FORENSICS.md" },
     { "id": "motion-forensics", "name": "Motion/easing/cut forensics (OpenCV, PySceneDetect)", "department": "research", "maturity": "PROVEN", "kind": "python",
       "check": { "python": ["cv2", "scipy", "scenedetect"] }, "profile": "vision", "serves": [], "bestFor": "measured keyframes, easing, cuts of a reference" },
+    { "id": "frame-triage", "name": "Frame triage (lib/triage.mjs + tools/textboxes.py)", "department": "qa", "maturity": "EXPERIMENTAL", "kind": "python",
+      "check": { "python": ["onnxruntime", "cv2", "numpy"] }, "serves": [], "bestFor": "measure every frame of an export in code (blank, frozen, text size/edge/safe area, off-brand text colour, delivery) so the critic opens only the flagged frames", "note": "Text detector: `python tools/textboxes.py models` (PP-OCRv3 det, 2.4 MB). Without it the text checks report 'not measured'." },
     { "id": "logo-trace", "name": "Logo tracer (tools/logo_trace.py)", "department": "brand", "maturity": "PROVEN", "kind": "python",
       "check": { "python": ["potrace", "PIL", "cv2"] }, "profile": "logo", "serves": ["logo"], "bestFor": "vector parts + particle targets from a raster logo", "study": "film6" },
     { "id": "otio", "name": "OpenTimelineIO export (lib/edl.mjs)", "department": "editing", "maturity": "EXPERIMENTAL", "kind": "native",

@@ -5,6 +5,25 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-27 — Frame triage: code checks every frame, the critic opens only the flagged ones (DONE)
+Owner order: build the idea from a SageCut post (levantolabs; learned from the picture, nothing installed or copied).
+- **New:** `lib/triage.mjs` + `node studio.mjs triage <video> [--format=reel] [--brand=…|--palette=…] [--ask="q1|q2"]`: 4 frames/s measured in code
+  (blank, frozen ≥ 1 s, text box under the floor, text at the frame edge or outside the safe area, off-brand text colour, size/fps/loudness/true peak),
+  neighbouring flags merged into moments, the worst ≤ 12 written as full-size stills with a pink box + `CRITIC.md` (open only these, answer these
+  questions, reply as a ledger). `tools/textboxes.py` locates text with PaddleOCR's PP-OCRv3 detector (2.4 MB ONNX, Apache-2.0, from the pinned
+  rapidocr wheel on PyPI); without it the text checks say "not measured". Capability `frame-triage` (EXPERIMENTAL).
+- **Proof:** `test/triage.test.mjs` 3/3 on a synthetic clip (tiny caption, frozen pink title, text cut by the edge, black second, quiet tone).
+  Baker reel: 169 frames measured, 5 opened (all painted details, no real defect), every delivery check PASS.
+- **Rejected on the way:** a hand-written stroke/contrast text finder flagged oil-paint texture everywhere and missed pink type on olive (CRAFT lesson).
+- **Not verified:** the critic step itself on a real client film; the detector on very stylised display type; Windows timing.
+
+## 2026-10-27 — «عم حسن والفرن»: first film from owner-generated stills and Veo clips (DONE)
+Owner order: build the 40 s vertical oil-painting short from PROMPTS.md with the 9 stills (Gemini / ChatGPT Image) and 4 Veo clips on the branch.
+- **New:** `studio-engine/films/baker/make.py` (band crop, 2.5D depth parallax with Depth Anything V2 small, oven-light flicker, muted clips on the
+  strongest beats, narration + captions + ducked score, QC). Output `out/baker/baker-reel.mp4` (not in git).
+- **Proof:** 1080×1920, 30 fps, 42.2 s, −13.8 LUFS, true peak −6.1, LRA 1.6, no black or frozen span mid-film; contact sheet looked at.
+- **Not verified:** an Egyptian voice (narration is the local Piper ar_JO voice, a draft until the owner adds an Azure key); 42 s, not 40.
+
 ## 2026-10-27 — Painted shorts rebuilt after studying Shorts Animator (DONE)
 Owner order: "build everything" from the comparison with Shorts Animator (read only; no licence, nothing copied or run).
 - **New:** `lib/brush.js` (our GPU brush pass: oil/gouache by anisotropic Kuwahara + stroke cells, watercolour, ink, pastel, flat; looks + words → numbers),

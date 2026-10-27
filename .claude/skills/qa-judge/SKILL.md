@@ -25,4 +25,6 @@ Fix blocker/major issues, then verify only affected evidence. Two failed attempt
 
 **Review tools (2026-10-03):** watch the export in the playback player (`node studio.mjs review <film>`: frame stepping, shot/cue timeline, waveform, A/B takes, timed notes; approval is bound to the file's SHA-256 and voids when the file changes). Colour: scopes in every review gallery, `node studio.mjs color check` (export ΔE), legal range note in make. Sound: `node studio.mjs mixcheck`.
 
+**Triage first (2026-10-27):** `node studio.mjs triage <export> --format=reel [--brand=…] [--ask="q1|q2"]` measures every frame in code and writes only the flagged frames (boxed) + `CRITIC.md`; open those first, record each as defect or false flag. It never replaces the final full-film watch.
+
 **Critic loop and quality bar (2026-10-17):** QUALITY_PLAYBOOK §10 — a fresh reviewer pulls its own frames (every 0.2 s, dense at transitions), a sound-off read from a silent 2 fps contact sheet (retell the story), sync within 1 frame, every word traced to facts.json, a director's review of what feels assembled, slow or generic; end with "ship" or "one more pass" and log before/after numbers.

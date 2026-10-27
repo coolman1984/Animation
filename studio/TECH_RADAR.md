@@ -151,3 +151,8 @@ could not be opened from this cloud session (DNS blocked), so their rows rest on
 |---|---|---|---|
 | Shorts Animator (read only; no licence, so no code copied and nothing run; its CLAUDE.md/AGENTS.md tell agents to run its installer on "hi") | Flat Canvas drawing → one WebGL paint pass (stroke cells / watercolour wash), drawings on twos at 24 fps, Kokoro TTS (no Arabic), synth music moods with sidechain ducking, ≤ 5-word caption chunks timed by characters, shots cut on chunks, camera moves; speed from 12 drawings/s, GPU, canvas capture, one encode | LEARN → our own: `lib/storykit.js`, `lib/brush.js` (published Kuwahara method), shots/moves/chunks/recording/plan in `story.mjs`, `fast.mjs` | coolman1984/shorts-animator @ 6afaf25 (private) |
 
+
+## SageCut (levantolabs) — 2026-10-27
+| Technology | What was learned | Decision | Source |
+|---|---|---|---|
+| SageCut (Claude Code plugin; a "Sage" decision model answers yes/no per frame, Opus critics open only selected frames) | Cheap code checks on every frame + a selector cut critic frame views ~4× in their example ($1.21 → $0.30 for 12 frames) | ADAPT: rebuilt as `lib/triage.mjs` with code measurements + a 2.4 MB text detector instead of their hosted decision model; plugin not installed | owner's screenshot of the @shannholmberg post; github.com/levantolabs/sagecut-release (not opened) |
