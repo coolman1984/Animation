@@ -548,3 +548,7 @@ showreel sessions (stills and numeric analysis only). Lessons were recorded in `
 
 ### Integration correction (one round)
 Final-head CI exposed a transient Chromium startup failure and a pre-existing capture server leak that held the render suite open until timeout. app-capture.mjs now closes its server on startup failure and even when client.close rejects; a focused failure test covers no completed-capture claim. cdp.mjs retries startup once only; navigation/render/verification failures are not retried. Publication still requires real browser/encoder success.
+
+## 2026-10-29 — Mandatory 3D inspection and cinematic editing vision (DONE: documentation only)
+
+Owner requested that every coding agent read these goals at entry. Added root `VISION_3D_AND_MOTION.md`, linked first in `AGENTS.md`, and coordinated the same brief with Digital Factory. Covers reversible exploded views, ghosted interiors, cutaways, working parts, credible assets, cinematic cameras, editing, compositing, shared asset delivery and one-machine acceptance evidence. Existing house method and execution boundaries remain. Validation: entry links and committed contents checked; no runtime changes, local installation, integration verification or render. No film/LEDGER created because no film was requested.

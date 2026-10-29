@@ -214,3 +214,7 @@ A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs th
 5. **Rules borrowed from video-shotcraft's rework log (each came from a real client rejection):** first cuts are almost always too fast (default one notch slower; a hero action arc ≥ 3 s; demos at human speed); speed comes from acceleration, never constant velocity; whole-frame beat hits ≤ 3 per film, ≥ 16 beats apart, everything else moves only the element layer; light sweeps ≤ 2 per film, one per hero, clipped to its rounded corners; fly-ins land in a real layout slot, never floating above the page.
 6. **Text is texture or it is read, never in between:** a caption must measure ≥ 5 % of the frame height in the rendered pixels (after every scale and perspective), helpers ≥ 3 %; smaller text is blurred/dimmed as texture or deleted (shotcraft Q11, matching our phone-view checks).
 7. **The browser's own surfaces show whether a page was built or assembled:** text selection, caret, scrollbars, focus rings, underline offset and tabular numerals ship with defaults; theme them from the palette (Impeccable craft floor).
+
+## Owner quality direction — 3D inspection (2026-10-29; not a validated film lesson)
+
+Read `../VISION_3D_AND_MOTION.md` first. Inspection motion should explain assembly and function; real-world scale, modeled internals, legible labels and motivated camera/edit choices matter more than decorative effects. Claims of accuracy require sources; claims of artistic quality require viewing actual output. No new film evidence accompanies this documentation entry.

@@ -111,3 +111,7 @@ Third-party agent tools copied unchanged from pinned commits, each with its lice
 - `toolkit/blender-mcp/` — Blender MCP by Siddharth Ahuja (ahujasid/blender-mcp @ febcd90, MIT): `addon.py`, `README.md`, `TERMS_AND_CONDITIONS.md`. The server runs from PyPI (mcp-for-blender 2.2.4). Assets fetched through it (Poly Haven CC0, Sketchfab per model) must be recorded per film.
 
 - Keep each upstream `MIT License` header line in any code ported into a film.
+
+## 2026-10-29 — Shared machine asset requirements (documentation only)
+
+See `../VISION_3D_AND_MOTION.md`. Future machine assets must record owner/author, licence or permission, source drawing/reference, dimensional confidence, inferred internal parts, stable part IDs and source/export versions. Keep editable source, browser-optimized derivative and film derivative linked. No asset, model, sound, font or third-party code was added by this scope; references in the brief are technical reading links only.

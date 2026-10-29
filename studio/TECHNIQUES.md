@@ -416,3 +416,6 @@ so the eye still reads one scene. Footage shorter than the music (15 s clip, 40 
 - **Quick render:** capture only the drawings (12/s) and let the encoder repeat them to 24 fps; one encode with the score and voice; check a one-frame-per-
   second sheet and the loudness. Measured: 16 s reel, 194 drawings, 287 s on a CPU-only cloud box.
 
+## 2026-10-29 — Planned machine-inspection recipe (not yet field-tested)
+
+Canonical brief: `../VISION_3D_AND_MOTION.md`. Proposed sequence: assembled hero → authored exploded view with anchored labels → selective ghosting → moving cutaway revealing modeled internals → meaningful part motion → exact reassembly. Timing follows the future brief and house method, not a fixed template. Use one shared clock, named parts and original transforms. Clipping needs sectional caps where visible; transparency cannot invent hidden geometry. Validate the one-machine browser example and normal-speed export before promoting this recipe to proven.

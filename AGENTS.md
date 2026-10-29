@@ -1,5 +1,8 @@
 # Animation repo — instructions for every AI agent
 
+## Mandatory first read — owner direction (2026-10-29)
+Before planning, implementing or reviewing work, read [VISION_3D_AND_MOTION.md](VISION_3D_AND_MOTION.md) at the repository root. For relevant work, explicitly assess exploded/reassembly views, ghosted interiors, cutaways, working parts, cinematic presentation and editing in the plan; use, defer with a reason, or mark not applicable. Do not silently skip this brief. The house method below remains the authority for taste; the vision adds the owner's capability goals. It is not a completed feature list or an automatic implementation queue.
+
 This file is the one door for every model and tool (Claude Code imports it from `CLAUDE.md`; Codex, GitHub Copilot, Cursor, Gemini CLI,
 Jules, Aider, Zed, Warp, goose, OpenCode and other AGENTS.md readers load it directly). Rules here bind every agent equally.
 **Not Claude? Start with `studio/ANY_MODEL.md`:** the ladder (what to build for your model's strengths), the film loop, the MCP tools and the
