@@ -218,3 +218,8 @@ A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs th
 ## Owner quality direction — 3D inspection (2026-10-29; not a validated film lesson)
 
 Read `../VISION_3D_AND_MOTION.md` first. Inspection motion should explain assembly and function; real-world scale, modeled internals, legible labels and motivated camera/edit choices matter more than decorative effects. Claims of accuracy require sources; claims of artistic quality require viewing actual output. No new film evidence accompanies this documentation entry.
+
+
+## 2026-10-29 — Industrial reference pack (documentation only)
+
+For industrial visuals, compare actual frames with a named primary reference and explain the intended lesson (materials, light, camera or engineering readability). Attractive reference media does not validate hidden mechanisms or a real digital twin. See ../REFERENCE_PACK_3D_AND_DIGITAL_TWINS.md; existing owner taste remains authoritative.

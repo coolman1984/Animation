@@ -419,3 +419,8 @@ so the eye still reads one scene. Footage shorter than the music (15 s clip, 40 
 ## 2026-10-29 — Planned machine-inspection recipe (not yet field-tested)
 
 Canonical brief: `../VISION_3D_AND_MOTION.md`. Proposed sequence: assembled hero → authored exploded view with anchored labels → selective ghosting → moving cutaway revealing modeled internals → meaningful part motion → exact reassembly. Timing follows the future brief and house method, not a fixed template. Use one shared clock, named parts and original transforms. Clipping needs sectional caps where visible; transparency cannot invent hidden geometry. Validate the one-machine browser example and normal-speed export before promoting this recipe to proven.
+
+
+## 2026-10-29 — Industrial reference pack (documentation only)
+
+Reference-driven industrial inspection recipe — PLANNED / NOT EXECUTED: select credible assembly geometry plus industrial and cinematic references; record licence/revision; preserve part IDs, pivots and assembled transforms; compare one exploded/reassembly, ghosted, cutaway and working-motion sequence in browser and film. Root ../REFERENCE_PACK_3D_AND_DIGITAL_TWINS.md contains the evidence and compatibility checklist. No recipe output verified.

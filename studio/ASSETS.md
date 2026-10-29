@@ -115,3 +115,8 @@ Third-party agent tools copied unchanged from pinned commits, each with its lice
 ## 2026-10-29 — Shared machine asset requirements (documentation only)
 
 See `../VISION_3D_AND_MOTION.md`. Future machine assets must record owner/author, licence or permission, source drawing/reference, dimensional confidence, inferred internal parts, stable part IDs and source/export versions. Keep editable source, browser-optimized derivative and film derivative linked. No asset, model, sound, font or third-party code was added by this scope; references in the brief are technical reading links only.
+
+
+## 2026-10-29 — Industrial reference pack (documentation only)
+
+Source discovery only: root ../REFERENCE_PACK_3D_AND_DIGITAL_TWINS.md now points to SimReady, manufacturer CAD, Thor, Khronos samples, Poly Haven and Blender Studio resources. NO asset downloaded or approved by this update. Inspect each selected asset licence, owner, revision, commercial/redistribution rights, attribution, units and modeled vs inferred internals before actual reuse; record film credits when applicable.
