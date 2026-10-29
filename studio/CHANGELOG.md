@@ -559,3 +559,8 @@ Owner requested that every coding agent read these goals at entry. Added root `V
 Added the root industrial 3D / digital-twin reference pack and mandatory relevant-work links in AGENTS and the owner vision. Separates BMW/Siemens visual benchmarks, NVIDIA/OpenUSD technical references, OEM CAD, openly licensed examples and actual asset reuse. Documentation only; no installation, downloads, render or runtime verification.
 
 Owner-requested FlexSim coverage includes manufacturing simulation, official demonstration videos, post-2023 updates and historical Omniverse/USD interoperability; commercial/trial status and version compatibility are explicit.
+
+
+## 2026-10-29 — First industrial experiment brief (documentation only)
+
+Documented the owner's first strong industrial scene experiment in ../EXPERIMENT_FIRST_INDUSTRIAL_SCENE.md and linked it from AGENTS, vision and references. Personal learning, one assembly, proposed 30-second storyboard; future browser/film outputs reuse part identities. The requested scope is documentation, not rendering or a separate rights-review task.

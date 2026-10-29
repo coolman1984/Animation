@@ -120,3 +120,8 @@ See `../VISION_3D_AND_MOTION.md`. Future machine assets must record owner/author
 ## 2026-10-29 — Industrial reference pack (documentation only)
 
 Source discovery only: root ../REFERENCE_PACK_3D_AND_DIGITAL_TWINS.md now points to SimReady, manufacturer CAD, Thor, Khronos samples, Poly Haven and Blender Studio resources. NO asset downloaded or approved by this update. Inspect each selected asset licence, owner, revision, commercial/redistribution rights, attribution, units and modeled vs inferred internals before actual reuse; record film credits when applicable.
+
+
+## 2026-10-29 — First industrial experiment brief (documentation only)
+
+No asset added. Candidate subject is a compact conveyor drive or another well-documented assembly selected at implementation time. Required source data: shell, actual internals, meaningful hierarchy/pivots and clear modeled-versus-illustrative status. Brief: ../EXPERIMENT_FIRST_INDUSTRIAL_SCENE.md. Personal learning scope; ordinary source/creator provenance stays with any future imported asset.

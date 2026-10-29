@@ -223,3 +223,8 @@ Read `../VISION_3D_AND_MOTION.md` first. Inspection motion should explain assemb
 ## 2026-10-29 — Industrial reference pack (documentation only)
 
 For industrial visuals, compare actual frames with a named primary reference and explain the intended lesson (materials, light, camera or engineering readability). Attractive reference media does not validate hidden mechanisms or a real digital twin. See ../REFERENCE_PACK_3D_AND_DIGITAL_TWINS.md; existing owner taste remains authoritative.
+
+
+## 2026-10-29 — First industrial experiment brief (documentation only)
+
+Make the first industrial experiment impressive through one readable machine: staged reveal, deliberate light, restrained labels and meaningful motion. Compare actual output with named references; do not mistake many effects or tool choices for visual quality. Candidate brief: ../EXPERIMENT_FIRST_INDUSTRIAL_SCENE.md. No output reviewed in this scope.

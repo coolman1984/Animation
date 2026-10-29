@@ -424,3 +424,8 @@ Canonical brief: `../VISION_3D_AND_MOTION.md`. Proposed sequence: assembled hero
 ## 2026-10-29 — Industrial reference pack (documentation only)
 
 Reference-driven industrial inspection recipe — PLANNED / NOT EXECUTED: select credible assembly geometry plus industrial and cinematic references; record licence/revision; preserve part IDs, pivots and assembled transforms; compare one exploded/reassembly, ghosted, cutaway and working-motion sequence in browser and film. Root ../REFERENCE_PACK_3D_AND_DIGITAL_TWINS.md contains the evidence and compatibility checklist. No recipe output verified.
+
+
+## 2026-10-29 — First industrial experiment brief (documentation only)
+
+PLANNED / NOT EXECUTED: a proposed 30-second hero → staged explosion → precise reassembly → ghosted working internals → cutaway → hero sequence. Use one canonical assembly with stable part IDs, pivots and assembled transforms; separate presentation from simulated process state. See ../EXPERIMENT_FIRST_INDUSTRIAL_SCENE.md for timing and evidence criteria.

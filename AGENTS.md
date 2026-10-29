@@ -2,6 +2,8 @@
 
 Before relevant 3D, inspection, animation or editing work, also read [REFERENCE_PACK_3D_AND_DIGITAL_TWINS.md](REFERENCE_PACK_3D_AND_DIGITAL_TWINS.md) and record the references selected for the task.
 
+For the first practical industrial scene, also read [EXPERIMENT_FIRST_INDUSTRIAL_SCENE.md](EXPERIMENT_FIRST_INDUSTRIAL_SCENE.md). It documents the owner's private learning experiment; do not execute it automatically or claim it implemented.
+
 ## Mandatory first read — owner direction (2026-10-29)
 Before planning, implementing or reviewing work, read [VISION_3D_AND_MOTION.md](VISION_3D_AND_MOTION.md) at the repository root. For relevant work, explicitly assess exploded/reassembly views, ghosted interiors, cutaways, working parts, cinematic presentation and editing in the plan; use, defer with a reason, or mark not applicable. Do not silently skip this brief. The house method below remains the authority for taste; the vision adds the owner's capability goals. It is not a completed feature list or an automatic implementation queue.
 

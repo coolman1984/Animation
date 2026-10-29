@@ -2,7 +2,9 @@
 
 Updated: 2026-10-29.
 
-**Latest scope: DONE — Industrial reference pack (2026-10-29).** Root `REFERENCE_PACK_3D_AND_DIGITAL_TWINS.md` links primary industrial benchmarks, public repositories, geometry/material sources, visual galleries and licence/credit requirements. Linked from agent entry and the owner vision. Research and documentation only; no assets downloaded, integrations installed, runtime maturity upgraded or film rendered. Verify actual reuse rights, revisions and local readiness before implementation.
+**Latest scope: DONE — First industrial scene experiment brief (2026-10-29).** Root `EXPERIMENT_FIRST_INDUSTRIAL_SCENE.md` proposes one detailed assembly and a 30-second exploded/reassembly, ghosted-interior, cutaway and working-motion sequence for private learning. Linked from agent entry, vision and references. Documentation only; the owner explicitly assigned future execution to implementing agents. No scene built, asset downloaded, render run or runtime maturity upgraded.
+
+**Previous scope: DONE — Industrial reference pack (2026-10-29).** Root `REFERENCE_PACK_3D_AND_DIGITAL_TWINS.md` links primary industrial benchmarks, public repositories, geometry/material sources, visual galleries and licence/credit requirements. Linked from agent entry and the owner vision. Research and documentation only; no assets downloaded, integrations installed, runtime maturity upgraded or film rendered. Verify actual reuse rights, revisions and local readiness before implementation.
 
 **Previous scope: DONE — Documentation only: owner 3D inspection, motion and editing vision (2026-10-29).** Root `VISION_3D_AND_MOTION.md` records exploded/reassembly, ghosted interiors, cutaways, working parts, cinematic presentation, editing and shared Digital Factory assets; `AGENTS.md` makes it a mandatory first read for every agent. Scope is documentation, not implementation. No software installed, connector activated, film rendered or runtime test performed. Verify local Blender/adapter readiness before a future implementation task.
 
