@@ -206,6 +206,9 @@ A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs th
 2. **Draw the plan, don't pick it:** hand-picked moves converge on the same push-in and end card; a seeded draw (`moves draw`) forces variety and the seed keeps it reproducible.
 3. **A pure function of time can still differ on its first call:** cells that cache scratch canvases drew a different first frame (photo #105/#106/#111); warm every borrowed cell across its cycle before the first real frame, because render slices start in fresh browsers.
 
+## Spec paths (2026-10-24)
+1. **A path bends only if the keys do.** A morph key has no arc, via, or bend field. One key that changes both x and y is a straight diagonal, and telling the author to set a flag the engine ignores leaves the warning stuck. Split the move: x in one key and y in the next, or an intermediate key off the straight line.
+
 ## Ten-repo toolkit (2026-10-24; `toolkit/README.md`)
 1. **Vendor once, point many:** a skill folder copied into `.claude/skills/` is mirrored again into `.agents/skills/`, doubling ~20 MB; the tools live once in `toolkit/<name>/` and a 15-line wrapper skill points at them, so every model gets the same version and the upstream text stays unedited for clean updates.
 2. **An upstream `.gitignore` inside a vendored folder silently hides files from our own git:** img2threejs's ignored a package-lock that its own repo force-added; the copier drops nested `.gitignore` and `__pycache__`.

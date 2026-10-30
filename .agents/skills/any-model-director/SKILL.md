@@ -12,7 +12,7 @@ Read `studio/ANY_MODEL.md` (the ladder and the loop). Owner taste: `studio/QUALI
    the brand whole and one action, a music hook and drops. Write every ‹…› line in natural Egyptian Arabic (Arabic and Latin never in one line), including the treatment: three structures + the choice, and a benchmark (learn / avoid).
 1b. **Storyboard before code:** `node studio/studio.mjs storyboard <film>` (MCP `film_storyboard`): every scene names a concrete thing and what it does (scene `purpose`), ≤ 8 words, no text-card opening or ending. Red blocks.
 2. **Critic before pixels:** `node studio/studio.mjs director review <film>` (MCP `film_review`). Fix every FAIL; read every WARN. Each rule names
-   its source in the playbook and the next edit.
+   its source in the playbook and the next edit. Six Disney principles are scored (`principle-*`); the review also prints a manual checklist for the six a spec cannot show (skill `animation-principles`, MCP `principle_read`) — those are not in the score.
 3. **Eyes:** `node studio/studio-engine/run.mjs <film> --stage=stills` (contact sheet + text gates), then
    `node studio/studio.mjs director review <film> --frames` or `director inspect <film> --times=…` (MCP `film_inspect`): every box with colour,
    size and contrast, the focal point, and a character map — usable without vision. Vision models also look at the sheet.

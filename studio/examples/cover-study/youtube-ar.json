@@ -1,0 +1,9 @@
+{
+  "preset": "youtube",
+  "kicker": "استوديو",
+  "title": "بكسل بلس",
+  "subtitle": "فيلم يُصنع بالكود",
+  "font": "IBM Plex Sans Arabic",
+  "logo": "examples/cover-study/mark.svg",
+  "brand": { "bg": "#030818", "fg": "#F4EBD9", "accent": "#FFD21F", "muted": "#8CA0C8" }
+}

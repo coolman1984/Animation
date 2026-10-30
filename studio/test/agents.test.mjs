@@ -27,7 +27,7 @@ test('MCP: a client with no Claude features can read the method, validate and sa
   try {
     const h = await handshake({ calls: [['studio_guide', {}], ['engine_catalog', {}], ['spec_save', { film, spec: bad }], ['spec_save', { film: '../etc', spec: good }], ['spec_save', { film, spec: good }], ['spec_check', { film }]] });
     assert.ok(['2025-06-18', '2025-11-25'].includes(h.initialize.result.protocolVersion));
-    assert.equal(h.tools.result.tools.length, 22);
+    assert.equal(h.tools.result.tools.length, 24);
     for (const t of h.tools.result.tools) assert.equal(t.inputSchema.type, 'object', t.name);
     const [guide, catalog, refused, escape, saved, checked] = h.calls.map((c) => c.result);
     assert.match(guide.content[0].text, /The film loop/);

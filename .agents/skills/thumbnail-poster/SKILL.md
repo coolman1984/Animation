@@ -20,3 +20,12 @@ nothing inside the platform UI zones (Reels bottom 35 %) · readable at 25 % siz
 ## Checklist
 1. Three candidates. 2. ≤ 4 words each. 3. Product sharp. 4. Contrast ok. 5. Safe areas. 6. Brand visible.
 7. No mid-transition frames. 8. Poster = finished end card. 9. JPEG ≤ 1 MB. 10. Named thumb-1..3.jpg.
+
+## Generated covers
+A card that is not a frame of the film: `node studio/studio.mjs cover <spec.json> [--out=studio/out/covers/name.png] [--renderer=satori|chromium]`.
+Spec (`studio/examples/cover-study`): title, optional kicker and subtitle, brand colours, font from `studio/assets/fonts`, optional logo, preset.
+Presets: youtube 1280×720, reel 1080×1920, square 1080×1080, title-card 1920×1080.
+`studio/lib/covers.mjs` builds Satori's plain-object element tree (no JSX, no React); resvg writes the PNG.
+`satori@0.63.2` and `@resvg/resvg-js@2.6.2` are both MPL-2.0, installed unmodified by `node studio.mjs setup covers` into `studio/vendor`. MPL file-level copyleft is not triggered.
+The cover-study Arabic PNG (`بكسل بلس`, `استوديو`, `فيلم يُصنع بالكود`) showed joined letters and a right-aligned layout, so Arabic stays on Satori (`SATORI_ARABIC` is `ok`). `--renderer=chromium` uses headless Chromium (`lib/cdp.mjs`), the same browser path as composer stills. `stillAt()` is only the hero-frame grab above.
+MCP tool: `cover_make`. Output stays under `studio/out` or `studio/takes` (never committed).

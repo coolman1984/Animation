@@ -1,10 +1,10 @@
 // Director's kit for any model (ANY_MODEL.md): plan → critic → eyes. Pure functions only (no browser).
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { plan, arc } from '../studio-engine/lib/director.mjs';
-import { critique } from '../studio-engine/lib/critic.mjs';
+import { critique, PRINCIPLES, principleDoc } from '../studio-engine/lib/critic.mjs';
 import { lint } from '../studio-engine/lib/gates.mjs';
 import { timeline } from '../studio-engine/lib/events.js';
 import { analyze, asciiMap, contrastOf } from '../lib/scenegraph.mjs';
@@ -118,6 +118,47 @@ test('quality bar (motion-director prompt): facts traced, edit pace per mode, co
   spec.scenes[1].elements.push({ type: 'shape', x: 0.5, y: 0.6, w: 100, h: 100, at: 4, morph: [{ at: 8, w: 200 }] });
   assert.equal(get(critique(spec, brand, { facts }), 'edit-pace').status, 'pass');
   delete spec.mode; assert.equal(get(critique(spec, brand), 'edit-pace'), undefined);
+  // Disney's 12: the ones a spec can show are rules with evidence; the rest are a manual checklist, not scored
+  const scored = ['slow-in-out', 'anticipation', 'follow-through', 'staging', 'timing', 'arc'];
+  const base = critique(fillAll(plan({ placement: 'reels', duration: 15, brand: 'نور' }).spec), brand);
+  for (const id of scored) {
+    const rule = base.rules.find((x) => x.id === `principle-${id}`);
+    assert.ok(rule && rule.evidence && rule.fix, id);
+    assert.equal(rule.source, `animation-principles: ${PRINCIPLES.find((p) => p.id === id).skill}`);
+  }
+  assert.deepEqual(base.principles.map((p) => p.id), PRINCIPLES.filter((p) => !p.rule).map((p) => p.id));
+  for (const p of base.principles) assert.ok(p.skill && p.question && !base.rules.some((x) => x.id === `principle-${p.id}`));
+  const loose = { title: 'loose', format: 'youtube', bpm: 120, scenes: [
+    { id: 'a', beats: 8, elements: [{ type: 'words', text: 'فكرة', size: 120, at: 0 }, { type: 'shape', hero: 'a', x: 0.2, y: 0.2, w: 80, h: 80, at: 0, ease: 'linear' }] },
+    { id: 'pay', beats: 8, elements: [{ type: 'shape', hero: 'a', id: 'btn', x: 0.8, y: 0.8, w: 200, h: 80, at: 0, morph: [{ at: 7, dur: 1, w: 400, h: 120, ease: 'none' }] }, { type: 'ribbon', hero: 'b', at: 0 }, { type: 'pill', text: 'ابدأ', size: 64, at: 7 }] },
+  ] };
+  const looseR = critique(loose, brand), looseGet = (id) => looseR.rules.find((x) => x.id === id);
+  assert.equal(looseGet('principle-slow-in-out').status, 'warn');
+  assert.match(looseGet('principle-slow-in-out').evidence, /linear/);
+  assert.equal(looseGet('principle-follow-through').status, 'warn');
+  assert.match(looseGet('principle-follow-through').evidence, /no hold/);
+  assert.equal(looseGet('principle-staging').status, 'warn');
+  assert.equal(principleDoc('slow-in-out').skill, 'slow-in-out-mastery');
+  assert.match(principleDoc('arc-mastery').text, /Arc/);
+  const arcFix = base.rules.find((x) => x.id === 'principle-arc').fix;
+  assert.match(arcFix, /two morph keys/);
+  assert.match(arcFix, /intermediate key/);
+  assert.doesNotMatch(arcFix, /"arc"|"via"|set bend/);
+  const diagonal = { title: 'diag', format: 'youtube', bpm: 120, scenes: [
+    { id: 'a', beats: 4, hold: true, elements: [{ type: 'shape', hero: 'h', x: 0.2, y: 0.2, w: 80, h: 80, at: 0, morph: [{ at: 2, x: 0.8, y: 0.8 }] }] },
+  ] };
+  const split = { title: 'split', format: 'youtube', bpm: 120, scenes: [
+    { id: 'a', beats: 4, hold: true, elements: [{ type: 'shape', hero: 'h', x: 0.2, y: 0.2, w: 80, h: 80, at: 0, morph: [{ at: 1, x: 0.8 }, { at: 2, y: 0.5 }] }] },
+  ] };
+  assert.equal(get(critique(diagonal, brand), 'principle-arc').status, 'warn');
+  assert.match(get(critique(diagonal, brand), 'principle-arc').evidence, /straight diagonal/);
+  assert.equal(get(critique(split, brand), 'principle-arc').status, 'pass');
+  for (const [film, floor] of [['aixhr', 80], ['demo', 79], ['form-function', 74]]) {
+    const spec = JSON.parse(readFileSync(join(STUDIO, 'studio-engine/films', film, 'spec.json'), 'utf8'));
+    const bp = join(STUDIO, 'studio-engine/films', film, 'brand.json');
+    const own = JSON.parse(readFileSync(existsSync(bp) ? bp : join(STUDIO, 'studio-engine/brand/brand.json'), 'utf8'));
+    assert.ok(critique(spec, own).score >= floor, `${film} score dropped below ${floor}`);
+  }
   // eyes: 3:1–4.5:1 is a warning, under 3:1 a failure
   const grey = analyze([{ kind: 'backdrop', color: 'rgb(0, 0, 0)', x0: 0, y0: 0, x1: 100, y1: 100, opacity: 1, z: 0 },
     { kind: 'text', text: 'x', size: 40, color: 'rgb(110, 110, 110)', x0: 10, y0: 10, x1: 90, y1: 50, opacity: 1, z: 1 }], { w: 100, h: 100 });

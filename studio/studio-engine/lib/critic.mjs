@@ -1,6 +1,7 @@
 // Studio Engine — the house critic: the owner's taste and the studio's craft rules as checks any model can run (ANY_MODEL.md).
 // A strong model carries these in its head; here each one is a named rule with its source, the evidence and the next edit.
-//   critique(spec, brand, { format, frames, facts }) → { score, verdict, rules: [{ id, status: pass|warn|fail, source, evidence, fix }] }
+//   critique(spec, brand, { format, frames, facts }) → { score, verdict, rules: [{ id, status: pass|warn|fail, source, evidence, fix }],
+//     principles: [{ id, skill, question }] }  — Disney principles a spec cannot show; not scored (skill animation-principles)
 // frames = optional output of lib/scenegraph.mjs inspect() at sampled times (rendered evidence, not intent).
 // facts = optional films/<film>/facts.json { claims: [{ id, text, source, sentence }], copy: [approved lines] } (QUALITY_PLAYBOOK §10).
 import { timeline } from './events.js';
@@ -62,6 +63,43 @@ export function compositionGaps(s, B) {
   }
   const ts = [...t].sort((a, b) => a - b);
   return ts.slice(1).reduce((m, v, i) => (v - ts[i] > m.gap ? { gap: v - ts[i], at: s.a + ts[i] } : m), { gap: 0, at: s.a });
+}
+// Disney's 12, vendored at toolkit/animation-principles (MIT). `rule: true` is checkable from a spec; the rest is a manual checklist.
+const PRINCIPLES_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'toolkit', 'animation-principles');
+export const PRINCIPLES = [
+  { id: 'squash-stretch', skill: 'squash-stretch-mastery', question: 'On a hit, does the hero squash and then recover its volume, or only scale up?' },
+  { id: 'anticipation', skill: 'anticipation-mastery', rule: true, question: 'Does the hero hold a pose before its big morph, or does the move start on its first frame?' },
+  { id: 'staging', skill: 'staging-mastery', rule: true, question: 'Is there one hero in this scene, or a second stage-filling object fighting it?' },
+  { id: 'straight-ahead', skill: 'straight-ahead-pose-mastery', question: 'Are the hero\'s keys planned poses, with only effects (sparks, ribbons) allowed to run free?' },
+  { id: 'follow-through', skill: 'follow-through-overlapping', rule: true, question: 'After the hero lands, does the payoff hold, or does everything stop on the cut?' },
+  { id: 'slow-in-out', skill: 'slow-in-out-mastery', rule: true, question: 'Does the spec name a linear or "none" ease on a move that should accelerate and settle?' },
+  { id: 'arc', skill: 'arc-mastery', rule: true, question: 'Does a hero change x and y in one morph key (a straight diagonal)?' },
+  { id: 'secondary-action', skill: 'secondary-action-mastery', question: 'Is there one quieter move offset from the hero (icon, cursor, spark), or is the hero alone and stiff?' },
+  { id: 'timing', skill: 'timing-principle-mastery', rule: true, question: 'Does the scene before the payoff hold, so the idea can land?' },
+  { id: 'exaggeration', skill: 'exaggeration-mastery', question: 'Is the hero\'s one change pushed far enough to read on a phone, and is everything else left quiet?' },
+  { id: 'solid-drawing', skill: 'solid-drawing-mastery', question: 'Do 3D type and ribbons keep one volume and one light, or is a turn faked with a flat scale?' },
+  { id: 'appeal', skill: 'appeal-mastery', question: 'Would we watch the hero\'s move twice, or does the motion have no personality?' },
+];
+export function principleDoc(slug) {
+  const key = String(slug || '').replace(/^principle-/, '');
+  const p = PRINCIPLES.find((x) => x.id === key || x.skill === key);
+  if (!p) throw new Error(`unknown principle "${slug}" (${PRINCIPLES.map((x) => x.id).join(', ')})`);
+  const file = join(PRINCIPLES_DIR, p.skill, 'SKILL.md');
+  if (!existsSync(file)) throw new Error(`missing studio/toolkit/animation-principles/${p.skill}/SKILL.md (node studio/studio.mjs toolkit update animation-principles --from=<clone>)`);
+  return { id: p.id, skill: p.skill, scored: !!p.rule, question: p.question, file: `studio/toolkit/animation-principles/${p.skill}/SKILL.md`, text: readFileSync(file, 'utf8') };
+}
+const isLinearEase = (v) => { const s = String(v).trim().toLowerCase().replace(/\s+/g, ''); return s === 'none' || s === 'linear' || s === 'power0' || /^power0\.(in|out|inout)$/.test(s) || /^cubic-bezier\(0,0,1,1\)$/.test(s); };
+// motion that finishes ≥ 0.5 beats before the scene ends (a pose can sit). `out` on a line, or a morph's at + dur.
+function landsEarly(s) {
+  const lim = s.beats - 0.5; let land = false;
+  const walk = (o) => {
+    if (!o || typeof o !== 'object' || land) return;
+    if (!Array.isArray(o) && Number.isFinite(o.out) && o.out <= lim) { land = true; return; }
+    if (Array.isArray(o.morph)) for (const m of o.morph) if (Number.isFinite(m.at) && m.at + (Number.isFinite(m.dur) ? m.dur : 1) <= lim) land = true;
+    if (!land) for (const v of (Array.isArray(o) ? o : Object.values(o))) if (v && typeof v === 'object') walk(v);
+  };
+  for (const e of s.elements || []) walk(e);
+  return land;
 }
 const digits = (x) => (String(x).replace(/[٠-٩]/g, (d) => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).match(/\d+(?:[.,٫]\d+)?/g) || []).map((n) => n.replace(/[,٫]/, '.'));
 const norm = (x) => String(x).replace(/[\u064B-\u0652\u0640]/g, '').replace(/\s+/g, ' ').trim();
@@ -175,7 +213,53 @@ export function critique(base, brand, { format, frames, facts } = {}) {
       add(`frame-${rule}`, !hits.length ? 'pass' : level(rule) === 'fail' ? 'fail' : 'warn', 'lib/scenegraph.mjs (rendered frames)', hits.length ? `${hits.length}/${frames.length} sampled frames: ${hits.slice(0, 5).join(', ')}` : `clean in ${frames.length} sampled frames`, frames.flatMap((f) => f.findings).find((x) => x.rule === rule)?.fix || '');
     }
   }
+  // 9. Disney's 12 (skill animation-principles). Score only what the spec itself names; the rest is `principles`, not in the score.
+  const linearEase = [];
+  const walkEase = (o, path) => {
+    if (!o || typeof o !== 'object') return;
+    if (Array.isArray(o)) { o.forEach((v, i) => walkEase(v, `${path}[${i}]`)); return; }
+    for (const [k, v] of Object.entries(o)) {
+      const p = path ? `${path}.${k}` : k;
+      if ((k === 'ease' || k === 'easing') && (typeof v === 'string' || typeof v === 'number') && isLinearEase(v)) linearEase.push(`${p}=${v}`);
+      else if (v && typeof v === 'object') walkEase(v, p);
+    }
+  };
+  walkEase(spec, '');
+  add('principle-slow-in-out', linearEase.length ? 'warn' : 'pass', 'animation-principles: slow-in-out-mastery', linearEase.length ? `linear ease: ${linearEase.slice(0, 4).join(', ')}` : 'no linear ease named; engine motion eases (springs, inOutCubic)', 'Change linear / "none" to an ease-in-out or ease-out. Keep linear only for a machine you want to look mechanical, and say so in craft.reason.');
+  const abrupt = [];
+  for (const s of scenes) for (const e of s.elements || []) {
+    if (!Array.isArray(e.morph) || !e.morph.length || (!e.hero && !HERO_TYPES.has(e.type))) continue;
+    const start = e.at ?? 0, first = e.morph[0].at;
+    if (Number.isFinite(first) && first <= start + 0.05) abrupt.push(`${s.id}/${e.id || e.hero || e.type} morphs at ${first}`);
+  }
+  add('principle-anticipation', abrupt.length ? 'warn' : 'pass', 'animation-principles: anticipation-mastery', abrupt.length ? `no wind-up: ${abrupt.slice(0, 3).join(', ')}` : 'every hero morph holds a pose before it moves', 'Hold the pose first: put the morph\'s first "at" after the element\'s "at", then the action.');
+  const settled = last.hold || last.breathe || landsEarly(last);
+  add('principle-follow-through', settled ? 'pass' : 'warn', 'animation-principles: follow-through-overlapping', settled ? `end scene ${last.id} ${last.hold ? 'holds' : last.breathe ? 'breathes' : 'lands before the cut'}` : `end scene ${last.id} has no hold, breathe, or pose that lands before the cut`, 'Set "hold": true on the payoff, or end the hero\'s last morph at least half a beat before the scene ends so it can settle.');
+  const STAGE = new Set(['extrude', 'lockup', 'ribbon', 'mark']), crowded = [];
+  for (const s of scenes) {
+    const keys = [...new Set((s.elements || []).map((e) => e.hero).filter((h) => typeof h === 'string' && h))];
+    const stage = (s.elements || []).filter((e) => STAGE.has(e.type));
+    if (keys.length > 1) crowded.push(`${s.id}: ${keys.join(' vs ')}`);
+    else if (stage.length > 1) crowded.push(`${s.id}: ${stage.map((e) => e.id || e.type).join(' + ')}`);
+  }
+  add('principle-staging', crowded.length ? 'warn' : 'pass', 'animation-principles: staging-mastery', crowded.length ? `competing heroes: ${crowded.slice(0, 3).join('; ')}` : 'one hero per scene', 'Keep one hero in the scene. Give supporting shapes no "hero" key, and do not put two of extrude / lockup / ribbon / mark in one scene.');
+  const prev = n >= 2 ? scenes[n - 2] : null, before = !prev || prev.hold || prev.breathe || prev.music === 'breath' || prev.music === 'build' || landsEarly(prev);
+  add('principle-timing', before ? 'pass' : 'warn', 'animation-principles: timing-principle-mastery', !prev ? 'one scene' : before ? `${prev.id} holds before ${last.id}` : `${prev.id} runs into ${last.id} with no hold`, 'On the scene before the payoff, leave a hold: "hold": true, music "breath" or "build", a line "out" at least half a beat early, or a morph that lands early.');
+  const diagonals = [];
+  for (const s of scenes) for (const e of s.elements || []) {
+    if (!Array.isArray(e.morph)) continue;
+    let x = e.x ?? 0.5, y = e.y ?? 0.5;
+    for (const m of e.morph) {
+      const nx = Number.isFinite(m.x) ? m.x : x, ny = Number.isFinite(m.y) ? m.y : y;
+      // The catalog has no arc, via or bend field. A bend is two keys, not a flag on one key.
+      if (Math.abs(nx - x) > 0.01 && Math.abs(ny - y) > 0.01) diagonals.push(`${s.id}/${e.id || e.type} @ ${m.at ?? '?'}`);
+      x = nx; y = ny;
+    }
+  }
+  add('principle-arc', diagonals.length ? 'warn' : 'pass', 'animation-principles: arc-mastery', diagonals.length ? `straight diagonal: ${diagonals.slice(0, 3).join(', ')}` : 'no straight diagonal (x and y never change in the same key)', 'Split the move into two morph keys so the path bends: change x in one key and y in the next, or add an intermediate key off the straight line.');
+
   const pts = { pass: 1, warn: 0.5, fail: 0 }, score = Math.round(100 * rules.reduce((s, r) => s + pts[r.status], 0) / rules.length);
   const fails = rules.filter((r) => r.status === 'fail').length, warns = rules.filter((r) => r.status === 'warn').length;
-  return { score, verdict: fails ? `fix ${fails} failing rule(s) before rendering` : warns ? `renderable; ${warns} warning(s) worth a look` : 'meets the house rules that can be checked', rules };
+  const principles = PRINCIPLES.filter((p) => !p.rule).map(({ id, skill, question }) => ({ id, skill, question }));
+  return { score, verdict: fails ? `fix ${fails} failing rule(s) before rendering` : warns ? `renderable; ${warns} warning(s) worth a look` : 'meets the house rules that can be checked', rules, principles };
 }

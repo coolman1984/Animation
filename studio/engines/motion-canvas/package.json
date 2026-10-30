@@ -1,0 +1,19 @@
+{
+  "name": "studio-motion-canvas",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "description": "Optional isolated Motion Canvas 3.17.2 project. The main studio never imports these packages.",
+  "scripts": {
+    "start": "vite",
+    "serve": "vite"
+  },
+  "dependencies": {
+    "@motion-canvas/2d": "3.17.2",
+    "@motion-canvas/core": "3.17.2",
+    "@motion-canvas/ffmpeg": "3.17.2",
+    "@motion-canvas/ui": "3.17.2",
+    "@motion-canvas/vite-plugin": "3.17.2",
+    "vite": "5.4.21"
+  }
+}

@@ -22,7 +22,7 @@ The kit turns each of those into a tool, so a smaller model follows the same jud
 | Strong model does by instinct | Tool for every model | Command / MCP tool |
 |---|---|---|
 | knows the shape: hook → idea → proof → payoff, one hero, music hook, drops | **director's plan**: brief → spec skeleton in the house structure; only ‹…› lines left to write | `studio.mjs director plan` / `film_plan` (`studio-engine/lib/director.mjs`) |
-| carries the owner's taste in its head | **house critic**: ~22 named rules from QUALITY_PLAYBOOK/WORKFLOW/CRAFT, each with evidence and the next edit, score /100 | `studio.mjs director review [--frames]` / `film_review` (`studio-engine/lib/critic.mjs`) |
+| carries the owner's taste in its head | **house critic**: named rules from QUALITY_PLAYBOOK/WORKFLOW/CRAFT, plus six Disney principles a spec can show (`principle-slow-in-out`, `principle-anticipation`, `principle-follow-through`, `principle-staging`, `principle-timing`, `principle-arc`), each with evidence and the next edit, score /100. The other six principles return as `principles` (a manual checklist, not scored) | `studio.mjs director review [--frames]` / `film_review` (`studio-engine/lib/critic.mjs`); read one principle with `principle_read` (skill `animation-principles`) |
 | looks at frames and sees composition | **eyes**: every box on screen (text, shape, image) with colour, size, contrast, focal point, balance + a character map | `studio.mjs director inspect` / `film_inspect` (`lib/scenegraph.mjs`, `window.sceneGraph()` in `lib/composer.html`) |
 | picks a proven look instead of inventing one | **house style cards** from our delivered films (look, motion, camera grammar, sound, pitfalls, how to build) | `studio.mjs styles [slug]` / `style_list`, `style_read`; `director plan --style=<slug>` writes the palette and fonts (`styles/`, `lib/styles.mjs`) |
 | directs like a director: options, a benchmark, varied camera, a breath before the peak, never repeating the demo | **direction rules** in the critic: three-structures, benchmark, camera-variety, breath-before-peak, read-hold, not-the-demo (after Lemo-Opuscar's DIRECTOR.md) | `director review` / `film_review`; the plan fills the camera moves and the breath itself |
@@ -70,7 +70,7 @@ The eyes work for every composer film, hand-written ones too (`director inspect 
 | anything else with MCP over stdio | command `node`, args `["studio/mcp/server.mjs"]`, working directory = repo root |
 | no MCP at all | run the commands in the loop above in a shell; the output is the same text |
 
-Tools: `studio_guide` (this file) · `engine_catalog` · `film_list` · `spec_read` · `style_list` · `style_read` · `film_plan` · `spec_save` · `spec_check` · `film_review` ·
+Tools: `studio_guide` (this file) · `engine_catalog` · `film_list` · `spec_read` · `style_list` · `style_read` · `principle_read` · `film_plan` · `spec_save` · `spec_check` · `film_review` ·
 `film_inspect` · `film_storyboard` · `film_stills` (image) · `film_render` · `film_job` · `film_taste`. Self-check: `node studio/studio.mjs agents` (door files, skill mirror, server handshake).
 
 ## Why it is built this way (research, 2026-10-16; details in `TECH_RADAR.md`)

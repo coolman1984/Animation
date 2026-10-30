@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Teaching page: shape a Bezier or a spring, read the frame in SMPTE, and copy an export command this studio can run.">
+<meta name="color-scheme" content="light">
+<title>Motion lab</title>
+<link rel="stylesheet" href="lab.css">
+</head>
+<body>
+<a class="skip" href="#easing">Skip to the curve</a>
+<header class="wrap head">
+  <p class="kicker">Studio teaching desk</p>
+  <h1>Motion lab</h1>
+  <p>Shape an ease, read it as frames, then copy a command this studio can run.</p>
+</header>
+<main class="wrap">
+  <section id="easing" aria-labelledby="easing-title">
+    <h2 id="easing-title">Easing curve</h2>
+    <p>Time runs to the right. The value runs up. Drag a handle, or nudge it with the arrow keys.</p>
+    <div class="ease-grid">
+      <div>
+        <div id="plot-wrap">
+          <div class="plot" id="plot">
+            <svg viewBox="0 0 100 100" aria-hidden="true">
+              <path id="grid" fill="none" stroke="#E2DDD2" stroke-width="0.4"></path>
+              <rect id="box" fill="none" stroke="#16140F" stroke-width="0.6"></rect>
+              <path id="arms" fill="none" stroke="#5E5A52" stroke-width="0.45"></path>
+              <path id="curve" fill="none" stroke="#B8430F" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+              <defs><clipPath id="plot-clip"><rect id="plot-clip-rect"></rect></clipPath></defs>
+              <line id="vline" clip-path="url(#plot-clip)" stroke="#B8430F" stroke-width="0.5"></line>
+              <circle id="cdot" r="2.1" fill="#B8430F"></circle>
+              <circle id="end0" r="1.5" fill="#16140F"></circle>
+              <circle id="end1" r="1.5" fill="#16140F"></circle>
+            </svg>
+            <button type="button" class="handle" id="handle-a" aria-label="First Bezier handle"></button>
+            <button type="button" class="handle" id="handle-b" aria-label="Second Bezier handle"></button>
+          </div>
+        </div>
+        <div class="lane-row">
+          <div class="lane" id="lane">
+            <div class="bar" id="lane-bar"></div>
+            <div class="dot" id="lane-dot"></div>
+          </div>
+          <button type="button" id="play">Play</button>
+        </div>
+        <p id="play-note" class="note">The dot follows the curve. The ruler keeps its own frame.</p>
+        <div class="fields">
+          <label>Preview seconds
+            <input id="preview-sec" type="number" min="0.1" max="8" step="0.1" value="0.8">
+          </label>
+        </div>
+      </div>
+      <div>
+        <p class="note">Presets first. House names are the real <span class="mono">ease</span> functions in studio/lib/motion.js.</p>
+        <div class="presets" id="presets" role="group" aria-label="Easing presets"></div>
+        <div class="fields" id="bezier-fields">
+          <label>x1 <input id="x1" type="number" min="0" max="1" step="0.01"></label>
+          <label>y1 <input id="y1" type="number" min="-0.5" max="1.75" step="0.01"></label>
+          <label>x2 <input id="x2" type="number" min="0" max="1" step="0.01"></label>
+          <label>y2 <input id="y2" type="number" min="-0.5" max="1.75" step="0.01"></label>
+        </div>
+        <p class="note">A spring is not a cubic. Lower the damping ratio and it overshoots, then rests at 1.</p>
+        <div class="fields" id="spring-fields">
+          <label>Damping ratio <input id="zeta" type="number" min="0.05" max="2" step="0.05" value="1"></label>
+          <label>Stiffness <input id="stiff" type="number" min="20" max="800" step="10" value="180"></label>
+        </div>
+      </div>
+    </div>
+    <div class="codes">
+      <div class="code">
+        <div class="code-bar"><h3>CSS transition</h3><button type="button" data-copy="css">Copy</button></div>
+        <pre><code id="out-css"></code></pre>
+      </div>
+      <div class="code">
+        <div class="code-bar"><h3>Web Animations</h3><button type="button" data-copy="waapi">Copy</button></div>
+        <pre><code id="out-waapi"></code></pre>
+      </div>
+      <div class="code">
+        <div class="code-bar"><h3>GSAP</h3><button type="button" data-copy="gsap">Copy</button></div>
+        <pre><code id="out-gsap"></code></pre>
+      </div>
+      <div class="code">
+        <div class="code-bar"><h3>Film code</h3><button type="button" data-copy="film">Copy</button></div>
+        <pre><code id="out-film"></code></pre>
+      </div>
+    </div>
+    <p class="note">GSAP core has named eases. CustomEase is a plugin, so the line uses the nearest name.</p>
+    <p class="note">GSAP uses its Standard no-charge licence, not MIT.</p>
+  </section>
+
+  <section id="ruler" aria-labelledby="ruler-title">
+    <h2 id="ruler-title">Frame ruler</h2>
+    <p>Left and right move one frame. Shift moves ten. The eased value is this curve at that frame.</p>
+    <div class="fields">
+      <label>Duration (seconds)
+        <input id="dur" type="number" min="0.5" max="120" step="0.5" value="8">
+      </label>
+      <div>
+        <p class="field-label" id="fps-label">Frames per second</p>
+        <div class="presets" id="fps" role="group" aria-labelledby="fps-label"></div>
+      </div>
+    </div>
+    <div class="ruler">
+      <div class="ticks" id="ticks"></div>
+      <input id="scrub" type="range" min="0" max="240" step="1" value="0" aria-label="Frame">
+      <div class="pins" id="pins" aria-hidden="true"></div>
+    </div>
+    <dl class="readout">
+      <div><dt>Frame</dt><dd id="frame-no" class="mono">0</dd></div>
+      <div><dt>Seconds</dt><dd id="seconds" class="mono">0</dd></div>
+      <div><dt>SMPTE</dt><dd id="tc" class="mono">00:00:00:00</dd></div>
+      <div><dt>Eased</dt><dd id="eased" class="mono">0</dd></div>
+      <div id="house-row" hidden><dt id="house-name">House</dt><dd id="house-eased" class="mono">0</dd></div>
+    </dl>
+    <div class="lane-row">
+      <button type="button" id="add-mark">Add keyframe</button>
+      <button type="button" id="del-mark">Remove keyframe</button>
+    </div>
+    <ul class="marks" id="marks"></ul>
+  </section>
+
+  <section id="export" aria-labelledby="export-title">
+    <h2 id="export-title">Export command</h2>
+    <p>9:16 is reel and 16:9 is youtube. 1:1 is not an engine format, so that line is an ffmpeg reframe.</p>
+    <div class="fields">
+      <label>Film folder
+        <input id="film" type="text" value="demo" spellcheck="false" autocapitalize="off" autocomplete="off">
+      </label>
+      <label>Duration (seconds)
+        <input id="dur2" type="number" min="0.5" max="120" step="0.5" value="8">
+      </label>
+    </div>
+    <p class="field-label" id="fps2-label">Frames per second</p>
+    <div class="presets" id="fps2" role="group" aria-labelledby="fps2-label"></div>
+    <p class="field-label" id="aspect-label">Aspect</p>
+    <div class="presets" role="group" aria-labelledby="aspect-label">
+      <button type="button" data-aspect="9:16">9:16</button>
+      <button type="button" data-aspect="1:1">1:1</button>
+      <button type="button" data-aspect="16:9">16:9</button>
+    </div>
+    <p class="field-label" id="mode-label">Pass</p>
+    <div class="presets" role="group" aria-labelledby="mode-label">
+      <button type="button" data-mode="preview">Preview</button>
+      <button type="button" data-mode="final">Final</button>
+    </div>
+    <div class="code">
+      <div class="code-bar"><h3>Studio Engine film (spec.json)</h3><button type="button" data-copy="engine">Copy</button></div>
+      <pre><code id="out-engine"></code></pre>
+    </div>
+    <div class="code">
+      <div class="code-bar"><h3>Hand-coded film (film.js)</h3><button type="button" data-copy="hand">Copy</button></div>
+      <pre><code id="out-hand"></code></pre>
+    </div>
+  </section>
+</main>
+<footer class="wrap foot">
+  <p>Open with <span class="mono">node studio/studio.mjs lab</span>. Nothing is loaded from the network.</p>
+  <p>Original teaching page for this studio.</p>
+</footer>
+<p id="status" class="status" role="status" aria-live="polite"></p>
+<noscript><p class="wrap">This page needs JavaScript. The files are local.</p></noscript>
+<script type="module" src="lab.js"></script>
+</body>
+</html>
