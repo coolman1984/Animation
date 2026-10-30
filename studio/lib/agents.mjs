@@ -12,12 +12,14 @@ const SRC = join(ROOT, '.claude', 'skills'), MIRROR = join(ROOT, '.agents', 'ski
 const MIRROR_NOTE = '<!-- generated from .claude/skills by `node studio/studio.mjs agents --sync`; edit the source, not this copy -->\n';
 export const CLIENTS = { '.mcp.json': 'mcpServers', '.cursor/mcp.json': 'mcpServers', '.gemini/settings.json': 'mcpServers', '.vscode/mcp.json': 'servers' };
 
+// A Windows checkout (core.autocrlf) turns LF into CRLF; compare and parse text as LF.
+const lf = (text) => text.replace(/\r\n/g, '\n');
 const files = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((e) => e.isDirectory() ? files(join(dir, e.name)) : [join(dir, e.name)]);
 export const skillNames = () => existsSync(SRC) ? readdirSync(SRC).filter((d) => existsSync(join(SRC, d, 'SKILL.md'))).sort() : [];
 
 // Agent Skills format: YAML front matter with name (= folder, lowercase-hyphen, ≤ 64) and description (≤ 1024 chars).
 export function skillFormat(name, text) {
-  const fm = /^---\n([\s\S]*?)\n---\n/.exec(text)?.[1];
+  const fm = /^---\n([\s\S]*?)\n---\n/.exec(lf(text))?.[1];
   if (!fm) return 'missing front matter';
   const field = (k) => new RegExp(`^${k}:\\s*(.+)$`, 'm').exec(fm)?.[1]?.trim().replace(/^["']|["']$/g, '');
   const n = field('name'), d = field('description');
@@ -43,8 +45,8 @@ export function syncSkills() {
 export function mirrorDrift() {
   const drift = [];
   for (const name of skillNames()) for (const file of files(join(SRC, name))) {
-    const rel = relative(SRC, file), dest = join(MIRROR, rel), want = file.endsWith('SKILL.md') ? mirrored(readFileSync(file, 'utf8')) : readFileSync(file, 'utf8');
-    if (!existsSync(dest) || readFileSync(dest, 'utf8') !== want) drift.push(rel);
+    const rel = relative(SRC, file), dest = join(MIRROR, rel), want = file.endsWith('SKILL.md') ? mirrored(lf(readFileSync(file, 'utf8'))) : lf(readFileSync(file, 'utf8'));
+    if (!existsSync(dest) || lf(readFileSync(dest, 'utf8')) !== want) drift.push(rel);
   }
   if (existsSync(MIRROR)) for (const d of readdirSync(MIRROR)) if (!skillNames().includes(d)) drift.push(`${d} (stale)`);
   return drift;

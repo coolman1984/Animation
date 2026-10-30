@@ -5,6 +5,12 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-10-30 — Quick suite green on the owner's Windows checkout (DONE)
+After merging Motion Lab gaps (PR #28) and the baker branch, three quick tests failed on Windows only.
+- **Fixed:** `lib/agents.mjs` reads skills as LF, so a `core.autocrlf` checkout passes the skill format and mirror check;
+  `test/whisper.test.mjs` and `test/engines.test.mjs` compare paths in POSIX form (resolve/join give `I:\…` on Windows).
+- **Proof:** `npm test` on Windows. **Not verified:** a real whisper.cpp or Motion Canvas run on Windows.
+
 ## 2026-10-27 — Frame triage: code checks every frame, the critic opens only the flagged ones (DONE)
 Owner order: build the idea from a SageCut post (levantolabs; learned from the picture, nothing installed or copied).
 - **New:** `lib/triage.mjs` + `node studio.mjs triage <video> [--format=reel] [--brand=…|--palette=…] [--ask="q1|q2"]`: 4 frames/s measured in code

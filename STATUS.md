@@ -1,8 +1,10 @@
 # Studio status and session handoff
 
-Updated: 2026-10-29.
+Updated: 2026-10-30.
 
-**Latest scope: DONE — First industrial scene experiment brief (2026-10-29).** Root `EXPERIMENT_FIRST_INDUSTRIAL_SCENE.md` proposes one detailed assembly and a 30-second exploded/reassembly, ghosted-interior, cutaway and working-motion sequence for private learning. Linked from agent entry, vision and references. Documentation only; the owner explicitly assigned future execution to implementing agents. No scene built, asset downloaded, render run or runtime maturity upgraded.
+**Latest scope: DONE — Quick suite green on Windows (2026-10-30).** Motion Lab gaps (PR #28) and the baker short + frame triage were merged into main. Three quick tests failed only on the owner's Windows checkout (CRLF skill files; `I:\…` paths); `lib/agents.mjs` now reads skills as LF and the whisper and engine tests compare POSIX paths. `npm test`: 154 pass, 16 skipped, 0 fail. Not verified: a real whisper.cpp or Motion Canvas run on Windows.
+
+**Previous scope: DONE — First industrial scene experiment brief (2026-10-29).** Root `EXPERIMENT_FIRST_INDUSTRIAL_SCENE.md` proposes one detailed assembly and a 30-second exploded/reassembly, ghosted-interior, cutaway and working-motion sequence for private learning. Linked from agent entry, vision and references. Documentation only; the owner explicitly assigned future execution to implementing agents. No scene built, asset downloaded, render run or runtime maturity upgraded.
 
 **Previous scope: DONE — Industrial reference pack (2026-10-29).** Root `REFERENCE_PACK_3D_AND_DIGITAL_TWINS.md` links primary industrial benchmarks, public repositories, geometry/material sources, visual galleries and licence/credit requirements. Linked from agent entry and the owner vision. Research and documentation only; no assets downloaded, integrations installed, runtime maturity upgraded or film rendered. Verify actual reuse rights, revisions and local readiness before implementation.
 

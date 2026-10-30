@@ -17,7 +17,7 @@ test('motion canvas adapter is an external command that does not render', () => 
   assert.deepEqual(validateEngine(engine), []);
   assert.ok(engine.command.some((a) => a.includes('{out}')));
   assert.ok(engine.command.some((a) => a.includes('{variant}')));
-  assert.ok(engine.command[1].endsWith('engines/motion-canvas/render-manual.mjs'));
+  assert.ok(engine.command[1].replace(/\\/g, '/').endsWith('engines/motion-canvas/render-manual.mjs'));
   assert.deepEqual(MOTION_CANVAS_VARIANTS.landscape, { w: 1920, h: 1080, project: 'src/landscape.js', file: 'landscape.mp4' });
   assert.deepEqual(MOTION_CANVAS_VARIANTS.reel, { w: 1080, h: 1920, project: 'src/reel.js', file: 'reel.mp4' });
   const steps = motionCanvasManual('reel').join('\n');

@@ -9,6 +9,9 @@ import { cues, exportAll, fromLive, toSRT, validate } from '../lib/transcript.mj
 import { FAST_PY, WORD_TIMING, caption, detectBackends, failureText, installText, parseFasterWhisper, parseWhisperCpp } from '../lib/whisper.mjs';
 
 const dir = dirname(fileURLToPath(import.meta.url));
+// detectBackends resolves paths, so on Windows '/m/x' arrives as 'I:\m\x'; the fakes below speak POSIX.
+const posix = (p) => p.replace(/^[A-Za-z]:/, '').replace(/\\/g, '/');
+const onPosix = (kind) => (p) => kind(posix(p));
 const load = (name) => JSON.parse(readFileSync(join(dir, 'fixture', name), 'utf8'));
 const none = { which: () => null, probe: () => false, py: { faster_whisper: false, sherpa_onnx: false }, env: {}, kind: () => null };
 const RLE = '\u202B', PDF = '\u202C';
@@ -101,13 +104,13 @@ test('backend detection is none when nothing is installed, and does not run a ca
 });
 
 test('detection order is whisper.cpp, then faster-whisper, then sherpa; a missing request does not fall through', () => {
-  const kind = (p) => p === '/m/ggml-small.bin' ? 'file' : p === '/m/fw' ? 'dir' : p === '/models/sherpa-onnx-whisper-base' ? 'dir' : null;
+  const kind = onPosix((p) => p === '/m/ggml-small.bin' ? 'file' : p === '/m/fw' ? 'dir' : p === '/models/sherpa-onnx-whisper-base' ? 'dir' : null);
   const env = { WHISPER_MODEL: '/m/ggml-small.bin', FASTER_WHISPER_MODEL: '/m/fw', STUDIO_MODELS: '/models' };
   const which = (n) => n === 'whisper-cli' ? '/usr/bin/whisper-cli' : null;
   const py = { faster_whisper: true, sherpa_onnx: true };
   const all = detectBackends({ which, probe: () => false, py, env, kind });
   assert.equal(all.chosen, 'whisper.cpp');
-  assert.equal(all.backends.find(b => b.id === 'whisper.cpp').model, '/m/ggml-small.bin');
+  assert.equal(posix(all.backends.find(b => b.id === 'whisper.cpp').model), '/m/ggml-small.bin');
   assert.equal(all.backends.find(b => b.id === 'sherpa-onnx').model, 'base');
   const noCppModel = detectBackends({ which, probe: () => false, py, env: { FASTER_WHISPER_MODEL: '/m/fw', STUDIO_MODELS: '/models' }, kind });
   assert.equal(noCppModel.chosen, 'faster-whisper');
@@ -115,10 +118,10 @@ test('detection order is whisper.cpp, then faster-whisper, then sherpa; a missin
   assert.equal(noCppModel.backends.find(b => b.id === 'whisper.cpp').ready, false);
   const onlySherpa = detectBackends({ which: () => null, probe: () => false, py: { faster_whisper: false, sherpa_onnx: true }, env: { STUDIO_MODELS: '/models' }, kind });
   assert.equal(onlySherpa.chosen, 'sherpa-onnx');
-  const forced = detectBackends({ which, probe: () => false, py, env, kind: (p) => p === '/m/ggml-small.bin' ? 'file' : p === '/m/fw' ? 'dir' : null, backend: 'sherpa-onnx' });
+  const forced = detectBackends({ which, probe: () => false, py, env, kind: onPosix((p) => p === '/m/ggml-small.bin' ? 'file' : p === '/m/fw' ? 'dir' : null), backend: 'sherpa-onnx' });
   assert.equal(forced.chosen, null, 'a requested backend that is not ready does not fall through to another');
   assert.equal(forced.backends.find(b => b.id === 'whisper.cpp').ready, true);
-  const viaMain = detectBackends({ which: (n) => n === 'main' ? '/opt/whisper/main' : null, probe: (exe) => exe === '/opt/whisper/main', py: { faster_whisper: false, sherpa_onnx: false }, env: { WHISPER_MODEL: '/m/ggml-tiny.bin' }, kind: (p) => p === '/m/ggml-tiny.bin' ? 'file' : null });
+  const viaMain = detectBackends({ which: (n) => n === 'main' ? '/opt/whisper/main' : null, probe: (exe) => exe === '/opt/whisper/main', py: { faster_whisper: false, sherpa_onnx: false }, env: { WHISPER_MODEL: '/m/ggml-tiny.bin' }, kind: onPosix((p) => p === '/m/ggml-tiny.bin' ? 'file' : null) });
   assert.equal(viaMain.chosen, 'whisper.cpp');
   assert.equal(viaMain.backends[0].exe, '/opt/whisper/main');
   const fakeMain = detectBackends({ which: (n) => n === 'main' ? '/usr/bin/main' : null, probe: () => false, py: { faster_whisper: false, sherpa_onnx: false }, env: {}, kind: () => null });
