@@ -8,6 +8,10 @@ Updated: 2026-10-29.
 
 **Previous scope: DONE — Documentation only: owner 3D inspection, motion and editing vision (2026-10-29).** Root `VISION_3D_AND_MOTION.md` records exploded/reassembly, ghosted interiors, cutaways, working parts, cinematic presentation, editing and shared Digital Factory assets; `AGENTS.md` makes it a mandatory first read for every agent. Scope is documentation, not implementation. No software installed, connector activated, film rendered or runtime test performed. Verify local Blender/adapter readiness before a future implementation task.
 
+**Previous scope: DONE — Frame triage (owner 2026-10-27: build the SageCut idea).** `node studio/studio.mjs triage <video>` measures every sampled frame in code (blank, frozen, text size/edge/safe area via a 2.4 MB text detector, off-brand text colour, delivery) and writes only the flagged frames + `CRITIC.md` for the critic model; baker reel: 169 measured → 5 opened. Not verified: the critic step on a client film.
+
+**Previous scope: DONE — «عم حسن والفرن» baker short (owner 2026-10-27).** `studio/studio-engine/films/baker/make.py`; QC all pass (42.2 s, −13.8 LUFS); narration is a draft Levantine voice until an Azure Egyptian voice key exists.
+
 **Previous scope: DONE — Painted shorts rebuilt (owner 2026-10-27: "build everything").** Our own GPU brush pass (oil/watercolour/gouache/pastel/ink), a drawing kit with posable people, 2–3 shots per line cut on ≤ 5-word caption chunks with camera moves, own-recording alignment, custom drawings per film, 4:5 format and a quick renderer `studio-engine/fast.mjs`. Not verified: a narrated film, a real recording, graphics-card speed.
 
 **Previous scope: DONE — Text → hand-painted short (owner 2026-10-26: "build everything that is missing").** `node studio/studio-engine/story.mjs <film> --text=… --look=watercolour|oil|crayon|ink|storybook [--format=reel|youtube|square] [--voice=…]` writes a narrated, captioned, painted short; new elements `painted`/`caption`, square format. Proof film `fable-test` passed every gate (no voice). Not verified: narration from a real voice (Egyptian needs the owner's Azure key).

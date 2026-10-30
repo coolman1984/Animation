@@ -14,6 +14,7 @@
 //   node studio.mjs cleanup                     kill browsers left by crashed runs, remove their temp profiles, show memory headroom
 //   node studio.mjs director plan <film> --placement=reels|youtube --duration=15 [--mode=showreel|product|launch-story|explainer --brand= --cta= --problem= --promise= --viewer= --endState= --logo=]
 //   node studio.mjs director review <film> [--format=reel|youtube] [--frames]   ·   director inspect <film | path/film.js> [--times=1,2.5]
+//   node studio.mjs triage <video.mp4> [--format=reel] [--brand=brand.json | --palette=#hex,#hex] [--ask="q1|q2"]   code checks every frame; the critic opens only the flagged ones
 //   node studio.mjs taste <video.mp4 | film> [--json]  ·  taste calibrate     the owner-calibrated taste gate on a finished export
 //   node studio.mjs storyboard <film>                 shot-list check before any render (production.json or engine spec)
 //   node studio.mjs styles [slug | lemo/<slug>] [--library=lemo]   house style cards (styles/README.md) + 59 Lemo-Opuscar film styles
@@ -324,6 +325,20 @@ async function directorCmd([sub, film], opt) {
 }
 
 // Taste gate (lib/tastegate.mjs) and storyboard lint (lib/storyboard.mjs): judgments any model can run, calibrated on the owner's verdicts.
+// Frame triage (lib/triage.mjs): measure every sampled frame in code, write the flagged frames + CRITIC.md for the critic model.
+async function triageCmd([video], opt) {
+  if (!video) throw new Error('usage: node studio.mjs triage <video.mp4> [--format=reel|youtube|square|post] [--brand=brand.json | --palette=#hex,#hex] [--ask="q1|q2"] [--out=dir] [--json]');
+  const { triage } = await import('./lib/triage.mjs');
+  const palette = opt.palette ? String(opt.palette).split(',') : opt.brand ? Object.values(JSON.parse(readFileSync(opt.brand, 'utf8')).colors || {}).filter((c) => /^#[0-9a-f]{6}$/i.test(c)) : [];
+  const r = triage(video, { format: opt.format, palette, out: opt.out, questions: opt.ask ? String(opt.ask).split('|') : [] });
+  if (opt.json) { console.log(JSON.stringify(r, null, 2)); return; }
+  for (const c of r.checks) console.log(`${c.ok ? 'PASS' : 'FAIL'}  ${pad(c.id, 10)} ${c.value} (want ${c.want})`);
+  console.log(`text: ${r.text}`);
+  for (const m of r.moments) console.log(`FLAG  ${pad(m.t.toFixed(2) + ' s', 9)} ${pad(m.kind, 11)} ${m.why}`);
+  console.log(`${r.sampled} frames measured → the critic opens ${r.opened}${r.flagged > r.opened ? ` (of ${r.flagged} flagged; worst first)` : ''}. Brief: ${join(r.out, 'CRITIC.md')}`);
+  process.exitCode = r.checks.every((c) => c.ok) ? 0 : 1;
+}
+
 async function tasteCmd([target], opt) {
   const tg = await import('./lib/tastegate.mjs'), { readdirSync: rd, existsSync: ex, readFileSync: rf, writeFileSync: wf } = await import('node:fs');
   const latest = (film) => { const base = join(STUDIO, 'out', film); if (!ex(base)) return null; const takes = rd(base).filter((d) => /^take\d+$/.test(d)).sort((a, b) => +a.slice(4) - +b.slice(4)); for (const t of takes.reverse()) { const v = rd(join(base, t)).filter((f) => f.endsWith('.mp4')).sort((a, b) => (/-share-/.test(b) ? 1 : 0) - (/-share-/.test(a) ? 1 : 0))[0]; if (v) return join(base, t, v); } return null; };
@@ -505,6 +520,7 @@ if (isMain(import.meta.url)) {
   else if (cmd === 'cleanup') await cleanupCmd();
   else if (cmd === 'agents') await agentsCmd(flags(args));
   else if (cmd === 'toolkit') await toolkitCmd(args.filter(a => !a.startsWith('--')), flags(args));
+  else if (cmd === 'triage') await triageCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'taste') await tasteCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'styles') { const st = await import('./lib/styles.mjs'), o = flags(args), slug = args.find(a => !a.startsWith('--')); if (slug) console.log(st.readStyle(slug)); else for (const s of st.listStyles({ library: o.library })) console.log(s.library === 'lemo' ? `${pad(s.slug, 30)}${s.essence}` : `${pad(s.slug, 17)}${pad(s.route, 9)}${pad(s.from.join(', '), 34)}${s.bestFor}`); }
   else if (cmd === 'web') await webCmd(args.filter(a => !a.startsWith('--')), flags(args));

@@ -40,6 +40,7 @@
 | Live 1 footage | `live1/source/face-demographics-walking-and-pause.mp4` (+ head-pose sample), git-ignored | Intel IoT DevKit sample-videos, CC BY 4.0 — attribution "Sample video © Intel Corporation, CC BY 4.0" (github.com/intel-iot-devkit/sample-videos) |
 | Live 1 analysis pack + scratch voice | `live1/plates/pack/`, git-ignored | Derived by `tools/live.py`; voice synthesised by Piper ar_JO-kareem (sherpa-onnx) — placeholder only |
 | Live 1 score | `live1/score.mjs` | Synthesised in code; voice chain/ducking by ffmpeg via `lib/dialogue.mjs` |
+| Text detector for `tools/textboxes.py` | `studio/models/ppocr_v3_det.onnx` (git-ignored; `python tools/textboxes.py models`) | PaddleOCR PP-OCRv3 text detection (Apache-2.0), extracted from the rapidocr-onnxruntime 1.2.3 wheel on PyPI, SHA-256 pinned |
 | ML models for `tools/live.py` | `studio/models/` (git-ignored; `live.py models`) | MediaPipe selfie/multiclass segmenter, face/pose/hand landmarkers, magic_touch (Google, Apache 2.0, storage.googleapis.com); Silero VAD (MIT, GitHub); Whisper turbo/base ONNX (MIT, via sherpa-onnx GitHub releases); Piper ar_JO-kareem voice (see its MODEL_CARD; scratch use) |
  `lib/motion.js`, `film2/film.js` | Drawn in code |
 

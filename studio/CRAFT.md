@@ -218,6 +218,11 @@ A cut must be opaque on the exact boundary frame; an incoming wipe/fade needs th
 6. **Text is texture or it is read, never in between:** a caption must measure ≥ 5 % of the frame height in the rendered pixels (after every scale and perspective), helpers ≥ 3 %; smaller text is blurred/dimmed as texture or deleted (shotcraft Q11, matching our phone-view checks).
 7. **The browser's own surfaces show whether a page was built or assembled:** text selection, caret, scrollbars, focus rings, underline offset and tabular numerals ship with defaults; theme them from the palette (Impeccable craft floor).
 
+## Frame triage (2026-10-27; `lib/triage.mjs`)
+1. **Hand-made text finders fail on paintings:** strokes, contrast, flat fill, baseline peaks — every rule either flagged oil-paint texture as text or
+   missed pink type on an olive wall. A 2.4 MB trained detector boxed every caption with no false box on the same frames; pay for the small model.
+2. **Test material must be readable to a person first:** heavy colour noise hid a 9 px caption even from the eye; a test the human cannot pass proves nothing.
+
 ## Owner quality direction — 3D inspection (2026-10-29; not a validated film lesson)
 
 Read `../VISION_3D_AND_MOTION.md` first. Inspection motion should explain assembly and function; real-world scale, modeled internals, legible labels and motivated camera/edit choices matter more than decorative effects. Claims of accuracy require sources; claims of artistic quality require viewing actual output. No new film evidence accompanies this documentation entry.
