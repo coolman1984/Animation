@@ -67,7 +67,7 @@ export function show(e, visible) {
 export function textLine(parent, text, style = {}) {
   if (typeof text !== 'string' || !text.trim()) throw new Error('textLine needs nonempty text');
   const line = el('div', { class: 'line', style: { position: 'absolute', display: 'flex', flexWrap: 'nowrap', direction: 'rtl', whiteSpace: 'nowrap', ...style } }, parent);
-  const words = text.trim().split(/\s+/u).map((w) => el('span', { class: 'word', text: w, style: { display: 'inline-block', willChange: 'transform', marginInlineEnd: '0.24em' } }, line));
+  const words = text.trim().split(/\s+/u).map((w) => el('span', { class: 'word', text: w, style: { display: 'inline-block', marginInlineEnd: '0.24em' } }, line));
   words[words.length - 1].style.marginInlineEnd = '0';
   return { line, words };
 }
