@@ -118,7 +118,7 @@ A teaching page for an easing curve, a frame ruler, and the export commands this
 
 ## Design gallery (web/gallery)
 
-The owner's wall of website directions and the rating of existing work: `node studio/studio.mjs gallery` (see web/gallery/README.md). `specimens/pulse-gym.html` is the reference for the flagship level (real photos in frames, one strong interaction per section, still page under reduced motion). Outlined Arabic text (`-webkit-text-stroke`) shows seams where letters join; use solid fills.
+The owner's wall of website directions and the rating of existing work: `node studio/studio.mjs gallery` (see web/gallery/README.md). Its six examples are the reference level, and **`gallery/LESSONS.md` is the professional bar every site follows** (measured from 14 real sites, 2026-11-03): one text family per site (IBM Plex Sans Arabic is what Tamara and Foodics ship; Vazirmatn, Rubik, Almarai also hold up), never decorative display faces (Reem Kufi, Lalezar, Aref Ruqaa, Alexandria 900 read as amateur); clear Modern Standard Arabic copy (promise → one-line explanation → one button), no slang or puns; product UI built in code or real photos shown big; one idea per section, 120–160 px apart; one real interaction. Outlined Arabic text (`-webkit-text-stroke`) shows seams where letters join; use solid fills.
 
 ## Anatomy explainer (web/explainers/anatomy)
 

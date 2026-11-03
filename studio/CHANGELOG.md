@@ -5,6 +5,13 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-11-03 — Gallery round 2: learned from 14 professional sites (DRAFT)
+Owner: "very bad — fonts very bad, design and copy very bad; look at professional sites and learn from them well".
+- **Research:** Chromium visits of 14 sites, computed type measured (`web/gallery/LESSONS.md`). Bot-checked sites were skipped, not bypassed.
+- **Changed:** gallery page and six new examples rebuilt to the measured rules; the 12 sketches deleted. `WEB.md` now points every site at `LESSONS.md`.
+- **Learned:** decorative Arabic display faces read as amateur; pros ship one text family (IBM Plex Sans Arabic at Tamara and Foodics). Copy is Modern Standard Arabic: promise, one line, one button. When photos are limited, draw the product UI in code (Stripe's method).
+- **Not verified:** real devices; owner's verdict.
+
 ## 2026-11-03 — Website design gallery + first flagship example (DRAFT)
 Owner order: a site to see many website designs we can make, choose from them, rate our existing work and improve it; then, with Behance references, "above this level and better".
 - **New:** `web/gallery/` (`node studio.mjs gallery`): filterable wall of live previews, a viewer at phone/tablet/desktop, likes + 4-criterion stars + verdict + note per item, saved to the artifact database when published (localStorage locally) and a copyable summary. 13 directions in `specimens/` (flagship `pulse-gym.html` with CC0 photos; 12 sketches) and 4 existing pieces in `work/` with honest notes.

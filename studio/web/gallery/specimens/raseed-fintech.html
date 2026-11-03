@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>رصيد — مثال تطبيق مالي</title>
+<meta name="description" content="مثال تصميم لتطبيق مالي افتراضي. ليس منتجًا حقيقيًا.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap">
+<style>
+:root{
+  --ink:#0E1A2B; --ink2:#4B5768; --mute:#7A8596; --line:#E6E9EF; --bg:#FFFFFF; --soft:#F4F6FA;
+  --brand:#2446F5; --brand-ink:#FFFFFF; --brand-soft:#E8ECFF; --mint:#DDF4EA; --mint-ink:#0B7A4B; --sand:#FBF1E3; --night:#0B1220;
+  --f:"IBM Plex Sans Arabic",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
+  --r:28px; --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 18px/1.8 var(--f);-webkit-font-smoothing:antialiased}
+.w{max-width:1200px;margin:0 auto;padding-inline:max(20px,4vw)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--brand);outline-offset:3px;border-radius:8px}
+.demo{position:fixed;inset:auto auto 16px 16px;z-index:60;background:var(--ink);color:#fff;font:500 12px var(--f);padding:6px 12px;border-radius:99px}
+
+/* nav */
+header.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.9);backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--line)}
+header.nav .w{display:flex;align-items:center;gap:40px;height:72px}
+.logo{display:flex;align-items:center;gap:10px;font:700 24px var(--f)}
+.logo b{width:30px;height:30px;border-radius:9px;background:var(--brand);display:grid;place-items:center;color:#fff;font-size:17px}
+nav ul{display:flex;gap:30px;list-style:none;margin:0;padding:0;font:500 16px var(--f);color:var(--ink2)}
+nav ul a:hover{color:var(--ink)}
+.nav-end{margin-inline-start:auto;display:flex;gap:12px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:52px;padding:0 26px;border-radius:99px;font:600 16px var(--f);border:0;cursor:pointer;transition:transform .2s var(--ease),background .2s}
+.btn.primary{background:var(--brand);color:var(--brand-ink)}.btn.primary:hover{background:#1734D6}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}.btn.ghost:hover{border-color:var(--ink)}
+.btn.sm{height:44px;padding:0 20px;font-size:15px}
+
+/* hero */
+.hero{padding-block:80px 40px}
+.hero .w{display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font:500 15px var(--f);color:var(--brand);background:var(--brand-soft);padding:6px 14px;border-radius:99px}
+h1{font:700 clamp(44px,5.6vw,80px)/1.18 var(--f);letter-spacing:-.01em;margin:22px 0 22px;text-wrap:balance}
+h1 span{color:var(--mute);font-weight:500}
+.lead{font-size:21px;line-height:1.8;color:var(--ink2);max-width:34ch;margin:0 0 34px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.proof{display:flex;gap:28px;margin-top:40px;flex-wrap:wrap;color:var(--ink2);font-size:15px}
+.proof b{display:block;color:var(--ink);font:700 22px var(--f)}
+
+/* phone (built in code) */
+.stage{position:relative;height:640px;border-radius:40px;background:linear-gradient(160deg,var(--brand-soft),#F7F8FF 60%);display:grid;place-items:center;overflow:hidden}
+.phone{width:300px;height:600px;border-radius:46px;background:var(--night);padding:12px;box-shadow:0 40px 80px -30px rgba(14,26,43,.45);transform:translateY(40px);animation:up 1s var(--ease) both .15s}
+@keyframes up{from{transform:translateY(90px);opacity:0}}
+.screen{height:100%;border-radius:36px;background:#fff;overflow:hidden;display:flex;flex-direction:column}
+.notch{width:96px;height:26px;background:var(--night);border-radius:0 0 16px 16px;margin:0 auto}
+.app{padding:16px 18px;display:flex;flex-direction:column;gap:14px;font-size:13px;line-height:1.5}
+.app small{color:var(--mute);font-size:12px}
+.bal{font:700 34px/1.1 var(--f);font-variant-numeric:tabular-nums}
+.bal i{font:500 15px var(--f);font-style:normal;color:var(--mute)}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center;font-size:11px;color:var(--ink2)}
+.quick span{display:block;width:42px;height:42px;margin:0 auto 4px;border-radius:14px;background:var(--soft);display:grid;place-items:center;font-size:18px;color:var(--brand)}
+.card-mini{background:var(--soft);border-radius:18px;padding:12px 14px}
+.bar{height:8px;border-radius:99px;background:#E3E7F2;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;border-radius:99px;background:var(--brand);width:68%}
+.tx{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.tx:last-child{border:0}
+.tx em{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;font-style:normal;font-size:15px}
+.tx div{flex:1}.tx b{font-weight:600}.tx span{font-weight:600;font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
+.chip{position:absolute;background:#fff;border-radius:18px;padding:12px 16px;box-shadow:0 18px 40px -18px rgba(14,26,43,.3);font:500 14px var(--f);display:flex;gap:10px;align-items:center;animation:float 1s var(--ease) both}
+.chip i{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;font-style:normal}
+.c1{top:40px;left:30px;animation-delay:.6s}.c2{bottom:110px;left:24px;animation-delay:.8s}
+@keyframes float{from{opacity:0;transform:translateY(16px)}}
+
+/* features */
+section{padding-block:120px 0}
+.head{max-width:720px;margin-bottom:56px}
+.label{font:600 15px var(--f);color:var(--brand)}
+h2{font:700 clamp(34px,3.8vw,54px)/1.25 var(--f);margin:10px 0 16px;text-wrap:balance}
+.head p{color:var(--ink2);margin:0;font-size:19px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center;margin-bottom:110px}
+.row.flip .media{order:-1}
+.row h3{font:700 clamp(28px,2.8vw,40px)/1.3 var(--f);margin:10px 0 14px}
+.row p{color:var(--ink2);margin:0 0 22px;max-width:40ch}
+.row ul{list-style:none;padding:0;margin:0 0 26px;display:grid;gap:10px}
+.row li{display:flex;gap:10px;align-items:flex-start;color:var(--ink)}
+.row li:before{content:"";flex:none;width:22px;height:22px;margin-top:4px;border-radius:50%;background:var(--mint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%230B7A4B' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat}
+.more{font:600 16px var(--f);color:var(--brand);display:inline-flex;gap:6px}
+.more:hover{gap:10px}
+.media{border-radius:var(--r);min-height:460px;display:grid;place-items:center;padding:40px;position:relative;overflow:hidden}
+.m-mint{background:var(--mint)}.m-sand{background:var(--sand)}.m-blue{background:var(--brand-soft)}
+.panel{background:#fff;border-radius:24px;padding:24px;width:100%;max-width:380px;box-shadow:0 30px 60px -36px rgba(14,26,43,.35)}
+.panel h4{margin:0 0 4px;font:600 16px var(--f)}.panel small{color:var(--mute);font-size:13px}
+.donut{display:flex;gap:22px;align-items:center;margin-top:18px}
+.donut svg{width:130px;height:130px;flex:none}
+.legend{display:grid;gap:8px;font-size:14px;flex:1}
+.legend div{display:flex;justify-content:space-between;gap:8px}.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-inline-end:8px}
+.legend b{font-weight:600;font-variant-numeric:tabular-nums}
+.goal{margin-top:16px;display:grid;gap:14px}
+.goal .g{display:grid;gap:6px}.goal .g div{display:flex;justify-content:space-between;font-size:14px}.goal b{font-variant-numeric:tabular-nums}
+.people{display:flex;gap:10px;margin:18px 0}
+.people span{flex:1;text-align:center;font-size:12px;color:var(--ink2)}
+.people em{display:grid;place-items:center;width:52px;height:52px;margin:0 auto 6px;border-radius:50%;font:600 18px var(--f);font-style:normal;color:#fff}
+.amount{display:flex;justify-content:space-between;align-items:center;background:var(--soft);border-radius:16px;padding:14px 16px;font-size:14px}
+.amount b{font:700 24px var(--f);font-variant-numeric:tabular-nums}
+.send{margin-top:14px;width:100%;height:50px;border-radius:14px;border:0;background:var(--brand);color:#fff;font:600 16px var(--f)}
+.ok{margin-top:10px;font-size:13px;color:var(--mint-ink);text-align:center}
+
+/* calculator */
+.calc{background:var(--night);color:#fff;border-radius:40px;padding:clamp(32px,5vw,72px);display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.calc .label{color:#9DB0FF}.calc h2{color:#fff}.calc p{color:#B6BFCE}
+.slider label{display:flex;justify-content:space-between;font-size:16px;color:#B6BFCE;margin-bottom:10px}
+.slider label b{color:#fff;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:#8FA2FF;height:28px}
+.result{background:#151F33;border-radius:26px;padding:32px}
+.result small{color:#97A3B8;font-size:15px}
+.result .big{font:700 clamp(44px,5vw,64px)/1.15 var(--f);font-variant-numeric:tabular-nums;margin:6px 0 18px}
+.result .big i{font:500 20px var(--f);font-style:normal;color:#97A3B8}
+.months{display:flex;align-items:end;gap:6px;height:110px}
+.months i{flex:1;background:#2E3B57;border-radius:6px 6px 2px 2px;transition:height .5s var(--ease)}
+.months i:last-child{background:#8FA2FF}
+.note{font-size:13px;color:#7F8AA0;margin-top:14px}
+
+/* security + final */
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.trio div{border:1px solid var(--line);border-radius:24px;padding:30px}
+.trio i{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:var(--brand-soft);color:var(--brand);font-style:normal;font-size:22px;margin-bottom:18px}
+.trio h3{font:700 22px var(--f);margin:0 0 8px}.trio p{color:var(--ink2);margin:0;font-size:16px}
+.final{text-align:center;padding-block:130px}
+.final h2{font-size:clamp(40px,5vw,72px);max-width:16ch;margin-inline:auto}
+.final p{color:var(--ink2);margin:0 auto 34px;max-width:44ch}
+.final .cta{justify-content:center}
+footer{border-top:1px solid var(--line);padding-block:32px 70px;color:var(--mute);font-size:14px}
+footer .w{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+/* reveal: visible by default, rises only where scroll timelines exist */
+@supports (animation-timeline:view()){
+  .rv{animation:rv linear both;animation-timeline:view();animation-range:entry 5% entry 55%}
+  @keyframes rv{from{opacity:0;transform:translateY(32px)}}
+}
+@media (max-width:960px){
+  .c1{left:12px}
+  nav ul{display:none}
+  .hero{padding-top:40px}
+  .hero .w,.row,.calc{grid-template-columns:1fr;gap:40px}
+  .row.flip .media{order:0}
+  .stage{height:560px}
+  .phone{transform:scale(.9) translateY(30px)}
+  .trio{grid-template-columns:1fr}
+  .c2{left:12px}
+  .row{margin-bottom:80px}
+  section{padding-top:80px}
+}
+@media (max-width:520px){ .nav-end .ghost{display:none} .media{min-height:0;padding:28px 18px} .chip{font-size:13px;padding:10px 12px} }
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.phone{transform:translateY(40px)}}
+</style>
+</head>
+<body>
+<span class="demo">مثال تصميم · منتج افتراضي</span>
+
+<header class="nav"><div class="w">
+  <a class="logo" href="#"><b>ر</b>رصيد</a>
+  <nav aria-label="القائمة"><ul><li><a href="#features">المزايا</a></li><li><a href="#calc">خطط الادخار</a></li><li><a href="#security">الأمان</a></li></ul></nav>
+  <div class="nav-end"><a class="btn ghost sm" href="#">تسجيل الدخول</a><a class="btn primary sm" href="#start">حمّل التطبيق</a></div>
+</div></header>
+
+<main>
+<section class="hero" style="padding-top:80px"><div class="w">
+  <div>
+    <span class="eyebrow">حساب رقمي بدون رسوم شهرية</span>
+    <h1>أموالك واضحة. <span>وقراراتك أسهل.</span></h1>
+    <p class="lead">يجمع رصيد حساباتك وبطاقاتك في تطبيق واحد، ويصنّف مصاريفك تلقائيًا لتعرف أين يذهب كل جنيه.</p>
+    <div class="cta"><a class="btn primary" href="#start">ابدأ مجانًا</a><a class="btn ghost" href="#features">كيف يعمل</a></div>
+    <div class="proof"><div><b>٣ دقائق</b>لفتح الحساب</div><div><b>٠ جنيه</b>رسوم شهرية</div><div><b>٢٤/٧</b>دعم بالعربية</div></div>
+  </div>
+  <div class="stage" aria-label="شاشة التطبيق: الرصيد والمصاريف الأخيرة">
+    <div class="phone"><div class="screen"><div class="notch"></div>
+      <div class="app">
+        <div><small>الرصيد المتاح</small><div class="bal">١٢٬٤٥٠ <i>ج.م</i></div></div>
+        <div class="quick"><div><span>↑</span>تحويل</div><div><span>↓</span>استلام</div><div><span>▦</span>فواتير</div><div><span>◎</span>ادخار</div></div>
+        <div class="card-mini"><div style="display:flex;justify-content:space-between"><b style="font-weight:600">ميزانية نوفمبر</b><small>٦٨٪</small></div><div class="bar"><i></i></div><small>متبقٍ ٢٬٩٠٠ ج.م حتى نهاية الشهر</small></div>
+        <div>
+          <div class="tx"><em style="background:#FDECEC;color:#C2410C">◐</em><div><b>مطعم</b><br><small>اليوم، ٢:١٠ م</small></div><span>−٣٤٠</span></div>
+          <div class="tx"><em style="background:var(--mint);color:var(--mint-ink)">＋</em><div><b>راتب نوفمبر</b><br><small>أمس</small></div><span style="color:var(--mint-ink)">+١٨٬٠٠٠</span></div>
+          <div class="tx"><em style="background:var(--brand-soft);color:var(--brand)">⚡</em><div><b>فاتورة الكهرباء</b><br><small>٢ نوفمبر</small></div><span>−٦١٠</span></div>
+        </div>
+      </div>
+    </div></div>
+    <div class="chip c1"><i style="background:var(--mint);color:var(--mint-ink)">✓</i>تحويل فوري بين البنوك</div>
+    <div class="chip c2"><i style="background:var(--brand-soft);color:var(--brand)">◎</i>وفّرت ٨٥٠ ج.م هذا الشهر</div>
+  </div>
+</div></section>
+
+<section id="features"><div class="w">
+  <div class="head rv"><span class="label">كل ما تحتاجه</span><h2>ثلاث أدوات تغنيك عن الجداول والحسابات اليدوية</h2></div>
+
+  <div class="row rv">
+    <div><span class="label">تصنيف تلقائي</span><h3>اعرف أين تذهب أموالك</h3><p>كل عملية تُصنَّف وحدها: طعام، مواصلات، فواتير، تسوق. وفي نهاية الشهر تصلك صورة واضحة بدون أي جهد.</p>
+      <ul><li>تصنيف فوري لكل عملية دفع</li><li>تنبيه قبل تجاوز ميزانية أي فئة</li></ul><a class="more" href="#">اعرف المزيد ←</a></div>
+    <div class="media m-mint"><div class="panel"><h4>مصاريف نوفمبر</h4><small>حتى اليوم</small>
+      <div class="donut"><svg viewBox="0 0 42 42" aria-hidden="true"><circle cx="21" cy="21" r="15.9" fill="none" stroke="#EEF1F6" stroke-width="6"/>
+        <circle cx="21" cy="21" r="15.9" fill="none" stroke="#2446F5" stroke-width="6" stroke-dasharray="38 62" stroke-dashoffset="25"/>
+        <circle cx="21" cy="21" r="15.9" fill="none" stroke="#12B76A" stroke-width="6" stroke-dasharray="24 76" stroke-dashoffset="-13"/>
+        <circle cx="21" cy="21" r="15.9" fill="none" stroke="#F79009" stroke-width="6" stroke-dasharray="20 80" stroke-dashoffset="-37"/>
+        <circle cx="21" cy="21" r="15.9" fill="none" stroke="#B3BCCB" stroke-width="6" stroke-dasharray="18 82" stroke-dashoffset="-57"/></svg>
+        <div class="legend"><div><span><i style="background:#2446F5"></i>فواتير</span><b>٣٨٪</b></div><div><span><i style="background:#12B76A"></i>طعام</span><b>٢٤٪</b></div><div><span><i style="background:#F79009"></i>مواصلات</span><b>٢٠٪</b></div><div><span><i style="background:#B3BCCB"></i>أخرى</span><b>١٨٪</b></div></div></div></div></div>
+  </div>
+
+  <div class="row flip rv">
+    <div><span class="label">أهداف الادخار</span><h3>ادّخر لهدف محدد، بخطوات صغيرة</h3><p>حدّد الهدف والموعد، ورصيد يقترح المبلغ الشهري ويقتطعه في يوم الراتب. تتابع تقدّمك في كل مرة تفتح التطبيق.</p>
+      <ul><li>أكثر من هدف في نفس الوقت</li><li>سحب المبلغ في أي وقت بدون رسوم</li></ul><a class="more" href="#calc">جرّب الحاسبة ←</a></div>
+    <div class="media m-sand"><div class="panel"><h4>أهدافي</h4><small>٣ أهداف نشطة</small>
+      <div class="goal">
+        <div class="g"><div><span>مصاريف الدراسة</span><b>٧٢٪</b></div><div class="bar"><i style="width:72%"></i></div></div>
+        <div class="g"><div><span>إجازة الصيف</span><b>٤٥٪</b></div><div class="bar"><i style="width:45%;background:#F79009"></i></div></div>
+        <div class="g"><div><span>صندوق الطوارئ</span><b>٩٠٪</b></div><div class="bar"><i style="width:90%;background:#12B76A"></i></div></div>
+      </div></div></div>
+  </div>
+
+  <div class="row rv">
+    <div><span class="label">تحويلات</span><h3>حوّل لأي شخص في ثوانٍ</h3><p>برقم الهاتف أو رقم الحساب، لأي بنك داخل مصر. التحويل يصل فورًا، ويصلك إشعار عند الاستلام.</p>
+      <ul><li>بدون رسوم بين مستخدمي رصيد</li><li>تقسيم الفاتورة مع الأصدقاء</li></ul><a class="more" href="#">اعرف المزيد ←</a></div>
+    <div class="media m-blue"><div class="panel"><h4>إرسال سريع</h4><small>الأكثر تحويلًا</small>
+      <div class="people"><span><em style="background:#2446F5">س</em>سارة</span><span><em style="background:#12B76A">م</em>محمد</span><span><em style="background:#F79009">ن</em>نور</span><span><em style="background:#7A5AF8">ع</em>عمر</span></div>
+      <div class="amount"><span>المبلغ إلى سارة</span><b id="amt">٥٠٠ ج.م</b></div>
+      <button class="send" type="button" id="send">إرسال</button><div class="ok" id="ok" aria-live="polite"></div></div></div>
+  </div>
+</div></section>
+
+<section id="calc"><div class="w">
+  <div class="calc">
+    <div class="rv"><span class="label">حاسبة الادخار</span><h2>كم ستوفّر خلال سنة؟</h2><p>حرّك المؤشر واختر المبلغ الذي تقدر عليه كل شهر. الحساب تقديري، والعائد في هذا المثال ٧٪ سنويًا للتوضيح فقط.</p>
+      <div class="slider" style="margin-top:34px"><label for="m">المبلغ الشهري <b id="mv">١٬٠٠٠ ج.م</b></label><input id="m" type="range" min="200" max="10000" step="100" value="1000"></div></div>
+    <div class="result"><small>بعد ١٢ شهرًا</small><div class="big" id="total">١٢٬٤٠٠ <i>ج.م</i></div>
+      <div class="months" id="bars" aria-hidden="true"></div><div class="note" id="gain">منها ٤٠٠ ج.م عائد تقديري</div></div>
+  </div>
+</div></section>
+
+<section id="security"><div class="w">
+  <div class="head rv"><span class="label">الأمان</span><h2>أموالك محمية في كل خطوة</h2><p>نفس معايير الحماية التي تستخدمها البنوك، مع تحكم كامل من هاتفك.</p></div>
+  <div class="trio">
+    <div class="rv"><i>⌂</i><h3>تجميد البطاقة فورًا</h3><p>أوقف بطاقتك بلمسة إذا فقدتها، وأعد تشغيلها عندما تجدها.</p></div>
+    <div class="rv"><i>◉</i><h3>دخول بالبصمة</h3><p>لا أحد يفتح التطبيق غيرك، حتى لو كان هاتفك مفتوحًا.</p></div>
+    <div class="rv"><i>✉</i><h3>إشعار مع كل عملية</h3><p>تعرف بكل عملية في لحظتها، وتعترض عليها من نفس الإشعار.</p></div>
+  </div>
+</div></section>
+
+<section class="final" id="start"><div class="w rv">
+  <h2>ابدأ اليوم، وتعرّف على أموالك من جديد</h2>
+  <p>فتح الحساب مجاني ويستغرق ثلاث دقائق. كل ما تحتاجه هو بطاقة الرقم القومي.</p>
+  <div class="cta"><a class="btn primary" href="#">حمّل التطبيق</a><a class="btn ghost" href="#features">تصفّح المزايا</a></div>
+</div></section>
+</main>
+
+<footer><div class="w"><span>رصيد منتج افتراضي، مثال تصميم من الاستوديو. الأرقام في الصفحة للتوضيح.</span><span>© ٢٠٢٦</span></div></footer>
+
+<script>
+const ar=n=>Math.round(n).toLocaleString('ar-EG');
+// calculator: monthly deposit with 7%/yr compounded monthly (illustration)
+const m=document.getElementById('m'),mv=document.getElementById('mv'),total=document.getElementById('total'),gain=document.getElementById('gain'),bars=document.getElementById('bars');
+for(let i=0;i<12;i++)bars.append(document.createElement('i'));
+function calc(){const a=+m.value,r=.07/12;let b=0;const s=[];for(let i=0;i<12;i++){b=(b+a)*(1+r);s.push(b)}
+  mv.textContent=ar(a)+' ج.م';total.innerHTML=ar(b)+' <i>ج.م</i>';gain.textContent='منها '+ar(b-a*12)+' ج.م عائد تقديري';
+  [...bars.children].forEach((e,i)=>e.style.height=(14+86*s[i]/s[11])+'%')}
+m.addEventListener('input',calc);calc();
+// quick send demo
+document.getElementById('send').addEventListener('click',e=>{e.target.textContent='تم الإرسال ✓';document.getElementById('ok').textContent='مثال فقط، لم يُرسل أي مبلغ.';setTimeout(()=>{e.target.textContent='إرسال'},2200)});
+</script>
+</body>
+</html>
