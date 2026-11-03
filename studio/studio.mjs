@@ -21,6 +21,7 @@
 //   node studio.mjs web audit <label> --dir=<existing site folder> [--before=<label>]   (improve a site: before/after; web/WEB.md)
 //   node studio.mjs web plan <site> [--brand= --style= --lang=ar|en --cta= --problem= --promise=] · web build|check|serve <site> · web styles   (web/WEB.md)
 //   node studio.mjs lab                          easing curve, frame ruler, export commands (web/lab/README.md)
+//   node studio.mjs gallery                      website design gallery: directions to choose from + rating of existing work (web/gallery/README.md)
 //   node studio.mjs moves search <words> [--library=motion-prompt|cinetic|shotcraft --pack= --category=] · moves show|prompt|code <#id | technique-id> · moves draw --format=launch|feature|loop|sting|walkthrough|vertical [--energy=calm --seconds=30 --seed=] · moves list   (library/README.md)
 //   node studio.mjs toolkit [check | update <name> --from=<clone>]   third-party agent tools vendored whole (toolkit/README.md)
 //   node studio.mjs web system "<product, industry, mood>" [--site=<site>]   UI UX Pro Max design system for web stage B
@@ -379,6 +380,13 @@ async function labCmd() {
   console.log(`http://127.0.0.1:${s.port}/index.html  (Ctrl+C to stop)`);
 }
 
+// Design gallery (web/gallery/README.md): served from web/ so it can show the other web folders.
+async function galleryCmd() {
+  const { serve } = await import('./lib/serve.mjs');
+  const s = await serve(join(STUDIO, 'web'));
+  console.log(`http://127.0.0.1:${s.port}/gallery/index.html  (Ctrl+C to stop)`);
+}
+
 // Web department (web/WEB.md): plan → write → build → check (phone / tablet / desktop) → serve.
 async function webCmd([sub, name, ...more], opt) {
   const W = await import('./web/lib/site.mjs'), { existsSync: ex, readFileSync: rf, writeFileSync: wf, mkdirSync: mk } = await import('node:fs');
@@ -525,6 +533,7 @@ if (isMain(import.meta.url)) {
   else if (cmd === 'styles') { const st = await import('./lib/styles.mjs'), o = flags(args), slug = args.find(a => !a.startsWith('--')); if (slug) console.log(st.readStyle(slug)); else for (const s of st.listStyles({ library: o.library })) console.log(s.library === 'lemo' ? `${pad(s.slug, 30)}${s.essence}` : `${pad(s.slug, 17)}${pad(s.route, 9)}${pad(s.from.join(', '), 34)}${s.bestFor}`); }
   else if (cmd === 'web') await webCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'lab') await labCmd();
+  else if (cmd === 'gallery') await galleryCmd();
   else if (cmd === 'storyboard') await storyboardCmd(args);
   else if (cmd === 'director') await directorCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'moves') await movesCmd(args.filter(a => !a.startsWith('--')), flags(args));

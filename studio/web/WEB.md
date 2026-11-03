@@ -116,6 +116,10 @@ Tokens become CSS variables; fonts are the studio's vendored OFL faces (Readex P
 
 A teaching page for an easing curve, a frame ruler, and the export commands this repo really accepts. Original work. Open it with `node studio/studio.mjs lab` (see web/lab/README.md).
 
+## Design gallery (web/gallery)
+
+The owner's wall of website directions and the rating of existing work: `node studio/studio.mjs gallery` (see web/gallery/README.md). `specimens/pulse-gym.html` is the reference for the flagship level (real photos in frames, one strong interaction per section, still page under reduced motion). Outlined Arabic text (`-webkit-text-stroke`) shows seams where letters join; use solid fills.
+
 ## Anatomy explainer (web/explainers/anatomy)
 
 A static page for one object's parts: procedural geometry (no downloaded model), an explode slider, hotspot labels with leader lines, a note on click, pointer and keyboard orbit, and a tour. Parts live in `parts.json` (`id`, `label`, `note`, `offset`, `colour`) so another object can reuse the page. Arabic labels stay whole strings (`lang="ar"` `dir="rtl"`). `?t=seconds` and `window.anatomyRender(t)` are a pure function of time, so a film can sample the same scene out of order. Three.js only (MIT): a tree-shaken subset of 0.186.1 lives in the folder so the audit can load it. A flat SVG diagram belongs to `diagram-design`; a mesh rebuilt from a photograph belongs to `img2threejs`. See the folder README.

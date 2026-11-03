@@ -1,0 +1,23 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>مكتب خطّ — مثال</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;500&display=swap">
+<style>
+:root{--bg:#F5F5F2;--ink:#111;--muted:#555;--red:#D6261C;--line:#111}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "IBM Plex Sans Arabic",system-ui,sans-serif}
+.w{max-width:1200px;margin:auto;padding-inline:max(20px,3vw)}
+.tag{position:fixed;inset:auto auto 12px 12px;background:var(--red);color:#fff;font-size:12px;padding:4px 10px;z-index:9}
+.g{display:grid;grid-template-columns:repeat(12,1fr);gap:20px}
+nav{border-bottom:2px solid var(--line);padding-block:16px;font-weight:500}nav .n{grid-column:span 6;font:700 22px "Reem Kufi"}nav span{grid-column:span 2;font-size:14px}
+h1{grid-column:1/-1;font:700 clamp(64px,13vw,200px)/.9 "Reem Kufi",sans-serif;margin:40px 0 10px;letter-spacing:-.01em}
+h1 em{color:var(--red);font-style:normal}
+.meta{grid-column:span 4;border-top:2px solid var(--line);padding-top:10px;font-size:14px}.meta b{display:block;font-size:13px;color:var(--muted);font-weight:500}
+.proj{grid-column:1/-1;display:grid;grid-template-columns:repeat(12,1fr);gap:20px;margin-block:50px 80px}
+.p{grid-column:span 4}.p:first-child{grid-column:span 8}
+.p .img{aspect-ratio:4/3;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 28px),#DADAD4;max-width:100%}
+.p:first-child .img{aspect-ratio:16/9;background:linear-gradient(var(--red),var(--red)) 70% 30%/22% 40% no-repeat,repeating-linear-gradient(0deg,var(--ink) 0 2px,transparent 2px 36px),#DADAD4}
+.p h3{font:700 20px "Reem Kufi";margin:12px 0 0}.p small{color:var(--muted)}
+@media(max-width:760px){nav span{display:none}nav .n{grid-column:1/-1}.meta,.p,.p:first-child{grid-column:1/-1}}
+</style></head><body><span class="tag">مثال تصميم · مكتب افتراضي</span>
+<div class="w"><nav class="g"><span class="n">خطّ</span><span>مشاريع</span><span>المكتب</span><span>تواصل</span></nav>
+<div class="g"><h1>بنبني<br>بـ<em>الخط</em> المستقيم</h1>
+<div class="meta"><b>التخصص</b>سكني، تجاري، ترميم</div><div class="meta"><b>المكان</b>الزمالك، القاهرة</div><div class="meta"><b>من</b>٢٠١١</div>
+<div class="proj"><div class="p"><div class="img"></div><h3>بيت الشجرة، الشيخ زايد</h3><small>سكني · ٢٠٢٤</small></div><div class="p"><div class="img"></div><h3>مكتبة الحي</h3><small>عام · ٢٠٢٣</small></div></div></div></div></body></html>

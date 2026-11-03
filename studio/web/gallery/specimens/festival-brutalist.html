@@ -1,0 +1,20 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>صوت الشارع — مثال</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lalezar&family=Space+Mono:wght@400;700&family=Cairo:wght@600;900&display=swap">
+<style>
+:root{--bg:#F2F200;--ink:#000;--paper:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:600 17px/1.5 Cairo,system-ui,sans-serif}
+.tag{position:fixed;inset:auto auto 12px 12px;background:var(--ink);color:var(--bg);font:12px "Space Mono";padding:4px 10px;z-index:9}
+.top{display:flex;justify-content:space-between;border-bottom:4px solid var(--ink);padding:12px max(16px,3vw);font:700 14px "Space Mono";direction:ltr}
+h1{font:400 clamp(80px,19vw,280px)/.82 Lalezar;margin:0;padding:24px max(16px,3vw) 0;word-break:keep-all}
+.strip{background:var(--ink);color:var(--bg);font:700 clamp(18px,2.4vw,28px) "Space Mono";padding:12px max(16px,3vw);direction:ltr;white-space:nowrap;overflow:hidden}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:4px solid var(--ink)}
+.grid div{border-left:4px solid var(--ink);padding:20px max(16px,2vw);background:var(--paper)}.grid div:last-child{border-left:0}
+.grid b{font:900 34px Cairo;display:block}.grid span{font:14px "Space Mono"}
+.cta{display:block;text-align:center;background:var(--ink);color:var(--bg);font:400 44px Lalezar;padding:20px;text-decoration:none;border-top:4px solid var(--ink)}
+.cta:hover{background:var(--paper);color:var(--ink)}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.grid div{border-left:0;border-bottom:4px solid var(--ink)}}
+</style></head><body><span class="tag">DEMO · مهرجان افتراضي</span>
+<div class="top"><span>12–14 DEC</span><span>CAIRO / DOWNTOWN</span></div>
+<h1>صوت<br>الشارع</h1><div class="strip">3 DAYS · 22 ACTS · 4 STAGES · NO VIP</div>
+<div class="grid"><div><b>الخميس</b><span>مهرجانات + راب</span></div><div><b>الجمعة</b><span>إلكترو شعبي</span></div><div><b>السبت</b><span>فرق مستقلة</span></div></div>
+<a class="cta" href="#">احجز تذكرتك ←</a></body></html>

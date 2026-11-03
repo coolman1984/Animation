@@ -5,6 +5,12 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-11-03 — Website design gallery + first flagship example (DRAFT)
+Owner order: a site to see many website designs we can make, choose from them, rate our existing work and improve it; then, with Behance references, "above this level and better".
+- **New:** `web/gallery/` (`node studio.mjs gallery`): filterable wall of live previews, a viewer at phone/tablet/desktop, likes + 4-criterion stars + verdict + note per item, saved to the artifact database when published (localStorage locally) and a copyable summary. 13 directions in `specimens/` (flagship `pulse-gym.html` with CC0 photos; 12 sketches) and 4 existing pieces in `work/` with honest notes.
+- **Learned:** Openverse `license=cc0&source=stocksnap` gives usable 960 px photos (larger sizes 404); frame them instead of stretching full-bleed. Outlined (`-webkit-text-stroke`) Arabic shows seams where letters join: use solid fills.
+- **Not verified:** real devices; the 12 sketches are below flagship level until upgraded.
+
 ## 2026-10-30 — Quick suite green on the owner's Windows checkout (DONE)
 After merging Motion Lab gaps (PR #28) and the baker branch, three quick tests failed on Windows only.
 - **Fixed:** `lib/agents.mjs` reads skills as LF, so a `core.autocrlf` checkout passes the skill format and mirror check;

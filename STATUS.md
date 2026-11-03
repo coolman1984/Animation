@@ -2,7 +2,9 @@
 
 Updated: 2026-11-03.
 
-**Current scope: DONE for targeted web/render fixes — PR #35.** Local browser tools installed; web tests (5/5), three GPU example seek comparisons and showcase browser audit passed. Full repository suite and original CI host remain untested. See verification entry below.
+**Current scope: DRAFT delivered — Website design gallery (owner 2026-11-03).** `studio/web/gallery/`: one page to look at website directions, like them and rate existing work (`node studio/studio.mjs gallery`; also a private claude.ai artifact whose ratings land in its `reviews` database). After the owner's Behance/Pinterest references ("above this level"), the first **flagship** example `specimens/pulse-gym.html` uses real CC0 photos (StockSnap via Openverse, `CREDITS.json`), expanding program panels, a sticky 30-day story, a working timetable and plans; 12 quick sketches cover other directions; 4 existing pieces are screenshotted with honest notes. Checked in Chromium at 1440/1280 and 390: no sideways scroll, no script errors, rating save + summary work. Not verified: real phones, the artifact database with the owner signed in (checked after publish), and the 12 sketches are not yet at flagship level (upgrade order follows the owner's likes).
+
+**Previous scope: DONE for targeted web/render fixes — PR #35.** Local browser tools installed; web tests (5/5), three GPU example seek comparisons and showcase browser audit passed. Full repository suite and original CI host remain untested. See verification entry below.
 
 **Latest scope: DONE — Quick suite green on Windows (2026-10-30).** Motion Lab gaps (PR #28) and the baker short + frame triage were merged into main. Three quick tests failed only on the owner's Windows checkout (CRLF skill files; `I:\…` paths); `lib/agents.mjs` now reads skills as LF and the whisper and engine tests compare POSIX paths. `npm test`: 154 pass, 16 skipped, 0 fail. Not verified: a real whisper.cpp or Motion Canvas run on Windows.
 

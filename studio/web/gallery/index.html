@@ -1,0 +1,435 @@
+<meta charset="utf-8">
+<title>معرض تصميمات المواقع</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>document.documentElement.lang="ar";document.documentElement.dir="rtl";</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@600;700&family=Readex+Pro:wght@400;500;600&display=swap">
+<style>
+/* Layout: a working wall — summary strip on top, a filterable grid of live previews, then our existing work with honest notes; one viewer sheet for looking and rating. */
+:root{
+  --bg:#F5F5F2; --surface:#FFFFFF; --ink:#17181C; --muted:#5D5F66; --line:#DEDED8;
+  --accent:#2E43C9; --accent-ink:#FFFFFF; --accent-soft:#E6E9FA;
+  --good:#167A4A; --warn:#A35A00; --bad:#B3261E;
+  --display:"Reem Kufi","Readex Pro",system-ui,sans-serif;
+  --text:"Readex Pro",system-ui,"Segoe UI",Tahoma,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121317; --surface:#1B1D23; --ink:#ECECEA; --muted:#A3A5AD; --line:#2D3039;
+  --accent:#8C9BFF; --accent-ink:#0E1024; --accent-soft:#252B52;
+  --good:#5BD29A; --warn:#F2B356; --bad:#FF8A80; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121317; --surface:#1B1D23; --ink:#ECECEA; --muted:#A3A5AD; --line:#2D3039;
+  --accent:#8C9BFF; --accent-ink:#0E1024; --accent-soft:#252B52;
+  --good:#5BD29A; --warn:#F2B356; --bad:#FF8A80; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 var(--text)}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2{font-family:var(--display)}
+h3{font-weight:600}
+h1,h2,h3{text-wrap:balance;margin:0;line-height:1.25}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+header.top{padding-block:40px 24px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;border-bottom:1px solid var(--line)}
+header.top h1{font-size:clamp(32px,5vw,52px)}
+header.top p{margin:8px 0 0;color:var(--muted);max-width:60ch}
+.summary{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.count{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 14px;font-size:14px;color:var(--muted)}
+.count b{color:var(--ink);font-size:20px;font-variant-numeric:tabular-nums;margin-inline-end:4px}
+.btn{border:0;background:var(--accent);color:var(--accent-ink);border-radius:10px;padding:10px 18px;font-weight:600;min-height:44px}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.save-state{font-size:13px;color:var(--muted);width:100%}
+
+section.block{padding-block:36px 8px}
+.block-head{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.block-head h2{font-size:clamp(24px,3vw,32px)}
+.block-head p{margin:4px 0 0;color:var(--muted);max-width:62ch}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;font-size:14px;min-height:40px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:22px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.card.liked{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.thumb{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--line);border:0;padding:0;display:block;width:100%;max-width:100%}
+.thumb iframe{position:absolute;top:0;left:0;width:1280px;height:800px;border:0;transform-origin:0 0;pointer-events:none;background:#fff}
+.thumb img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.thumb .open{position:absolute;inset:auto auto 10px 10px;background:var(--ink);color:var(--bg);font-size:13px;padding:4px 10px;border-radius:8px;opacity:0;transition:opacity .2s}
+.thumb:hover .open,.thumb:focus-visible .open{opacity:1}
+.body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:10px;flex:1}
+.body h3{font-size:21px}
+.field{font-size:13px;color:var(--accent);font-weight:600}
+dl.facts{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14px}
+dl.facts dt{color:var(--muted)}dl.facts dd{margin:0}
+.actions{display:flex;gap:8px;margin-top:auto;padding-top:6px;align-items:center;flex-wrap:wrap}
+.like{border:1px solid var(--line);background:transparent;border-radius:10px;padding:8px 14px;min-height:44px}
+.like[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.rate{border:0;background:var(--accent-soft);color:var(--ink);border-radius:10px;padding:8px 14px;min-height:44px}
+.badge{font-size:12px;border-radius:999px;padding:2px 10px;border:1px solid currentColor}
+.badge.keep{color:var(--good)}.badge.improve{color:var(--warn)}.badge.drop{color:var(--bad)}
+.lvl{font-weight:500;color:var(--muted)}.lvl.flag{color:var(--accent);font-weight:700}
+.card.flag{grid-column:1/-1}
+.card.flag .thumb{aspect-ratio:16/8}
+.stars-mini{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+.notes{display:grid;gap:6px;font-size:14px}
+.notes div{display:grid;grid-template-columns:72px 1fr;gap:8px}
+.notes b{font-weight:600;color:var(--muted)}
+
+footer{margin-top:40px;border-top:1px solid var(--line);padding-block:24px 48px;color:var(--muted);font-size:14px}
+footer ol{margin:8px 0 0;padding-inline-start:20px}
+
+/* viewer sheet */
+dialog{border:0;padding:0;width:min(1180px,96vw);max-height:94vh;border-radius:18px;background:var(--surface);color:var(--ink)}
+dialog::backdrop{background:rgba(10,10,14,.6)}
+.sheet{display:grid;grid-template-columns:1fr 340px;max-height:94vh}
+.stage{background:var(--bg);display:flex;flex-direction:column;min-width:0;min-height:0}
+.stage-bar{display:flex;gap:8px;padding:12px;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--line)}
+.stage-bar h3{font-size:18px;margin-inline-end:auto}
+.screen{flex:1;overflow:auto;display:flex;justify-content:center;align-items:flex-start;padding:16px;min-height:300px}
+.device{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;position:relative;flex:none}
+.device iframe{border:0;transform-origin:0 0;position:absolute;top:0;left:0;background:#fff}
+.device img{display:block;width:100%;height:auto}
+.panel{padding:18px;overflow:auto;border-inline-start:1px solid var(--line);display:flex;flex-direction:column;gap:16px}
+.crit{display:grid;gap:4px}
+.crit label{font-size:14px;font-weight:600}
+.crit small{color:var(--muted);font-size:12px}
+.stars{display:flex;gap:4px}
+.stars button{border:1px solid var(--line);background:var(--bg);border-radius:8px;width:40px;height:40px;font-size:18px;line-height:1;color:var(--muted)}
+.stars button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.verdict{display:flex;gap:6px;flex-wrap:wrap}
+.verdict button{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px 12px;font-size:14px;min-height:44px}
+.verdict button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--bg)}
+textarea{width:100%;min-height:96px;border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;background:var(--bg);color:var(--ink);resize:vertical}
+.panel .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.saved{font-size:13px;color:var(--good)}
+.copybox{width:100%;min-height:160px;font-size:13px}
+@media (max-width:860px){
+  header.top{grid-template-columns:1fr}
+  .sheet{grid-template-columns:1fr;max-height:none}
+  dialog{max-height:96vh;overflow:auto}
+  .panel{border-inline-start:0;border-top:1px solid var(--line)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap" dir="rtl" lang="ar">
+  <header class="top">
+    <div>
+      <h1>معرض تصميمات المواقع</h1>
+      <p>١٣ شكل موقع مختلف نقدر نعمله، وجنبهم شغلنا اللي موجود فعلًا. اتفرّج، دوس «عجبني» على اللي يشبهك، وقيّم الشغل الموجود عشان نعرف نطوّر إيه الأول. كل الأمثلة لأنشطة افتراضية والأسعار فيها للتوضيح.</p>
+    </div>
+    <div class="summary">
+      <span class="count"><b id="nLiked">٠</b>عجبوني</span>
+      <span class="count"><b id="nRated">٠</b>اتقيّموا</span>
+      <button class="btn ghost" id="copyAll" type="button">ملخص التقييم</button>
+      <span class="save-state" id="saveState">بيتصل بمكان الحفظ…</span>
+    </div>
+  </header>
+
+  <section class="block" aria-labelledby="h-designs">
+    <div class="block-head">
+      <div>
+        <h2 id="h-designs">أشكال نقدر نعملها</h2>
+        <p>كل كارت ده موقع شغّال، مش صورة. دوس عليه يفتح كبير وجرّبه على الموبايل والتابلت. «نبض» هو المستوى الجديد: صور حقيقية وحركة وتفاعل. الباقي سكتشات سريعة لاتجاهات مختلفة، وهنطلّعها لنفس المستوى واحد واحد على حسب اختيارك.</p>
+      </div>
+      <div class="chips" id="filters" role="group" aria-label="فلترة حسب المجال"></div>
+    </div>
+    <div class="grid" id="designGrid"></div>
+  </section>
+
+  <section class="block" aria-labelledby="h-work">
+    <div class="block-head">
+      <div>
+        <h2 id="h-work">شغلنا الموجود</h2>
+        <p>دول الصفحات اللي اتعملت فعلًا في الاستوديو، بصورتها الحالية. تحت كل واحدة رأيي الصريح فيها، وانت قيّم وقول نكمّل ولا نطوّر ولا نشيل.</p>
+      </div>
+    </div>
+    <div class="grid" id="workGrid"></div>
+  </section>
+
+  <footer>
+    <b>إزاي ده بيفيدنا؟</b>
+    <ol>
+      <li>اختار الأشكال اللي حاسس إنها تشبه شغلك أو عملاءك.</li>
+      <li>قيّم الشغل الموجود بالنجوم واكتب ملاحظتك بكلامك.</li>
+      <li>التقييم بيتحفظ هنا وبيوصل لـ Claude؛ أقراه وأبدأ التطوير بالأهم.</li>
+    </ol>
+  </footer>
+</div>
+
+<dialog dir="rtl" lang="ar" id="viewer" aria-labelledby="vTitle">
+  <div class="sheet">
+    <div class="stage">
+      <div class="stage-bar">
+        <h3 id="vTitle"></h3>
+        <div class="chips" id="devices" role="group" aria-label="حجم الشاشة"></div>
+        <button class="btn ghost" id="vClose" type="button">قفل</button>
+      </div>
+      <div class="screen" id="screen"></div>
+    </div>
+    <form class="panel" id="rForm">
+      <div>
+        <h3 style="font-size:18px">تقييمك</h3>
+        <small style="color:var(--muted)">من ١ لـ ٥. سيب أي حاجة مش فارقة معاك.</small>
+      </div>
+      <div id="crits"></div>
+      <div class="crit">
+        <label>القرار</label>
+        <div class="verdict" id="verdict" role="group" aria-label="القرار"></div>
+      </div>
+      <div class="crit">
+        <label for="note">ملاحظتك</label>
+        <textarea id="note" placeholder="مثلًا: الألوان حلوة بس الخط صغير على الموبايل"></textarea>
+      </div>
+      <div class="row">
+        <button class="btn" type="submit">احفظ التقييم</button>
+        <button class="like" type="button" id="vLike" aria-pressed="false">♡ عجبني</button>
+        <span class="saved" id="savedMsg" aria-live="polite"></span>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+<dialog dir="rtl" lang="ar" id="copyDlg" aria-labelledby="cTitle" style="width:min(640px,94vw)">
+  <form method="dialog" class="panel" style="border:0">
+    <h3 id="cTitle" style="font-size:20px">ملخص التقييم</h3>
+    <small style="color:var(--muted)">ده كل اللي اخترته وقيّمته. لو التقييم محفوظ عندي مش محتاج تبعته؛ لو لأ، انسخه وابعته لي في الشات.</small>
+    <textarea class="copybox" id="copyText" readonly></textarea>
+    <div class="row"><button class="btn" type="button" id="copyBtn">انسخ</button><button class="btn ghost">قفل</button><span class="saved" id="copyMsg" aria-live="polite"></span></div>
+  </form>
+</dialog>
+
+<script>
+const AR = n => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+const CATS = { all:'الكل', service:'خدمات', food:'أكل وشرب', product:'منتجات وتطبيقات', event:'فعاليات', industry:'صناعة', art:'فن ومعمار' };
+const EFFORT = { s:'خفيف · يوم أو اتنين', m:'متوسط · حوالي أسبوع', l:'كبير · أكتر من أسبوع' };
+
+const DESIGNS = [
+  { id:'pulse-gym', tier:'flag', cat:'service', name:'نبض — سينمائي بصور حقيقية', field:'نادي تدريب', fit:'جيم، أكاديميات، عيادات علاج طبيعي، أي نشاط عنده صور قوية', look:'أسود وبرتقالي جمري، صور حقيقية في إطارات، كروت بتتفتح، قصة بتتثبّت وانت نازل، جدول حصص شغّال', tech:'CSS متقدّم + JavaScript خفيف، صور CC0', effort:'l' },
+  { id:'clinic-editorial', cat:'service', name:'هادي ومرتب', field:'عيادة أسنان', fit:'عيادات، محامين، مستشارين، مدارس', look:'أبيض وأخضر غامق، خط عربي كلاسيكي، مواعيد في جدول', tech:'CSS بس', effort:'s' },
+  { id:'ai-dark', cat:'product', name:'تقني غامق', field:'برنامج ذكاء اصطناعي', fit:'شركات برمجة، تطبيقات، منتجات رقمية', look:'كحلي غامق وأزرق فاتح، شاشة أوامر بتكتب', tech:'CSS بس', effort:'s' },
+  { id:'cafe-clay', cat:'food', name:'دافي وملموس', field:'كافيه', fit:'كافيهات، مخابز، محلات صغيرة', look:'لون الطين، كروت بارزة زي الفخار، خط عريض', tech:'CSS بس', effort:'s' },
+  { id:'architecture-swiss', cat:'art', name:'شبكة جريئة', field:'مكتب معماري', fit:'معماريين، مصممين، مطابع', look:'أبيض وأسود وأحمر، عنوان ضخم، كل حاجة على شبكة', tech:'CSS Grid', effort:'m' },
+  { id:'perfume-luxury', cat:'product', name:'فخامة هادية', field:'ماركة عطور', fit:'عطور، مجوهرات، فنادق، ساعات', look:'أسود ودهبي باهت، خط أميري، فراغ كتير', tech:'CSS + ظهور ناعم', effort:'m' },
+  { id:'kids-playful', cat:'product', name:'مرح وملون', field:'تطبيق تعليم أطفال', fit:'أطفال، ألعاب، حضانات، كورسات', look:'أصفر وأزرق وبمبي، مربعات مايلة بتتهز', tech:'CSS + حركة لمس', effort:'s' },
+  { id:'fintech-bento', cat:'product', name:'صناديق مرتبة', field:'تطبيق فلوس', fit:'تطبيقات، بنوك، لوحات أرقام', look:'رمادي فاتح وكروت بيضا بأحجام مختلفة، رسم بياني بيطلع', tech:'CSS Grid + حركة', effort:'m' },
+  { id:'festival-brutalist', cat:'event', name:'خام وصريخ', field:'مهرجان موسيقى', fit:'حفلات، براندات شبابية، ستريت وير', look:'أصفر فاقع وأسود، خطوط سميكة، عنوان مالي الشاشة', tech:'CSS بس', effort:'s' },
+  { id:'factory-blueprint', cat:'industry', name:'رسم هندسي', field:'مصنع مضخات', fit:'مصانع، معدات، قطع غيار، شركات هندسية', look:'كحلي بشبكة زي الرسم الهندسي، منتج بيتفك ويتركب', tech:'SVG + حركة تفكيك', effort:'m' },
+  { id:'koshary-restaurant', cat:'food', name:'شعبي أصيل', field:'مطعم كشري', fit:'مطاعم شعبية، محلات قديمة، حلواني', look:'كريمي وأحمر وأخضر، خط رقعة، منيو بنقط زي اليافطة', tech:'CSS بس', effort:'s' },
+  { id:'ecommerce-shop', cat:'product', name:'متجر منتجات', field:'متجر شيلان', fit:'محلات أونلاين، هاند ميد، ملابس', look:'هادي وكروت منتجات، فلتر وسلة بتشتغل', tech:'CSS + JavaScript بسيط', effort:'l' },
+  { id:'conference-event', cat:'event', name:'فعالية وجدول', field:'مؤتمر', fit:'مؤتمرات، ورش، معارض، كورسات', look:'برتقالي قوي فوق وجدول زمني واضح تحت', tech:'CSS بس', effort:'s' },
+];
+
+const WORK = [
+  { id:'work-noor', name:'نور — قائمة مشروبات', field:'موقع مثال اتبنى بمحرك المواقع', shots:['work/noor-desktop.jpg','work/noor-phone.jpg'],
+    good:'نضيف ومقروء، وبيتبني من ملف واحد وبيعدّي فحص الموبايل.', miss:'مفيهوش صور ولا أسعار، والصفحة الأولى فاضية زيادة.', next:'نحط صور حقيقية وأسعار ومواعيد، ونكبّر القائمة.' },
+  { id:'work-form-field', name:'FORM / FIELD', field:'موقع استوديو تصميم (تجربة)', shots:['work/form-field-desktop.jpg','work/form-field-phone.jpg'],
+    good:'أقوى شكل عندنا: خط كبير وصورة واحدة واضحة ولون متناسق.', miss:'إنجليزي بس، والمشاريع فيه وهمية.', next:'نسخة عربية، ونستخدمه كقالب لموقع بورتفوليو لعميل حقيقي.' },
+  { id:'work-motion-lab', name:'معمل الحركة', field:'أداة تعليمية للاستوديو', shots:['work/motion-lab-desktop.jpg','work/motion-lab-phone.jpg'],
+    good:'بتشتغل فعلًا: بتورّي شكل الحركة وتديك الكود.', miss:'إنجليزي، وشكلها أداة داخلية مش واجهة لعميل.', next:'نعرّبها لو هتستخدمها، أو نسيبها أداة للفريق بس.' },
+  { id:'work-anatomy', name:'مطحنة القهوة — أجزاء', field:'شرح منتج ثلاثي الأبعاد بيتفك', shots:['work/anatomy-desktop.jpg','work/anatomy-phone.jpg'],
+    good:'الفكرة الأقرب للي عايزه: منتج بيتفك وكل جزء له شرح بالعربي.', miss:'المجسم بسيط (أسطوانات ومربعات) والزرار والسلايدر شكلهم عادي.', next:'نطبّقها على منتج حقيقي لعميل (مضخة أو ماكينة) بشكل أشيك.' },
+];
+
+const CRITS = [
+  ['look','الشكل','حلو ولا لأ في عينك'],
+  ['clarity','الوضوح','فاهم الموقع بيقول إيه من أول نظرة'],
+  ['mobile','على الموبايل','مريح وانت ماسك التليفون'],
+  ['fit','مناسب لشغلنا','ينفع نبيعه لعملاءنا'],
+];
+const VERDICTS = [['keep','عجبني، نكمّل عليه'],['improve','محتاج تطوير'],['drop','مش مناسب']];
+const ALL = Object.fromEntries([...DESIGNS.map(d=>[d.id,{...d,kind:'design'}]), ...WORK.map(w=>[w.id,{...w,kind:'work'}])]);
+
+/* ---------- storage: shared db when the viewer allows it, this browser otherwise ---------- */
+const reviews = {};
+let db = null;
+const LS = 'gallery-reviews-v1';
+function lsRead(){ try { return JSON.parse(localStorage.getItem(LS) || '{}'); } catch { return {}; } }
+function lsWrite(){ try { localStorage.setItem(LS, JSON.stringify(reviews)); } catch {} }
+Object.assign(reviews, lsRead());
+const saveState = document.getElementById('saveState');
+function setState(t){ saveState.textContent = t; }
+
+async function connect(){
+  let timer = setTimeout(() => setState('مكان الحفظ المشترك مش بيرد؛ التقييم بيتحفظ على الجهاز ده بس. استخدم «ملخص التقييم» وابعته لي.'), 10000);
+  try {
+    db = window.claude && window.claude.use ? await window.claude.use('db') : null;
+  } catch { db = null; }
+  if (!db) { clearTimeout(timer); setState('التقييم بيتحفظ على الجهاز ده بس. لما تخلص دوس «ملخص التقييم» وابعته لي.'); return; }
+  db.collection('reviews').onSnapshot(snap => {
+    if (!snap.metadata.fromCache) { clearTimeout(timer); setState('التقييم بيتحفظ ويوصل لـ Claude تلقائي.'); }
+    for (const d of snap.docs) reviews[d.id] = { ...d.data() };
+    lsWrite(); renderAll();
+  }, () => { clearTimeout(timer); db = null; setState('مكان الحفظ المشترك وقف؛ التقييم بيتحفظ على الجهاز ده بس.'); });
+}
+
+async function save(id, patch){
+  const next = { ...(reviews[id] || {}), ...patch, item: ALL[id].name, kind: ALL[id].kind, updatedAt: new Date().toISOString() };
+  reviews[id] = next; lsWrite(); renderAll();
+  if (db) {
+    try { await db.collection('reviews').doc(id).set(next); return true; }
+    catch (e) { setState('الحفظ المشترك رفض (' + (e && e.code || 'خطأ') + ')؛ اتحفظ على الجهاز ده بس.'); return false; }
+  }
+  return true;
+}
+
+/* ---------- cards ---------- */
+let filter = 'all';
+const filtersEl = document.getElementById('filters');
+for (const [k,v] of Object.entries(CATS)) {
+  const b = document.createElement('button'); b.type='button'; b.className='chip'; b.textContent=v; b.dataset.k=k;
+  b.setAttribute('aria-pressed', k===filter); b.onclick = () => { filter = k; renderGrids(); };
+  filtersEl.append(b);
+}
+
+function avg(r){ const v = CRITS.map(c=>r && r[c[0]]).filter(Boolean); return v.length ? (v.reduce((a,b)=>a+b,0)/v.length) : 0; }
+function badge(r){
+  if (!r || !r.verdict) return '';
+  const t = Object.fromEntries(VERDICTS)[r.verdict];
+  return `<span class="badge ${r.verdict}">${t}</span>`;
+}
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function cardHTML(it){
+  const r = reviews[it.id] || {};
+  const thumb = it.kind==='design'
+    ? `<iframe src="specimens/${it.id}.html" loading="lazy" tabindex="-1" title="معاينة ${esc(it.name)}" aria-hidden="true"></iframe>`
+    : `<img src="${it.shots[0]}" alt="صورة الصفحة الحالية لـ ${esc(it.name)} على الكمبيوتر" loading="lazy">`;
+  const facts = it.kind==='design'
+    ? `<dl class="facts"><dt>تنفع لـ</dt><dd>${esc(it.fit)}</dd><dt>الشكل</dt><dd>${esc(it.look)}</dd><dt>المجهود</dt><dd>${EFFORT[it.effort]}</dd></dl>`
+    : `<div class="notes"><div><b>الحلو</b><span>${esc(it.good)}</span></div><div><b>الناقص</b><span>${esc(it.miss)}</span></div><div><b>اقتراحي</b><span>${esc(it.next)}</span></div></div>`;
+  return `<article class="card${r.liked?' liked':''}${it.tier==='flag'?' flag':''}" data-id="${it.id}">
+    <button class="thumb" type="button" data-open="${it.id}" aria-label="افتح ${esc(it.name)} كبير">${thumb}<span class="open">افتح كبير</span></button>
+    <div class="body">
+      <span class="field">${esc(it.field)}${it.kind==='design'?(it.tier==='flag'?' · <span class="lvl flag">مستوى عرض كامل</span>':' · <span class="lvl">سكتش سريع</span>'):''}</span>
+      <h3>${esc(it.name)}</h3>
+      ${facts}
+      <div class="actions">${actionsHTML(it)}</div>
+    </div></article>`;
+}
+
+function fitThumbs(){
+  document.querySelectorAll('.thumb iframe').forEach(f => { const w = f.parentElement.clientWidth; f.style.transform = `scale(${w/1280})`; });
+}
+function actionsHTML(it){
+  const r = reviews[it.id] || {}, a = avg(r);
+  return `<button class="like" type="button" data-like="${it.id}" aria-pressed="${!!r.liked}">${r.liked?'♥ عجبني':'♡ عجبني'}</button>
+        <button class="rate" type="button" data-open="${it.id}">${a?'عدّل التقييم':'قيّم'}</button>
+        ${a?`<span class="stars-mini">★ ${AR(a.toFixed(1))}</span>`:''}${badge(r)}`;
+}
+function renderGrids(){
+  filtersEl.querySelectorAll('.chip').forEach(b => b.setAttribute('aria-pressed', b.dataset.k===filter));
+  document.getElementById('designGrid').innerHTML = DESIGNS.filter(d => filter==='all' || d.cat===filter).map(d => cardHTML({...d,kind:'design'})).join('');
+  document.getElementById('workGrid').innerHTML = WORK.map(w => cardHTML({...w,kind:'work'})).join('');
+  fitThumbs(); renderCounts();
+}
+// a like or a rating only touches that card's buttons, so the live previews never reload
+function renderAll(){
+  document.querySelectorAll('.card').forEach(c => {
+    const it = ALL[c.dataset.id]; c.classList.toggle('liked', !!(reviews[it.id]||{}).liked);
+    c.querySelector('.actions').innerHTML = actionsHTML(it);
+  });
+  renderCounts();
+}
+function renderCounts(){
+  const vals = Object.values(reviews);
+  document.getElementById('nLiked').textContent = AR(vals.filter(r=>r.liked).length);
+  document.getElementById('nRated').textContent = AR(vals.filter(r=>avg(r)||r.verdict||r.note).length);
+}
+new ResizeObserver(fitThumbs).observe(document.body);
+
+document.addEventListener('click', e => {
+  const like = e.target.closest('[data-like]');
+  if (like) { const id = like.dataset.like; save(id, { liked: !(reviews[id]||{}).liked }); return; }
+  const open = e.target.closest('[data-open]');
+  if (open) openViewer(open.dataset.open);
+});
+
+/* ---------- viewer ---------- */
+const viewer = document.getElementById('viewer'), screenEl = document.getElementById('screen'), devEl = document.getElementById('devices');
+const DEVICES = [['phone','موبايل',390,780],['tablet','تابلت',820,1000],['desktop','كمبيوتر',1280,800]];
+let current = null, device = 'desktop', draft = {};
+
+function drawScreen(){
+  const it = ALL[current];
+  devEl.querySelectorAll('.chip').forEach(b => b.setAttribute('aria-pressed', b.dataset.k===device));
+  const [, , w, h] = DEVICES.find(d => d[0]===device);
+  const avail = Math.max(260, screenEl.clientWidth - 32);
+  const s = Math.min(1, avail / w);
+  if (it.kind === 'design') {
+    screenEl.innerHTML = `<div class="device" style="width:${w*s}px;height:${h*s}px"><iframe src="specimens/${it.id}.html" title="${esc(it.name)} على ${device}" style="width:${w}px;height:${h}px;transform:scale(${s})"></iframe></div>`;
+  } else {
+    const img = device === 'phone' ? it.shots[1] : it.shots[0];
+    const iw = device === 'phone' ? 390 : 1280;
+    screenEl.innerHTML = `<div class="device" style="width:${Math.min(iw, avail)}px"><img src="${img}" alt="${esc(it.name)} على ${device==='phone'?'الموبايل':'الكمبيوتر'}"></div>`;
+  }
+}
+function buildDevices(){
+  devEl.innerHTML = '';
+  const list = ALL[current].kind === 'design' ? DEVICES : DEVICES.filter(d => d[0] !== 'tablet');
+  for (const [k,label] of list) {
+    const b = document.createElement('button'); b.type='button'; b.className='chip'; b.dataset.k=k; b.textContent=label;
+    b.onclick = () => { device = k; drawScreen(); }; devEl.append(b);
+  }
+}
+function drawForm(){
+  const crits = document.getElementById('crits'); crits.innerHTML = '';
+  for (const [k,label,hint] of CRITS) {
+    const wrap = document.createElement('div'); wrap.className='crit';
+    wrap.innerHTML = `<label id="l-${k}">${label}</label><small>${hint}</small>`;
+    const st = document.createElement('div'); st.className='stars'; st.setAttribute('role','group'); st.setAttribute('aria-labelledby','l-'+k);
+    for (let i=1;i<=5;i++){ const b=document.createElement('button'); b.type='button'; b.textContent=AR(i);
+      b.setAttribute('aria-label', label+' '+AR(i)+' من ٥'); b.setAttribute('aria-pressed', (draft[k]||0)>=i);
+      b.onclick=()=>{ draft[k] = draft[k]===i ? 0 : i; drawForm(); }; st.append(b); }
+    wrap.append(st); crits.append(wrap);
+  }
+  const v = document.getElementById('verdict'); v.innerHTML='';
+  for (const [k,label] of VERDICTS){ const b=document.createElement('button'); b.type='button'; b.textContent=label;
+    b.setAttribute('aria-pressed', draft.verdict===k); b.onclick=()=>{ draft.verdict = draft.verdict===k ? '' : k; drawForm(); }; v.append(b); }
+  const lk = document.getElementById('vLike'); const liked = (reviews[current]||{}).liked;
+  lk.setAttribute('aria-pressed', !!liked); lk.textContent = liked ? '♥ عجبني' : '♡ عجبني';
+}
+function openViewer(id){
+  current = id; const r = reviews[id] || {};
+  draft = { look:r.look||0, clarity:r.clarity||0, mobile:r.mobile||0, fit:r.fit||0, verdict:r.verdict||'' };
+  document.getElementById('note').value = r.note || '';
+  document.getElementById('savedMsg').textContent = '';
+  document.getElementById('vTitle').textContent = ALL[id].name;
+  device = window.innerWidth < 700 ? 'phone' : 'desktop';
+  buildDevices(); drawForm();
+  viewer.showModal(); drawScreen();
+}
+document.getElementById('vClose').onclick = () => viewer.close();
+viewer.addEventListener('close', () => { screenEl.innerHTML = ''; });
+window.addEventListener('resize', () => { if (viewer.open) drawScreen(); });
+document.getElementById('vLike').onclick = () => { save(current, { liked: !(reviews[current]||{}).liked }).then(drawForm); };
+document.getElementById('rForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const ok = await save(current, { ...draft, note: document.getElementById('note').value.trim() });
+  document.getElementById('savedMsg').textContent = ok ? (db ? 'اتحفظ ووصل.' : 'اتحفظ على الجهاز ده.') : 'اتحفظ على الجهاز ده بس.';
+});
+
+/* ---------- summary ---------- */
+function summary(){
+  const lines = ['ملخص تقييم معرض التصميمات'];
+  const liked = DESIGNS.filter(d => (reviews[d.id]||{}).liked).map(d => d.name + ' (' + d.field + ')');
+  lines.push('', 'الأشكال اللي عجبتني: ' + (liked.length ? liked.join('، ') : 'لسه ما اخترتش'));
+  for (const id of Object.keys(ALL)) {
+    const r = reviews[id]; if (!r || !(avg(r) || r.verdict || r.note)) continue;
+    const parts = CRITS.filter(c => r[c[0]]).map(c => c[1] + ' ' + AR(r[c[0]]) + '/٥');
+    lines.push('', '• ' + ALL[id].name + (parts.length ? ' — ' + parts.join('، ') : ''));
+    if (r.verdict) lines.push('  القرار: ' + Object.fromEntries(VERDICTS)[r.verdict]);
+    if (r.note) lines.push('  ملاحظة: ' + r.note);
+  }
+  return lines.join('\n');
+}
+const copyDlg = document.getElementById('copyDlg');
+document.getElementById('copyAll').onclick = () => { document.getElementById('copyText').value = summary(); document.getElementById('copyMsg').textContent=''; copyDlg.showModal(); };
+document.getElementById('copyBtn').onclick = () => {
+  const t = document.getElementById('copyText'), m = document.getElementById('copyMsg');
+  navigator.clipboard.writeText(t.value).then(() => m.textContent = 'اتنسخ.', () => { t.select(); m.textContent = 'اضغط نسخ من الكيبورد.'; });
+};
+
+renderGrids();
+connect();
+</script>

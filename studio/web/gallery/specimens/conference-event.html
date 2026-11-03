@@ -1,0 +1,24 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>مؤتمر صُنع — مثال</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;700;900&display=swap">
+<style>
+:root{--bg:#FFFFFF;--ink:#101418;--muted:#5A626B;--accent:#E4572E;--soft:#F3F1EE;--line:#E3E0DB}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 "Noto Kufi Arabic",system-ui,sans-serif}
+.w{max-width:1100px;margin:auto;padding-inline:max(20px,4vw)}
+.tag{position:fixed;inset:auto auto 12px 12px;background:var(--ink);color:#fff;font-size:12px;padding:4px 10px;border-radius:4px;z-index:9}
+.hero{background:var(--accent);color:#fff;padding-block:60px 50px}
+.hero small{font-weight:700}.hero h1{font-weight:900;font-size:clamp(40px,7vw,96px);line-height:1.05;margin:10px 0 16px}
+.hero .d{display:flex;gap:28px;flex-wrap:wrap;font-weight:700}
+.btn{display:inline-block;margin-top:26px;background:#fff;color:var(--accent);padding:13px 26px;border-radius:8px;text-decoration:none;font-weight:700}
+h2{font-size:28px;margin:50px 0 16px}
+.tl{list-style:none;margin:0 0 60px;padding:0;border-right:3px solid var(--accent)}
+.tl li{display:grid;grid-template-columns:110px 1fr;gap:18px;padding:16px 22px 16px 0;border-bottom:1px solid var(--line);position:relative}
+.tl li:before{content:"";position:absolute;right:-9px;top:24px;width:15px;height:15px;border-radius:50%;background:var(--bg);border:3px solid var(--accent)}
+.tl time{font-weight:700;font-variant-numeric:tabular-nums}.tl b{display:block}.tl span{color:var(--muted);font-size:14px}
+@media(max-width:600px){.tl li{grid-template-columns:1fr;gap:2px}}
+</style></head><body><span class="tag">مثال تصميم · مؤتمر افتراضي</span>
+<section class="hero"><div class="w"><small>النسخة الثالثة</small><h1>مؤتمر صُنع<br>للمصانع الصغيرة</h1><div class="d"><span>١٨ يناير</span><span>الإسكندرية</span><span>يوم واحد</span></div><a class="btn" href="#">سجّل اسمك</a></div></section>
+<div class="w"><h2>جدول اليوم</h2><ol class="tl">
+<li><time>٩:٣٠</time><div><b>افتتاح: ليه المصنع الصغير بيكسب؟</b><span>القاعة الكبيرة</span></div></li>
+<li><time>١١:٠٠</time><div><b>ورشة: صيانة قبل العطل</b><span>قاعة ٢ · ٤٠ مقعد</span></div></li>
+<li><time>١:٠٠</time><div><b>غدا وتعارف</b><span>الحديقة</span></div></li>
+<li><time>٢:٣٠</time><div><b>جلسة: التصدير لأول مرة</b><span>القاعة الكبيرة</span></div></li></ol></div></body></html>
