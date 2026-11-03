@@ -109,7 +109,7 @@ export function build(site, outDir, { siteDir } = {}) {
   const S = STYLES(), style = S.styles.find((x) => x.slug === site.style), ar = site.lang === 'ar';
   rmSync(outDir, { recursive: true, force: true }); mkdirSync(join(outDir, 'assets', 'fonts'), { recursive: true });
   const faces = [...new Set(Object.values(style.fonts))].flatMap((fam) => (S.faces[fam] || []).map((f) => { copyFileSync(join(FONTS, f.file), join(outDir, 'assets', 'fonts', f.file));
-    return `@font-face{font-family:'${fam}';src:url('assets/fonts/${f.file}') format('${f.file.endsWith('.woff2') ? 'woff2' : 'truetype'}');font-weight:${f.weight};font-display:swap;${f.range ? `unicode-range:${f.range};` : ''}}`; })).join('\n');
+    return `@font-face{font-family:'${fam}';src:url('fonts/${f.file}') format('${f.file.endsWith('.woff2') ? 'woff2' : 'truetype'}');font-weight:${f.weight};font-display:swap;${f.range ? `unicode-range:${f.range};` : ''}}`; })).join('\n');
   const vars = `:root{${Object.entries(style.tokens).map(([k, val]) => `--${k}:${val}`).join(';')};--font-display:'${style.fonts.display}',system-ui,sans-serif;--font-text:'${style.fonts.text}',system-ui,sans-serif;--font-label:'${style.fonts.label}',ui-monospace,monospace}`;
   writeFileSync(join(outDir, 'assets', 'site.css'), `${faces}\n${vars}\n${readFileSync(join(WEB, 'motion', 'site.css'), 'utf8')}`);
   copyFileSync(join(WEB, 'motion', 'motion.js'), join(outDir, 'assets', 'motion.js'));

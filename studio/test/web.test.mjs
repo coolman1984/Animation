@@ -34,6 +34,7 @@ test('build: lang/dir, every section, styles fonts copied, no placeholders, smal
     assert.match(html, /<html lang="ar" dir="rtl">/); assert.match(html, /data-ring/); assert.match(html, /data-steps/); assert.match(html, /<h1 data-split>/);
     assert.ok(!/[‹›]/.test(html)); assert.ok(r.bytes < 700 * 1024, `${r.bytes} bytes`);
     for (const f of ['assets/site.css', 'assets/motion.js']) assert.ok(existsSync(join(out, f)));
+    assert.match(readFileSync(join(out, 'assets/site.css'), 'utf8'), /src:url\('fonts\//, 'font URLs are relative to assets/site.css');
     assert.match(readFileSync(join(out, 'assets/site.css'), 'utf8'), /@media \(prefers-reduced-motion: reduce\)/);
   } finally { rmSync(out, { recursive: true, force: true }); }
   for (const s of STYLES().styles) for (const f of Object.values(s.fonts)) assert.ok(STYLES().faces[f], `${s.slug}: no faces for ${f}`);
