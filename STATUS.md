@@ -1,6 +1,8 @@
 # Studio status and session handoff
 
-Updated: 2026-10-30.
+Updated: 2026-11-03.
+
+**Current scope: DONE for targeted web/render fixes — PR #35.** Local browser tools installed; web tests (5/5), three GPU example seek comparisons and showcase browser audit passed. Full repository suite and original CI host remain untested. See verification entry below.
 
 **Latest scope: DONE — Quick suite green on Windows (2026-10-30).** Motion Lab gaps (PR #28) and the baker short + frame triage were merged into main. Three quick tests failed only on the owner's Windows checkout (CRLF skill files; `I:\…` paths); `lib/agents.mjs` now reads skills as LF and the whisper and engine tests compare POSIX paths. `npm test`: 154 pass, 16 skipped, 0 fail. Not verified: a real whisper.cpp or Motion Canvas run on Windows.
 
@@ -320,3 +322,11 @@ critique. A new request for a film does not require regenerating the studio or r
 When a requested scope changes or closes, update this file with DONE / BLOCKED / IN PROGRESS,
 the exact verification result and a concrete next action only if one is still required.
 Do not keep stale “run first next session” instructions after the check has completed.
+
+
+## Verified web and text rasterization fixes — 2026-11-03
+Installed local Chromium 131.0.6778.0 (npm @sparticuz/chromium 131.0.1), SwiftShader, and the repository-pinned PixiJS 8.22.0 / Three.js 0.186.1. Retrieved original font files. Web unit tests: 5 pass, 0 fail. Targeted original example comparison loop: pixi-study, shader-study and three-study all pass across separate sessions and forward/reverse seeks, with unchanged pixel thresholds and without per-frame settle workaround. Before the fix, three-study at 4s differed in 2246 channel values by up to 29; differences were confined to the DOM title (bbox 75,272–195,303). Removing persistent will-change:transform from textLine word spans fixes history-dependent text rasterization here. Browser audit after typography/touch fixes: no red lights and no readability/tap-target warnings; remaining three taste advisories concern intentional multi-line display type, scanner-unrecognized IntersectionObserver motion, and a 37% desktop hero media area. Full repository suite, real devices, newer Chromium and original CI host were not run; this is targeted evidence, not a universal determinism claim. No new paid service or API used.
+
+
+## Content-first web cleanup — 2026-11-03
+Removed automatic decorative patterns and effect quotas in the first-party web pipeline. Explicit author choices remain available; no new third-party assets. See `studio/web/ANTI_SLOP_AUDIT.md` for findings, changed behavior, screenshots reviewed and passing unit/browser checks. No universal aesthetic guarantee or full-repository test claim.

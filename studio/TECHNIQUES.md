@@ -451,3 +451,11 @@ Reference-driven industrial inspection recipe — PLANNED / NOT EXECUTED: select
 ## 2026-10-29 — First industrial experiment brief (documentation only)
 
 PLANNED / NOT EXECUTED: a proposed 30-second hero → staged explosion → precise reassembly → ghosted working internals → cutaway → hero sequence. Use one canonical assembly with stable part IDs, pivots and assembled transforms; separate presentation from simulated process state. See ../EXPERIMENT_FIRST_INDUSTRIAL_SCENE.md for timing and evidence criteria.
+
+
+## Verified web and text rasterization fixes — 2026-11-03
+Installed local Chromium 131.0.6778.0 (npm @sparticuz/chromium 131.0.1), SwiftShader, and the repository-pinned PixiJS 8.22.0 / Three.js 0.186.1. Retrieved original font files. Web unit tests: 5 pass, 0 fail. Targeted original example comparison loop: pixi-study, shader-study and three-study all pass across separate sessions and forward/reverse seeks, with unchanged pixel thresholds and without per-frame settle workaround. Before the fix, three-study at 4s differed in 2246 channel values by up to 29; differences were confined to the DOM title (bbox 75,272–195,303). Removing persistent will-change:transform from textLine word spans fixes history-dependent text rasterization here. Browser audit after typography/touch fixes: no red lights and no readability/tap-target warnings; remaining three taste advisories concern intentional multi-line display type, scanner-unrecognized IntersectionObserver motion, and a 37% desktop hero media area. Full repository suite, real devices, newer Chromium and original CI host were not run; this is targeted evidence, not a universal determinism claim. No new paid service or API used.
+
+
+## Content-first web cleanup — 2026-11-03
+Removed automatic decorative patterns and effect quotas in the first-party web pipeline. Explicit author choices remain available; no new third-party assets. See `studio/web/ANTI_SLOP_AUDIT.md` for findings, changed behavior, screenshots reviewed and passing unit/browser checks. No universal aesthetic guarantee or full-repository test claim.
