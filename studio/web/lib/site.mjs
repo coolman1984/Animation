@@ -13,6 +13,40 @@ const PH = /[‹›]/;
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 export const SECTION_TYPES = ['hero', 'problem', 'features', 'steps', 'ring', 'stats', 'quote', 'marquee', 'faq', 'cta'];
 
+// Per-site design settings are data, never raw CSS. Existing presets remain fallbacks.
+const contrast = (a, b) => {
+  const luminance = hex => { const v=hex.slice(1).match(/../g).map(x=>parseInt(x,16)/255).map(x=>x<=0.04045?x/12.92:((x+0.055)/1.055)**2.4);return v[0]*0.2126+v[1]*0.7152+v[2]*0.0722; };
+  const x=luminance(a),y=luminance(b);return (Math.max(x,y)+0.05)/(Math.min(x,y)+0.05);
+};
+export function resolveDesign(site) {
+  const catalog=STYLES(), base=catalog.styles.find(x=>x.slug===site.style);
+  const errors=[];
+  if(!base)return {errors:[`unknown style ${site.style}`]};
+  const theme=site.theme ?? {}, layout=site.layout ?? {};
+  const object=x=>x && typeof x==='object' && !Array.isArray(x);
+  if(!object(theme)||!object(layout))return {errors:['theme and layout must be objects']};
+  const tokens={...base.tokens},fonts={...base.fonts};
+  for(const key of Object.keys(theme))if(!['tokens','fonts'].includes(key))errors.push(`unknown theme field ${key}`);
+  for(const [group,target] of [['tokens',tokens],['fonts',fonts]]){
+    if(theme[group]!==undefined&&!object(theme[group])){errors.push(`theme.${group} must be an object`);continue;}
+    for(const [key,value] of Object.entries(theme[group]||{})){
+      if(!Object.hasOwn(target,key)){errors.push(`unknown theme.${group}.${key}`);continue;}
+      if(typeof value!=='string'){errors.push(`theme.${group}.${key} must be a string`);continue;}
+      if(group==='tokens'){
+        if(key==='radius' ? !/^(?:[0-9]|[1-3][0-9]|4[0-8])px$/.test(value) : !/^#[0-9a-fA-F]{6}$/.test(value)){errors.push(`invalid theme token ${key}`);continue;}
+      }else{
+        if(!Object.hasOwn(catalog.faces,value)){errors.push(`unknown font ${value}`);continue;}
+        if(site.lang==='ar'&&!catalog.faces[value].some(f=>(f.range||'').includes('U+0600'))){errors.push(`font ${value} lacks a registered Arabic face`);continue;}
+      }
+      target[key]=value;
+    }
+  }
+  for(const [foreground,background] of [['ink','bg'],['muted','bg'],['accent-ink','accent'],['card-ink','card']])if(contrast(tokens[foreground],tokens[background])<4.5)errors.push(`theme contrast ${foreground}/${background} must be at least 4.5:1`);
+  const choices={hero:['split','media-first','stacked'],features:['rows','grid'],width:['narrow','standard','wide']};
+  for(const [key,value] of Object.entries(layout))if(!choices[key]?.includes(value))errors.push(`invalid layout.${key}`);
+  return {errors,style:{...base,tokens,fonts},layout:{hero:'split',features:'rows',width:'standard',...layout}};
+}
+
 // ---------- plan: what a top professional would build, as a skeleton ----------
 export function plan(brief = {}) {
   const ar = (brief.lang || 'ar') === 'ar';
@@ -53,6 +87,7 @@ export function designRecord(siteDir) {
 export function validate(site) {
   const errors = [], warnings = [], E = (m) => errors.push(m), W = (m) => warnings.push(m);
   if (!site || typeof site !== 'object') return { errors: ['site.json must be an object'], warnings };
+  errors.push(...resolveDesign(site).errors);
   const strings = []; const walk = (o, path) => { if (typeof o === 'string') strings.push([path, o]); else if (o && typeof o === 'object') for (const [k, v] of Object.entries(o)) walk(v, path ? `${path}.${k}` : k); };
   walk(site, '');
   for (const [path, s] of strings) if (PH.test(s)) E(`${path}: placeholder left ("${s.slice(0, 60)}") — write the real text`);
@@ -71,6 +106,8 @@ export function validate(site) {
 
     if (s.cta && (!s.cta.label || !s.cta.href)) E(`${at}: cta needs label and href`);
     if (s.image && !s.imageAlt) E(`${at}: image needs imageAlt`);
+    if (s.imageWidth !== undefined || s.imageHeight !== undefined) { if (![s.imageWidth,s.imageHeight].every(n=>Number.isInteger(n)&&n>0&&n<=16384)) E(`${at}: image dimensions must be positive integers up to 16384`); }
+    if (s.imageFit !== undefined && !['contain','cover'].includes(s.imageFit)) E(`${at}: imageFit must be contain or cover`);
     if ((s.title || '').split(/\s+/).length > 12) W(`${at}: title has ${(s.title || '').split(/\s+/).length} words — headlines read best under 10`);
   });
   if (site.brand?.logo && !site.brand.logoAlt) E('brand.logo needs brand.logoAlt');
@@ -82,11 +119,11 @@ export function validate(site) {
 
 // ---------- build ----------
 const sectionHtml = (s, i, ar) => {
-  const id = s.id ? ` id="${esc(s.id)}"` : '', h = (t, lvl = 2) => `<h${lvl}${lvl === 1 ? '' : ''}>${esc(t)}</h${lvl}>`;
+  const id = s.id ? ` id="${esc(s.id)}"` : '', h = (t, lvl = 2) => `<h${lvl}>${esc(t)}</h${lvl}>`;
   const cta = (c, cls = '') => c ? `<a class="btn ${cls}" href="${esc(c.href)}">${esc(c.label)}</a>` : '';
   switch (s.type) {
     case 'hero': return `<section class="hero${s.image ? '' : ' hero-text'}"${id}><div class="wrap"><div>${s.eyebrow ? `<p class="label"${s.motion === 'reveal' ? ' data-reveal' : ''}>${esc(s.eyebrow)}</p>` : ''}<h1>${esc(s.title)}</h1>${s.subtitle ? `<p class="sub"${s.motion === 'reveal' ? ' data-reveal' : ''}>${esc(s.subtitle)}</p>` : ''}<div class="actions"${s.motion === 'reveal' ? ' data-reveal' : ''}>${cta(s.cta)}${cta(s.secondary, 'ghost')}</div></div>
-${s.image ? `<div class="visual"><img src="${esc(s.image)}" alt="${esc(s.imageAlt)}" width="900" height="900" fetchpriority="high"></div>` : ''}</div></section>`;
+${s.image ? `<div class="visual ${s.imageFit || 'contain'}"><img src="${esc(s.image)}" alt="${esc(s.imageAlt)}" width="${s.imageWidth || 900}" height="${s.imageHeight || 900}" fetchpriority="high"></div>` : ''}</div></section>`;
     case 'problem': return `<section class="problem"${id}><div class="wrap">${h(s.title)}<p class="muted"${s.motion === 'reveal' ? ' data-reveal' : ''}>${esc(s.text)}</p></div></section>`;
     case 'features': return `<section class="features"${id}><div class="wrap">${h(s.title)}${s.text ? `<p class="muted"${s.motion === 'reveal' ? ' data-reveal' : ''}>${esc(s.text)}</p>` : ''}<div class="grid">${s.items.map((it) => `<article class="card"${s.motion === 'reveal' ? ' data-reveal' : ''}>${it.icon ? `<div class="icon" aria-hidden="true">${esc(it.icon)}</div>` : ''}<h3>${esc(it.title)}</h3><p>${esc(it.text)}</p></article>`).join('')}</div></div></section>`;
     case 'steps': return `<section class="steps" data-steps${id}><div class="wrap"><div class="pin" aria-hidden="true">${s.items.map((_, k) => `<span${k ? '' : ' class="on"'}>${(k + 1).toLocaleString(ar ? 'ar-EG' : 'en')}</span>`).join('')}</div><div>${h(s.title)}${s.items.map((it, k) => `<div data-step="${k}"><h3>${esc(it.title)}</h3><p class="muted">${esc(it.text)}</p></div>`).join('')}</div></div></section>`;
@@ -102,7 +139,7 @@ ${s.image ? `<div class="visual"><img src="${esc(s.image)}" alt="${esc(s.imageAl
 export function build(site, outDir, { siteDir } = {}) {
   const v = validate(site);
   if (v.errors.length) throw Object.assign(new Error(`site.json has ${v.errors.length} error(s):\n- ${v.errors.join('\n- ')}`), { validation: v });
-  const S = STYLES(), style = S.styles.find((x) => x.slug === site.style), ar = site.lang === 'ar';
+  const S = STYLES(), {style,layout}=resolveDesign(site), ar = site.lang === 'ar';
   rmSync(outDir, { recursive: true, force: true }); mkdirSync(join(outDir, 'assets', 'fonts'), { recursive: true });
   const faces = [...new Set(Object.values(style.fonts))].flatMap((fam) => (S.faces[fam] || []).map((f) => { copyFileSync(join(FONTS, f.file), join(outDir, 'assets', 'fonts', f.file));
     return `@font-face{font-family:'${fam}';src:url('fonts/${f.file}') format('${f.file.endsWith('.woff2') ? 'woff2' : 'truetype'}');font-weight:${f.weight};font-display:swap;${f.range ? `unicode-range:${f.range};` : ''}}`; })).join('\n');
@@ -127,7 +164,7 @@ export function build(site, outDir, { siteDir } = {}) {
 <link rel="stylesheet" href="assets/site.css">
 <script src="assets/motion.js" defer></script>
 </head>
-<body>
+<body class="hero-${layout.hero} features-${layout.features} width-${layout.width}">
 <a class="skip" href="#main">${ar ? 'تخطَّ إلى المحتوى' : 'Skip to content'}</a>
 <header class="top"><div class="wrap"><a class="brand" href="#top">${site.brand.logo ? `<img src="${esc(site.brand.logo)}" alt="${esc(site.brand.logoAlt)}" width="120" height="34">` : ''}<span>${esc(site.brand.name)}</span></a><nav class="nav" aria-label="${ar ? 'الأقسام' : 'Sections'}">${nav}</nav></div></header>
 <main id="main">

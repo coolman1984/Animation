@@ -100,3 +100,21 @@ footer a { color: var(--muted); }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   [data-reveal], [data-split] .w { opacity: 1 !important; transform: none !important; filter: none !important; }
 }
+
+/* Per-site composition: choices follow the content and preserve semantic order. */
+.width-narrow .wrap { max-width: 960px; }
+.width-wide .wrap { max-width: 1440px; }
+.hero-media-first .hero:not(.hero-text) .visual { grid-column: 1; grid-row: 1; }
+.hero-media-first .hero:not(.hero-text) .wrap > :first-child { grid-column: 2; grid-row: 1; }
+.hero-stacked .hero .wrap { grid-template-columns: 1fr; }
+.hero-stacked .hero .visual { width: 100%; max-width: none; order: 0; }
+.features-grid .features .grid { display: grid; }
+@media (max-width: 860px) {
+  .hero-media-first .hero:not(.hero-text) .visual,
+  .hero-media-first .hero:not(.hero-text) .wrap > :first-child { grid-column: auto; grid-row: auto; }
+  .hero .wrap > .visual { order: 0; }
+}
+
+.hero .visual img { width: 100%; height: auto; }
+.hero .visual.cover img { aspect-ratio: 4 / 5; object-fit: cover; }
+.hero .visual.contain img { object-fit: contain; }
