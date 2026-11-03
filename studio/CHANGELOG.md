@@ -609,3 +609,7 @@ Installed local Chromium 131.0.6778.0 (npm @sparticuz/chromium 131.0.1), SwiftSh
 
 ## Content-first web cleanup — 2026-11-03
 Removed automatic decorative patterns and effect quotas in the first-party web pipeline. Explicit author choices remain available; no new third-party assets. See `studio/web/ANTI_SLOP_AUDIT.md` for findings, changed behavior, screenshots reviewed and passing unit/browser checks. No universal aesthetic guarantee or full-repository test claim.
+
+
+## Reference-led composition upgrade — 2026-11-03
+The owner's supplied visual references now guide composition, imagery, type and mobile art direction (`studio/web/ART_DIRECTION.md`). Presets remain fallbacks: per-site theme tokens/fonts and hero/features/width composition controls are validated, contrast checked, and browser-tested. Preserve intentional gradients, shadows and depth when justified; the earlier cleanup only removes automatic decorative defaults. Controls alone do not certify artistic quality. Uses existing font assets; no new third-party imagery.
