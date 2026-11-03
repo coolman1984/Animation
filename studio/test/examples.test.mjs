@@ -35,7 +35,7 @@ function sameFrame(a, b, label) {
   for (let i = 0; i < x.length; i++) if (x[i] !== y[i]) { n++; max = Math.max(max, Math.abs(x[i] - y[i])); }
   assert.ok(max <= 1 && n <= x.length * 0.03, `${label}: ${n} channel values differ, max ${max} levels`);
 }
-const shot = async (client, t) => { await client.eval(`window.renderAt(${t})`); await settleCapture(client); return (await client.send('Page.captureScreenshot', { format: 'png' })).data; };
+const shot = async (client, t) => { await client.eval(`window.renderAt(${t})`); return (await client.send('Page.captureScreenshot', { format: 'png' })).data; };
 
 test('example studies render and seek deterministically in any order', { skip: !enabled, timeout: 300000 }, async () => {
   const server = await serve(ROOT);
