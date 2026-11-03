@@ -1,6 +1,8 @@
 # Studio status and session handoff
 
-Updated: 2026-10-30.
+Updated: 2026-11-03.
+
+**Current scope: PARTIAL — Web foundation and showcase (PR #35).** Fixed generated CSS font URLs; isolated build resolves font fixture successfully. Added fictional FORM / FIELD showcase; live Chromium viewport/anchor/no-JS checks documented in its DESIGN.md. Fixed showcase main nesting, navigation target size and accent contrast. Example screenshot helper now settles after each seek without relaxing pixel thresholds. Not verified: original Pixi regression on a WebGL-capable browser; cloud browser rejects renderer initialization. No fresh CI run observed after PR creation. No claim of full-suite pass or award readiness.
 
 **Latest scope: DONE — Quick suite green on Windows (2026-10-30).** Motion Lab gaps (PR #28) and the baker short + frame triage were merged into main. Three quick tests failed only on the owner's Windows checkout (CRLF skill files; `I:\…` paths); `lib/agents.mjs` now reads skills as LF and the whisper and engine tests compare POSIX paths. `npm test`: 154 pass, 16 skipped, 0 fail. Not verified: a real whisper.cpp or Motion Canvas run on Windows.
 
