@@ -156,9 +156,10 @@ export async function checkSite({ dir, outDir, page = 'index.html' }) {
   yellow('taste-type-detail', [...new Set([...all('tinyCaps').map((x) => 'tiny tracked caps "' + x + '"'), ...all('longLines').map((x) => 'long line "' + x + '"')])], 'no tiny tracked caps; body lines ≤ ~75 characters', 'labels at reading size; set body max-width ≈ 65ch');
   yellow('taste-easing', all('bounce'), 'no bounce or elastic easing', 'ease-out curves that settle (no cubic-bezier value outside 0–1)');
   yellow('taste-rhythm', all('blank'), 'no blank stretch taller than half a screen', 'close the gap or put the next claim in it (section gaps 120–240 px on desktop)');
-  yellow('taste-motion', d.moving < 8 ? [`${d.moving} moving element(s)`] : [], `${d.moving} moving elements`, 'give at least eight elements a reveal, split, parallax, count or ring (transform/opacity only)', Math.max(0, 8 - d.moving));
+  // Observations, not quality quotas: quiet/type-led sites are valid creative directions.
+  add('taste-motion', 'green', `${d.moving} marked motion elements; no minimum. Review purpose and reduced-motion behavior.`, d.moving);
   const desk = viewports.find((v) => v.name === 'desktop');
-  yellow('taste-hero-media', desk && desk.heroMedia < 40 ? [`real media covers ${desk.heroMedia} % of the first desktop screen`] : [], `media covers ${desk?.heroMedia ?? '?'} % of the first screen`, 'top sites give the hero picture ≥ 40 % of the first screen (fine to keep a type-led hero on purpose: say why)', Math.max(0, 40 - (desk?.heroMedia ?? 40)));
+  add('taste-hero-media', 'green', `media covers ${desk?.heroMedia ?? 0}% of the first screen; no required ratio. Review relevance to the brief.`, desk?.heroMedia ?? 0);
   const reds = lights.filter((l) => l.light === 'red').length;
   return { lights, verdict: reds ? `not ready: ${reds} red light(s)` : lights.some((l) => l.light === 'yellow') ? 'ready; read the yellow notes' : 'ready', viewports: viewports.map(({ wide, small, lowContrast, tiny, hidden, longHead, gradient, shadow, pure, greyOnColour, tinyCaps, longLines, bounce, blank, ...v }) => v) };
 }

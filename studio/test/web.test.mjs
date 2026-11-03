@@ -11,7 +11,7 @@ const fill = (o) => typeof o === 'string' && /[‹›]/.test(o) ? (/href|mailto/
 
 test('plan: the house structure with ambition questions, refused until written', () => {
   const { site, todo } = plan({ brand: 'نور', style: 'ink-studio' });
-  assert.deepEqual(site.sections.map((s) => s.type), ['hero', 'problem', 'features', 'steps', 'ring', 'faq', 'cta']);
+  assert.deepEqual(site.sections.map((s) => s.type), ['hero', 'features', 'cta']);
   assert.ok(todo.some((t) => t.path === 'ambition.topPro'));
   assert.ok(validate(site).errors.some((e) => /placeholder left/.test(e)));
   assert.deepEqual(validate(fill(site)).errors, []);
@@ -31,8 +31,12 @@ test('build: lang/dir, every section, styles fonts copied, no placeholders, smal
   const site = JSON.parse(readFileSync(join(STUDIO, 'web/sites/example/site.json'), 'utf8')), out = mkdtempSync(join(tmpdir(), 'web-'));
   try {
     const r = build(site, out, { siteDir: join(STUDIO, 'web/sites/example') }), html = readFileSync(join(out, 'index.html'), 'utf8');
-    assert.match(html, /<html lang="ar" dir="rtl">/); assert.match(html, /data-ring/); assert.match(html, /data-steps/); assert.match(html, /<h1 data-split>/);
-    assert.ok(!/[‹›]/.test(html)); assert.ok(r.bytes < 700 * 1024, `${r.bytes} bytes`);
+    assert.match(html, /<html lang="ar" dir="rtl">/); assert.match(html, /data-ring/); assert.match(html, /<h1>/);
+    assert.ok(!/[‹›]/.test(html));
+    assert.doesNotMatch(html, /class="orb"|data-magnetic|data-parallax|data-count|data-split|data-reveal/, 'quiet content-first defaults');
+    const opted = {...site, sections:site.sections.map((section,i)=>i===0?{...section,motion:'reveal'}:section)};
+    build(opted,out,{siteDir:join(STUDIO,'web/sites/example')});
+    assert.match(readFileSync(join(out,'index.html'),'utf8'),/data-reveal/, 'authored reveal remains available'); assert.ok(r.bytes < 700 * 1024, `${r.bytes} bytes`);
     for (const f of ['assets/site.css', 'assets/motion.js']) assert.ok(existsSync(join(out, f)));
     assert.match(readFileSync(join(out, 'assets/site.css'), 'utf8'), /src:url\('fonts\//, 'font URLs are relative to assets/site.css');
     assert.match(readFileSync(join(out, 'assets/site.css'), 'utf8'), /@media \(prefers-reduced-motion: reduce\)/);
