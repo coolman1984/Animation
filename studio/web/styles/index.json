@@ -102,6 +102,18 @@
         "file": "SpaceMono-Bold.ttf",
         "weight": "700"
       }
+    ],
+    "Lora": [
+      {
+        "file": "Lora-latin.woff2",
+        "weight": "400 700"
+      }
+    ],
+    "Geist": [
+      {
+        "file": "Geist-500-latin.woff2",
+        "weight": "500"
+      }
     ]
   }
 }
