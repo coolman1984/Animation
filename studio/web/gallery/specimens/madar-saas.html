@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مدار — مثال منصة برمجية</title>
+<meta name="description" content="مثال تصميم لمنصة افتراضية لإدارة صيانة المصانع. البيانات توضيحية.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#08090B; --bg2:#0F1114; --panel:#131619; --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.14);
+  --ink:#F2F3F5; --ink2:#A4A9B3; --mute:#6E7480; --accent:#7C8CFF; --green:#3FCF8E; --amber:#F5B14C; --red:#F06A6A;
+  --f:"Vazirmatn",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace; --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.8 var(--f);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.w{max-width:1200px;margin:0 auto;padding-inline:max(20px,4vw)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+.demo{position:fixed;inset:auto auto 16px 16px;z-index:60;background:var(--ink);color:var(--bg);font:500 12px var(--f);padding:6px 12px;border-radius:99px}
+.mono{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
+.btn{white-space:nowrap;display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 20px;border-radius:10px;font:500 15px var(--f);border:0;cursor:pointer;transition:background .2s,border-color .2s}
+.btn.light{background:var(--ink);color:var(--bg)}.btn.light:hover{background:#fff}
+.btn.dark{background:var(--panel);color:var(--ink);border:1px solid var(--line2)}.btn.dark:hover{border-color:rgba(255,255,255,.3)}
+
+header.nav{position:sticky;top:0;z-index:40;background:rgba(8,9,11,.8);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+header.nav .w{display:flex;align-items:center;gap:36px;height:64px}
+.logo{display:flex;align-items:center;gap:10px;font:600 19px var(--f)}
+.logo svg{width:24px;height:24px}
+nav ul{display:flex;gap:26px;list-style:none;margin:0;padding:0;font-size:15px;color:var(--ink2)}
+nav ul a:hover{color:var(--ink)}
+.nav-end{margin-inline-start:auto;display:flex;gap:8px}
+
+.hero{padding-block:110px 0;text-align:center;position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:-20% 10% auto;height:520px;background:radial-gradient(closest-side,rgba(124,140,255,.16),transparent);pointer-events:none}
+.badge{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line2);border-radius:99px;padding:5px 14px 5px 6px;font-size:14px;color:var(--ink2)}
+.badge b{background:rgba(124,140,255,.16);color:var(--accent);font-weight:500;border-radius:99px;padding:1px 10px}
+h1{font:600 clamp(38px,4.4vw,62px)/1.25 var(--f);letter-spacing:-.01em;margin:22px auto 18px;max-width:22ch;text-wrap:balance}
+h1 span{color:var(--mute)}
+.lead{color:var(--ink2);max-width:52ch;margin:0 auto 34px;font-size:19px}
+.cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* product window (built in code) */
+.window{margin:56px auto 0;max-width:1120px;border:1px solid var(--line2);border-radius:16px;background:var(--bg2);box-shadow:0 0 0 1px rgba(0,0,0,.5),0 60px 120px -40px rgba(124,140,255,.25);overflow:hidden;text-align:start;animation:win 1.1s var(--ease) both .2s}
+@keyframes win{from{opacity:0;transform:translateY(40px) scale(.98)}}
+.wbar{display:flex;align-items:center;gap:8px;height:42px;padding:0 14px;border-bottom:1px solid var(--line)}
+.wbar i{width:11px;height:11px;border-radius:50%;background:#2A2E35}
+.wbar span{margin-inline-start:auto;font:400 12px var(--mono);color:var(--mute);direction:ltr}
+.app{display:grid;grid-template-columns:210px 1fr;min-height:470px}
+.side{border-inline-end:1px solid var(--line);padding:16px 10px;display:flex;flex-direction:column;gap:2px;font-size:14px;color:var(--ink2)}
+.side a{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:8px}
+.side a.on{background:rgba(255,255,255,.06);color:var(--ink)}
+.side small{font:400 12px var(--mono);color:var(--mute)}
+.side h6{margin:14px 10px 4px;font:500 12px var(--f);color:var(--mute)}
+.main{padding:18px 22px;display:grid;grid-template-columns:1.4fr 1fr;gap:16px;align-content:start}
+.kpis{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.kpi small{color:var(--mute);font-size:13px}
+.kpi b{display:block;font:500 26px var(--mono);direction:ltr;text-align:right;margin-top:2px}
+.kpi em{font-style:normal;font-size:12px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0}
+.box h5{margin:0 0 10px;font:500 14px var(--f);display:flex;justify-content:space-between;color:var(--ink2)}
+.wo{display:grid;grid-template-columns:auto 1fr auto auto;gap:12px;align-items:center;padding:9px 0;border-top:1px solid var(--line);font-size:14px}
+.wo:first-of-type{border-top:0}
+.dot{width:8px;height:8px;border-radius:50%}
+.wo .mono{font-size:12px;color:var(--mute)}
+.tag{font-size:12px;padding:2px 8px;border-radius:6px;background:rgba(255,255,255,.06);color:var(--ink2);white-space:nowrap}
+.machines{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.m{border-radius:8px;padding:8px;font:400 11px var(--mono);direction:ltr;text-align:center;border:1px solid var(--line)}
+.m.ok{background:rgba(63,207,142,.08);color:var(--green)}.m.warn{background:rgba(245,177,76,.1);color:var(--amber)}.m.down{background:rgba(240,106,106,.12);color:var(--red)}
+.spark{width:100%;height:84px;display:block;margin-top:10px}
+
+section{padding-block:140px 0}
+.head{max-width:760px}
+.label{font:500 15px var(--f);color:var(--accent)}
+h2{font:600 clamp(32px,3.8vw,52px)/1.3 var(--f);margin:10px 0 16px;text-wrap:balance}
+h2 span{color:var(--mute)}
+.head p{color:var(--ink2);margin:0}
+
+.bento{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:56px}
+.tile{background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:26px;display:flex;flex-direction:column;gap:12px;min-height:340px;overflow:hidden}
+.tile.wide{grid-column:span 2}
+.tile h3{font:600 21px/1.4 var(--f);margin:0}.tile p{color:var(--ink2);margin:0;font-size:16px}
+.tile .vis{margin-top:auto}
+.flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.flow span{border:1px solid var(--line2);background:var(--panel);border-radius:10px;padding:10px 14px;font-size:14px}
+.flow i{color:var(--mute);font-style:normal}
+.flow span.hot{border-color:var(--accent);color:#fff;box-shadow:0 0 0 4px rgba(124,140,255,.12)}
+.phone{width:200px;margin:0 auto -60px;border:1px solid var(--line2);border-radius:28px;background:var(--panel);padding:14px;font-size:13px}
+.phone .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}
+.phone button{margin-top:12px;width:100%;height:38px;border-radius:10px;border:0;background:var(--accent);color:#0A0B10;font:600 14px var(--f)}
+.qr{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;width:150px;margin:0 auto}
+.qr i{aspect-ratio:1;background:#2A2E35;border-radius:2px}.qr i.f{background:var(--ink)}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:56px;border-top:1px solid var(--line2)}
+.steps div{padding:28px 0 0;padding-inline-end:34px}
+.steps .mono{font-size:13px;color:var(--accent)}
+.steps h3{font:600 20px var(--f);margin:8px 0}.steps p{color:var(--ink2);margin:0;font-size:16px}
+
+.quote{margin-top:140px;border-block:1px solid var(--line);padding-block:80px;text-align:center}
+.quote p{font:500 clamp(24px,2.8vw,36px)/1.6 var(--f);max-width:30ch;margin:0 auto 20px;text-wrap:balance}
+.quote small{color:var(--mute);font-size:15px}
+
+.final{text-align:center;padding-block:140px 110px}
+.final h2{max-width:18ch;margin-inline:auto}
+.final p{color:var(--ink2);margin:0 auto 30px;max-width:44ch}
+footer{border-top:1px solid var(--line);padding-block:30px 80px;color:var(--mute);font-size:14px}
+footer .w{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+@supports (animation-timeline:view()){
+  .rv{animation:rv linear both;animation-timeline:view();animation-range:entry 5% entry 50%}
+  @keyframes rv{from{opacity:0;transform:translateY(30px)}}
+}
+@media (max-width:980px){
+  nav ul{display:none}
+  .app{grid-template-columns:1fr}.side{display:none}
+  .main{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}
+  .bento{grid-template-columns:1fr}.tile.wide{grid-column:auto}
+  .steps{grid-template-columns:1fr}.steps div{padding-bottom:22px;border-bottom:1px solid var(--line)}
+  section{padding-top:100px}
+}
+@media (max-width:520px){.nav-end .dark{display:none}.hero{padding-top:70px}.wo{grid-template-columns:auto 1fr auto}.wo .tag{display:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<span class="demo">مثال تصميم · منتج افتراضي</span>
+
+<header class="nav"><div class="w">
+  <a class="logo" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="#F2F3F5" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="#7C8CFF"/><circle cx="20.5" cy="9" r="2" fill="#F2F3F5"/></svg>مدار</a>
+  <nav aria-label="القائمة"><ul><li><a href="#features">المنصة</a></li><li><a href="#how">طريقة العمل</a></li><li><a href="#">الأسعار</a></li><li><a href="#">العملاء</a></li></ul></nav>
+  <div class="nav-end"><a class="btn dark" href="#">تسجيل الدخول</a><a class="btn light" href="#start">اطلب عرضًا</a></div>
+</div></header>
+
+<main>
+<section class="hero" style="padding-top:76px"><div class="w">
+  <span class="badge"><b>جديد</b>تنبيهات الأعطال من حساسات الاهتزاز</span>
+  <h1>صيانة المصنع في مكان واحد. <span>قبل أن يتوقف الخط.</span></h1>
+  <p class="lead">مدار ينظم أوامر الصيانة وقطع الغيار وحالة كل ماكينة، ويخبر فريقك بما يجب إصلاحه اليوم قبل أن يتحول إلى عطل.</p>
+  <div class="cta"><a class="btn light" href="#start">ابدأ تجربة لمدة ٣٠ يومًا</a><a class="btn dark" href="#features">شاهد المنصة</a></div>
+
+  <div class="window" aria-label="لوحة تحكم المنصة: مؤشرات الأداء وأوامر الصيانة وحالة الماكينات">
+    <div class="wbar"><i></i><i></i><i></i><span>app.madar.example/plant/10th-ramadan</span></div>
+    <div class="app">
+      <aside class="side">
+        <a class="on" href="#">نظرة عامة</a><a href="#">أوامر الصيانة <small>12</small></a><a href="#">الماكينات <small>48</small></a><a href="#">قطع الغيار</a><a href="#">التقارير</a>
+        <h6>الخطوط</h6><a href="#">خط التعبئة ١</a><a href="#">خط التعبئة ٢</a><a href="#">الضواغط</a>
+      </aside>
+      <div class="main">
+        <div class="kpis">
+          <div class="kpi"><small>جاهزية الماكينات</small><b>96.4%</b><em style="color:var(--green)">▲ ١٫٢ هذا الأسبوع</em></div>
+          <div class="kpi"><small>أوامر مفتوحة</small><b>12</b><em style="color:var(--mute)">٣ منها عاجلة</em></div>
+          <div class="kpi"><small>متوسط زمن الإصلاح</small><b>1h 40m</b><em style="color:var(--green)">▼ ٢٢ دقيقة</em></div>
+          <div class="kpi"><small>قطع تحت الحد الأدنى</small><b>4</b><em style="color:var(--amber)">تحتاج طلب شراء</em></div>
+        </div>
+        <div class="box"><h5>أوامر الصيانة اليوم <span class="mono">WO</span></h5>
+          <div class="wo"><span class="dot" style="background:var(--red)"></span><span>تسريب في الحشوة الميكانيكية — مضخة P‑12</span><span class="tag">عاجل</span><span class="mono">WO‑2291</span></div>
+          <div class="wo"><span class="dot" style="background:var(--amber)"></span><span>اهتزاز مرتفع في محمل الضاغط C‑3</span><span class="tag">اليوم</span><span class="mono">WO‑2290</span></div>
+          <div class="wo"><span class="dot" style="background:var(--accent)"></span><span>تغيير زيت دوري — خط التعبئة ٢</span><span class="tag">مجدول</span><span class="mono">WO‑2287</span></div>
+          <div class="wo"><span class="dot" style="background:var(--green)"></span><span>معايرة حساس الحرارة — فرن ٤</span><span class="tag">تم</span><span class="mono">WO‑2281</span></div>
+        </div>
+        <div class="box"><h5>حالة الماكينات <span class="mono">LIVE</span></h5>
+          <div class="machines" id="machines"></div>
+          <svg class="spark" viewBox="0 0 300 84" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7C8CFF" stop-opacity=".35"/><stop offset="1" stop-color="#7C8CFF" stop-opacity="0"/></linearGradient></defs>
+            <path d="M0 60 L25 55 L50 58 L75 44 L100 48 L125 36 L150 40 L175 30 L200 34 L225 22 L250 26 L275 16 L300 18 L300 84 L0 84Z" fill="url(#g)"/>
+            <path d="M0 60 L25 55 L50 58 L75 44 L100 48 L125 36 L150 40 L175 30 L200 34 L225 22 L250 26 L275 16 L300 18" fill="none" stroke="#7C8CFF" stroke-width="2"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section id="features"><div class="w">
+  <div class="head rv"><span class="label">المنصة</span><h2>كل ما يحتاجه فريق الصيانة. <span>بدون أوراق وبدون مجموعات واتساب.</span></h2></div>
+  <div class="bento">
+    <div class="tile wide rv"><h3>من البلاغ إلى الإغلاق في مسار واضح</h3><p>كل عطل يتحول إلى أمر صيانة له مسؤول وموعد وقطع غيار محجوزة، ويُغلق بصورة وتوقيع.</p>
+      <div class="vis flow"><span>بلاغ من المشغل</span><i>←</i><span class="hot">أمر صيانة</span><i>←</i><span>حجز قطعة الغيار</span><i>←</i><span>الإصلاح</span><i>←</i><span>إغلاق وتقرير</span></div></div>
+    <div class="tile rv"><h3>تطبيق للفني في الموقع</h3><p>يفتح الأمر، يسجل الوقت، ويرفع الصور حتى بدون إنترنت.</p>
+      <div class="vis"><div class="phone"><div class="row"><span>WO‑2291</span><span style="color:var(--red)">عاجل</span></div><div class="row"><span>المضخة</span><span class="mono">P‑12</span></div><div class="row"><span>القطعة</span><span>حشوة ٣٥ مم</span></div><button type="button">بدء العمل</button></div></div></div>
+    <div class="tile rv"><h3>رمز لكل ماكينة</h3><p>امسح الرمز على الماكينة لترى تاريخ أعطالها ودليل تشغيلها فورًا.</p>
+      <div class="vis"><div class="qr" id="qr" aria-hidden="true"></div></div></div>
+    <div class="tile wide rv"><h3>قطع الغيار تحت السيطرة</h3><p>تنبيه تلقائي عندما تقل أي قطعة عن الحد الأدنى، مع اقتراح كمية الطلب حسب معدل الاستهلاك.</p>
+      <div class="vis box" style="background:var(--panel)">
+        <div class="wo"><span class="dot" style="background:var(--amber)"></span><span>محمل كروي 6205</span><span class="tag">المتاح ٢ / الحد ٦</span><span class="mono">SKU‑0412</span></div>
+        <div class="wo"><span class="dot" style="background:var(--red)"></span><span>حشوة ميكانيكية ٣٥ مم</span><span class="tag">المتاح ٠ / الحد ٢</span><span class="mono">SKU‑0388</span></div>
+        <div class="wo"><span class="dot" style="background:var(--green)"></span><span>سير نقل A‑48</span><span class="tag">المتاح ١٤ / الحد ٤</span><span class="mono">SKU‑0101</span></div></div></div>
+  </div>
+</div></section>
+
+<section id="how"><div class="w">
+  <div class="head rv"><span class="label">طريقة العمل</span><h2>جاهز للعمل خلال أسبوعين</h2></div>
+  <div class="steps">
+    <div class="rv"><span class="mono">01</span><h3>نسجل ماكيناتك</h3><p>يرفع فريقنا قائمة الماكينات وقطع الغيار من ملفاتكم الحالية.</p></div>
+    <div class="rv"><span class="mono">02</span><h3>ندرب الفريق</h3><p>جلستان قصيرتان للمشرفين والفنيين داخل المصنع.</p></div>
+    <div class="rv"><span class="mono">03</span><h3>تبدأ القياس</h3><p>تقرير أسبوعي بالجاهزية وزمن الإصلاح والتكلفة لكل خط.</p></div>
+  </div>
+</div></section>
+
+<div class="quote"><div class="w rv"><p>«أول مرة نعرف بالأرقام أي ماكينة تكلّفنا أكثر، وأين يضيع وقت الفريق.»</p><small>اقتباس توضيحي لعميل افتراضي</small></div></div>
+
+<section class="final" id="start" style="padding-top:140px"><div class="w rv">
+  <h2>ابدأ بخط إنتاج واحد. <span>وتوسع عندما ترى النتيجة.</span></h2>
+  <p>تجربة كاملة لمدة ٣٠ يومًا على خط واحد، مع إعداد ودعم من فريقنا.</p>
+  <div class="cta"><a class="btn light" href="#">اطلب عرضًا</a><a class="btn dark" href="#">تحدث مع المبيعات</a></div>
+</div></section>
+</main>
+<footer><div class="w"><span>مدار منتج افتراضي، وهذه الصفحة مثال تصميم. البيانات والاقتباسات توضيحية.</span><span>© ٢٠٢٦</span></div></footer>
+
+<script>
+// live-looking machine grid (deterministic, gentle updates)
+const M=document.getElementById('machines'),ids=['P‑10','P‑11','P‑12','C‑1','C‑2','C‑3','F‑4','L‑2'];
+const st=['ok','ok','down','ok','ok','warn','ok','ok'];
+function drawM(){M.innerHTML=ids.map((id,i)=>`<div class="m ${st[i]}">${id}</div>`).join('')}drawM();
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches){let k=0;setInterval(()=>{k++;st[6]=k%4===2?'warn':'ok';drawM()},2400)}
+// decorative QR-like grid
+const qr=document.getElementById('qr');let s=7;for(let i=0;i<81;i++){s=(s*9301+49297)%233280;const r=Math.floor(i/9),c=i%9,corner=(r<3&&c<3)||(r<3&&c>5)||(r>5&&c<3);
+  const e=document.createElement('i');if(corner?!(r%2&&c%2&&!(r===1&&c===1)&&!(r===1&&c===7)&&!(r===7&&c===1)):s/233280>.5)e.className='f';qr.append(e)}
+</script>
+</body>
+</html>

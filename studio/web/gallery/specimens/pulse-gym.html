@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>نبض — مثال نادي تدريب</title>
+<meta name="description" content="مثال تصميم لنادي تدريب افتراضي. الصور CC0 من StockSnap.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#0B0B0C; --bg2:#141416; --ink:#F5F3EF; --ink2:#C9C5BE; --mute:#8D8981; --line:rgba(255,255,255,.12);
+  --red:#E5322D; --red-ink:#FFFFFF; --paper:#F5F3EF; --paper-ink:#121212;
+  --f:"IBM Plex Sans Arabic",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 18px/1.8 var(--f);-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+.w{max-width:1240px;margin:0 auto;padding-inline:max(20px,4vw)}
+:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+.demo{position:fixed;inset:auto auto 16px 16px;z-index:60;background:var(--paper);color:var(--paper-ink);font:500 12px var(--f);padding:6px 12px;border-radius:99px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:54px;padding:0 28px;border-radius:4px;font:600 16px var(--f);border:0;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.btn.red{background:var(--red);color:var(--red-ink)}.btn.red:hover{background:#C9221E}
+.btn.light{background:var(--paper);color:var(--paper-ink)}.btn.light:hover{background:#fff}
+.btn.line{background:transparent;color:var(--ink);border:1.5px solid rgba(255,255,255,.4)}.btn.line:hover{border-color:var(--ink)}
+.btn.sm{height:44px;padding:0 20px;font-size:15px}
+
+/* nav over hero */
+header.nav{position:absolute;inset:0 0 auto 0;z-index:30}
+header.nav .w{display:flex;align-items:center;gap:40px;height:84px}
+.logo{font:700 26px var(--f);letter-spacing:.01em;display:flex;align-items:center;gap:10px}
+.logo i{width:10px;height:10px;border-radius:50%;background:var(--red)}
+nav ul{display:flex;gap:30px;list-style:none;margin:0;padding:0;font:500 16px var(--f);color:var(--ink2)}
+nav ul a:hover{color:var(--ink)}
+.nav-end{margin-inline-start:auto;display:flex;gap:10px}
+
+/* hero */
+.hero{position:relative;min-height:min(900px,100svh);display:flex;align-items:flex-end;overflow:hidden}
+.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 35%;filter:saturate(.85);transform:scale(1.04);animation:zoom 2.4s var(--ease) both}
+@keyframes zoom{from{transform:scale(1.14)}}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,11,12,.96) 8%,rgba(11,11,12,.35) 55%,rgba(11,11,12,.55) 100%),linear-gradient(270deg,rgba(11,11,12,.75),transparent 60%)}
+.hero .w{position:relative;z-index:2;width:100%;display:grid;grid-template-columns:1.25fr .85fr;gap:60px;align-items:end;padding-block:150px 80px}
+.kicker{font:500 16px var(--f);color:var(--ink2);display:flex;align-items:center;gap:12px}
+.kicker:before{content:"";width:28px;height:2px;background:var(--red)}
+h1{font:700 clamp(40px,4.9vw,72px)/1.22 var(--f);margin:18px 0 22px;letter-spacing:-.01em;text-wrap:balance}
+h1 span{display:block;color:var(--ink2);font-weight:400}
+.lead{font-size:20px;color:var(--ink2);max-width:40ch;margin:0}
+
+/* booking card (functional hero, like a studio finder) */
+.book{background:var(--paper);color:var(--paper-ink);border-radius:8px;padding:28px;animation:rise .9s var(--ease) both .4s}
+@keyframes rise{from{opacity:0;transform:translateY(24px)}}
+.book h2{font:700 22px/1.4 var(--f);margin:0 0 4px}
+.book>p{margin:0 0 18px;color:#5E5A54;font-size:15px}
+.fld{display:grid;gap:6px;margin-bottom:14px}
+.fld label{font:600 14px var(--f)}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{font:500 14px var(--f);border:1px solid #D9D5CE;background:#fff;color:var(--paper-ink);border-radius:4px;padding:8px 12px;cursor:pointer;min-height:40px}
+.seg button[aria-pressed="true"]{background:var(--paper-ink);color:#fff;border-color:var(--paper-ink)}
+.slot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #E2DED7;padding-top:14px;margin:6px 0 16px;font-size:15px}
+.slot b{font:700 17px var(--f)}
+.slot span{color:#1E7A46;font-weight:600}
+.book .btn{width:100%}
+.book small{display:block;text-align:center;margin-top:10px;color:#6E6A63;font-size:13px}
+
+/* stats strip */
+.strip{border-bottom:1px solid var(--line)}
+.strip .w{display:grid;grid-template-columns:repeat(4,1fr)}
+.strip div{padding:30px 0;border-inline-start:1px solid var(--line);padding-inline-start:28px}
+.strip div:first-child{border:0;padding-inline-start:0}
+.strip b{display:block;font:700 34px/1.3 var(--f)}
+.strip span{color:var(--mute);font-size:15px}
+
+section{padding-block:130px 0}
+.head{display:flex;justify-content:space-between;align-items:end;gap:30px;flex-wrap:wrap;margin-bottom:50px}
+.label{font:500 16px var(--f);color:var(--red)}
+h2.t{font:700 clamp(36px,4vw,56px)/1.25 var(--f);margin:8px 0 0;text-wrap:balance}
+.head p{color:var(--ink2);max-width:42ch;margin:0}
+
+/* programs: photo tiles with a light card (Equinox grammar) */
+.progs{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.prog{position:relative;border-radius:6px;overflow:hidden;aspect-ratio:4/3;background:var(--bg2)}
+.prog img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease);filter:saturate(.9)}
+.prog:hover img{transform:scale(1.05)}
+.prog .card{position:absolute;inset:auto 20px 20px auto;max-width:min(330px,calc(100% - 40px));background:var(--paper);color:var(--paper-ink);border-radius:4px;padding:22px 24px}
+.prog h3{font:700 24px/1.3 var(--f);margin:0 0 6px}
+.prog p{margin:0 0 12px;color:#4F4B45;font-size:15px;line-height:1.7}
+.prog .meta{display:flex;gap:14px;font:500 13px var(--f);color:#6E6A63}
+.prog a{display:inline-block;margin-top:12px;font:600 15px var(--f);border-bottom:2px solid var(--paper-ink);padding-bottom:2px}
+
+/* first class: three steps on a line */
+.first{background:var(--paper);color:var(--paper-ink);border-radius:8px;padding:clamp(32px,5vw,72px);display:grid;grid-template-columns:.9fr 1.1fr;gap:60px;align-items:center}
+.first .label{color:var(--red)}
+.first h2.t{color:var(--paper-ink)}
+.first>div>p{color:#4F4B45;margin:16px 0 28px}
+.first img{border-radius:6px;aspect-ratio:4/5;object-fit:cover;width:100%;max-height:560px}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:0;counter-reset:s}
+.steps li{display:grid;grid-template-columns:48px 1fr;gap:18px;padding:18px 0;border-top:1px solid #DEDAD3;counter-increment:s}
+.steps li:before{content:counter(s,arabic-indic);width:44px;height:44px;border-radius:50%;border:1.5px solid var(--paper-ink);display:grid;place-items:center;font:600 18px var(--f)}
+.steps b{display:block;font:700 19px/1.5 var(--f)}
+.steps span{color:#5A564F;font-size:16px}
+
+/* timetable */
+.tt{border:1px solid var(--line);border-radius:8px;padding:clamp(20px,3vw,40px)}
+.days{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.days button{font:500 15px var(--f);background:transparent;color:var(--ink2);border:1px solid var(--line);border-radius:4px;padding:8px 18px;cursor:pointer;min-height:44px}
+.days button[aria-pressed="true"]{background:var(--paper);color:var(--paper-ink);border-color:var(--paper)}
+.rows{list-style:none;margin:0;padding:0}
+.rows li{display:grid;grid-template-columns:110px 1fr 140px 150px auto;gap:20px;align-items:center;padding:18px 0;border-top:1px solid var(--line);animation:rise .45s var(--ease) both}
+.rows time{font:600 20px var(--f);white-space:nowrap}
+.rows b{font:600 19px var(--f);display:block}.rows small{color:var(--mute);font-size:14px}
+.rows .lvl{color:var(--ink2);font-size:15px}
+.rows .left{font:600 15px var(--f);color:#6FCF97}.rows .left.low{color:#FF7A6E}
+.rows .btn{height:40px;padding:0 16px;font-size:14px}
+
+/* membership */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.plan{border:1px solid var(--line);border-radius:8px;padding:34px;display:flex;flex-direction:column;gap:18px}
+.plan h3{font:600 20px var(--f);margin:0;color:var(--ink2)}
+.price{font:700 52px/1.1 var(--f);font-variant-numeric:tabular-nums}
+.price small{font:400 16px var(--f);color:var(--mute)}
+.plan ul{list-style:none;padding:0;margin:0;display:grid;gap:10px;color:var(--ink2);font-size:16px}
+.plan li{display:flex;gap:10px}.plan li:before{content:"";flex:none;width:6px;height:6px;margin-top:12px;background:var(--red);border-radius:50%}
+.plan .btn{margin-top:auto}
+.plan.pick{background:var(--paper);color:var(--paper-ink);border-color:var(--paper)}
+.plan.pick h3{color:var(--paper-ink)}.plan.pick ul{color:#4F4B45}.plan.pick .price small{color:#6E6A63}
+.tag{align-self:flex-start;font:600 13px var(--f);background:var(--red);color:#fff;padding:3px 10px;border-radius:3px}
+
+/* closing */
+.close{position:relative;margin-top:130px;min-height:560px;display:flex;align-items:center;overflow:hidden}
+.close img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;filter:grayscale(1) contrast(1.1)}
+.close:after{content:"";position:absolute;inset:0;background:linear-gradient(270deg,rgba(11,11,12,.95) 35%,rgba(11,11,12,.45))}
+.close .w{position:relative;z-index:2;width:100%}
+.close h2{font:700 clamp(40px,5vw,72px)/1.2 var(--f);margin:0 0 18px;max-width:14ch}
+.close p{color:var(--ink2);margin:0 0 32px;max-width:40ch}
+footer{padding-block:34px 80px;color:var(--mute);font-size:14px;border-top:1px solid var(--line)}
+footer .w{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+@supports (animation-timeline:view()){
+  .rv{animation:rv linear both;animation-timeline:view();animation-range:entry 5% entry 50%}
+  @keyframes rv{from{opacity:0;transform:translateY(36px)}}
+}
+@media (max-width:980px){
+  nav ul{display:none}
+  .hero .w{grid-template-columns:1fr;gap:36px;padding-block:120px 40px}
+  .strip .w{grid-template-columns:1fr 1fr}.strip div:nth-child(3){border:0;padding-inline-start:0}
+  .progs,.plans{grid-template-columns:1fr}
+  .first{grid-template-columns:1fr;gap:30px}.first img{aspect-ratio:16/10}
+  .rows li{grid-template-columns:84px 1fr;gap:6px 16px}
+  .rows .lvl,.rows .left{grid-column:2}.rows .btn{grid-column:2;justify-self:start}
+  section{padding-top:90px}
+}
+@media (max-width:520px){h1{font-size:34px}.nav-end .line{display:none}.prog{aspect-ratio:3/4}.prog .card{inset:auto 12px 12px 12px;max-width:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<span class="demo">مثال تصميم · نادي افتراضي · الصور CC0</span>
+
+<header class="nav"><div class="w">
+  <a class="logo" href="#"><i aria-hidden="true"></i>نبض</a>
+  <nav aria-label="القائمة"><ul><li><a href="#programs">البرامج</a></li><li><a href="#first">الحصة الأولى</a></li><li><a href="#table">الجدول</a></li><li><a href="#plans">الاشتراكات</a></li></ul></nav>
+  <div class="nav-end"><a class="btn line sm" href="#">دخول الأعضاء</a><a class="btn red sm" href="#book">احجز حصة</a></div>
+</div></header>
+
+<main>
+<section class="hero" style="padding:0">
+  <img src="img/pulse-trx.jpg" alt="متدرب يستخدم حبال التعليق داخل صالة التدريب" fetchpriority="high">
+  <div class="w">
+    <div>
+      <span class="kicker">التجمع الخامس، القاهرة</span>
+      <h1>تدريب بإشراف حقيقي. <span>في مجموعات صغيرة.</span></h1>
+      <p class="lead">حصص لا تزيد عن ثمانية متدربين، مع مدرب يتابع كل حركة، وخطة تُراجع معك كل أسبوعين.</p>
+    </div>
+    <form class="book" id="book" aria-labelledby="bookT">
+      <h2 id="bookT">احجز حصتك الأولى مجانًا</h2>
+      <p>اختر البرنامج والموعد، ونؤكد لك الحجز برسالة.</p>
+      <div class="fld"><label id="lp">البرنامج</label><div class="seg" role="group" aria-labelledby="lp" id="prog"></div></div>
+      <div class="fld"><label id="ld">اليوم</label><div class="seg" role="group" aria-labelledby="ld" id="day"></div></div>
+      <div class="slot" aria-live="polite" id="slot"></div>
+      <button class="btn red" type="submit" id="go">تأكيد الحجز</button>
+      <small id="bookMsg">بدون بطاقة دفع. يمكنك الإلغاء في أي وقت.</small>
+    </form>
+  </div>
+</section>
+
+<div class="strip"><div class="w">
+  <div><b>٨ متدربين</b><span>الحد الأقصى في الحصة</span></div>
+  <div><b>٦ص – ١١م</b><span>مواعيد العمل يوميًا</span></div>
+  <div><b>٤ برامج</b><span>لكل برنامج مدرب ثابت</span></div>
+  <div><b>كل أسبوعين</b><span>قياس ومراجعة للخطة</span></div>
+</div></div>
+
+<section id="programs"><div class="w">
+  <div class="head rv"><div><span class="label">البرامج</span><h2 class="t">اختر الطريقة التي تناسبك</h2></div><p>أربعة برامج يقودها مدربون معتمدون. يمكنك التنقل بينها في نفس الاشتراك.</p></div>
+  <div class="progs">
+    <article class="prog rv"><img src="img/pulse-boxing.jpg" alt="ملاكمة ترتدي القفازات قبل الحصة" loading="lazy"><div class="card"><h3>الملاكمة</h3><p>تقنيات اللكم وحركة القدمين واللياقة، بدون احتكاك في الشهر الأول.</p><div class="meta"><span>٤٥ دقيقة</span><span>جميع المستويات</span></div><a href="#table">مواعيد الحصص</a></div></article>
+    <article class="prog rv"><img src="img/pulse-ropes.jpg" alt="رياضي يتمرن بحبال المقاومة" loading="lazy"><div class="card"><h3>القوة والتحمّل</h3><p>دوائر تدريب بالحبال والأثقال ووزن الجسم لبناء قوة تدوم.</p><div class="meta"><span>٥٠ دقيقة</span><span>متوسط</span></div><a href="#table">مواعيد الحصص</a></div></article>
+    <article class="prog rv"><img src="img/pulse-yoga.jpg" alt="متدربات في وضع التأمل داخل استوديو مضيء" loading="lazy"><div class="card"><h3>المرونة والتوازن</h3><p>يوغا وتمارين إطالة وتنفس، تخفف التوتر وتحسّن الحركة اليومية.</p><div class="meta"><span>٦٠ دقيقة</span><span>مبتدئ</span></div><a href="#table">مواعيد الحصص</a></div></article>
+    <article class="prog rv"><img src="img/pulse-jump.jpg" alt="متدربة تقفز بجوار جدار خرساني" loading="lazy"><div class="card"><h3>الكارديو</h3><p>جري وقفز وتمارين سريعة داخل الصالة، وحصة خارجية صباح كل جمعة.</p><div class="meta"><span>٤٠ دقيقة</span><span>جميع المستويات</span></div><a href="#table">مواعيد الحصص</a></div></article>
+  </div>
+</div></section>
+
+<section id="first"><div class="w">
+  <div class="first rv">
+    <div>
+      <span class="label">الحصة الأولى</span>
+      <h2 class="t">ماذا تتوقع عند زيارتك الأولى</h2>
+      <p>لا تحتاج إلى خبرة سابقة. نبدأ معك من مستواك الحالي.</p>
+      <ol class="steps">
+        <li><div><b>قياس أولي مع المدرب</b><span>الوزن والقوة والمرونة، وأي إصابة سابقة يجب أن نعرفها.</span></div></li>
+        <li><div><b>حصة كاملة بوتيرة مناسبة</b><span>تتعلم الحركات الأساسية بأوزان خفيفة وتصحيح مستمر.</span></div></li>
+        <li><div><b>خطة مكتوبة لأول شهر</b><span>تصلك على هاتفك، ونراجعها معك بعد أسبوعين.</span></div></li>
+      </ol>
+    </div>
+    <img src="img/pulse-weights.jpg" alt="متدربة تحمل أثقالًا خفيفة في صالة بإضاءة طبيعية" loading="lazy">
+  </div>
+</div></section>
+
+<section id="table"><div class="w">
+  <div class="head rv"><div><span class="label">جدول الحصص</span><h2 class="t">مواعيد هذا الأسبوع</h2></div><p>الأماكن المتاحة تتحدث مباشرة في النسخة الفعلية من الموقع.</p></div>
+  <div class="tt"><div class="days" id="days" role="group" aria-label="اختر اليوم"></div><ul class="rows" id="rows" aria-live="polite"></ul></div>
+</div></section>
+
+<section id="plans"><div class="w">
+  <div class="head rv"><div><span class="label">الاشتراكات</span><h2 class="t">اشتراك يناسب جدولك</h2></div><p>الحصة الأولى مجانية. الأسعار في هذا المثال للتوضيح.</p></div>
+  <div class="plans">
+    <div class="plan rv"><h3>٨ حصص شهريًا</h3><div class="price">٩٠٠ <small>ج.م / شهر</small></div><ul><li>جميع البرامج</li><li>قياس في بداية الشهر</li><li>تأجيل حصتين</li></ul><a class="btn line" href="#book">اختر الاشتراك</a></div>
+    <div class="plan pick rv"><span class="tag">الأكثر اختيارًا</span><h3>١٢ حصة شهريًا</h3><div class="price">١٬٢٠٠ <small>ج.م / شهر</small></div><ul><li>جميع البرامج</li><li>قياس ومراجعة كل أسبوعين</li><li>خطة غذائية مبسطة</li></ul><a class="btn red" href="#book">اختر الاشتراك</a></div>
+    <div class="plan rv"><h3>اشتراك مفتوح</h3><div class="price">١٬٦٠٠ <small>ج.م / شهر</small></div><ul><li>حصص بلا حد</li><li>استخدام حر للصالة يوميًا</li><li>حصة خاصة كل شهر</li></ul><a class="btn line" href="#book">اختر الاشتراك</a></div>
+  </div>
+</div></section>
+
+<div class="close"><img src="img/pulse-back.jpg" alt="متدربة بعد التمرين في إضاءة خافتة" loading="lazy">
+  <div class="w rv"><h2>أول خطوة أسهل مما تتوقع</h2><p>احجز حصة تجريبية مجانية، وقرر بعدها إن كان نبض مناسبًا لك.</p><a class="btn red" href="#book">احجز حصتك الأولى</a></div>
+</div>
+</main>
+
+<footer><div class="w"><span>نبض نادٍ افتراضي، وهذه الصفحة مثال تصميم. لا يتم أي حجز فعلي.</span><span>الصور: StockSnap.io (CC0)</span></div></footer>
+
+<script>
+const AR=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+const PROGS=['الملاكمة','القوة والتحمّل','المرونة','الكارديو'];
+const DAYS=['السبت','الأحد','الإثنين','الثلاثاء','الأربعاء'];
+// example timetable: [time, program index, level, seats left]
+const T={'السبت':[['٧:٠٠ ص',3,'جميع المستويات',5],['٦:٠٠ م',1,'متوسط',2],['٧:٣٠ م',0,'مبتدئ',4]],
+ 'الأحد':[['٨:٠٠ ص',2,'مبتدئ',6],['٧:٠٠ م',0,'متوسط',1],['٨:٣٠ م',1,'متوسط',3]],
+ 'الإثنين':[['٧:٠٠ ص',1,'متوسط',4],['٦:٣٠ م',2,'مبتدئ',7],['٨:٠٠ م',0,'مبتدئ',3]],
+ 'الثلاثاء':[['٧:٠٠ ص',3,'جميع المستويات',3],['٧:٣٠ م',0,'مبتدئ',2],['٩:٠٠ م',2,'مبتدئ',5]],
+ 'الأربعاء':[['٨:٠٠ ص',0,'متوسط',4],['٧:٠٠ م',1,'متقدم',1],['٨:٣٠ م',3,'جميع المستويات',6]]};
+const seats=s=>s===1?'مكان واحد متبقٍ':s===2?'مكانان متبقيان':AR(s)+' أماكن متاحة';
+let bp=0,bd='السبت',td='السبت';
+function seg(el,items,get,set){el.innerHTML='';items.forEach((t,i)=>{const b=document.createElement('button');b.type='button';b.textContent=t;b.onclick=()=>{set(i,t);drawBook()};el.append(b)});
+  [...el.children].forEach((b,i)=>b.setAttribute('aria-pressed',get(i,items[i])))}
+function drawBook(){
+  seg(document.getElementById('prog'),PROGS,i=>i===bp,i=>bp=i);
+  seg(document.getElementById('day'),DAYS,(i,t)=>t===bd,(i,t)=>bd=t);
+  const s=T[bd].find(r=>r[1]===bp);const slot=document.getElementById('slot'),go=document.getElementById('go');
+  if(s){slot.innerHTML=`<b>${s[0]}</b><span>${seats(s[3])}</span>`;go.disabled=false;go.textContent='تأكيد الحجز'}
+  else{slot.innerHTML=`<b>لا توجد حصة في هذا اليوم</b><span style="color:#8A5A00">اختر يومًا آخر</span>`;go.disabled=true}
+}
+document.getElementById('book').addEventListener('submit',e=>{e.preventDefault();document.getElementById('go').textContent='تم استلام طلبك ✓';document.getElementById('bookMsg').textContent='هذا مثال تصميم، لم يتم أي حجز فعلي.'});
+drawBook();
+const days=document.getElementById('days'),rows=document.getElementById('rows');
+function drawTable(){days.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.textContent===td));
+  rows.innerHTML=T[td].map(([t,p,l,s],i)=>`<li style="animation-delay:${i*60}ms"><time>${t}</time><div><b>${PROGS[p]}</b><small>مع مدرب البرنامج</small></div><span class="lvl">${l}</span><span class="left${s<=2?' low':''}">${seats(s)}</span><a class="btn line" href="#book">احجز</a></li>`).join('')}
+DAYS.forEach(d=>{const b=document.createElement('button');b.type='button';b.textContent=d;b.onclick=()=>{td=d;drawTable()};days.append(b)});
+drawTable();
+</script>
+</body>
+</html>

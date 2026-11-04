@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>نبع للمضخات — مثال موقع صناعي</title>
+<meta name="description" content="مثال تصميم لمصنع مضخات افتراضي. المنتجات والمواصفات توضيحية.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ink:#0F1720; --ink2:#4A5564; --mute:#7B8594; --line:#DDE2E8; --bg:#F6F7F9; --card:#FFFFFF;
+  --steel:#2B3A4A; --accent:#F26B1D; --accent-ink:#FFFFFF; --blue:#1F5FA8; --night:#0E1621;
+  --f:"IBM Plex Sans Arabic",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 18px/1.8 var(--f);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.w{max-width:1240px;margin:0 auto;padding-inline:max(20px,4vw)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.demo{position:fixed;inset:auto auto 16px 16px;z-index:60;background:var(--ink);color:#fff;font:500 12px var(--f);padding:6px 12px;border-radius:99px}
+.btn{white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:52px;padding:0 26px;border-radius:6px;font:600 16px var(--f);border:0;cursor:pointer;transition:background .2s,border-color .2s}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}.btn.primary:hover{background:#D85A10}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid #C4CBD4}.btn.ghost:hover{border-color:var(--ink)}
+.btn.sm{height:42px;padding:0 18px;font-size:15px}
+.mono{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
+
+header.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:40}
+header.nav .w{display:flex;align-items:center;gap:40px;height:74px}
+.logo{display:flex;align-items:center;gap:10px;font:700 22px var(--f);white-space:nowrap}
+.logo svg{width:32px;height:32px}
+nav ul{display:flex;gap:30px;list-style:none;margin:0;padding:0;font:500 16px var(--f);color:var(--ink2)}
+nav ul a:hover{color:var(--ink)}
+.nav-end{margin-inline-start:auto;display:flex;gap:10px}
+
+/* hero */
+.hero{padding-block:64px 40px}
+.hero-top{display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:end;margin-bottom:28px}
+.eyebrow{font:500 15px var(--f);color:var(--accent);display:flex;align-items:center;gap:10px}
+.eyebrow:before{content:"";width:24px;height:2px;background:var(--accent)}
+h1{font:700 clamp(38px,4.3vw,62px)/1.25 var(--f);margin:16px 0 0;text-wrap:balance}
+h1 span{display:block}
+h1 span{color:var(--mute);font-weight:400}
+.hero-top p{color:var(--ink2);margin:0 0 22px;font-size:19px}
+.cta{display:flex;gap:10px;flex-wrap:wrap}
+
+.viewer{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.vbar{display:flex;align-items:center;gap:18px;padding:14px 20px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.vbar b{font:600 16px var(--f)}
+.vbar .mono{font-size:13px;color:var(--mute)}
+.ctrl{margin-inline-start:auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.ctrl label{font:500 14px var(--f);color:var(--ink2);display:flex;align-items:center;gap:10px}
+input[type=range]{width:200px;accent-color:var(--accent)}
+.toggle{font:500 14px var(--f);border:1.5px solid var(--line);background:#fff;border-radius:6px;padding:7px 14px;cursor:pointer;min-height:40px}
+.toggle[aria-pressed="true"]{background:var(--steel);color:#fff;border-color:var(--steel)}
+.canvas{position:relative;background:
+  linear-gradient(var(--line) 1px,transparent 1px) 0 0/40px 40px,
+  linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/40px 40px,#FBFCFD}
+.canvas svg{display:block;width:100%;height:auto;max-height:440px;direction:ltr}
+.part{transition:transform .9s var(--ease),opacity .4s}
+.part .shape{transition:fill-opacity .4s,stroke .3s}
+.part:hover .shape,.part.on .shape{stroke:var(--accent)}
+.lbl{opacity:0;transition:opacity .4s}
+.exploded .lbl{opacity:1}
+.lbl text{font:500 15px var(--f);fill:var(--ink)}
+.lbl .num{font:500 12px var(--mono);fill:var(--accent)}
+.ghost .casing .shape{fill-opacity:.08}
+.ghost .casing .solid{opacity:0}
+.ghost .casing *{pointer-events:none}.ghost .casing .shape{pointer-events:stroke}
+.inner{opacity:0;transition:opacity .4s}
+.ghost .inner{opacity:1}
+.spec{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
+.spec div{padding:18px 22px;border-inline-start:1px solid var(--line)}
+.spec div:first-child{border:0}
+.spec small{display:block;color:var(--mute);font-size:14px}
+.spec b{font:500 24px var(--mono);direction:ltr;display:block;text-align:right}
+.info{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;background:#fff;border-top:1px solid var(--line);padding:14px 22px;font-size:15px;line-height:1.7;color:var(--ink2);min-height:56px}
+.info b{font:600 16px var(--f);color:var(--ink)}
+
+section{padding-block:110px 0}
+.head{display:flex;justify-content:space-between;align-items:end;gap:30px;flex-wrap:wrap;margin-bottom:44px}
+.label{font:500 15px var(--f);color:var(--accent)}
+h2.t{font:700 clamp(32px,3.6vw,50px)/1.3 var(--f);margin:8px 0 0;text-wrap:balance}
+.head p{color:var(--ink2);max-width:46ch;margin:0}
+
+.sectors{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.sectors div{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px}
+.sectors svg{width:40px;height:40px;margin-bottom:12px}
+.sectors h3{font:600 19px var(--f);margin:0 0 4px}.sectors p{margin:0;color:var(--ink2);font-size:15px;line-height:1.7}
+
+/* selector */
+.sel{background:var(--night);color:#E8EDF3;border-radius:16px;padding:clamp(28px,4vw,56px);display:grid;grid-template-columns:.9fr 1.1fr;gap:50px}
+.sel .label{color:#FF9A5C}.sel h2.t{color:#fff}.sel p{color:#A9B4C2}
+.fld{margin-top:26px}
+.fld label{display:flex;justify-content:space-between;font:500 15px var(--f);color:#C9D2DD;margin-bottom:8px}
+.fld label b{font:500 16px var(--mono);color:#fff;direction:ltr}
+.fld input{width:100%}
+.models{display:grid;gap:10px}
+.model{display:grid;grid-template-columns:1fr auto auto auto;gap:24px;align-items:center;background:#162131;border:1.5px solid #233247;border-radius:10px;padding:16px 20px;transition:border-color .3s,background .3s}
+.model b{font:600 18px var(--f);display:block}.model small{color:#8D99A9;font-size:13px}
+.model .mono{font-size:14px;color:#C9D2DD}
+.model .fit{font:600 13px var(--f);padding:4px 10px;border-radius:99px;background:#233247;color:#8D99A9;white-space:nowrap}
+.model.best{border-color:var(--accent);background:#1C2535}
+.model.best .fit{background:var(--accent);color:#fff}
+.model.no{opacity:.45}
+
+.why{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:2px solid var(--ink)}
+.why div{padding:30px 0 0;padding-inline-end:36px}
+.why .n{font:500 14px var(--mono);color:var(--accent)}
+.why h3{font:700 22px/1.4 var(--f);margin:8px 0 10px}.why p{color:var(--ink2);margin:0;font-size:16px}
+
+.contact{display:grid;grid-template-columns:1fr 1fr;gap:40px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:clamp(28px,4vw,56px)}
+.contact form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.contact .full{grid-column:1/-1}
+.contact label{display:grid;gap:6px;font:500 14px var(--f);color:var(--ink2)}
+.contact input,.contact select,.contact textarea{font:400 16px var(--f);border:1.5px solid var(--line);border-radius:8px;padding:12px 14px;background:#fff;color:var(--ink);width:100%}
+.contact textarea{min-height:110px;resize:vertical}
+.contact .ok{grid-column:1/-1;color:#18794E;font-size:15px;min-height:1.5em}
+.contact ul{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:12px;color:var(--ink2)}
+.contact li b{color:var(--ink);display:block}
+footer{padding-block:40px 80px;color:var(--mute);font-size:14px;margin-top:100px;border-top:1px solid var(--line)}
+footer .w{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+@supports (animation-timeline:view()){
+  .rv{animation:rv linear both;animation-timeline:view();animation-range:entry 5% entry 50%}
+  @keyframes rv{from{opacity:0;transform:translateY(30px)}}
+}
+@media (max-width:1000px){
+  nav ul{display:none}
+  .hero-top,.sel,.contact{grid-template-columns:1fr;gap:30px}
+  .sectors{grid-template-columns:1fr 1fr}
+  .why{grid-template-columns:1fr}.why div{padding-bottom:20px;border-bottom:1px solid var(--line)}
+  .spec{grid-template-columns:1fr 1fr}.spec div:nth-child(3){border:0}
+}
+@media (max-width:600px){
+  .nav-end .ghost{display:none}
+  .logo{font-size:18px}header.nav .w{gap:12px}
+  .sectors{grid-template-columns:1fr}
+  .ctrl{margin:0;width:100%}input[type=range]{width:100%}.ctrl label{flex:1}
+  .model{grid-template-columns:1fr auto;gap:6px 14px}.model .mono{grid-column:1}
+  .contact form{grid-template-columns:1fr}
+  section{padding-top:80px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<span class="demo">مثال تصميم · مصنع افتراضي</span>
+
+<header class="nav"><div class="w">
+  <a class="logo" href="#"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#2B3A4A"/><path d="M16 6c4 5 7 8.6 7 12.2A7 7 0 0 1 9 18.2C9 14.6 12 11 16 6z" fill="#F26B1D"/></svg>نبع للمضخات</a>
+  <nav aria-label="القائمة"><ul><li><a href="#product">المنتجات</a></li><li><a href="#sectors">القطاعات</a></li><li><a href="#select">اختيار المضخة</a></li><li><a href="#service">الصيانة</a></li></ul></nav>
+  <div class="nav-end"><a class="btn ghost sm" href="#">الكتالوج</a><a class="btn primary sm" href="#contact">اطلب عرض سعر</a></div>
+</div></header>
+
+<main>
+<section class="hero" id="product" style="padding-top:64px"><div class="w">
+  <div class="hero-top">
+    <div><span class="eyebrow">سلسلة NB للمضخات الطاردة المركزية</span><h1>مضخات صناعية للتشغيل المتواصل. <span>وقطع غيارها متوفرة دائمًا.</span></h1></div>
+    <div><p>نصنّع مضخات المياه والمحاليل للمصانع ومحطات المعالجة في مصر، ونوفر قطع الغيار والصيانة من نفس المصنع.</p>
+      <div class="cta"><a class="btn primary" href="#select">اختر المضخة المناسبة</a><a class="btn ghost" href="#contact">تحدث مع مهندس</a></div></div>
+  </div>
+
+  <div class="viewer" id="viewer">
+    <div class="vbar"><b>مضخة NB‑40</b><span class="mono">END-SUCTION · 2900 RPM</span>
+      <div class="ctrl"><label for="ex">فكّ الأجزاء<input id="ex" type="range" min="0" max="100" value="0"></label>
+        <button class="toggle" type="button" id="gh" aria-pressed="false">إظهار الأجزاء الداخلية</button></div></div>
+    <div class="canvas">
+
+      <svg id="pump" viewBox="-140 0 1320 470" role="img" aria-label="رسم فني لمضخة طاردة مركزية يمكن تفكيكه: الغلاف الحلزوني، الدفّاعة، العمود، حامل المحامل، القارنة، المحرك، والقاعدة">
+        <defs>
+          <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E9EDF2"/><stop offset=".5" stop-color="#C4CCD6"/><stop offset="1" stop-color="#9AA6B4"/></linearGradient>
+          <linearGradient id="paint" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3C6FB0"/><stop offset=".55" stop-color="#1F5FA8"/><stop offset="1" stop-color="#173F6E"/></linearGradient>
+          <linearGradient id="dark" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A5A6C"/><stop offset="1" stop-color="#253240"/></linearGradient>
+          <linearGradient id="orange" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8B45"/><stop offset="1" stop-color="#D4550F"/></linearGradient>
+        </defs>
+        <!-- base -->
+        <g class="part" data-p="base" data-dx="0" data-dy="46">
+          <rect class="shape" x="90" y="360" width="920" height="30" rx="4" fill="url(#dark)" stroke="#1B2530" stroke-width="2"/>
+          <rect x="110" y="390" width="40" height="18" fill="#253240"/><rect x="950" y="390" width="40" height="18" fill="#253240"/>
+          <g class="lbl" transform="translate(560,440)"><text class="num" x="0" y="0">07</text><text x="-14" y="0" text-anchor="end">القاعدة</text></g>
+        </g>
+        <!-- shaft -->
+        <g class="part" data-p="shaft" data-dx="-40" data-dy="0">
+          <rect class="shape" x="250" y="221" width="430" height="18" rx="3" fill="url(#metal)" stroke="#6B7785" stroke-width="1.5"/>
+          <g class="lbl" transform="translate(395,208)"><text class="num" x="0" y="0">03</text><text x="-14" y="0" text-anchor="end">العمود</text></g>
+        </g>
+        <!-- impeller (inside casing) -->
+        <g class="part" data-p="impeller" data-dx="-120" data-dy="0">
+          <g class="inner-wrap">
+            <circle class="shape" cx="250" cy="230" r="78" fill="url(#orange)" stroke="#9A3B06" stroke-width="2"/>
+            <g fill="none" stroke="#FFE3D1" stroke-width="4" stroke-linecap="round">
+              <path d="M250 230 C 262 200, 290 186, 318 190"/><path d="M250 230 C 280 238, 296 266, 290 294"/><path d="M250 230 C 238 260, 210 274, 182 270"/>
+              <path d="M250 230 C 220 222, 204 194, 210 166"/><path d="M250 230 C 276 214, 304 218, 322 240"/><path d="M250 230 C 236 202, 240 174, 262 156"/></g>
+            <circle cx="250" cy="230" r="16" fill="#7A2E05"/>
+          </g>
+          <g class="lbl" transform="translate(250,120)"><text class="num" x="0" y="0">02</text><text x="-14" y="0" text-anchor="end">الدفّاعة</text></g>
+        </g>
+        <!-- casing (volute) -->
+        <g class="part casing" data-p="casing" data-dx="-165" data-dy="0">
+          <path class="shape" d="M250 92 A138 138 0 1 1 112 230 L70 230 L70 196 L112 196 A138 138 0 0 1 250 92 Z" fill="url(#paint)" fill-opacity="1" stroke="#0F2E52" stroke-width="2.5"/>
+          <rect class="shape" x="210" y="40" width="80" height="58" fill="url(#paint)" stroke="#0F2E52" stroke-width="2.5"/>
+          <rect x="196" y="30" width="108" height="14" rx="2" fill="#173F6E"/>
+          <rect x="42" y="186" width="16" height="88" rx="2" fill="#173F6E"/>
+          <circle class="solid" cx="250" cy="230" r="44" fill="#173F6E"/><circle class="solid" cx="250" cy="230" r="18" fill="#0F2E52"/>
+          <path d="M250 300 a70 70 0 0 1 -70 -70" fill="none" stroke="#9EC1EA" stroke-width="2" stroke-dasharray="5 6"/>
+          <g class="lbl" transform="translate(330,345)"><text class="num" x="0" y="0">01</text><text x="-14" y="0" text-anchor="end">الغلاف الحلزوني</text></g>
+        </g>
+        <!-- bearing housing -->
+        <g class="part" data-p="bearing" data-dx="0" data-dy="0">
+          <rect class="shape" x="400" y="160" width="160" height="140" rx="12" fill="url(#paint)" stroke="#0F2E52" stroke-width="2.5"/>
+          <rect x="430" y="300" width="100" height="60" fill="url(#paint)" stroke="#0F2E52" stroke-width="2"/>
+          <g class="inner"><circle cx="440" cy="230" r="26" fill="none" stroke="#FFD08A" stroke-width="5"/><circle cx="520" cy="230" r="26" fill="none" stroke="#FFD08A" stroke-width="5"/></g>
+          <g class="lbl" transform="translate(480,140)"><text class="num" x="0" y="0">04</text><text x="-14" y="0" text-anchor="end">حامل المحامل</text></g>
+        </g>
+        <!-- coupling -->
+        <g class="part" data-p="coupling" data-dx="60" data-dy="0">
+          <rect class="shape" x="588" y="190" width="56" height="80" rx="8" fill="url(#metal)" stroke="#5C6876" stroke-width="2"/>
+          <line x1="616" y1="190" x2="616" y2="270" stroke="#5C6876" stroke-width="2"/>
+          <g class="lbl" transform="translate(616,170)"><text class="num" x="0" y="0">05</text><text x="-14" y="0" text-anchor="end">القارنة</text></g>
+        </g>
+        <!-- motor -->
+        <g class="part" data-p="motor" data-dx="150" data-dy="0">
+          <rect class="shape" x="670" y="120" width="320" height="220" rx="26" fill="url(#dark)" stroke="#121A23" stroke-width="2.5"/>
+          <g stroke="#5D6E81" stroke-width="3">
+            <line x1="710" y1="140" x2="710" y2="320"/><line x1="745" y1="140" x2="745" y2="320"/><line x1="780" y1="140" x2="780" y2="320"/><line x1="815" y1="140" x2="815" y2="320"/><line x1="850" y1="140" x2="850" y2="320"/><line x1="885" y1="140" x2="885" y2="320"/><line x1="920" y1="140" x2="920" y2="320"/></g>
+          <rect x="760" y="84" width="110" height="38" rx="6" fill="url(#dark)" stroke="#121A23" stroke-width="2"/>
+          <rect x="990" y="190" width="22" height="80" rx="6" fill="#253240"/>
+          <rect x="720" y="340" width="220" height="20" fill="#253240"/>
+          <g class="lbl" transform="translate(830,70)"><text class="num" x="0" y="0">06</text><text x="-14" y="0" text-anchor="end">المحرك الكهربائي</text></g>
+        </g>
+      </svg>
+    </div>
+<div class="info" id="info" aria-live="polite"><b>حرّك المؤشر لفك المضخة</b>ثم مرّر على أي جزء لتعرف وظيفته ومادته.</div>
+    <div class="spec"><div><small>التصرّف الأقصى</small><b>40 m³/h</b></div><div><small>الرفع الأقصى</small><b>32 m</b></div><div><small>قدرة المحرك</small><b>4 kW</b></div><div><small>الضمان</small><b>24 months</b></div></div>
+  </div>
+</div></section>
+
+<section id="sectors"><div class="w">
+  <div class="head rv"><div><span class="label">القطاعات</span><h2 class="t">تعمل مضخاتنا حيث لا يُسمح بالتوقف</h2></div><p>من محطات معالجة المياه إلى خطوط الإنتاج الغذائي، نصمم كل مضخة حسب السائل ومعدل التشغيل.</p></div>
+  <div class="sectors">
+    <div class="rv"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="10" fill="#E8F0FA"/><path d="M20 9c4 5 7 8.3 7 12a7 7 0 0 1-14 0c0-3.7 3-7 7-12z" fill="none" stroke="#1F5FA8" stroke-width="2.2"/></svg><h3>معالجة المياه</h3><p>محطات الشرب والصرف ومحطات التحلية الصغيرة.</p></div>
+    <div class="rv"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="10" fill="#E8F0FA"/><path d="M11 29V17l6 4v-4l6 4v-4l6 4v8z" fill="none" stroke="#1F5FA8" stroke-width="2.2" stroke-linejoin="round"/></svg><h3>المصانع</h3><p>تبريد الماكينات ونقل السوائل في خطوط الإنتاج.</p></div>
+    <div class="rv"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="10" fill="#E8F0FA"/><path d="M12 28c4-10 12-10 16 0M20 12v10" fill="none" stroke="#1F5FA8" stroke-width="2.2" stroke-linecap="round"/></svg><h3>الري الزراعي</h3><p>مضخات للآبار وشبكات الري بالتنقيط والرش.</p></div>
+    <div class="rv"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="10" fill="#E8F0FA"/><path d="M13 30V12h14v18M17 16h2M21 16h2M17 20h2M21 20h2M17 24h2M21 24h2" fill="none" stroke="#1F5FA8" stroke-width="2.2" stroke-linecap="round"/></svg><h3>المباني الكبيرة</h3><p>رفع المياه للأبراج وأنظمة مكافحة الحريق.</p></div>
+  </div>
+</div></section>
+
+<section id="select"><div class="w">
+  <div class="sel rv">
+    <div><span class="label">اختيار المضخة</span><h2 class="t">أدخل احتياجك، ونرشح لك الطراز المناسب</h2><p>اختيار أولي لمساعدتك. يؤكده مهندس المبيعات بعد معرفة نوع السائل وظروف التشغيل.</p>
+      <div class="fld"><label for="q">التصرّف المطلوب <b id="qv">25 m³/h</b></label><input id="q" type="range" min="5" max="120" step="5" value="25"></div>
+      <div class="fld"><label for="h">ارتفاع الرفع <b id="hv">20 m</b></label><input id="h" type="range" min="5" max="60" step="1" value="20"></div></div>
+    <div class="models" id="models" aria-live="polite"></div>
+  </div>
+</div></section>
+
+<section id="service"><div class="w">
+  <div class="head rv"><div><span class="label">لماذا نبع</span><h2 class="t">مصنع واحد للتصنيع وقطع الغيار والصيانة</h2></div></div>
+  <div class="why">
+    <div class="rv"><span class="n">01</span><h3>قطع غيار من المخزون</h3><p>نحتفظ بقطع الغيار الأساسية لكل طراز نصنّعه، ونشحنها خلال ٤٨ ساعة داخل مصر.</p></div>
+    <div class="rv"><span class="n">02</span><h3>اختبار قبل التسليم</h3><p>تُختبر كل مضخة على منصة الأداء، ويرفق تقرير الاختبار مع الشحنة.</p></div>
+    <div class="rv"><span class="n">03</span><h3>عقد صيانة دورية</h3><p>زيارات مجدولة لفحص الاهتزاز والمحامل والجلب الميكانيكية قبل حدوث العطل.</p></div>
+  </div>
+</div></section>
+
+<section id="contact"><div class="w">
+  <div class="contact rv">
+    <div><span class="label">عرض سعر</span><h2 class="t">أرسل بيانات مشروعك</h2><p style="color:var(--ink2)">يرد عليك مهندس مختص خلال يوم عمل واحد بالطراز المقترح والسعر ومدة التوريد.</p>
+      <ul><li><b>المصنع</b>المنطقة الصناعية، العاشر من رمضان (عنوان توضيحي)</li><li><b>ساعات العمل</b>الأحد إلى الخميس، ٨ ص – ٥ م</li></ul></div>
+    <form id="f">
+      <label>الاسم<input required autocomplete="name"></label>
+      <label>الشركة<input autocomplete="organization"></label>
+      <label>الهاتف<input type="tel" required autocomplete="tel"></label>
+      <label>القطاع<select><option>معالجة المياه</option><option>مصنع</option><option>ري زراعي</option><option>مبانٍ</option></select></label>
+      <label class="full">تفاصيل الاحتياج<textarea placeholder="نوع السائل، التصرّف، الرفع، عدد ساعات التشغيل"></textarea></label>
+      <button class="btn primary full" type="submit">إرسال الطلب</button><span class="ok" id="ok" aria-live="polite"></span>
+    </form>
+  </div>
+</div></section>
+</main>
+<footer><div class="w"><span>نبع شركة افتراضية، وهذه الصفحة مثال تصميم. المواصفات والطرازات توضيحية.</span><span>© ٢٠٢٦</span></div></footer>
+
+<script>
+// exploded view: each part moves by its own offset, scaled by the slider
+const parts=[...document.querySelectorAll('#pump .part')],ex=document.getElementById('ex'),viewer=document.getElementById('viewer'),info=document.getElementById('info');
+function explode(){const t=ex.value/100;parts.forEach(p=>p.style.transform=`translate(${p.dataset.dx*t}px,${p.dataset.dy*t}px)`);viewer.classList.toggle('exploded',t>.55)}
+ex.addEventListener('input',explode);explode();
+document.getElementById('gh').addEventListener('click',e=>{const on=e.currentTarget.getAttribute('aria-pressed')!=='true';e.currentTarget.setAttribute('aria-pressed',on);viewer.classList.toggle('ghost',on)});
+const NOTES={casing:['الغلاف الحلزوني','حديد زهر GG25. يحوّل سرعة الماء إلى ضغط ويوجهه إلى فتحة الطرد.'],impeller:['الدفّاعة','برونز مصبوب بست ريش منحنية، متزنة ديناميكيًا لتقليل الاهتزاز.'],
+ shaft:['العمود','صلب مقاوم للصدأ AISI 420، ينقل الحركة من المحرك إلى الدفّاعة.'],bearing:['حامل المحامل','محملان كرويان مزيتان مدى الحياة، مع حشوة ميكانيكية لمنع التسريب.'],
+ coupling:['القارنة','قارنة مرنة تمتص عدم المحاذاة البسيط وتحمي المحامل.'],motor:['المحرك الكهربائي','٤ كيلووات، ٢٩٠٠ لفة/دقيقة، كفاءة IE3، حماية IP55.'],base:['القاعدة','قاعدة صلب مشتركة تحافظ على محاذاة المضخة والمحرك.']};
+parts.forEach(p=>{const show=()=>{parts.forEach(x=>x.classList.toggle('on',x===p));const n=NOTES[p.dataset.p];info.innerHTML=`<b>${n[0]}</b>${n[1]}`};p.addEventListener('mouseenter',show);p.addEventListener('click',show)});
+// selector (illustrative ranges)
+const M=[['NB‑20','للمباني والري الخفيف',[5,30],[5,28],'2.2 kW'],['NB‑40','للمصانع ومحطات المياه الصغيرة',[15,50],[10,34],'4 kW'],['NB‑65','للخطوط الكبيرة',[40,90],[15,45],'11 kW'],['NB‑80H','رفع عالٍ للأبراج',[20,70],[30,60],'15 kW']];
+const q=document.getElementById('q'),h=document.getElementById('h');
+function pick(){const Q=+q.value,H=+h.value;document.getElementById('qv').textContent=Q+' m³/h';document.getElementById('hv').textContent=H+' m';
+  const sc=M.map(([n,d,qr,hr])=>{const inQ=Q>=qr[0]&&Q<=qr[1],inH=H>=hr[0]&&H<=hr[1];if(!inQ||!inH)return -1;return 1-Math.abs((Q-(qr[0]+qr[1])/2)/(qr[1]-qr[0]))-Math.abs((H-(hr[0]+hr[1])/2)/(hr[1]-hr[0]))});
+  const best=sc.indexOf(Math.max(...sc));
+  document.getElementById('models').innerHTML=M.map(([n,d,qr,hr,p],i)=>`<div class="model ${sc[i]<0?'no':i===best?'best':''}"><div><b>${n}</b><small>${d}</small></div><span class="mono">${qr[0]}–${qr[1]} m³/h</span><span class="mono">${hr[0]}–${hr[1]} m · ${p}</span><span class="fit">${sc[i]<0?'خارج النطاق':i===best?'الأنسب':'مناسب'}</span></div>`).join('')+(sc.every(s=>s<0)?'<p style="color:#A9B4C2;margin:8px 0 0">لا يوجد طراز قياسي لهذا الاحتياج. تواصل معنا لتصميم خاص.</p>':'');}
+q.addEventListener('input',pick);h.addEventListener('input',pick);pick();
+document.getElementById('f').addEventListener('submit',e=>{e.preventDefault();document.getElementById('ok').textContent='هذا مثال تصميم، لم يُرسل أي طلب.'});
+</script>
+</body>
+</html>

@@ -2,7 +2,9 @@
 
 Updated: 2026-11-03.
 
-**Current scope: DONE for targeted web/render fixes — PR #35.** Local browser tools installed; web tests (5/5), three GPU example seek comparisons and showcase browser audit passed. Full repository suite and original CI host remain untested. See verification entry below.
+**Current scope: DRAFT round 2 delivered — Website design gallery (owner 2026-11-03).** Owner rejected round 1 ("fonts, design and copy very bad; study professional sites"). We opened 14 professional sites in Chromium (Tabby, Tamara, Careem, Foodics, NEOM, Equinox, Barry's, Linear, Stripe, Apple; Thmanyah, Salla, Zid, Aesop served bot checks and were left out), measured their type and wrote `studio/web/gallery/LESSONS.md`. The gallery and six new examples (gym, fintech, clinic, industrial exploded pump, SaaS dashboard, sports shop) follow it: one text family each, Modern Standard Arabic, product UI in code or CC0 photos, one real interaction each; the 12 round-1 sketches were deleted. Checked in Chromium at 1440 and 390: no sideways scroll, no script errors, booking/cart/calculator/selector/explode and gallery rating work. Not verified: real phones; owner's verdict on round 2 (correction round 1 of 2 used).
+
+**Previous scope: DONE for targeted web/render fixes — PR #35.** Local browser tools installed; web tests (5/5), three GPU example seek comparisons and showcase browser audit passed. Full repository suite and original CI host remain untested. See verification entry below.
 
 **Latest scope: DONE — Quick suite green on Windows (2026-10-30).** Motion Lab gaps (PR #28) and the baker short + frame triage were merged into main. Three quick tests failed only on the owner's Windows checkout (CRLF skill files; `I:\…` paths); `lib/agents.mjs` now reads skills as LF and the whisper and engine tests compare POSIX paths. `npm test`: 154 pass, 16 skipped, 0 fail. Not verified: a real whisper.cpp or Motion Canvas run on Windows.
 

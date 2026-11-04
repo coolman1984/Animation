@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>لُمى لطب الأسنان — مثال عيادة</title>
+<meta name="description" content="مثال تصميم لعيادة أسنان افتراضية. ليست عيادة حقيقية ولا تقبل حجوزات.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap">
+<style>
+:root{
+  --ink:#10292A; --ink2:#465B5C; --mute:#7A8B8C; --line:#E3EAE9; --bg:#FFFFFF; --soft:#F3F7F6;
+  --teal:#0E6A61; --teal-ink:#FFFFFF; --teal-soft:#E2F1EE; --sand:#F8F3EC; --gold:#B7791F;
+  --f:"Almarai",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif; --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 18px/1.9 var(--f);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.w{max-width:1200px;margin:0 auto;padding-inline:max(20px,4vw)}
+:focus-visible{outline:3px solid var(--teal);outline-offset:3px;border-radius:8px}
+.demo{position:fixed;inset:auto auto 16px 16px;z-index:60;background:var(--ink);color:#fff;font:400 12px var(--f);padding:6px 12px;border-radius:99px}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:54px;padding:0 28px;border-radius:14px;font:700 16px var(--f);border:0;cursor:pointer;transition:background .2s,border-color .2s}
+.btn.primary{background:var(--teal);color:var(--teal-ink)}.btn.primary:hover{background:#0A554E}
+.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}.btn.ghost:hover{border-color:var(--ink)}
+.btn.sm{height:44px;padding:0 20px;font-size:15px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+
+.top{background:var(--soft);font-size:14px;color:var(--ink2)}
+.top .w{display:flex;justify-content:space-between;gap:16px;height:40px;align-items:center;flex-wrap:wrap}
+header.nav{border-bottom:1px solid var(--line);background:#fff;position:sticky;top:0;z-index:40}
+header.nav .w{display:flex;align-items:center;gap:40px;height:76px}
+.logo{display:flex;align-items:center;gap:10px;font:800 22px var(--f);white-space:nowrap}
+.btn{white-space:nowrap}
+.logo svg{width:34px;height:34px}
+nav ul{display:flex;gap:30px;list-style:none;margin:0;padding:0;font:400 16px var(--f);color:var(--ink2)}
+nav ul a:hover{color:var(--ink)}
+.nav-end{margin-inline-start:auto}
+
+/* hero with live booking */
+.hero{padding-block:70px 90px;background:linear-gradient(180deg,var(--soft),#fff)}
+.hero .w{display:grid;grid-template-columns:1fr 480px;gap:64px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:99px;padding:6px 14px;font-size:14px;color:var(--ink2)}
+.pill i{width:8px;height:8px;border-radius:50%;background:#22A06B}
+h1{font:800 clamp(42px,5.2vw,72px)/1.25 var(--f);margin:20px 0 20px;text-wrap:balance}
+h1 em{font-style:normal;color:var(--teal)}
+.lead{font-size:20px;color:var(--ink2);max-width:38ch;margin:0 0 30px}
+.points{list-style:none;padding:0;margin:0 0 34px;display:grid;gap:12px}
+.points li{display:flex;gap:12px;align-items:center}
+.points svg{flex:none;width:26px;height:26px}
+.rate{display:flex;align-items:center;gap:14px;color:var(--ink2);font-size:15px}
+.stars{color:var(--gold);letter-spacing:2px;font-size:18px}
+
+.booking{background:#fff;border:1px solid var(--line);border-radius:28px;padding:28px;box-shadow:0 40px 80px -50px rgba(16,41,42,.35)}
+.booking h2{font:800 22px/1.4 var(--f);margin:0}
+.booking .sub{color:var(--mute);font-size:14px;margin:2px 0 18px}
+.lbl{font:700 14px var(--f);margin:16px 0 8px;display:block}
+select{width:100%;height:50px;border:1.5px solid var(--line);border-radius:12px;padding:0 14px;font:400 16px var(--f);color:var(--ink);background:#fff}
+.dates{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.dates button,.times button{font:400 14px var(--f);border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:12px;cursor:pointer;padding:8px 0;line-height:1.4}
+.dates b{display:block;font:800 20px var(--f)}
+.dates button[aria-pressed="true"],.times button[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:#fff}
+.dates button:disabled{opacity:.35;cursor:not-allowed}
+.times{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.times button{height:44px;padding:0}
+.times button:disabled{text-decoration:line-through;opacity:.4;cursor:not-allowed}
+.summary{margin:20px 0 14px;background:var(--teal-soft);border-radius:14px;padding:12px 16px;font-size:15px;color:var(--teal)}
+.booking .btn{width:100%}
+.booking small{display:block;text-align:center;color:var(--mute);font-size:13px;margin-top:10px}
+
+section{padding-block:120px 0}
+.head{max-width:680px;margin-bottom:54px}
+.head.c{margin-inline:auto;text-align:center}
+.label{font:700 15px var(--f);color:var(--teal)}
+h2.t{font:800 clamp(32px,3.6vw,50px)/1.35 var(--f);margin:8px 0 14px;text-wrap:balance}
+.head p{color:var(--ink2);margin:0}
+
+.svc{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.svc a{border:1px solid var(--line);border-radius:22px;padding:28px;display:flex;flex-direction:column;gap:10px;transition:border-color .25s,background .25s}
+.svc a:hover{border-color:var(--teal);background:var(--soft)}
+.svc svg{width:44px;height:44px}
+.svc h3{font:800 21px var(--f);margin:6px 0 0}
+.svc p{color:var(--ink2);margin:0;font-size:16px;line-height:1.8}
+.svc .from{margin-top:auto;padding-top:8px;font-size:14px;color:var(--mute)}.svc .from b{color:var(--ink)}
+
+.visit{background:var(--sand);border-radius:36px;padding:clamp(32px,5vw,70px)}
+.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;position:relative;margin-top:10px}
+.timeline:before{content:"";position:absolute;top:27px;right:28px;left:28px;height:2px;background:#E5D9C8}
+.timeline div{position:relative}
+.timeline i{display:grid;place-items:center;width:56px;height:56px;border-radius:50%;background:#fff;border:2px solid var(--teal);color:var(--teal);font:800 20px var(--f);font-style:normal;margin-bottom:18px}
+.timeline h3{font:800 19px var(--f);margin:0 0 6px}
+.timeline p{color:var(--ink2);margin:0;font-size:16px;line-height:1.8}
+
+.docs{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.doc{border-radius:22px;background:var(--soft);padding:26px;display:flex;gap:18px;align-items:flex-start}
+.av{flex:none;width:64px;height:64px;border-radius:20px;display:grid;place-items:center;font:800 24px var(--f);color:#fff}
+.doc h3{font:800 19px var(--f);margin:0}.doc span{color:var(--teal);font-size:14px}.doc p{margin:8px 0 0;color:var(--ink2);font-size:15px;line-height:1.8}
+
+.faq{max-width:820px;margin:0 auto}
+details{border-bottom:1px solid var(--line);padding:6px 0}
+summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:18px 0;font:700 19px var(--f)}
+summary::-webkit-details-marker{display:none}
+summary:after{content:"+";flex:none;width:34px;height:34px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font:400 22px var(--f);color:var(--teal);transition:transform .3s var(--ease)}
+details[open] summary:after{transform:rotate(45deg)}
+details p{margin:0 0 18px;color:var(--ink2);max-width:62ch}
+
+.visit-us{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card{border:1px solid var(--line);border-radius:24px;padding:30px}
+.card h3{font:800 21px var(--f);margin:0 0 14px}
+.hours div{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:16px}
+.hours div:last-child{border:0}.hours b{font-weight:700}
+.map{background:var(--teal-soft);border-radius:18px;height:220px;position:relative;overflow:hidden;margin-bottom:16px}
+.map:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(14,106,97,.09) 1px,transparent 1px) 0 0/34px 34px,linear-gradient(rgba(14,106,97,.09) 1px,transparent 1px) 0 0/34px 34px}
+.map:after{content:"";position:absolute;top:42%;left:46%;width:22px;height:22px;border-radius:50% 50% 50% 0;background:var(--teal);transform:rotate(-45deg);box-shadow:0 0 0 8px rgba(14,106,97,.15)}
+.map span{position:absolute;inset:auto 14px 14px auto;background:#fff;border-radius:10px;padding:6px 12px;font-size:14px}
+.phone{font:800 26px var(--f);direction:ltr;display:inline-block;user-select:all}
+
+.final{margin-top:120px;background:var(--teal);color:#fff;padding-block:90px;text-align:center}
+.final h2{font:800 clamp(34px,4vw,56px)/1.35 var(--f);margin:0 0 14px}
+.final p{opacity:.85;margin:0 auto 30px;max-width:44ch}
+.final .btn{background:#fff;color:var(--teal)}
+footer{padding-block:30px 80px;color:var(--mute);font-size:14px}
+footer .w{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+@supports (animation-timeline:view()){
+  .rv{animation:rv linear both;animation-timeline:view();animation-range:entry 5% entry 50%}
+  @keyframes rv{from{opacity:0;transform:translateY(30px)}}
+}
+@media (max-width:1000px){
+  nav ul{display:none}
+  .hero .w{grid-template-columns:1fr;gap:40px}
+  .svc,.docs{grid-template-columns:1fr 1fr}
+  .timeline{grid-template-columns:1fr 1fr}.timeline:before{display:none}
+  .visit-us{grid-template-columns:1fr}
+}
+@media (max-width:620px){
+  .top{display:none}
+  .logo{font-size:18px}.logo svg{width:30px;height:30px}header.nav .w{gap:12px}
+  .svc,.docs,.timeline{grid-template-columns:1fr}
+  .dates{grid-template-columns:repeat(5,1fr);gap:5px}.dates b{font-size:17px}
+  .times{grid-template-columns:repeat(3,1fr)}
+  section{padding-top:80px}
+  .booking{padding:20px;border-radius:22px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<span class="demo">مثال تصميم · عيادة افتراضية</span>
+
+<div class="top"><div class="w"><span>مصر الجديدة، القاهرة · السبت إلى الخميس</span><span>للطوارئ: ٠١٠٠٠٠٠٠٠٠٠ (رقم توضيحي)</span></div></div>
+<header class="nav"><div class="w">
+  <a class="logo" href="#"><svg viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="10" fill="#0E6A61"/><path d="M10.5 11c1.6-1.6 4-1.4 6.5 0 2.5-1.4 4.9-1.6 6.5 0 1.9 1.9 1.2 5.6-.4 8.6-.9 1.7-1.4 3.8-1.9 5.4-.3 1-1.7 1-2 0l-1.1-3.6c-.3-.9-1.6-.9-1.9 0l-1.1 3.6c-.3 1-1.7 1-2 0-.5-1.6-1-3.7-1.9-5.4-1.6-3-2.3-6.7-.7-8.6z" fill="#fff"/></svg>لُمى لطب الأسنان</a>
+  <nav aria-label="القائمة"><ul><li><a href="#services">الخدمات</a></li><li><a href="#visit">زيارتك الأولى</a></li><li><a href="#doctors">الأطباء</a></li><li><a href="#faq">أسئلة شائعة</a></li></ul></nav>
+  <div class="nav-end"><a class="btn primary sm" href="#book">احجز موعدًا</a></div>
+</div></header>
+
+<main>
+<section class="hero" style="padding-top:70px"><div class="w">
+  <div>
+    <span class="pill"><i></i>مواعيد متاحة هذا الأسبوع</span>
+    <h1>علاج أسنان <em>واضح</em> من أول زيارة</h1>
+    <p class="lead">نشرح لك حالتك بالصور، ونكتب خطة العلاج وتكلفتها قبل أن نبدأ. بدون مفاجآت وبدون استعجال.</p>
+    <ul class="points">
+      <li><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="13" fill="#E2F1EE"/><path d="M8 13.5l3.2 3.2L18 9.8" fill="none" stroke="#0E6A61" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>خطة علاج مكتوبة بالسعر قبل البدء</li>
+      <li><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="13" fill="#E2F1EE"/><path d="M8 13.5l3.2 3.2L18 9.8" fill="none" stroke="#0E6A61" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>أدوات معقّمة ومغلّفة لكل مريض</li>
+      <li><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="13" fill="#E2F1EE"/><path d="M8 13.5l3.2 3.2L18 9.8" fill="none" stroke="#0E6A61" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>متابعة بعد كل جلسة عبر الهاتف</li>
+    </ul>
+    <div class="rate"><span class="stars" aria-hidden="true">★★★★★</span><span>تقييمات توضيحية لعيادة افتراضية</span></div>
+  </div>
+
+  <form class="booking" id="book" aria-labelledby="bk">
+    <h2 id="bk">احجز موعدك</h2><p class="sub">الكشف الأول ٣٠ دقيقة، ويشمل الأشعة إن لزم.</p>
+    <label class="lbl" for="svc">نوع الزيارة</label>
+    <select id="svc"><option>كشف وفحص شامل</option><option>تنظيف وتلميع</option><option>حشو أو علاج عصب</option><option>استشارة تقويم</option><option>تبييض الأسنان</option></select>
+    <span class="lbl" id="ld">اليوم</span><div class="dates" id="dates" role="group" aria-labelledby="ld"></div>
+    <span class="lbl" id="lt">الوقت</span><div class="times" id="times" role="group" aria-labelledby="lt"></div>
+    <div class="summary" id="sum" aria-live="polite"></div>
+    <button class="btn primary" type="submit" id="confirm">تأكيد الموعد</button>
+    <small id="msg">يمكنك تعديل الموعد أو إلغاؤه حتى قبله بـ ٢٤ ساعة.</small>
+  </form>
+</div></section>
+
+<section id="services"><div class="w">
+  <div class="head rv"><span class="label">الخدمات</span><h2 class="t">كل ما تحتاجه أسنانك في مكان واحد</h2><p>أسعار تبدأ من القيم الموضّحة، والتكلفة النهائية تُكتب لك بعد الكشف.</p></div>
+  <div class="svc">
+    <a class="rv" href="#book"><svg viewBox="0 0 44 44" aria-hidden="true"><rect width="44" height="44" rx="12" fill="#E2F1EE"/><circle cx="20" cy="20" r="8" fill="none" stroke="#0E6A61" stroke-width="2.4"/><path d="M26 26l7 7" stroke="#0E6A61" stroke-width="2.4" stroke-linecap="round"/></svg><h3>كشف وفحص شامل</h3><p>فحص كامل للأسنان واللثة، مع أشعة رقمية وشرح الحالة على الشاشة.</p><span class="from">يبدأ من <b>٣٠٠ ج.م</b></span></a>
+    <a class="rv" href="#book"><svg viewBox="0 0 44 44" aria-hidden="true"><rect width="44" height="44" rx="12" fill="#E2F1EE"/><path d="M14 30l16-16M24 12l8 8M12 24l8 8" stroke="#0E6A61" stroke-width="2.4" stroke-linecap="round"/></svg><h3>تنظيف وتلميع</h3><p>إزالة الجير والتصبغات في جلسة واحدة، مع إرشادات للعناية اليومية.</p><span class="from">يبدأ من <b>٥٠٠ ج.م</b></span></a>
+    <a class="rv" href="#book"><svg viewBox="0 0 44 44" aria-hidden="true"><rect width="44" height="44" rx="12" fill="#E2F1EE"/><path d="M15 14c2-2 5-1.7 7 0 2-1.7 5-2 7 0 2.3 2.3 1.4 6.9-.5 10.5-1.1 2.1-1.7 4.6-2.3 6.6-.4 1.2-2.1 1.2-2.4 0L22.6 27c-.3-1.1-1.9-1.1-2.2 0l-1.2 4.1c-.4 1.2-2.1 1.2-2.4 0-.6-2-1.2-4.5-2.3-6.6-1.9-3.6-2.8-8.2-.5-10.5z" fill="none" stroke="#0E6A61" stroke-width="2.2"/></svg><h3>حشو وعلاج عصب</h3><p>علاج تحت تخدير موضعي، ونخبرك بعدد الجلسات المتوقع من البداية.</p><span class="from">يبدأ من <b>٧٠٠ ج.م</b></span></a>
+    <a class="rv" href="#book"><svg viewBox="0 0 44 44" aria-hidden="true"><rect width="44" height="44" rx="12" fill="#E2F1EE"/><path d="M11 22h22M15 17v10M22 17v10M29 17v10" stroke="#0E6A61" stroke-width="2.4" stroke-linecap="round"/></svg><h3>تقويم شفاف</h3><p>خطة تقويم بمحاكاة رقمية للنتيجة، ومتابعة شهرية حتى النهاية.</p><span class="from">استشارة <b>مجانية</b></span></a>
+    <a class="rv" href="#book"><svg viewBox="0 0 44 44" aria-hidden="true"><rect width="44" height="44" rx="12" fill="#E2F1EE"/><path d="M22 11v4M22 29v4M11 22h4M29 22h4M14.5 14.5l2.8 2.8M26.7 26.7l2.8 2.8M14.5 29.5l2.8-2.8M26.7 17.3l2.8-2.8" stroke="#0E6A61" stroke-width="2.4" stroke-linecap="round"/><circle cx="22" cy="22" r="4" fill="#0E6A61"/></svg><h3>تبييض الأسنان</h3><p>تبييض آمن في العيادة خلال ساعة، بعد التأكد من سلامة اللثة والمينا.</p><span class="from">يبدأ من <b>٢٬٥٠٠ ج.م</b></span></a>
+    <a class="rv" href="#book"><svg viewBox="0 0 44 44" aria-hidden="true"><rect width="44" height="44" rx="12" fill="#E2F1EE"/><rect x="13" y="12" width="18" height="21" rx="4" fill="none" stroke="#0E6A61" stroke-width="2.4"/><path d="M18 19h8M18 24h8M18 29h5" stroke="#0E6A61" stroke-width="2.4" stroke-linecap="round"/></svg><h3>زراعة وتركيبات</h3><p>زراعة وتيجان بخامات مضمونة، مع شهادة ضمان مكتوبة لكل تركيبة.</p><span class="from">حسب الحالة</span></a>
+  </div>
+</div></section>
+
+<section id="visit"><div class="w">
+  <div class="visit rv">
+    <div class="head"><span class="label">زيارتك الأولى</span><h2 class="t">أربع خطوات، بدون أي مفاجآت</h2></div>
+    <div class="timeline">
+      <div><i>١</i><h3>الاستقبال</h3><p>نسجل بياناتك وتاريخك الطبي في خمس دقائق.</p></div>
+      <div><i>٢</i><h3>الفحص والأشعة</h3><p>فحص كامل وأشعة رقمية بجرعة منخفضة.</p></div>
+      <div><i>٣</i><h3>الشرح والخطة</h3><p>نعرض الحالة على الشاشة ونكتب الخطة بالسعر.</p></div>
+      <div><i>٤</i><h3>القرار لك</h3><p>تبدأ العلاج في نفس اليوم أو في موعد يناسبك.</p></div>
+    </div>
+  </div>
+</div></section>
+
+<section id="doctors"><div class="w">
+  <div class="head rv"><span class="label">الفريق الطبي</span><h2 class="t">أطباء متخصصون، لكل حالة طبيبها</h2><p>الأسماء والتخصصات في هذا المثال توضيحية.</p></div>
+  <div class="docs">
+    <div class="doc rv"><span class="av" style="background:#0E6A61">س</span><div><h3>د. سلمى عادل</h3><span>علاج الجذور والحشو</span><p>تهتم بالحالات الدقيقة، وتشرح كل خطوة قبل أن تبدأ.</p></div></div>
+    <div class="doc rv"><span class="av" style="background:#B7791F">ك</span><div><h3>د. كريم فؤاد</h3><span>تقويم الأسنان</span><p>يصمم خطة التقويم رقميًا ويتابعها شهريًا حتى النهاية.</p></div></div>
+    <div class="doc rv"><span class="av" style="background:#3D5A80">ه</span><div><h3>د. هالة منصور</h3><span>طب أسنان الأطفال</span><p>زيارة هادئة للأطفال، بأسلوب يقلل الخوف من أول مرة.</p></div></div>
+  </div>
+</div></section>
+
+<section id="faq"><div class="w">
+  <div class="head c rv"><span class="label">أسئلة شائعة</span><h2 class="t">قبل أن تحجز</h2></div>
+  <div class="faq">
+    <details open><summary>هل أعرف تكلفة العلاج قبل البدء؟</summary><p>نعم. بعد الكشف تحصل على خطة مكتوبة فيها كل جلسة وتكلفتها، ولا نبدأ أي إجراء قبل موافقتك.</p></details>
+    <details><summary>هل الكشف الأول مؤلم؟</summary><p>لا. الكشف فحص وأشعة فقط، وأي علاج لاحق يتم تحت تخدير موضعي.</p></details>
+    <details><summary>هل تقبلون التأمين الطبي؟</summary><p>في النسخة الحقيقية تُكتب هنا شركات التأمين المتعاقد معها. هذا مثال تصميم.</p></details>
+    <details><summary>كيف أعدّل موعدي أو ألغيه؟</summary><p>من رابط في رسالة التأكيد، أو بالاتصال بالعيادة قبل الموعد بـ ٢٤ ساعة على الأقل.</p></details>
+  </div>
+</div></section>
+
+<section><div class="w">
+  <div class="visit-us">
+    <div class="card rv"><h3>مواعيد العمل</h3><div class="hours"><div><span>السبت إلى الأربعاء</span><b>١٠ ص – ١٠ م</b></div><div><span>الخميس</span><b>١٠ ص – ٤ م</b></div><div><span>الجمعة</span><b>مغلق</b></div></div></div>
+    <div class="card rv"><div class="map" role="img" aria-label="خريطة توضيحية لموقع العيادة"><span>شارع الميرغني، مصر الجديدة</span></div><h3 style="margin:0">اتصل بنا</h3><span class="phone">0100 000 0000</span></div>
+  </div>
+</div></section>
+
+<div class="final"><div class="w rv"><h2>ابتسامة صحية تبدأ بزيارة واحدة</h2><p>احجز كشفك الأول الآن، واعرف حالتك وخطتك وتكلفتها بوضوح.</p><a class="btn" href="#book">احجز موعدًا</a></div></div>
+</main>
+<footer><div class="w"><span>لُمى عيادة افتراضية، وهذه الصفحة مثال تصميم لا يقبل حجوزات حقيقية.</span><span>© ٢٠٢٦</span></div></footer>
+
+<script>
+const AR=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+const DN=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const TIMES=['١٠:٠٠ ص','١١:٣٠ ص','١:٠٠ م','٤:٠٠ م','٥:٣٠ م','٧:٠٠ م','٨:٣٠ م','٩:٣٠ م'];
+// example availability (deterministic): some slots taken, Friday closed
+const days=[];const base=new Date(2026,10,7);
+for(let i=0;days.length<5;i++){const d=new Date(base);d.setDate(base.getDate()+i);days.push(d)}
+let di=0,ti=null;
+const taken=(d,t)=>((d.getDate()*7+t*3)%5===0)||(d.getDay()===4&&t>3);
+function draw(){
+  const D=document.getElementById('dates');D.innerHTML='';
+  days.forEach((d,i)=>{const b=document.createElement('button');b.type='button';const closed=d.getDay()===5;
+    b.innerHTML=`${DN[d.getDay()]}<b>${AR(d.getDate())}</b>`;b.disabled=closed;b.setAttribute('aria-pressed',i===di);if(closed)b.title='العيادة مغلقة';
+    b.onclick=()=>{di=i;ti=null;draw()};D.append(b)});
+  const T=document.getElementById('times');T.innerHTML='';
+  TIMES.forEach((t,i)=>{const b=document.createElement('button');b.type='button';b.textContent=t;const x=taken(days[di],i);b.disabled=x;
+    if(x)b.setAttribute('aria-label',t+' محجوز');b.setAttribute('aria-pressed',i===ti);b.onclick=()=>{ti=i;draw()};T.append(b)});
+  const s=document.getElementById('svc').value,d=days[di];
+  document.getElementById('sum').textContent=ti===null?'اختر الوقت المناسب لك':`${s} · ${DN[d.getDay()]} ${AR(d.getDate())} نوفمبر · ${TIMES[ti]}`;
+  document.getElementById('confirm').disabled=ti===null;
+}
+document.getElementById('svc').addEventListener('change',draw);
+document.getElementById('book').addEventListener('submit',e=>{e.preventDefault();document.getElementById('confirm').textContent='تم تأكيد الطلب ✓';document.getElementById('msg').textContent='هذا مثال تصميم، لم يتم حجز أي موعد فعلي.'});
+draw();
+</script>
+</body>
+</html>
