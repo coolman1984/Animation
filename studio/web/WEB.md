@@ -47,6 +47,7 @@ rules unless the owner asks otherwise. Free tools only; never a paid API without
 | cinematic sequences, scroll storytelling, pinned scenes, synchronized timelines | GSAP + ScrollTrigger (GreenSock standard no-charge licence, not MIT) | skill `gsap-skills`; add per site, pinned version, credited; check the licence for that client |
 | immersive 3D objects and scenes | Three.js | vendored by `node studio/studio.mjs setup gpu` (`capabilities.json`) |
 | custom 2D graphics, drawn lines, morphs, particles | SVG / Canvas (PixiJS for heavy 2D) | inline SVG; PixiJS in `setup gpu` |
+**Groups of moving parts follow skill `emil-skills` → `choreograph` (2026-11-05):** cast lead / support / decoration / static, one entrance per container, no scroll reveal on every section, no stagger on repeated surfaces, timeline written in DESIGN.md §C first; RTL flips his directions.
 Every moving thing: transform/opacity first, ease-out settles (no bounce/elastic), one lead movement with overlapping secondary ones,
 a still complete page under `prefers-reduced-motion`, no layout shift.
 

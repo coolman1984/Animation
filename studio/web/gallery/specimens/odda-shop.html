@@ -48,9 +48,9 @@ h1{font:700 clamp(40px,4.8vw,70px)/1.2 var(--f);margin:12px 0 18px;text-wrap:bal
 .hero-copy p{color:var(--ink2);margin:0 0 30px;max-width:36ch;font-size:19px}
 .cta{display:flex;gap:10px;flex-wrap:wrap}
 .hero-img{border-radius:32px;overflow:hidden;position:relative;min-height:520px;background:#EDEDED}
-.hero-img img{width:100%;height:100%;object-fit:cover;object-position:50% 60%;position:absolute;inset:0;animation:in 1.2s var(--ease) both}
+.hero-img img{width:100%;height:100%;object-fit:cover;object-position:50% 60%;position:absolute;inset:0;animation:fadeonly .8s ease-out both}
 @keyframes in{from{transform:scale(1.08);opacity:.4}}
-.float{position:absolute;inset:auto auto 22px 22px;background:#fff;border-radius:20px;padding:14px 16px;display:flex;gap:14px;align-items:center;box-shadow:0 20px 40px -24px rgba(0,0,0,.35);animation:up .8s var(--ease) both .6s}
+.float{position:absolute;inset:auto auto 22px 22px;background:#fff;border-radius:20px;padding:14px 16px;display:flex;gap:14px;align-items:center;box-shadow:0 20px 40px -24px rgba(0,0,0,.35);animation:fadeonly .4s ease-out both .5s}
 @keyframes up{from{opacity:0;transform:translateY(16px)}}
 .float img{width:56px;height:56px;border-radius:12px;object-fit:cover;position:static;animation:none}
 .float b{display:block;font:600 15px var(--f)}.float span{color:var(--mute);font-size:14px}
@@ -127,10 +127,6 @@ h2{font:700 clamp(30px,3.2vw,46px)/1.3 var(--f);margin:0;text-wrap:balance}
 footer.site{margin-top:110px;border-top:1px solid var(--line);padding-block:34px 80px;color:var(--mute);font-size:14px}
 footer.site .w{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 
-@supports (animation-timeline:view()){
-  .rv{animation:rv linear both;animation-timeline:view();animation-range:entry 5% entry 50%}
-  @keyframes rv{from{opacity:0;transform:translateY(30px)}}
-}
 @media (max-width:1000px){
   nav ul{display:none}
   .hero-grid,.bundle{grid-template-columns:1fr}
@@ -141,6 +137,14 @@ footer.site .w{display:flex;justify-content:space-between;gap:20px;flex-wrap:wra
 }
 @media (max-width:560px){.search{display:none}header.nav .w{gap:12px;justify-content:space-between}.cart-btn{margin-inline-start:auto}section{padding-top:70px}.perks{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* Hero choreography (emil-skills/choreograph): one lead, support overlaps with shrinking gaps, decoration only fades;
+   one entrance per page, no scroll reveals; reduced motion = everything appears together with a short fade. */
+.in{animation:enter .6s cubic-bezier(.23,1,.32,1) both;animation-delay:var(--d,0ms)}
+.in.f{animation-name:fadeonly;animation-duration:.4s}
+@keyframes enter{from{opacity:0;transform:translateY(var(--y,8px))}}
+@keyframes fadeonly{from{opacity:0}}
+.btn:active{transform:scale(.97)}
+@media (prefers-reduced-motion:reduce){.in,.in.f{animation:fadeonly .2s ease-out both!important;animation-delay:0ms!important}}
 </style>
 </head>
 <body>
@@ -157,10 +161,10 @@ footer.site .w{display:flex;justify-content:space-between;gap:20px;flex-wrap:wra
 <section class="hero" style="padding-top:28px"><div class="w">
   <div class="hero-grid">
     <div class="hero-copy">
-      <span class="kick">مجموعة الشتاء ٢٠٢٦</span>
-      <h1>كل ما تحتاجه لتتمرن في البيت</h1>
-      <p>أوزان وأحذية وإكسسوارات مختارة بعناية، تصلك خلال يومين، مع إرجاع مجاني خلال ١٤ يومًا.</p>
-      <div class="cta"><a class="btn dark" href="#shop">تسوّق الآن</a><a class="btn ghost" href="#bundle">جهّز ركنك الرياضي</a></div>
+      <span class="kick in f">مجموعة الشتاء ٢٠٢٦</span>
+      <h1 class="in" style="--y:14px">كل ما تحتاجه لتتمرن في البيت</h1>
+      <p class="in" style="--d:80ms;--y:8px">أوزان وأحذية وإكسسوارات مختارة بعناية، تصلك خلال يومين، مع إرجاع مجاني خلال ١٤ يومًا.</p>
+      <div class="cta in" style="--d:140ms;--y:6px"><a class="btn dark" href="#shop">تسوّق الآن</a><a class="btn ghost" href="#bundle">جهّز ركنك الرياضي</a></div>
     </div>
     <div class="hero-img">
       <img src="img/shop-shoes.jpg" alt="حذاء تمرين وردي بجانب دمبلز زرقاء على أرضية فاتحة" fetchpriority="high">

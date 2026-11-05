@@ -5,6 +5,12 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-11-05 — Emil Kowalski's skills adopted; gallery re-choreographed (DONE)
+Owner sent the /choreograph post: "learn this well".
+- **New:** toolkit package `emil-skills` (MIT @ c8a7962: 13 web/motion skills + 2 cheatsheets) and wrapper skill `emil-skills` (RTL flip, CSS role pattern, timeline in DESIGN.md §C, film shots).
+- **Applied:** the six gallery examples lost their per-section scroll reveals, the tab stagger, the dashboard loop and the slider lag; each has one role-cast hero entrance (`web/gallery/LESSONS.md` §Motion).
+- **Proof:** frame-by-frame Chromium capture at 0/100/200/400/900 ms (one wave, < 1 s), reduced-motion run, no script errors. **Not verified:** real phones.
+
 ## 2026-11-03 — Gallery round 2: learned from 14 professional sites (DRAFT)
 Owner: "very bad — fonts very bad, design and copy very bad; look at professional sites and learn from them well".
 - **Research:** Chromium visits of 14 sites, computed type measured (`web/gallery/LESSONS.md`). Bot-checked sites were skipped, not bypassed.

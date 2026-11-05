@@ -38,7 +38,7 @@ nav ul a:hover{color:var(--ink)}
 
 /* hero */
 .hero{position:relative;min-height:min(900px,100svh);display:flex;align-items:flex-end;overflow:hidden}
-.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 35%;filter:saturate(.85);transform:scale(1.04);animation:zoom 2.4s var(--ease) both}
+.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 35%;filter:saturate(.85);animation:fadeonly .8s ease-out both}
 @keyframes zoom{from{transform:scale(1.14)}}
 .hero:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,11,12,.96) 8%,rgba(11,11,12,.35) 55%,rgba(11,11,12,.55) 100%),linear-gradient(270deg,rgba(11,11,12,.75),transparent 60%)}
 .hero .w{position:relative;z-index:2;width:100%;display:grid;grid-template-columns:1.25fr .85fr;gap:60px;align-items:end;padding-block:150px 80px}
@@ -49,7 +49,7 @@ h1 span{display:block;color:var(--ink2);font-weight:400}
 .lead{font-size:20px;color:var(--ink2);max-width:40ch;margin:0}
 
 /* booking card (functional hero, like a studio finder) */
-.book{background:var(--paper);color:var(--paper-ink);border-radius:8px;padding:28px;animation:rise .9s var(--ease) both .4s}
+.book{background:var(--paper);color:var(--paper-ink);border-radius:8px;padding:28px}
 @keyframes rise{from{opacity:0;transform:translateY(24px)}}
 .book h2{font:700 22px/1.4 var(--f);margin:0 0 4px}
 .book>p{margin:0 0 18px;color:#5E5A54;font-size:15px}
@@ -107,7 +107,7 @@ h2.t{font:700 clamp(36px,4vw,56px)/1.25 var(--f);margin:8px 0 0;text-wrap:balanc
 .days button{font:500 15px var(--f);background:transparent;color:var(--ink2);border:1px solid var(--line);border-radius:4px;padding:8px 18px;cursor:pointer;min-height:44px}
 .days button[aria-pressed="true"]{background:var(--paper);color:var(--paper-ink);border-color:var(--paper)}
 .rows{list-style:none;margin:0;padding:0}
-.rows li{display:grid;grid-template-columns:110px 1fr 140px 150px auto;gap:20px;align-items:center;padding:18px 0;border-top:1px solid var(--line);animation:rise .45s var(--ease) both}
+.rows li{display:grid;grid-template-columns:110px 1fr 140px 150px auto;gap:20px;align-items:center;padding:18px 0;border-top:1px solid var(--line)}
 .rows time{font:600 20px var(--f);white-space:nowrap}
 .rows b{font:600 19px var(--f);display:block}.rows small{color:var(--mute);font-size:14px}
 .rows .lvl{color:var(--ink2);font-size:15px}
@@ -137,10 +137,6 @@ h2.t{font:700 clamp(36px,4vw,56px)/1.25 var(--f);margin:8px 0 0;text-wrap:balanc
 footer{padding-block:34px 80px;color:var(--mute);font-size:14px;border-top:1px solid var(--line)}
 footer .w{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 
-@supports (animation-timeline:view()){
-  .rv{animation:rv linear both;animation-timeline:view();animation-range:entry 5% entry 50%}
-  @keyframes rv{from{opacity:0;transform:translateY(36px)}}
-}
 @media (max-width:980px){
   nav ul{display:none}
   .hero .w{grid-template-columns:1fr;gap:36px;padding-block:120px 40px}
@@ -153,6 +149,14 @@ footer .w{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 }
 @media (max-width:520px){h1{font-size:34px}.nav-end .line{display:none}.prog{aspect-ratio:3/4}.prog .card{inset:auto 12px 12px 12px;max-width:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* Hero choreography (emil-skills/choreograph): one lead, support overlaps with shrinking gaps, decoration only fades;
+   one entrance per page, no scroll reveals; reduced motion = everything appears together with a short fade. */
+.in{animation:enter .6s cubic-bezier(.23,1,.32,1) both;animation-delay:var(--d,0ms)}
+.in.f{animation-name:fadeonly;animation-duration:.4s}
+@keyframes enter{from{opacity:0;transform:translateY(var(--y,8px))}}
+@keyframes fadeonly{from{opacity:0}}
+.btn:active{transform:scale(.97)}
+@media (prefers-reduced-motion:reduce){.in,.in.f{animation:fadeonly .2s ease-out both!important;animation-delay:0ms!important}}
 </style>
 </head>
 <body>
@@ -169,11 +173,11 @@ footer .w{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
   <img src="img/pulse-trx.jpg" alt="متدرب يستخدم حبال التعليق داخل صالة التدريب" fetchpriority="high">
   <div class="w">
     <div>
-      <span class="kicker">التجمع الخامس، القاهرة</span>
-      <h1>تدريب بإشراف حقيقي. <span>في مجموعات صغيرة.</span></h1>
-      <p class="lead">حصص لا تزيد عن ثمانية متدربين، مع مدرب يتابع كل حركة، وخطة تُراجع معك كل أسبوعين.</p>
+      <span class="kicker in f">التجمع الخامس، القاهرة</span>
+      <h1 class="in" style="--y:14px">تدريب بإشراف حقيقي. <span>في مجموعات صغيرة.</span></h1>
+      <p class="lead in" style="--d:80ms;--y:8px">حصص لا تزيد عن ثمانية متدربين، مع مدرب يتابع كل حركة، وخطة تُراجع معك كل أسبوعين.</p>
     </div>
-    <form class="book" id="book" aria-labelledby="bookT">
+    <form class="book in" style="--d:160ms;--y:12px" id="book" aria-labelledby="bookT">
       <h2 id="bookT">احجز حصتك الأولى مجانًا</h2>
       <p>اختر البرنامج والموعد، ونؤكد لك الحجز برسالة.</p>
       <div class="fld"><label id="lp">البرنامج</label><div class="seg" role="group" aria-labelledby="lp" id="prog"></div></div>
@@ -264,7 +268,7 @@ document.getElementById('book').addEventListener('submit',e=>{e.preventDefault()
 drawBook();
 const days=document.getElementById('days'),rows=document.getElementById('rows');
 function drawTable(){days.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.textContent===td));
-  rows.innerHTML=T[td].map(([t,p,l,s],i)=>`<li style="animation-delay:${i*60}ms"><time>${t}</time><div><b>${PROGS[p]}</b><small>مع مدرب البرنامج</small></div><span class="lvl">${l}</span><span class="left${s<=2?' low':''}">${seats(s)}</span><a class="btn line" href="#book">احجز</a></li>`).join('')}
+  rows.innerHTML=T[td].map(([t,p,l,s],i)=>`<li><time>${t}</time><div><b>${PROGS[p]}</b><small>مع مدرب البرنامج</small></div><span class="lvl">${l}</span><span class="left${s<=2?' low':''}">${seats(s)}</span><a class="btn line" href="#book">احجز</a></li>`).join('')}
 DAYS.forEach(d=>{const b=document.createElement('button');b.type='button';b.textContent=d;b.onclick=()=>{td=d;drawTable()};days.append(b)});
 drawTable();
 </script>
