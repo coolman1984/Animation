@@ -1,0 +1,61 @@
+name: Native studio preview
+on:
+  pull_request:
+    paths:
+      - 'studio/native/**'
+      - '.github/workflows/native-preview.yml'
+  workflow_dispatch:
+    inputs:
+      engine:
+        description: Engine to run
+        type: choice
+        options: [blender, godot]
+        required: true
+      entry:
+        description: Repo-relative Blender .py or Godot project directory (empty uses demo)
+        type: string
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: ${{ fromJSON(github.event_name == 'workflow_dispatch' && format('["{0}"]', inputs.engine) || '["blender","godot"]') }}
+    env:
+      STUDIO_NATIVE_OUTPUT: ${{ runner.temp }}/native-preview
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Prepare Godot software rendering
+        if: matrix.engine == 'godot'
+        run: sudo apt-get update && sudo apt-get install -y xvfb xauth libgl1-mesa-dri ffmpeg
+      - name: Render preview
+        env:
+          ENGINE: ${{ matrix.engine }}
+          ENTRY: ${{ inputs.entry }}
+        run: bash studio/native/preview.sh "$ENGINE" "$ENTRY"
+      - name: Verify demo output
+        if: github.event_name == 'pull_request' || inputs.entry == ''
+        env:
+          ENGINE: ${{ matrix.engine }}
+        run: |
+          if [[ "$ENGINE" == blender ]]; then
+            test -s "$STUDIO_NATIVE_OUTPUT/scene.blend"
+            test -s "$STUDIO_NATIVE_OUTPUT/blender-preview.png"
+          else
+            frames="$(ffprobe -v error -select_streams v:0 -show_entries stream=nb_frames -of csv=p=0 "$STUDIO_NATIVE_OUTPUT/godot-preview.mp4")"
+            test "$frames" -ge 55
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.engine }}-preview
+          path: ${{ env.STUDIO_NATIVE_OUTPUT }}
+          if-no-files-found: error
+          retention-days: 7

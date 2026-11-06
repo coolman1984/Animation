@@ -2,6 +2,8 @@
 
 Updated: 2026-11-06.
 
+Native engine scope: [portable Blender/Godot and remote previews](docs/studio/NATIVE-ENGINES.md). The workflow provides software-rendered previews for checked-out projects.
+
 Research kit: [ten pinned upstreams and evidence workflow](docs/studio/RESEARCH.md). Source registration does not certify the optional tools on the owner’s PC.
 
 Documentation scope: added the [repository handbook](README.md) for project intake, skill routing, history, troubleshooting and upkeep. Website gallery review status is recorded below.

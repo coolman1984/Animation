@@ -5,6 +5,10 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-11-06 — Portable Blender and Godot
+
+Added [pinned Linux runtimes and a remote preview workflow](../docs/studio/NATIVE-ENGINES.md), with editable Blender and Godot demos.
+
 ## 2026-11-06 — Web and video research kit
 
 Added the [research lab](../docs/studio/RESEARCH.md), ten pinned upstreams, a browser design inventory, a per-frame timestamp index and optional local OCR.
