@@ -17,6 +17,14 @@ lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
 Compared the studio's capabilities with well-known GitHub tools and recorded 13 dated decisions in [TECH_RADAR.md](TECH_RADAR.md) ("Gap review against the whole repo"). Research only: nothing installed, cloned or promoted in `capabilities.json`. Next pilots: three-bvh-csg + postprocessing + build123d for the first industrial scene; Lighthouse, sharp and font subsetting for sites; Real-ESRGAN and audio-separator when a film needs them.
 
+## 2026-11-06 — Athar shelf
+
+Added an original Arabic [interactive shelf](web/gallery/specimens/athar-shelf.html), gallery entry and native links for the no-script reading experience.
+
+## 2026-11-06 — Design reference sources
+
+Linked the [owner-supplied reference catalog](../docs/studio/DESIGN-SOURCES.md) into web direction and research, with a mobile-friendly carousel study and optional connector links.
+
 ## 2026-11-06 — Portable Blender and Godot
 
 Added [pinned Linux runtimes and a remote preview workflow](../docs/studio/NATIVE-ENGINES.md), with editable Blender and Godot demos.
