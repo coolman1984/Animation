@@ -5,6 +5,10 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-11-06 — Repository documentation handbook
+
+Added the [Arabic front door](../README.md) and linked guides for project intake, skill routing, milestones, troubleshooting and documentation ownership.
+
 ## 2026-11-03 — Gallery round 2: learned from 14 professional sites (DRAFT)
 Owner: "very bad — fonts very bad, design and copy very bad; look at professional sites and learn from them well".
 - **Research:** Chromium visits of 14 sites, computed type measured (`web/gallery/LESSONS.md`). Bot-checked sites were skipped, not bypassed.
