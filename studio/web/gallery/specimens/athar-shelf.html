@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>أثر الورق | معرض كتب تخيّلي</title>
+<style>
+*{box-sizing:border-box}
+:root{color-scheme:light;--ink:#29231d;--accent:#76342a;--paper:#f5eee1}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Tahoma,Arial,sans-serif}
+main{max-width:78rem;margin:auto;padding:clamp(1rem,4vw,3rem)}
+header{border-block-start:3px solid var(--accent);padding-block-start:1rem}
+.kicker,.eyebrow{color:var(--accent);font-size:.87rem;font-weight:700}
+h1,h2,p{margin:0}
+h1{font-family:Georgia,serif;font-size:clamp(2.65rem,9vw,6rem);line-height:1.2;margin:.85rem 0 .3rem}
+.intro{max-width:37rem;line-height:1.8}
+.shelf{list-style:none;display:flex;gap:.7rem;overflow:auto;padding:1rem .4rem;margin:1.6rem 0 0;scroll-snap-type:x proximity}
+.shelf li{scroll-snap-align:center;flex:0 0 clamp(6rem,14vw,11rem)}
+.cover{--shade:var(--ink);display:grid;align-content:space-between;text-align:center;width:100%;min-height:clamp(10rem,25vw,17rem);padding:.8rem .35rem;border:1px solid #3a3124;border-radius:3px 8px 8px 3px;background:linear-gradient(90deg,#0004,transparent 14%,#fff1 20%,transparent 42%),var(--shade);box-shadow:3px 7px 10px #21150935,inset 0 0 0 5px #fff2;color:white;text-decoration:none}
+.cover strong{font-family:Georgia,serif;font-size:clamp(1rem,2.3vw,1.8rem);line-height:1.3}
+.cover small{font-size:.75rem}
+.mark{font-size:clamp(1.4rem,4vw,3.4rem);line-height:1}
+.shelf [aria-current=true]{outline:3px solid var(--accent);outline-offset:2px}
+a:focus-visible,button:focus-visible{outline:3px solid #185688;outline-offset:3px}
+.shelf [aria-current=true]:focus-visible{outline-color:#185688}
+.controls{display:flex;gap:.6rem;align-items:center;justify-content:center;margin:1rem 0}
+.controls[hidden]{display:none}
+button{font:inherit;color:var(--ink);border:1px solid #8f7a67;border-radius:2rem;background:transparent;padding:.5rem .85rem;min-height:44px;cursor:pointer}
+button:disabled{opacity:.5;cursor:default}
+.notes{max-width:39rem;margin:1rem auto;text-align:center}
+.note{padding:1rem 0;line-height:1.75;border-block-start:1px solid #a28b74}
+.note h2{font-family:Georgia,serif;font-size:clamp(1.6rem,4vw,2.7rem)}
+footer{border-block-start:1px solid #a28b74;padding-block-start:.8rem;font-size:.8rem}
+@media(min-width:850px) and (prefers-reduced-motion:no-preference){
+.shelf[data-enhanced]{justify-content:center;overflow:visible;perspective:1050px;padding-block:2rem 1rem;gap:.55rem}
+.shelf[data-enhanced] li{flex-basis:min(12.5%,9rem);transform:translateY(var(--drop,0px)) rotateY(var(--angle,0deg)) scale(var(--scale,1));transition:transform .45s cubic-bezier(.22,.8,.3,1)}
+}
+</style>
+<main>
+<header><p class="kicker">أرشيف خيالي · سبع طبعات</p><h1>أثر الورق</h1><p class="intro">رفّ واحد يحفظ حكايات من البحر إلى آخر محطة. اختر غلافًا وافتح الحكاية اللي وراه.</p></header>
+<nav aria-label="رف الكتب"><ol class="shelf">
+<li><a class="cover" style="--shade:#3f4a40" href="#book-1"><small>١٩٥٦</small><span class="mark" aria-hidden="true">◈</span><strong>مدينة الملح</strong></a></li>
+<li><a class="cover" style="--shade:#314a60" href="#book-2"><small>١٩٦٢</small><span class="mark" aria-hidden="true">✦</span><strong>خرائط المطر</strong></a></li>
+<li><a class="cover" style="--shade:#8a452f" href="#book-3"><small>١٩٧١</small><span class="mark" aria-hidden="true">◐</span><strong>أثر الضوء</strong></a></li>
+<li><a class="cover" style="--shade:#7e332c" href="#book-4"><small>١٩٨٤</small><span class="mark" aria-hidden="true">◇</span><strong>بيت من ورق</strong></a></li>
+<li><a class="cover" style="--shade:#4a495e" href="#book-5"><small>١٩٨٩</small><span class="mark" aria-hidden="true">✿</span><strong>حدائق الليل</strong></a></li>
+<li><a class="cover" style="--shade:#355c58" href="#book-6"><small>١٩٩٦</small><span class="mark" aria-hidden="true">≋</span><strong>صوت النهر</strong></a></li>
+<li><a class="cover" style="--shade:#6c4b32" href="#book-7"><small>٢٠٠٤</small><span class="mark" aria-hidden="true">▥</span><strong>النافذة الأخيرة</strong></a></li>
+</ol></nav>
+<div class="controls" hidden aria-label="تصفح المجموعة">
+<button type="button" data-step="-1">→ السابق</button><output aria-live="polite" dir="ltr"></output><button type="button" data-step="1">التالي ←</button>
+</div>
+<section class="notes" aria-label="حكايات الكتب" aria-live="polite">
+<article class="note" id="book-1"><p class="eyebrow">مدن وموانئ · ١٩٥٦</p><h2>مدينة الملح</h2><p>مدينة بتتغيّر مع كل مدّ. حكاية عن ناس بيقيسوا الزمن بمواعيد البحر.</p></article>
+<article class="note" id="book-2"><p class="eyebrow">رحلات · ١٩٦٢</p><h2>خرائط المطر</h2><p>دفتر لرحلة بتتبع الغيوم بدل الطرق، من الساحل لحد آخر قرية في الجبل.</p></article>
+<article class="note" id="book-3"><p class="eyebrow">فن وصورة · ١٩٧١</p><h2>أثر الضوء</h2><p>ملاحظات عن النور اللي بيفضل في الذاكرة بعد ما المكان نفسه يتغيّر.</p></article>
+<article class="note" id="book-4"><p class="eyebrow">حكايات · ١٩٨٤</p><h2>بيت من ورق</h2><p>بيت صغير، وشباك على السكة، ورسائل بتوصل بعد ما أصحابها يسافروا.</p></article>
+<article class="note" id="book-5"><p class="eyebrow">طبيعة · ١٩٨٩</p><h2>حدائق الليل</h2><p>رحلة في النباتات اللي بتفتح بعد الغروب، من أول عطر لآخر ضوء.</p></article>
+<article class="note" id="book-6"><p class="eyebrow">ذاكرة · ١٩٩٦</p><h2>صوت النهر</h2><p>أصوات ناس عاشوا جنب النهر، وحكايات بتتغيّر كل مرة تتقال.</p></article>
+<article class="note" id="book-7"><p class="eyebrow">حكايات · ٢٠٠٤</p><h2>النافذة الأخيرة</h2><p>حارس محطة بيسجّل أسماء المسافرين في آخر ليلة قبل إغلاقها.</p></article>
+</section>
+<footer>الكتب والأغلفة أعمال تخيّلية صُمّمت لهذا المثال.</footer>
+</main>
+<script>
+const shelf = document.querySelector('.shelf');
+const covers = Array.from(shelf.querySelectorAll('a'));
+const notes = Array.from(document.querySelectorAll('.note'));
+const controls = document.querySelector('.controls');
+const previous = controls.querySelector('[data-step="-1"]');
+const next = controls.querySelector('[data-step="1"]');
+const position = controls.querySelector('output');
+const mobileOrReduced = matchMedia('(max-width:849px), (prefers-reduced-motion:reduce)');
+let active = 3;
+
+function select(index, reveal = false) {
+  active = Math.max(0, Math.min(covers.length - 1, index));
+  covers.forEach((cover, i) => {
+    const offset = i - active;
+    const distance = Math.min(3, Math.abs(offset));
+    cover.setAttribute('aria-current', String(!offset));
+    cover.parentElement.style.setProperty('--angle', Math.sign(offset) * 26 + 'deg');
+    cover.parentElement.style.setProperty('--drop', distance * 6 + 'px');
+    cover.parentElement.style.setProperty('--scale', 1 - distance * 0.085);
+    notes[i].hidden = i !== active;
+  });
+  previous.disabled = active === 0;
+  next.disabled = active === covers.length - 1;
+  position.textContent = `${active + 1} / ${covers.length}`;
+  if (reveal && mobileOrReduced.matches) {
+    const cover = covers[active].getBoundingClientRect();
+    const viewport = shelf.getBoundingClientRect();
+    shelf.scrollBy({ left: cover.left + cover.width / 2 - viewport.left - viewport.width / 2 });
+  }
+}
+
+shelf.addEventListener('click', event => {
+  const index = covers.indexOf(event.target.closest('a'));
+  if (index < 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  event.preventDefault();
+  select(index, true);
+});
+shelf.addEventListener('keydown', event => {
+  const index = covers.indexOf(event.target);
+  if (index < 0 || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+  event.preventDefault();
+  const target = { ArrowLeft: index + 1, ArrowRight: index - 1, Home: 0, End: covers.length - 1 }[event.key];
+  select(target, true);
+  covers[active].focus({ preventScroll: true });
+});
+controls.addEventListener('click', event => {
+  const step = Number(event.target.closest('button')?.dataset.step);
+  if (step) {
+    select(active + step, true);
+    if (event.target.disabled) (step > 0 ? previous : next).focus({ preventScroll: true });
+  }
+});
+shelf.dataset.enhanced = '';
+controls.hidden = false;
+function selectFromHash() {
+  const linkedBook = notes.findIndex(note => '#' + note.id === location.hash);
+  select(linkedBook < 0 ? 3 : linkedBook, true);
+}
+window.addEventListener('hashchange', selectFromHash);
+selectFromHash();
+</script>
+</html>
