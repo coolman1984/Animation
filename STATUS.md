@@ -2,6 +2,8 @@
 
 Updated: 2026-11-06.
 
+Design reference scope: [catalog and intake workflow](docs/studio/DESIGN-SOURCES.md) for the owner-supplied sources. MotionSites Studio export was not verified.
+
 Native engine scope: [portable Blender/Godot and remote previews](docs/studio/NATIVE-ENGINES.md). The workflow provides software-rendered previews for checked-out projects.
 
 Research kit: [ten pinned upstreams and evidence workflow](docs/studio/RESEARCH.md). Source registration does not certify the optional tools on the owner’s PC.
