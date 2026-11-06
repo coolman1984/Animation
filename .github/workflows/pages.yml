@@ -1,0 +1,54 @@
+# Publish the sales page only: index.html, .nojekyll, and series5/.
+name: Publish site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Collect public files
+        run: |
+          set -eu
+          test -f index.html
+          test -f .nojekyll
+          test -d series5
+          rm -rf _site
+          mkdir -p _site
+          cp -a index.html .nojekyll _site/
+          cp -a series5 _site/series5
+          find _site -mindepth 1 -maxdepth 1 -printf '%f\n' | LC_ALL=C sort > /tmp/pages-root.txt
+          printf '%s\n' .nojekyll index.html series5 | LC_ALL=C sort > /tmp/pages-root-expected.txt
+          cmp /tmp/pages-root.txt /tmp/pages-root-expected.txt
+          find _site -type f -printf '%P\n' | LC_ALL=C sort
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
