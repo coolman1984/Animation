@@ -24,6 +24,7 @@ Conflicts between tools are settled by: the client's brief and brand → this fi
 | Moment / section | What moves | When (trigger) | Why (the story) | Responds to user how | Tech (minimum) | Reduced motion |
 |---|---|---|---|---|---|---|
 | ‹hero› | ‹…› | ‹load / scroll / hover› | ‹…› | ‹…› | ‹CSS / Motion / GSAP+ScrollTrigger / Three.js / SVG / Canvas› | ‹still state› |
+Hero motion (at most one, WEB.md "Hero motion"): ‹none — and why the page stays quiet› or ‹what moves, what it means for this business (= site.json story.why), its still state›.
 Shared timing: ‹durations, easing (no bounce/elastic), stagger, rhythm›. Libraries added and why: ‹none unless needed›.
 
 ## D. Critique & polish (owner: Impeccable — skill impeccable: critique / audit / polish after `web check`) — log

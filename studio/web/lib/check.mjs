@@ -5,7 +5,9 @@
 // taste-skill (Leonxlnx, MIT: a study of 247 award sites) and Impeccable (Paul Bakaus, Apache-2.0: AI-design detector rules), measured here:
 // headlines ≤ 2 lines, ≤ 2 typefaces, no decorative gradients / resting shadows / glows, tinted neutrals, no grey text on colour,
 // no tiny tracked caps, 45–75 characters per line, no bounce easing, no blank stretch over half a screen, enough moving parts, hero media.
-//   checkSite({ dir, outDir }) → { lights: [{ id, light, why }], viewports: [{ name, w, h, sheet, ...measures }], verdict }
+//   checkSite({ dir, outDir, focus }) → { lights: [{ id, light, why }], viewports: [{ name, w, h, sheet, ...measures }], verdict }
+//     focus = a section id (`web edit`): the lights still cover the page, the screenshots show only that section at each size.
+//   reviewNote(name, r) → REVIEW.md text: the three strips + one question for the owner, to answer from the phone.
 import { mkdirSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -41,7 +43,7 @@ const PROBE = `(async () => {
     // fully off-screen = an off-canvas drawer (intentional); only a box that straddles the edge widens the page
     if ((r.right > VW + 1 || r.left < -1) && r.left < VW && r.right > 0 && !clipped(el) && !el.matches('.progress, .skip')) out.wide.push(el.tagName.toLowerCase() + (el.className ? '.' + String(el.className).split(' ')[0] : ''));
     const own = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
-    if (own || el.matches('img, video, canvas, svg, button, input, [data-steps], [data-ring]')) spans.push([r.top + Y, r.bottom + Y]);   // a scroll scene is tall on purpose
+    if (own || el.matches('img, video, canvas, svg, button, input, [data-steps], [data-story], [data-ring]')) spans.push([r.top + Y, r.bottom + Y]);   // a scroll scene is tall on purpose
     if (!exempt(el)) {
       if (own) fams.add(cs.fontFamily.split(',')[0].replace(/["']/g, '').trim());
       if (/gradient\\(/.test(cs.backgroundImage) && !el.matches('img, video, picture, .scrim, [data-scrim]')) out.gradient.push(tag(el));
@@ -66,7 +68,7 @@ const PROBE = `(async () => {
   out.fonts = [...fams];
   spans.sort((a, b) => a[0] - b[0]); let reach = 0;
   for (const [a, b] of spans) { if (a - reach > innerHeight * 0.5 && reach > 0) out.blank.push(Math.round(reach) + '–' + Math.round(a) + ' px'); reach = Math.max(reach, b); }
-  out.moving = document.querySelectorAll('[data-reveal], [data-split], [data-parallax], [data-ring], [data-count], [data-magnetic], [data-steps], .marquee, video[autoplay]').length;
+  out.moving = document.querySelectorAll('[data-reveal], [data-split], [data-parallax], [data-ring], [data-count], [data-magnetic], [data-steps], [data-story], .marquee, video[autoplay]').length;
   let last = 0; for (const h of document.querySelectorAll('h1, h2, h3, h4')) { const l = +h.tagName[1]; if (last && l > last + 1) out.headingSkips.push(h.textContent.trim().slice(0, 30)); last = l; }
   for (const el of document.querySelectorAll('[data-reveal]')) if (+getComputedStyle(el).opacity < 0.5) out.hidden.push(el.textContent.trim().slice(0, 40) || el.tagName);
   // above the fold: anything fully on the first screen must be fully visible without scrolling
@@ -103,7 +105,7 @@ export function compareAudits(before, after) {
   return { rows, better: rows.filter((r) => r.change === 'better').length, worse: rows.filter((r) => r.change === 'worse').map((r) => r.id) };
 }
 
-export async function checkSite({ dir, outDir, page = 'index.html' }) {
+export async function checkSite({ dir, outDir, page = 'index.html', focus = null }) {
   mkdirSync(outDir, { recursive: true });
   const srv = await serve(dir), url = `http://127.0.0.1:${srv.port}/${page}`, errors = [];
   let client;
@@ -116,6 +118,12 @@ export async function checkSite({ dir, outDir, page = 'index.html' }) {
     for (const vp of VIEWPORTS) {
       const m = await visit(client, url, vp);
       const shots = [];
+      if (focus) {   // one section only: scroll it to the top and clip the shot to it (at most two screens tall)
+        const box = await client.eval(`(async () => { const el = document.getElementById(${JSON.stringify(String(focus))}); if (!el) return null; for (const x of document.querySelectorAll('body *')) if (/^(fixed|sticky)$/.test(getComputedStyle(x).position) && !el.contains(x)) x.style.visibility = 'hidden'; el.scrollIntoView({ block: 'start', behavior: 'instant' }); await new Promise((r) => setTimeout(r, 450)); const r = el.getBoundingClientRect(); return { x: 0, y: Math.round(r.top + scrollY), width: document.documentElement.clientWidth, height: Math.round(Math.min(r.height, innerHeight * 2)) }; })()`);
+        if (!box) throw new Error(`no element with id "${focus}" on the page`);
+        const png = Buffer.from((await screenshot(client, { format: 'png', clip: { ...box, scale: 1 }, captureBeyondViewport: true })).data, 'base64'), sheet = join(outDir, `${vp.name}-${focus}.png`);
+        writeFileSync(sheet, png); viewports.push({ ...vp, ...m, sheet }); continue;
+      }
       for (const f of [0, 0.25, 0.5, 0.75, 1]) {
         await client.eval(`scrollTo({ top: ${f} * (document.documentElement.scrollHeight - innerHeight), behavior: 'instant' }); new Promise((r) => setTimeout(() => r(true), 450))`);
         const png = Buffer.from((await screenshot(client, { format: 'png' })).data, 'base64'), p = join(outDir, `${vp.name}-${Math.round(f * 100)}.png`);
@@ -162,4 +170,12 @@ export async function checkSite({ dir, outDir, page = 'index.html' }) {
   add('taste-hero-media', 'green', `media covers ${desk?.heroMedia ?? 0}% of the first screen; no required ratio. Review relevance to the brief.`, desk?.heroMedia ?? 0);
   const reds = lights.filter((l) => l.light === 'red').length;
   return { lights, verdict: reds ? `not ready: ${reds} red light(s)` : lights.some((l) => l.light === 'yellow') ? 'ready; read the yellow notes' : 'ready', viewports: viewports.map(({ wide, small, lowContrast, tiny, hidden, longHead, gradient, shadow, pure, greyOnColour, tinyCaps, longLines, bounce, blank, ...v }) => v) };
+}
+
+// Phone review (WEB.md "Owner review from the phone"): the owner opens the three strips on the phone and answers one question.
+export function reviewNote(name, r) {
+  const strips = r.viewports.filter((v) => v.sheet);
+  return `# مراجعة «${name}» — من الموبايل\n\nالنتيجة: ${r.verdict}\n\n${strips.map((v) => `- ${({ phone: 'موبايل', tablet: 'تابلت', desktop: 'كمبيوتر' })[v.name] || v.name} (${v.w}px): ${v.sheet}`).join('\n')}\n\n` +
+    'السؤال للمالك: الشكل تمام كده، ولا محتاج تعديل؟ لو تعديل، قول القسم واللي عايزه فيه بكلمة أو اتنين (مثلًا: «الأسعار: كبّر الخط»).\n\n' +
+    `${r.lights.filter((l) => l.light !== 'green').map((l) => `- ${l.light === 'red' ? 'لازم يتصلّح' : 'ملحوظة'}: ${l.id} — ${l.why}`).join('\n') || '- مافيش ملاحظات من الفحص الآلي.'}\n`;
 }

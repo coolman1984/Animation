@@ -118,3 +118,20 @@ footer a { color: var(--muted); }
 .hero .visual img { width: 100%; height: auto; }
 .hero .visual.cover img { aspect-ratio: 4 / 5; object-fit: cover; }
 .hero .visual.contain img { object-fit: contain; }
+
+/* Hero motion — the story line (data-story, WEB.md "Hero motion"): one scroll-drawn line with stations.
+   Without JavaScript or with reduced motion the line is fully drawn and every station is readable. */
+.story .wrap { display: grid; grid-template-columns: 72px 1fr; gap: clamp(20px, 4vw, 56px); align-items: stretch; }
+.story-line { position: relative; min-height: 100%; }
+.story-line svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.story-track, .story-fill { fill: none; vector-effect: non-scaling-stroke; stroke-linecap: round; stroke-linejoin: round; }
+.story-track { stroke: var(--line); stroke-width: 14; }
+.story-fill { stroke: var(--accent); stroke-width: 8; }
+.story-pipe .story-track { stroke-width: 20; }
+.story-timeline .story-track, .story-timeline .story-fill { stroke-width: 6; }
+.story-tip { position: absolute; width: 18px; height: 18px; margin: -9px; border-radius: 50%; background: var(--accent); left: 50%; top: 100%; opacity: 0; }
+.js:not(.reduce) .story-tip { opacity: 1; }
+.story-stops { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(56px, 12vh, 140px); }
+.story-stops li { transition: opacity .4s ease-out; }
+.js:not(.reduce) .story-stops li:not(.on) { opacity: .7; }
+@media (max-width: 640px) { .story .wrap { grid-template-columns: 36px 1fr; } }

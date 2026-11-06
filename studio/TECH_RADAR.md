@@ -176,3 +176,10 @@ Owner sent the /choreograph post: "learn this well". Cloned @ c8a7962, read, che
 or telemetry). **ADOPTED** as toolkit package `emil-skills` (13 web/motion skills + two cheatsheets; wrapper skill `emil-skills`).
 Left upstream: write-swift, animate-expo, ask-sonner, pick-ui-library (native apps and his React libraries). First use: the six gallery
 examples were re-choreographed by it (scroll reveals removed, one role-based hero entrance each; `web/gallery/LESSONS.md` §Motion).
+
+## Skill Leap AI — "You won't believe the websites Claude can build now" (YouTube 6m9Wihe9sJ8) — studied 2026-11-06
+Transcript + description only (owner's report). Method: 75 sites from one detailed prompt each, 11 business collections, live preview at
+three sizes, a form that fills the prompt, follow-up prompts, a `photos` folder, Claude Code over chat (it reviews its own work), effort set
+high, artifact link for a quick share, Netlify drag-and-drop + own domain. **Decision: LEARN** — the method is rebuilt on our stages
+(`web/prompts/`, `web edit`, `web reel`, `PUBLISH.md`). Its prompt library sits behind a sponsor form (HubSpot link) and was not opened;
+its "six steps" are not described, so nothing of its text is copied. Netlify/Unsplash: owner/client accounts only.
