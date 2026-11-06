@@ -3,12 +3,13 @@
 //   node studio.mjs                          this help
 //   node studio.mjs caps                     every capability: maturity, installed?, best use
 //   node studio.mjs route text particles:4000 3d     which engine for these layers (or: route <film>)
-//   node studio.mjs setup <profile>          install a tool pack (vision, audio, live, logo, gpu, color, whisper, covers) or show links (core, pro)
+//   node studio.mjs setup <profile>          install a tool pack (vision, audio, live, logo, gpu, color, whisper, covers, webperf, stems, cad, upscale) or show links (core, pro)
 //   node studio.mjs cover <spec.json> [--out=studio/out/covers/name.png] [--renderer=satori|chromium]   title card (lib/covers.mjs)
 //   node studio.mjs doctor                   full machine check (lib/doctor.mjs)
 //   node studio.mjs new <film> --placement=reels|youtube|feed|square --duration=30 [--fps=30]
 //   node studio.mjs review <film | out/<film>/takeNN>     playback review: frame steps, A/B, timed notes, hash-bound approval
 //   node studio.mjs voice [status | say <text> --lang=ar | script <film>]   voice studio (VOICE_STUDIO.md)
+//   node studio.mjs upscale <in> <out> [--scale=2] [--engine=auto|ai|classic]  ·  stems <audio|video> [--out=dir] [--engine=auto|ai|classic]   (lib/upscale.mjs, lib/stems.mjs)
 //   node studio.mjs transcript <pack>  ·  captions <video|audio> [--lang=ar|en|auto]  ·  mixcheck <audio|video>  ·  color check|scopes|range  ·  sounds [category]  ·  sfx "words" [--n=8] [--music|--effects] [--any-license] [--download=filmNN --pick=1]
 //   node studio.mjs build <film> [make flags]   the safe way to render: reaps orphans, sizes workers to memory, logs everything to takes/<film>/build-full.log
 //   node studio.mjs cleanup                     kill browsers left by crashed runs, remove their temp profiles, show memory headroom
@@ -397,7 +398,7 @@ async function webCmd([sub, name, ...more], opt) {
     else console.log(text);
     return;
   }
-  if (!name || !/^[a-z0-9][a-z0-9_-]*$/.test(name)) throw new Error('usage: node studio.mjs web plan|build|check|serve <site> (lowercase folder name) · web audit <label> --dir=<folder> [--page=index.html] [--before=<label>] · web styles (build/check/serve need a filled DESIGN.md, or --draft)');
+  if (!name || !/^[a-z0-9][a-z0-9_-]*$/.test(name)) throw new Error('usage: node studio.mjs web plan|build|check|serve|speed|images|fonts|optimize <site> (lowercase folder name) · web audit <label> --dir=<folder> [--page=index.html] [--before=<label>] · web styles (build/check/serve need a filled DESIGN.md, or --draft)');
   if (sub === 'audit') {   // any existing static site (the owner's site, another framework's build output): measure before and after an improvement
     if (!opt.dir || !ex(join(opt.dir, opt.page || 'index.html'))) throw new Error('usage: web audit <label> --dir=<folder with index.html> [--page=…] [--before=<earlier label>]');
     const { checkSite, compareAudits } = await import('./web/lib/check.mjs'), out = join(STUDIO, 'takes', 'web', name), r = await checkSite({ dir: opt.dir, outDir: out, page: opt.page || 'index.html' });
@@ -410,6 +411,22 @@ async function webCmd([sub, name, ...more], opt) {
     return;
   }
   const dir = join(STUDIO, 'web', 'sites', name), file = join(dir, 'site.json'), dist = join(dir, 'dist');
+  if (sub === 'speed') {   // phone speed (own estimate over CDP, or real Lighthouse with --lighthouse after setup webperf); works on any static folder with --dir
+    const root = opt.dir || dist; if (!ex(join(root, opt.page || 'index.html'))) throw new Error(`usage: web speed <site> | web speed <label> --dir=<folder> [--page=index.html] [--lighthouse] (nothing at ${root})`);
+    const { speedAudit } = await import('./web/lib/vitals.mjs'), r = await speedAudit({ dir: root, page: opt.page || 'index.html', outDir: join(STUDIO, 'takes', 'web', name, 'speed'), lighthouse: !!opt.lighthouse });
+    console.log(`${name}: ${r.source}\nperformance ${r.score}/100  FCP ${(r.metrics.fcp / 1000).toFixed(1)} s · LCP ${(r.metrics.lcp / 1000).toFixed(1)} s · TBT ${r.metrics.tbt} ms · CLS ${r.metrics.cls}${r.metrics.transferKB != null ? ` · ${r.metrics.transferKB} KB in ${r.metrics.requests} requests` : ''}`);
+    if (r.categories) console.log(`accessibility ${r.categories.accessibility} · best practices ${r.categories.bestPractices} · SEO ${r.categories.seo}  (report: ${r.report})`);
+    for (const f of r.findings) console.log(`${pad(f.light.toUpperCase(), 7)} ${pad(f.id, 16)} ${f.why}`);
+    return;
+  }
+  if (sub === 'images' || sub === 'fonts' || sub === 'optimize') {   // after web build: responsive WebP/AVIF images (FFmpeg) and subset WOFF2 fonts (fontTools)
+    if (!ex(join(dist, 'index.html'))) throw new Error(`build first: node studio.mjs web build ${name}`);
+    const O = await import('./web/lib/optimize.mjs'), kb = (b) => Math.round(b / 1024);
+    if (sub !== 'fonts') for (const i of O.optimizeImages({ dist, avif: !!opt.avif })) console.log(`image ${pad(i.src, 34)} ${i.natural[0]}px → ${i.widths.join('/')} px WebP${opt.avif ? '+AVIF' : ''}; largest ${kb(i.bytesBefore)} → ${kb(i.bytesAfter)} KB`);
+    if (sub !== 'images') for (const f of O.subsetFonts({ dist })) console.log(`font  ${pad(f.file, 34)} ${kb(f.before)} → ${kb(f.after)} KB (${f.glyphs} glyphs)`);
+    console.log(`done. Measure: node studio.mjs web speed ${name}; then web check ${name}`);
+    return;
+  }
   if (sub === 'plan') {
     if (ex(file) && !opt.force) throw new Error(`${name} already has a site.json (use --force to replace it)`);
     const r = W.plan(opt); mk(dir, { recursive: true }); wf(file, JSON.stringify(r.site, null, 2) + '\n');
@@ -522,6 +539,8 @@ if (isMain(import.meta.url)) {
   else if (cmd === 'voice') await voiceCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'transcript') await transcriptCmd(args[0], flags(args));
   else if (cmd === 'captions') await captionsCmd(args.find(a => !a.startsWith('--')), flags(args));
+  else if (cmd === 'upscale') { const { upscale } = await import('./lib/upscale.mjs'), o = flags(args), [i, out] = args.filter((x) => !x.startsWith('--')); if (!i || !out) throw new Error('usage: node studio.mjs upscale <in.png|jpg> <out.png> [--scale=2|3|4] [--engine=auto|ai|classic]'); console.log(JSON.stringify(await upscale({ input: i, output: out, scale: +(o.scale || 2), engine: o.engine || 'auto', model: o.model }), null, 2)); }
+  else if (cmd === 'stems') { const { stems } = await import('./lib/stems.mjs'), o = flags(args), i = args.find((x) => !x.startsWith('--')); if (!i) throw new Error('usage: node studio.mjs stems <audio|video> [--out=out/stems] [--engine=auto|ai|classic] [--model=<file>]'); console.log(JSON.stringify(await stems({ input: i, outDir: o.out || join(STUDIO, 'out', 'stems'), engine: o.engine || 'auto', model: o.model }), null, 2)); }
   else if (cmd === 'mixcheck') { const { mixCheck } = await import('./lib/mixcheck.mjs'); console.log(JSON.stringify(await mixCheck(args[0]), null, 2)); }
   else if (cmd === 'color') await colorCmd(args.filter(a => !a.startsWith('--')), flags(args));
   else if (cmd === 'build') await buildCmd(args);

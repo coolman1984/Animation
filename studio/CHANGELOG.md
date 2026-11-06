@@ -5,6 +5,14 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-11-06 — Gap tools integrated
+
+- Industrial kit: three-bvh-csg, three-mesh-bvh and postprocessing joined the `gpu` profile and the composer import map; our own `lib/mechparts.js` (involute gears that mesh, pump body, bolts, explodeAt) replaces build123d for parts we design; `lib/xray.js` adds the capped cutaway and the X-ray shell. `examples/industrial-study` (6 s gear pump: cutaway, ghosted cover, working gears, explode → reassemble, outlined drive gear) rendered identically in two runs → `industrial-3d` EXPERIMENTAL.
+- Web delivery: `web optimize|images|fonts` (FFmpeg WebP/AVIF srcset, fontTools WOFF2 subsets renamed for the OFL) and `web speed` (our phone estimate; `--lighthouse` runs Lighthouse 13.6.0). Fixture page: 85 → 100, 910 → 95 KB; real Lighthouse 100.
+- Media: `upscale` (Real-ESRGAN ncnn when installed, labelled Lanczos otherwise) and `stems` (audio-separator when installed, labelled mid/side otherwise), each with a sidecar record. New profiles: `webperf`, `stems`, `cad`, `upscale`.
+- Ideas from Spark, Chatterbox, ACE-Step, Theatre.js and ComfyUI recorded as LEARN in TECH_RADAR.md.
+- Not verified: the Real-ESRGAN and audio-separator AI routes (not installable in the cloud session), build123d, and anything on the owner's Windows PC.
+
 ## 2026-11-06 — Tool gap review
 
 Compared the studio's capabilities with well-known GitHub tools and recorded 13 dated decisions in [TECH_RADAR.md](TECH_RADAR.md) ("Gap review against the whole repo"). Research only: nothing installed, cloned or promoted in `capabilities.json`. Next pilots: three-bvh-csg + postprocessing + build123d for the first industrial scene; Lighthouse, sharp and font subsetting for sites; Real-ESRGAN and audio-separator when a film needs them.

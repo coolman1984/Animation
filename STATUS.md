@@ -8,7 +8,9 @@ Research kit: [ten pinned upstreams and evidence workflow](docs/studio/RESEARCH.
 
 Documentation scope: added the [repository handbook](README.md) for project intake, skill routing, history, troubleshooting and upkeep. Website gallery review status is recorded below.
 
-**Latest scope: DONE — Tool gap review (2026-11-06).** 13 GitHub tools judged against our gaps in `studio/TECH_RADAR.md`; research only, nothing installed or run.
+**Latest scope: DONE — Gap tools integrated (2026-11-06).** Industrial kit (`industrial-3d`: mechparts, capped cutaway, X-ray, explode, outline; study identical across two runs), web `optimize` + `speed` (Lighthouse optional, verified 100 on a fixture), `upscale` and `stems` with classic fallbacks. Quick tests: web-optimize 5/5, media-tools 2/2. Not verified: AI routes of upscale/stems, build123d, the owner's Windows PC.
+
+**Previous scope: DONE — Tool gap review (2026-11-06).** 13 GitHub tools judged against our gaps in `studio/TECH_RADAR.md`; research only, nothing installed or run.
 
 **Current scope: DRAFT round 2 delivered — Website design gallery (owner 2026-11-03).** Owner rejected round 1 ("fonts, design and copy very bad; study professional sites"). We opened 14 professional sites in Chromium (Tabby, Tamara, Careem, Foodics, NEOM, Equinox, Barry's, Linear, Stripe, Apple; Thmanyah, Salla, Zid, Aesop served bot checks and were left out), measured their type and wrote `studio/web/gallery/LESSONS.md`. The gallery and six new examples (gym, fintech, clinic, industrial exploded pump, SaaS dashboard, sports shop) follow it: one text family each, Modern Standard Arabic, product UI in code or CC0 photos, one real interaction each; the 12 round-1 sketches were deleted. Checked in Chromium at 1440 and 390: no sideways scroll, no script errors, booking/cart/calculator/selector/explode and gallery rating work. Not verified: real phones; owner's verdict on round 2 (correction round 1 of 2 used).
 

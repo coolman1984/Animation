@@ -194,3 +194,22 @@ Stars, licence and last push come from the GitHub search API on 2026-11-06; noth
 | Visual keyframe editing for a non-technical owner | Theatre.js (Apache-2.0 core, ~12.9k★, last push 2024-08) | Timeline editor for web animation | LEARN only: no activity since 2024 | github.com/theatre-js/theatre |
 | Generative images/video pipelines | ComfyUI (GPL-3.0) | Node graphs for diffusion models | DEFER: GPU, and generated pixels are never product evidence (unchanged from 2026-10-03) | github.com/comfyanonymous/ComfyUI |
 Gaps that no tool closes: real-phone testing (needs the owner's devices), the owner's taste verdict, and a GPU on the owner's PC.
+
+## Gap tools integrated, and ideas from the rest — 2026-11-06
+Owner order (same day): "bring the tools for the top three gaps, take the ideas of the rest, and write our own code where a tool is too
+heavy or awkward here". Pinned and run in the cloud session unless marked.
+| Technology | What we did | Decision | Source |
+|---|---|---|---|
+| three-bvh-csg 0.0.18 + three-mesh-bvh 0.9.18 (MIT) | Capped cutaways in `lib/xray.js`; `examples/industrial-study` identical across two runs | INTEGRATED (gpu profile, EXPERIMENTAL `industrial-3d`) | npm registry 2026-11-06 |
+| postprocessing 6.39.6 (Zlib) | Outline + ACES + vignette in one EffectComposer, `composer.render(0)` | INTEGRATED (gpu profile) | npm registry 2026-11-06 |
+| build123d (Apache-2.0) | Too heavy for every PC (OpenCascade wheel). Its idea — parts as pure functions of engineering parameters — rebuilt as `lib/mechparts.js` (involute gears, mesh phase, bolt circle, pump body, flange, tube, explodeAt) | ADAPTED; build123d kept as PLANNED profile `cad` for client STEP files | github.com/gumyr/build123d |
+| Lighthouse 13.6.0 (Apache-2.0) | Our own estimate `web/lib/vitals.mjs` (Lighthouse throttling, curves, weights; no Speed Index) + optional real run (`web speed --lighthouse`). Fixture: estimate 100, Lighthouse 100 | ADAPTED + optional INTEGRATE (profile `webperf`) | npm registry; lighthouse cli |
+| sharp (Apache-2.0) | Native addon not needed: FFmpeg already encodes WebP/AVIF. `web/lib/optimize.mjs` builds the srcset/picture markup | ADAPTED (idea only) | github.com/lovell/sharp |
+| fontTools (MIT) | `tools/font_subset.py` (all layout features, WOFF2, OFL rename); Plex Arabic 230 → 19 KB, shaping checked | INTEGRATED (profile `webperf`) | github.com/fonttools/fonttools |
+| Real-ESRGAN ncnn-Vulkan (BSD-3) | `lib/upscale.mjs` uses it when present; classic Lanczos route otherwise. AI route not run here (release download blocked) | INTEGRATED as optional, manual profile `upscale` | github.com/xinntao/Real-ESRGAN |
+| python-audio-separator 0.48.0 (MIT) | `lib/stems.mjs` uses it when present; classic mid/side route otherwise. AI route not run here (PyTorch not installed) | INTEGRATED as optional profile `stems` | PyPI 2026-11-06 |
+| Spark / Gaussian splats (MIT) | Idea: a splat cloud is one Object3D re-sorted by depth each frame. Spark sorts in a worker, so a seeked capture must wait for the sort of *that* camera before the screenshot, or frames depend on timing | LEARN: adopt only with a synchronous sort gate and a real capture | github.com/sparkjsdev/spark |
+| Chatterbox multilingual (MIT) | Ideas: two direction knobs (emotion intensity "exaggeration", pacing "cfg weight") map well onto our performance map; every generated file carries a watermark — our equivalent is the AI-voice disclosure line in CREDITS and the LEDGER | LEARN (archive, no Egyptian proof) | github.com/resemble-ai/chatterbox |
+| ACE-Step 1.5 (MIT) | Ideas: songs authored as section tags ([intro] [verse] [chorus]) plus style tags and an exact duration; "repaint" regenerates one section and keeps the rest. Our cue sheets can name sections the same way and re-score one section without touching the others | LEARN; generation DEFER (GPU) | github.com/ace-step/ACE-Step-1.5 |
+| Theatre.js (Apache-2.0 core) | Idea: keyframes live in a JSON state per object/property and the editor only scrubs it; our `track(keys, t)` already takes such keys, so a future Motion Lab export can write them | LEARN | github.com/theatre-js/theatre |
+| ComfyUI (GPL-3.0) | Idea: each graph node is cached by the hash of its inputs and only changed nodes re-run; our build already resumes finished slices — per-scene hashing would be the next step | LEARN | github.com/comfyanonymous/ComfyUI |
