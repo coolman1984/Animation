@@ -5,6 +5,10 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-11-06 — Athar shelf
+
+Added an original Arabic [interactive shelf](web/gallery/specimens/athar-shelf.html), gallery entry and native links for the no-script reading experience.
+
 ## 2026-11-06 — Design reference sources
 
 Linked the [owner-supplied reference catalog](../docs/studio/DESIGN-SOURCES.md) into web direction and research, with a mobile-friendly carousel study and optional connector links.
