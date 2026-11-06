@@ -1,0 +1,52 @@
+[
+  {
+    "id": "chrome-devtools",
+    "url": "https://github.com/ChromeDevTools/chrome-devtools-mcp.git",
+    "commit": "0b37364dc0a88a804c6d73d3335e776adc7f33c4"
+  },
+  {
+    "id": "axe",
+    "url": "https://github.com/dequelabs/axe-core.git",
+    "commit": "c50bf8e8933eba8cdb7a0d8e744a6c0ec691cdd6"
+  },
+  {
+    "id": "style-dictionary",
+    "url": "https://github.com/style-dictionary/style-dictionary.git",
+    "commit": "795233d9bee6a7b5787d685d75d626df3399d24d"
+  },
+  {
+    "id": "pixelmatch",
+    "url": "https://github.com/mapbox/pixelmatch.git",
+    "commit": "ab76f526ef951c0ec6284e314a700e161b1800e6"
+  },
+  {
+    "id": "gltf-transform",
+    "url": "https://github.com/donmccurdy/glTF-Transform.git",
+    "commit": "8e2a94a2616d293c4b503d0fb6a4b42e6ec7c62f"
+  },
+  {
+    "id": "lottie",
+    "url": "https://github.com/airbnb/lottie-web.git",
+    "commit": "bede03d25d232826e0c9dca1733d542d8a7754fb"
+  },
+  {
+    "id": "yt-dlp",
+    "url": "https://github.com/yt-dlp/yt-dlp.git",
+    "commit": "412e7f0a4b0588fe884a02b344ac66a06538475b"
+  },
+  {
+    "id": "tesseract",
+    "url": "https://github.com/tesseract-ocr/tesseract.git",
+    "commit": "c21194d06998e244754d65329d6c9f1e14fe392e"
+  },
+  {
+    "id": "mediapipe",
+    "url": "https://github.com/google-ai-edge/mediapipe.git",
+    "commit": "b8a1bad05e458fa70a3a647b005d58e578af2da1"
+  },
+  {
+    "id": "whisperx",
+    "url": "https://github.com/m-bain/whisperX.git",
+    "commit": "5d3678b8535698a2826a5db9eb3e4105aef85dd9"
+  }
+]

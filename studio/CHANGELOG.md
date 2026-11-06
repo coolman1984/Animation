@@ -5,6 +5,10 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-11-06 — Web and video research kit
+
+Added the [research lab](../docs/studio/RESEARCH.md), ten pinned upstreams, a browser design inventory, a per-frame timestamp index and optional local OCR.
+
 ## 2026-11-06 — Repository documentation handbook
 
 Added the [Arabic front door](../README.md) and linked guides for project intake, skill routing, milestones, troubleshooting and documentation ownership.
