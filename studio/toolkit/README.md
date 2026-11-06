@@ -9,6 +9,10 @@ studio's rules; the upstream text is never edited.
 Front door: `node studio/studio.mjs toolkit` (list) · `toolkit check` (files, licences, wrapper skills) · `toolkit update <name> --from=<clone>`.
 Manifest (repo, commit, licence, what was left out and why): `toolkit/toolkit.json`. Code: `lib/toolkit.mjs`. Tests: `test/toolkit.test.mjs`.
 
+## Optional research upstreams
+
+The [research lab](../../docs/studio/RESEARCH.md) maps ten pinned sources to concrete gaps. List or retrieve source with `node studio/toolkit/research-upstreams.mjs list` or `<id> <new-directory>` from the repository root. This registry is separate from the vendored toolkit and performs no installation.
+
 ## What we took, and where it plugs in
 | Tool (licence) | Here | Wrapper skill | Plugs into |
 |---|---|---|---|

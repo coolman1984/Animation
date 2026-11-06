@@ -57,6 +57,10 @@ Raw motion is normalized per frame and second. Global motion may be a physical c
 transform. Regional residuals suggest local movement/parallax, not a recovered depth map. Easing curves
 are perceptual descriptions; semantics and artistic effect require inspected evidence/playback.
 
+## Text-first evidence
+
+`node reference.mjs frame-index <local-video>` emits a bounded per-decoded-frame timestamp index. `node reference.mjs frame-text <local-frame> --lang=ara+eng` uses local Tesseract when installed. See the [research lab](../docs/studio/RESEARCH.md) for handoff and source limits.
+
 ## Visual review (agent work)
 `analyze` produces the complete MACHINE pack and a provisional report/blueprint, not fabricated art
 criticism. Load `reference-reverse-engineer` only when a reference film is supplied. Open actual contact
