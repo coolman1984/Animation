@@ -27,12 +27,12 @@ jobs:
       fail-fast: false
       matrix:
         engine: ${{ fromJSON(github.event_name == 'workflow_dispatch' && format('["{0}"]', inputs.engine) || '["blender","godot"]') }}
-    env:
-      STUDIO_NATIVE_OUTPUT: ${{ runner.temp }}/native-preview
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - name: Set preview output
+        run: echo "STUDIO_NATIVE_OUTPUT=$RUNNER_TEMP/native-preview" >> "$GITHUB_ENV"
       - name: Prepare Godot software rendering
         if: matrix.engine == 'godot'
         run: sudo apt-get update && sudo apt-get install -y xvfb xauth libgl1-mesa-dri ffmpeg
