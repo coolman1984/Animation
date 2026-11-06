@@ -5,6 +5,10 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-11-06 — Tool gap review
+
+Compared the studio's capabilities with well-known GitHub tools and recorded 13 dated decisions in [TECH_RADAR.md](TECH_RADAR.md) ("Gap review against the whole repo"). Research only: nothing installed, cloned or promoted in `capabilities.json`. Next pilots: three-bvh-csg + postprocessing + build123d for the first industrial scene; Lighthouse, sharp and font subsetting for sites; Real-ESRGAN and audio-separator when a film needs them.
+
 ## 2026-11-06 — Portable Blender and Godot
 
 Added [pinned Linux runtimes and a remote preview workflow](../docs/studio/NATIVE-ENGINES.md), with editable Blender and Godot demos.
