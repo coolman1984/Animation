@@ -1,0 +1,63 @@
+/* Type for the draft page, and the only gold treatment: a solid colour on .gold. */
+@font-face {
+  font-family: PageSans;
+  src: url("../../studio/assets/fonts/PlexArabic-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-08FF, U+200C-200E, U+2010-2011, U+FB50-FDFF, U+FE70-FEFC;
+}
+@font-face {
+  font-family: PageSans;
+  src: url("../../studio/assets/fonts/PlexArabic-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-08FF, U+200C-200E, U+2010-2011, U+FB50-FDFF, U+FE70-FEFC;
+}
+@font-face {
+  font-family: PageSans;
+  src: url("../../studio/assets/fonts/PlexArabic-600.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-08FF, U+200C-200E, U+2010-2011, U+FB50-FDFF, U+FE70-FEFC;
+}
+@font-face {
+  font-family: PageSans;
+  src: url("../../studio/assets/fonts/PlexArabic-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-08FF, U+200C-200E, U+2010-2011, U+FB50-FDFF, U+FE70-FEFC;
+}
+@font-face {
+  font-family: PageSans;
+  src: url("../../studio/assets/fonts/Inter-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+2000-206F, U+2190-21FF, U+2212;
+}
+
+:root {
+  --f: PageSans, system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
+}
+
+body {
+  font: 400 18px/1.75 var(--f);
+  -webkit-font-smoothing: antialiased;
+}
+
+.title {
+  margin: 0;
+  font-weight: 700;
+  font-size: clamp(36px, 4.6vw, 64px);
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.title .gold {
+  color: var(--gold, #e2c78a);
+  white-space: nowrap;
+}
