@@ -5,6 +5,10 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-11-07 — Remove the Arabic sales page
+
+Deleted the root draft page (`index.html`, `.nojekyll`, `series5/`) and `.github/workflows/pages.yml`, which published only that page. Removed the handbook row that pointed at it.
+
 ## 2026-11-06 — Gap tools integrated
 
 - Industrial kit: three-bvh-csg, three-mesh-bvh and postprocessing joined the `gpu` profile and the composer import map; our own `lib/mechparts.js` (involute gears that mesh, pump body, bolts, explodeAt) replaces build123d for parts we design; `lib/xray.js` adds the capped cutaway and the X-ray shell. `examples/industrial-study` (6 s gear pump: cutaway, ghosted cover, working gears, explode → reassemble, outlined drive gear) rendered identically in two runs → `industrial-3d` EXPERIMENTAL.
