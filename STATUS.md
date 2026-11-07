@@ -1,6 +1,8 @@
 # Studio status and session handoff
 
-Updated: 2026-11-06.
+Updated: 2026-11-07.
+
+Removed the root Arabic sales page, its `series5/` folder, `.nojekyll`, and the Pages workflow that published only that page. The handbook no longer points at it.
 
 Shelf demo: [Athar](studio/web/gallery/specimens/athar-shelf.html) is integrated in the web gallery as a standalone fictional archive.
 

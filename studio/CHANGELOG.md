@@ -5,6 +5,10 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-11-07 — Remove the Arabic sales page
+
+Deleted the root draft page (`index.html`, `.nojekyll`, `series5/`) and `.github/workflows/pages.yml`, which published only that page. Removed the handbook row that pointed at it.
+
 ## 2026-11-06 — Athar shelf
 
 Added an original Arabic [interactive shelf](web/gallery/specimens/athar-shelf.html), gallery entry and native links for the no-script reading experience.
