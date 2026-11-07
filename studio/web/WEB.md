@@ -126,6 +126,26 @@ The owner's wall of website directions and the rating of existing work: `node st
 
 A static page for one object's parts: procedural geometry (no downloaded model), an explode slider, hotspot labels with leader lines, a note on click, pointer and keyboard orbit, and a tour. Parts live in `parts.json` (`id`, `label`, `note`, `offset`, `colour`) so another object can reuse the page. Arabic labels stay whole strings (`lang="ar"` `dir="rtl"`). `?t=seconds` and `window.anatomyRender(t)` are a pure function of time, so a film can sample the same scene out of order. Three.js only (MIT): a tree-shaken subset of 0.186.1 lives in the folder so the audit can load it. A flat SVG diagram belongs to `diagram-design`; a mesh rebuilt from a photograph belongs to `img2threejs`. See the folder README.
 
+## Delivery weight and speed (2026-11-06)
+After `web build`: `node studio/studio.mjs web optimize <site>` (or `images` / `fonts` alone).
+- **Images** (`web/lib/optimize.mjs`, FFmpeg only — sharp's idea without its native addon): each local JPG/PNG/WebP `<img>` becomes a
+  `<picture>` with WebP (and AVIF with `--avif`) at 480/800/1200/1600/2000 px up to the source width, `sizes` from the `width`
+  attribute, `width`/`height` filled in, `loading="lazy"` below the first image. Remote images are left alone.
+- **Fonts** (fontTools via `tools/font_subset.py`, `setup webperf`): every font in the CSS is cut to the characters the pages show,
+  all OpenType features kept (Arabic joining forms survive), saved as WOFF2, and **renamed** — a subset is an OFL Modified Version
+  and IBM Plex reserves the name "Plex". The full files are removed from `dist/`.
+- **Speed** `node studio/studio.mjs web speed <site>` (or `<label> --dir=<folder>` for any static site): our phone estimate
+  (Lighthouse's throttling, curves and weights; Speed Index left out) plus image, font and render-blocking findings.
+  `--lighthouse` runs real Lighthouse 13.6.0 from `studio/vendor` with our Chromium. Fixture (2026-11-06): 85 → 100, 910 → 95 KB;
+  real Lighthouse 100 on the same page.
+
+## Build swarm — a page that builds itself (2026-11-07)
+`web/motion/build-swarm.js` + `build-swarm.css` (owner reference: a recording of a site built by a swarm of cursors). Mark sections
+`data-build-section` and parts `data-build="text|num|media|box"` (`data-to` for numbers), add `<div data-build-bar></div>` and call
+`BuildSwarm.start({ agents: 6 })`. Agents select each part with a live W × H box and guides, then reveal it (words in reading order,
+rolling digits, placeholder → photo). Parts already scrolled past finish instantly; reduced motion and no-JS get the finished page.
+First use: `gallery/specimens/masar-coach.html` (record: `masar-coach.DESIGN.md`).
+
 ## Not built yet (honest list)
 Multi-page sites with View Transitions, forms with a backend, CMS, payments, analytics, a brand kit scanned from an existing site
 (needs network access), and the automatic promo film of a finished site (planned: the page-flyover style card).

@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Masar | Karim Mansour, Life Coach (fictional demo site)</title>
+<meta name="description" content="A fictional life-coach website that builds itself in front of the visitor: agents select, measure and fill every part. A demo by the Animation studio.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../motion/build-swarm.css">
+<style>
+*{box-sizing:border-box}
+:root{
+  --navy:#0D1A3A;--navy-2:#14244D;--navy-line:#26386A;--cobalt:#2B50E0;--cobalt-ink:#1E3BB3;--ice:#C9D6FF;
+  --paper:#F7F5F0;--sand:#ECE7DD;--ink:#121829;--muted:#596178;--line:#E2DCD0;--white:#FFFFFF;
+  --sans:'Manrope',system-ui,sans-serif;--serif:'Instrument Serif',Georgia,serif;--sw-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 18px/1.7 var(--sans);-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit}
+h1,h2,h3,p{margin:0}
+.wrap{width:min(1200px,100% - 48px);margin-inline:auto}
+.label{display:inline-block;font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--cobalt);margin-bottom:18px}
+.dark .label,.hero .label{color:var(--ice)}
+.accent{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--cobalt);letter-spacing:0}
+.dark .accent,.hero .accent{color:var(--ice)}
+h2{font-size:clamp(34px,4.4vw,54px);line-height:1.08;font-weight:700;letter-spacing:-.025em}
+h2 .accent{font-size:1.12em}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 26px;border-radius:999px;font-weight:700;font-size:16px;text-decoration:none;background:var(--cobalt);color:#fff;transition:background .2s}
+.btn:hover{background:var(--cobalt-ink)}
+.btn.light{background:#fff;color:var(--navy)}.btn.light:hover{background:var(--ice)}
+.btn.ghost{background:transparent;color:#fff;border:1px solid rgb(255 255 255 / .4)}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #FFC94D;outline-offset:3px}
+/* hero (header sits on it) */
+.hero,.top{background:var(--cobalt-ink);color:#fff}.hero{overflow:hidden}
+.top .wrap{display:flex;align-items:center;gap:36px;min-height:84px}
+.brand{display:flex;align-items:center;gap:10px;min-height:44px;font-weight:800;font-size:22px;letter-spacing:-.02em;text-decoration:none;color:#fff}
+.brand i{width:30px;height:30px;border-radius:50%;background:#fff;display:grid;place-items:center;color:var(--cobalt-ink);font:italic 400 22px/1 var(--serif)}
+.nav{display:flex;gap:30px;margin-inline-start:auto;font-size:15px;font-weight:500}
+.nav a{text-decoration:none;color:#D9E2FF}.nav a[aria-current]{color:#fff}
+.top .btn{min-height:44px;padding:0 20px;font-size:15px}
+.hero-grid{display:grid;grid-template-columns:1.08fr .92fr;align-items:end;gap:40px;padding-top:40px}
+.hero-copy{padding-bottom:96px;align-self:center}
+.hero h1{font-size:clamp(46px,6vw,82px);line-height:1.02;font-weight:800;letter-spacing:-.035em}
+.hero h1 .accent{display:block;font-size:1.08em;line-height:1.05;margin-top:4px}
+.hero p{max-width:31em;color:#DCE4FF;margin-top:24px;font-size:19px}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+.portrait{position:relative;justify-self:center;width:min(470px,100%)}
+.portrait svg{position:absolute;inset:7% -9% 0 -9%;width:118%;height:93%;fill:#fff}
+.portrait img{position:relative;border-radius:240px 240px 0 0;width:100%;aspect-ratio:460/600;object-fit:cover;object-position:50% 12%}
+.chip{position:absolute;left:-28px;bottom:56px;display:flex;align-items:center;gap:12px;background:#fff;color:var(--ink);border-radius:16px;padding:12px 16px;font-size:14px;line-height:1.35}
+.chip b{display:block;font-size:15px}
+.chip span{width:10px;height:10px;border-radius:50%;background:#1F9D63;flex:none}
+/* journey */
+section{padding-block:120px}
+.journey .head{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end}
+.journey .head p{color:var(--muted)}
+.stairs{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;align-items:end;margin-top:64px}
+.stair{border-radius:24px;padding:28px;min-height:200px;display:flex;flex-direction:column;justify-content:flex-end}
+.stair h3{font-size:19px;line-height:1.35;font-weight:700;letter-spacing:-.01em}
+.stair p{font-size:15px;line-height:1.6;margin-top:8px}
+.stair.soft{background:var(--sand);min-height:250px;justify-content:space-between}
+.stair.soft p{color:var(--muted)}
+.stair.navy{background:var(--navy);color:#fff}
+.stair.navy p{color:#B8C4E6}
+.stair.s2{margin-bottom:64px}.stair.s3{margin-bottom:128px}
+.stair .n{font:italic 400 64px/1 var(--serif);color:var(--ice);margin-bottom:12px}
+/* story */
+.dark{background:var(--navy);color:#fff}
+.story .wrap{display:grid;grid-template-columns:.85fr 1.15fr;gap:72px;align-items:center}
+.story .photo img{border-radius:28px;width:100%;aspect-ratio:480/600;object-fit:cover}
+.timeline{list-style:none;margin:40px 0 0;padding:0;display:grid;gap:14px}
+.timeline li{display:grid;grid-template-columns:150px 1fr;gap:22px;align-items:center;background:var(--navy-2);border:1px solid var(--navy-line);border-radius:20px;padding:12px}
+.timeline img{border-radius:12px;aspect-ratio:3/2;object-fit:cover;width:150px}
+.timeline .y{font:700 14px/1 var(--sans);font-variant-numeric:tabular-nums;letter-spacing:.04em;color:var(--ice);display:block;margin-bottom:6px}
+.timeline h3{font-size:18px;line-height:1.4;font-weight:600}
+/* testimonial */
+.voice .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:72px;align-items:center}
+.quote{font:italic 400 clamp(24px,2.4vw,30px)/1.4 var(--serif);color:var(--ink);margin-top:28px;max-width:30em}
+.who{display:flex;align-items:center;gap:14px;margin-top:28px}
+.who img{width:52px;height:52px;border-radius:50%}
+.who strong{display:block;line-height:1.3}.who small{color:var(--muted);font-size:14px}
+.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:40px;padding:10px;background:var(--cobalt);border-radius:20px}
+.strip img{border-radius:12px;aspect-ratio:4/3;object-fit:cover;width:100%}
+.voice .side img{border-radius:28px;width:100%;aspect-ratio:460/600;object-fit:cover}
+/* footer */
+footer{background:#0A1430;color:#B8C4E6;padding-block:80px 28px;font-size:15px}
+.cols{display:grid;grid-template-columns:1.5fr 1fr 1fr 1.4fr;gap:40px}
+footer h3{color:#fff;font-size:15px;font-weight:700;margin-bottom:14px}
+footer ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+footer a{text-decoration:none}footer a:hover{color:#fff}
+form{display:grid;gap:10px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+input{font:inherit;min-height:50px;border-radius:999px;border:1px solid var(--navy-line);background:var(--navy);color:#fff;padding:0 18px}
+input::placeholder{color:#8E9CC6}
+form button{font:inherit;font-weight:700;min-height:50px;border-radius:999px;border:0;background:var(--cobalt);color:#fff;cursor:pointer}
+.note{font-size:14px;color:#8E9CC6;min-height:1.5em}
+.legal{max-width:70ch;border-top:1px solid var(--navy-line);margin-top:56px;padding-top:20px;font-size:14px;color:#8E9CC6;padding-bottom:72px}
+/* tablet / phone */
+@media (max-width:960px){
+ .nav{display:none}
+ .hero-grid,.story .wrap,.voice .wrap,.journey .head{grid-template-columns:1fr}
+ .hero-copy{padding-bottom:16px}
+ .stairs{grid-template-columns:1fr 1fr}.stair.s2,.stair.s3{margin-bottom:0}
+ .cols{grid-template-columns:1fr 1fr}
+ .story .photo{max-width:440px}
+ .chip{left:0}
+}
+@media (max-width:560px){
+ body{font-size:17px}
+ section{padding-block:80px}
+ .top .btn{display:none}
+ .stairs{grid-template-columns:1fr}
+ .timeline li{grid-template-columns:104px 1fr;gap:14px}.timeline img{width:104px}
+ .strip{grid-template-columns:1fr 1fr}
+ .cols{grid-template-columns:1fr}
+}
+</style>
+
+<header class="top" id="top" data-build-section>
+  <div class="wrap">
+    <a class="brand" href="#top" data-build="box"><i aria-hidden="true">m</i>Masar</a>
+    <nav class="nav" aria-label="Main" data-build="box">
+      <a href="#top" aria-current="page">Home</a><a href="#journey">About</a><a href="#story">Story</a><a href="#stories">Clients</a><a href="#contact">Contact</a>
+    </nav>
+    <a class="btn light" href="#contact" data-build="box">Book an intro call</a>
+  </div>
+</header>
+<main>
+<section class="hero" data-build-section style="padding:0">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="label" data-build="text">Life coach · fictional demo</span>
+      <h1 data-build="text">Meet the coach <span class="accent">Karim Mansour</span></h1>
+      <p data-build="text">I help managers and founders cut through the noise, choose three real priorities and make calmer decisions, through one-to-one sessions and short programs you can apply from week one.</p>
+      <div class="actions" data-build="box"><a class="btn light" href="#journey">Explore my approach <span aria-hidden="true">→</span></a><a class="btn ghost" href="#stories">Client stories</a></div>
+    </div>
+    <div class="portrait" data-build="media">
+      <svg viewBox="0 0 200 200" aria-hidden="true"><path d="M46 18C78-6 140 2 170 34s28 98 4 134-90 40-130 22S2 116 6 78 14 42 46 18z"/></svg>
+      <img src="img/coach-hero.webp" width="460" height="640" alt="Karim Mansour smiling with arms crossed in a bright office" fetchpriority="high">
+      <div class="chip"><span aria-hidden="true"></span><div><b>Sessions online &amp; in person</b>Cairo · Dubai · remote</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="journey" id="journey" data-build-section>
+  <div class="wrap">
+    <div class="head">
+      <div><span class="label" data-build="text">What I've been through</span>
+      <h2 data-build="text">My journey to becoming a <span class="accent">life coach</span></h2></div>
+      <p data-build="text">I spent years leading teams against hard deadlines and learned that most people don't stall from lack of effort. They stall from lack of clarity. Today I bring that lesson to calm, focused sessions.</p>
+    </div>
+    <div class="stairs">
+      <article class="stair soft" data-build="box"><h3>You need to know what success means to you</h3><p>We start with simple questions about your time and energy, before any plan or schedule.</p></article>
+      <article class="stair navy" data-build="box"><span class="n" data-build="num" data-to="12">12</span><h3>Years leading teams</h3><p>From early-stage startups to large organisations.</p></article>
+      <article class="stair navy s2" data-build="box"><span class="n" data-build="num" data-to="400" data-suffix="+">400+</span><h3>One-to-one sessions</h3><p>With managers and founders across the region.</p></article>
+      <article class="stair navy s3" data-build="box"><span class="n" data-build="num" data-to="3">3</span><h3>Six-week programs</h3><p>One clear assignment every week, nothing more.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="story dark" id="story" data-build-section>
+  <div class="wrap">
+    <div class="photo" data-build="media"><img src="img/coach-story.webp" width="480" height="640" loading="lazy" alt="Karim explaining a plan on a board of sticky notes to a group"></div>
+    <div>
+      <span class="label" data-build="text">My story</span>
+      <h2 data-build="text">Break free from limits &amp; <span class="accent">aim higher</span></h2>
+      <ol class="timeline">
+        <li data-build="box"><img src="img/coach-talk.webp" width="480" height="320" loading="lazy" alt="A working meeting around a table"><div><span class="y">2016</span><h3>First leadership workshop for twelve managers</h3></div></li>
+        <li data-build="box"><img src="img/coach-team.webp" width="480" height="320" loading="lazy" alt="A team following a presentation in a meeting room"><div><span class="y">2019</span><h3>Launched Clarity, a program for career decisions</h3></div></li>
+        <li data-build="box"><img src="img/coach-group.webp" width="480" height="320" loading="lazy" alt="A group in discussion around a table"><div><span class="y">2023</span><h3>Quiet Leadership, for early-stage startup teams</h3></div></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="voice" id="stories" data-build-section>
+  <div class="wrap">
+    <div>
+      <span class="label" data-build="text">Client stories</span>
+      <h2 data-build="text">What my clients say about <span class="accent">coaching</span></h2>
+      <p class="quote" data-build="text">“I used to start every week with a list that never ended. After six sessions I had three priorities, I could say no without guilt, and I was sleeping on time again.”</p>
+      <div class="who" data-build="box"><img src="img/coach-avatar.webp" width="96" height="96" alt=""><div><strong>Salma Rashid</strong><small>Product manager · fictional testimonial</small></div></div>
+      <div class="strip" data-build="box">
+        <img src="img/coach-one.webp" width="480" height="320" loading="lazy" alt="Two colleagues talking at a table">
+        <img src="img/coach-lab.webp" width="480" height="320" loading="lazy" alt="Colleagues around a laptop">
+        <img src="img/coach-elder.webp" width="480" height="320" loading="lazy" alt="A senior manager standing with his team">
+        <img src="img/coach-work.webp" width="480" height="320" loading="lazy" alt="Karim leading a workshop">
+      </div>
+    </div>
+    <div class="side" data-build="media"><img src="img/coach-client.webp" width="460" height="640" loading="lazy" alt="Salma Rashid smiling in her office"></div>
+  </div>
+</section>
+</main>
+
+<footer id="contact" data-build-section>
+  <div class="wrap">
+    <div class="cols">
+      <div data-build="box"><a class="brand" href="#top" data-build-finale><i aria-hidden="true">m</i>Masar</a><p style="margin-top:14px">One-to-one coaching and short programs for people who want more clarity at work and in life.</p></div>
+      <div data-build="box"><h3>Programs</h3><ul><li>Foundations of Clarity</li><li>Career Decisions</li><li>Quiet Leadership</li><li>Manage Energy, Not Time</li></ul></div>
+      <div data-build="box"><h3>Quick links</h3><ul><li><a href="#journey">About</a></li><li><a href="#story">Story</a></li><li><a href="#stories">Client stories</a></li></ul></div>
+      <div data-build="box"><h3>Monthly letter</h3>
+        <form onsubmit="event.preventDefault();this.querySelector('.note').textContent='This is a fictional demo site: your email was not sent or stored.'">
+          <label for="mail" class="sr">Email address</label>
+          <input id="mail" type="email" required autocomplete="email" placeholder="you@example.com">
+          <button type="submit">Subscribe</button><p class="note" role="status"></p>
+        </form>
+      </div>
+    </div>
+    <p class="legal">Fictional demo site by the Animation studio. The coach, numbers and testimonial are invented; photos are CC0 from StockSnap. It takes no bookings and stores no data.</p>
+  </div>
+  <div data-build-bar></div>
+</footer>
+
+<script src="../../motion/build-swarm.js"></script>
+<script>window.BuildSwarm && BuildSwarm.start({ agents: 6 });</script>
+</html>
