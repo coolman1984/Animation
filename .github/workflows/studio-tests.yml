@@ -10,15 +10,24 @@ permissions:
   contents: read
 jobs:
   studio:
-    runs-on: ubuntu-latest
+    # Last green studio job ran on ubuntu-24.04 (5m12s). ubuntu-latest is
+    # moving to the next LTS, which changes the ffmpeg those tests encode with.
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      # The runner tries a regional archive first. Apt only leaves it when the
+      # server goes silent, so a mirror that keeps sending slowly holds this
+      # step until the 10-minute job cap. Keep the upstream archive.
       - name: Install video tools
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+        run: |
+          if [ -f /etc/apt/apt-mirrors.txt ]; then
+            sudo sed -i '\|^https://archive\.ubuntu\.com/ubuntu/|!{ /archive\.ubuntu\.com/d; }' /etc/apt/apt-mirrors.txt
+          fi
+          sudo apt-get update && sudo apt-get install -y ffmpeg
       - name: Vendored browser engines (three, pixi.js) for the GPU example studies
         working-directory: studio
         run: node studio.mjs setup gpu
@@ -32,7 +41,8 @@ jobs:
         run: npm run test:render
 
   reference-python:
-    runs-on: ubuntu-latest
+    # Same image as the studio job, so both checks stay on the stack that last passed.
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
@@ -44,6 +54,9 @@ jobs:
           python-version: '3.11'
       - name: Install optional scientific tools
         run: |
+          if [ -f /etc/apt/apt-mirrors.txt ]; then
+            sudo sed -i '\|^https://archive\.ubuntu\.com/ubuntu/|!{ /archive\.ubuntu\.com/d; }' /etc/apt/apt-mirrors.txt
+          fi
           sudo apt-get update && sudo apt-get install -y ffmpeg
           python -m pip install -r studio/reference/requirements-optional.txt
       - name: Python reference integration
