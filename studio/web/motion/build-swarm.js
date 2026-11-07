@@ -10,7 +10,7 @@
  *   box    a card/rule: its outline is drawn, then its fill appears
  * Optional: <div data-build-bar></div> becomes the control bar (agents, progress, rebuild, pause).
  * Rules kept: without JavaScript, or with prefers-reduced-motion, the page is complete and still (the bar offers a manual run);
- * an element builds in ~0.7 s and a section of ~10 parts in ~1.5 s with six agents; nothing intercepts pointer events.
+ * an element builds in ~0.45 s and a section of ~10 parts in ~1 s with six agents; nothing intercepts pointer events.
  *   BuildSwarm.start({ agents: 6, root: document })
  */
 (function () {
@@ -19,6 +19,9 @@
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var doc = document, layer, agents = [], queue = [], built = 0, total = 0, paused = false, bar, running = false, finaleDone = false;
   var rtl = (doc.documentElement.dir || getComputedStyle(doc.documentElement).direction) === 'rtl';
+  // bar and agent labels follow the page language; override with start({ labels: {...} })
+  var L = rtl ? { agents: 'وكلاء يبنون', pause: 'إيقاف', resume: 'متابعة', again: 'ابنِ من جديد', still: 'الصفحة مكتملة. الحركة متوقفة حسب إعداد جهازك.', run: 'شغّل البناء', bar: 'تحكم البناء', agent: '' }
+             : { agents: 'agents building', pause: 'Pause', resume: 'Resume', again: 'Rebuild', still: 'Page complete. Motion is off in your device settings.', run: 'Play the build', bar: 'Build controls', agent: '' };
   var ar = /[؀-ۿ]/;
 
   function el(tag, cls, parent) { var e = doc.createElement(tag); if (cls) e.className = cls; if (parent) parent.appendChild(e); return e; }
@@ -38,7 +41,7 @@
     for (var i = 0; i < n; i++) {
       var a = el('div', 'sw-agent', layer), c = COLORS[i % COLORS.length];
       a.style.setProperty('--c', c);
-      a.innerHTML = '<svg viewBox="0 0 16 20" width="16" height="20"><path d="M1 1 L1 16 L5 12 L8 19 L11 18 L8 11 L14 11 Z" fill="' + c + '" stroke="#0B0E13" stroke-width="1.2" stroke-linejoin="round"/></svg><span>' + digitsAr(i + 1) + '</span>';
+      a.innerHTML = '<svg viewBox="0 0 16 20" width="28" height="35"><path d="M1 1 L1 16 L5 12 L8 19 L11 18 L8 11 L14 11 Z" fill="' + c + '" stroke="#0B0E13" stroke-width="1.1" stroke-linejoin="round"/></svg><span>' + (L.agent ? L.agent + ' ' : '') + digitsAr(i + 1) + '</span>';
       var start = { x: innerWidth * (0.15 + 0.7 * Math.random()), y: scrollY + innerHeight * (0.3 + 0.5 * Math.random()) };
       a.style.transform = 'translate(' + start.x + 'px,' + start.y + 'px)';
       agents.push({ node: a, x: start.x, y: start.y, busy: false, color: c });
@@ -71,11 +74,11 @@
     text: function (node) {
       var from = rtl || ar.test(node.textContent) ? 'inset(0 0 0 100%)' : 'inset(0 100% 0 0)';
       node.classList.add('sw-typing');
-      return anim(node, [{ clipPath: from }, { clipPath: 'inset(0 0 0 0)' }], { duration: Math.min(620, 200 + node.textContent.length * 5), easing: 'steps(' + Math.max(6, Math.min(28, node.textContent.trim().split(/\s+/).length * 2)) + ', end)' })
+      return anim(node, [{ clipPath: from }, { clipPath: 'inset(0 0 0 0)' }], { duration: Math.min(420, 140 + node.textContent.length * 3), easing: 'steps(' + Math.max(6, Math.min(28, node.textContent.trim().split(/\s+/).length * 2)) + ', end)' })
         .then(function () { node.classList.remove('sw-typing'); });
     },
     num: function (node) {
-      var to = +node.getAttribute('data-to'), suffix = node.getAttribute('data-suffix') || '', t0 = performance.now(), d = 700, final = node.textContent;
+      var to = +node.getAttribute('data-to'), suffix = node.getAttribute('data-suffix') || '', t0 = performance.now(), d = 520, final = node.textContent;
       return new Promise(function (res) {
         (function step(t) {
           var k = Math.min(1, (t - t0) / d), v = Math.round(to * (1 - Math.pow(1 - k, 3)));
@@ -86,29 +89,29 @@
     },
     media: function (node) {
       node.classList.add('sw-ph');
-      return wait(180).then(function () { node.classList.remove('sw-ph'); return anim(node, [{ clipPath: 'inset(0 0 100% 0)', filter: 'grayscale(1)' }, { clipPath: 'inset(0 0 0 0)', filter: 'grayscale(0)' }], { duration: 420 }); });
+      return wait(110).then(function () { node.classList.remove('sw-ph'); return anim(node, [{ clipPath: 'inset(0 0 100% 0)', filter: 'grayscale(1)' }, { clipPath: 'inset(0 0 0 0)', filter: 'grayscale(0)' }], { duration: 320 }); });
     },
-    box: function (node) { return anim(node, [{ outlineColor: 'transparent', opacity: 0.35 }, { opacity: 1 }], { duration: 420 }); },
+    box: function (node) { return anim(node, [{ opacity: 0.35 }, { opacity: 1 }], { duration: 300 }); },
   };
 
   function buildOne(agent, node) {
     var kind = node.getAttribute('data-build') || 'box', b = page(node.getBoundingClientRect());
     if (!b.w || !b.h) { node.classList.remove('sw-pending'); return Promise.resolve(); }
     var corner = { x: rtl ? b.x + b.w : b.x, y: b.y };
-    var dist = Math.hypot(corner.x - agent.x, corner.y - agent.y), ms = Math.max(200, Math.min(440, dist * 0.4));
+    var dist = Math.hypot(corner.x - agent.x, corner.y - agent.y), ms = Math.max(140, Math.min(300, dist * 0.28));
     var sel;
     return untilPlaying().then(function () { return fly(agent, corner.x - (rtl ? 4 : -4), corner.y - 2, ms); }).then(function () {
       sel = selection(b, agent.color); guides(b);
       var t0 = performance.now(), W = Math.round(b.w), H = Math.round(b.h);
-      (function count(t) { var k = Math.min(1, (t - t0) / 250); sel.tag.textContent = Math.round(W * k) + ' × ' + Math.round(H * k); if (k < 1) requestAnimationFrame(count); })(t0);
-      fly(agent, rtl ? b.x : b.x + b.w, b.y + b.h, 260);
-      return anim(sel.node, [{ transform: 'scale(0.02, 0.02)' }, { transform: 'scale(1,1)' }], { duration: 260 });
+      (function count(t) { var k = Math.min(1, (t - t0) / 180); sel.tag.textContent = Math.round(W * k) + ' × ' + Math.round(H * k); if (k < 1) requestAnimationFrame(count); })(t0);
+      fly(agent, rtl ? b.x : b.x + b.w, b.y + b.h, 190);
+      return anim(sel.node, [{ transform: 'scale(0.02, 0.02)' }, { transform: 'scale(1,1)' }], { duration: 190 });
     }).then(function () {
       node.classList.remove('sw-pending');
       return reveal[kind] ? reveal[kind](node) : Promise.resolve();
     }).then(function () {
       node.classList.add('sw-done'); built++; updateBar();
-      return anim(sel.node, [{ opacity: 1 }, { opacity: 0 }], { duration: 200, delay: 60 }).then(function () { sel.node.remove(); });
+      return anim(sel.node, [{ opacity: 1 }, { opacity: 0 }], { duration: 160, delay: 30 }).then(function () { sel.node.remove(); });
     });
   }
 
@@ -140,11 +143,11 @@
   }
 
   function makeBar(host) {
-    bar = host; bar.classList.add('sw-bar'); bar.setAttribute('role', 'region'); bar.setAttribute('aria-label', 'تحكم البناء');
+    bar = host; bar.classList.add('sw-bar'); bar.setAttribute('role', 'region'); bar.setAttribute('aria-label', L.bar);
     bar.innerHTML = '<span class="sw-dots">' + agents.map(function (a) { return '<i style="background:' + a.color + '"></i>'; }).join('') + '</span>' +
-      '<span class="sw-label">' + digitsAr(agents.length) + ' وكلاء يبنون</span><span class="sw-meter"><i></i></span><span class="sw-count"></span>' +
-      '<button type="button" class="sw-pause" aria-pressed="false">إيقاف</button><button type="button" class="sw-again">ابنِ من جديد</button>';
-    bar.querySelector('.sw-pause').onclick = function () { paused = !paused; this.setAttribute('aria-pressed', String(paused)); this.textContent = paused ? 'متابعة' : 'إيقاف'; doc.documentElement.classList.toggle('sw-paused', paused); };
+      '<span class="sw-label">' + digitsAr(agents.length) + ' ' + L.agents + '</span><span class="sw-meter"><i></i></span><span class="sw-count"></span>' +
+      '<button type="button" class="sw-pause" aria-pressed="false">' + L.pause + '</button><button type="button" class="sw-again">' + L.again + '</button>';
+    bar.querySelector('.sw-pause').onclick = function () { paused = !paused; this.setAttribute('aria-pressed', String(paused)); this.textContent = paused ? L.resume : L.pause; doc.documentElement.classList.toggle('sw-paused', paused); };
     bar.querySelector('.sw-again').onclick = rebuild;
     updateBar();
   }
@@ -183,10 +186,11 @@
 
   window.BuildSwarm = {
     start: function (opt) {
+      if (opt && opt.labels) Object.assign(L, opt.labels);
       doc.documentElement.classList.add('sw-js');
       var host = doc.querySelector('[data-build-bar]');
       if (reduce) {   // still page; the visitor can still ask for the show
-        if (host) { host.classList.add('sw-bar'); host.innerHTML = '<span class="sw-label">الصفحة مكتملة. الحركة متوقفة حسب إعداد جهازك.</span><button type="button" class="sw-again">شغّل البناء</button>'; host.querySelector('button').onclick = function () { reduce = false; host.innerHTML = ''; setup(opt); }; }
+        if (host) { host.classList.add('sw-bar'); host.innerHTML = '<span class="sw-label">' + L.still + '</span><button type="button" class="sw-again">' + L.run + '</button>'; host.querySelector('button').onclick = function () { reduce = false; host.innerHTML = ''; setup(opt); }; }
         return;
       }
       setup(opt);

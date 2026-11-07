@@ -19,4 +19,4 @@ The [Athar shelf](specimens/athar-shelf.html) is a standalone Arabic demo with o
 
 Adding an example: follow `LESSONS.md`, write `specimens/<id>.html`, add one entry to `EXAMPLES` in `index.html`. Photos: Openverse first (`license=cc0&source=stocksnap`, 960 px max); both Openverse and the Wikimedia API rate-limited this cloud session after a few calls, so build product UI in code and keep photos framed.
 
-The [مَسار coach site](specimens/masar-coach.html) (2026-11-07) follows the owner's coach-template screenshot and is built live by the swarm in `../motion/build-swarm.js`; its design record is `specimens/masar-coach.DESIGN.md`.
+The [Masar coach site](specimens/masar-coach.html) (2026-11-07, English since the owner's round-1 correction) follows the owner's coach-template screenshot and is built live by the swarm in `../motion/build-swarm.js`; its design record is `specimens/masar-coach.DESIGN.md`.

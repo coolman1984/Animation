@@ -5,6 +5,10 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-11-07 — Masar coach site, round 1: English and a professional redesign
+
+Owner: "faster, bigger arrows, all English, professional design, colours and fonts". The page is English/LTR with Manrope + Instrument Serif and a cobalt / navy / warm-paper palette; the swarm builds an element in ≈ 0.45 s (was ≈ 0.7 s), agents are 28 × 35 px with larger tags, and the bar/agent labels follow the page language. `web audit`: no red. Artifact republished.
+
 ## 2026-11-07 — Build swarm and the مَسار coach site
 
 From two owner references (a recording of a site built live by a swarm of cursors, and a coach-template screenshot): reusable `web/motion/build-swarm.js` (agents, live W × H selection, guides, word/number/photo reveal, control bar, instant finish off-screen, reduced-motion still page) and an original fictional Arabic coach site `web/gallery/specimens/masar-coach.html` with 11 CC0 photos. `web audit`: no red lights at 390 / 820 / 1440 and reduced motion. Published as a private artifact. Not verified: real phones, the owner's verdict.
