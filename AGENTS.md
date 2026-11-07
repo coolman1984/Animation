@@ -1,5 +1,7 @@
 # Animation repo — instructions for every AI agent
 
+The [repository handbook](README.md) routes project types, skills, history, troubleshooting and documentation upkeep. The rules and source guides below govern implementation.
+
 Before relevant 3D, inspection, animation or editing work, also read [REFERENCE_PACK_3D_AND_DIGITAL_TWINS.md](REFERENCE_PACK_3D_AND_DIGITAL_TWINS.md) and record the references selected for the task.
 
 For the first practical industrial scene, also read [EXPERIMENT_FIRST_INDUSTRIAL_SCENE.md](EXPERIMENT_FIRST_INDUSTRIAL_SCENE.md). It documents the owner's private learning experiment; do not execute it automatically or claim it implemented.

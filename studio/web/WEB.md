@@ -26,6 +26,8 @@ in a real browser the way a top studio checks before launch. Same philosophy as 
 6. **Preview:** `node studio/studio.mjs web serve <site>`. **Publish:** `dist/` is a plain folder: GitHub Pages, Netlify or any static host
    (publishing needs the owner's account; say so, never claim a site is live without the URL). Both ways and the «انشر» rule: `PUBLISH.md`.
 
+Use the [design reference catalog](../../docs/studio/DESIGN-SOURCES.md) to select references and record transferable design decisions in DESIGN.md §A.
+
 ## One workflow — mandatory for every site and web animation (owner orders, 2026-10-19)
 Every website or web animation we build or **improve** runs four stages, each owned by one tool, recorded in `web/sites/<site>/DESIGN.md`
 (written by `web plan`; template `web/templates/DESIGN.md`). `web build|check|serve` and MCP `web_check` refuse a site whose DESIGN.md

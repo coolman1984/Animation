@@ -22,4 +22,6 @@ Open it: `node studio/studio.mjs gallery` (serves `studio/web`, prints the URL o
 - `work/*.jpg` — screenshots (desktop 1280, phone 390) of existing work: the `example` site (نور), `showcase/form-field`, the motion lab and the anatomy explainer.
 - `CREDITS.json` — every photo, its StockSnap page and licence (CC0).
 
+The [Athar shelf](specimens/athar-shelf.html) is a standalone Arabic demo with original covers, keyboard navigation and a native list for mobile and reduced motion.
+
 Adding an example: follow `LESSONS.md`, write `specimens/<id>.html`, add one entry to `EXAMPLES` in `index.html`. Photos: Openverse first (`license=cc0&source=stocksnap`, 960 px max); both Openverse and the Wikimedia API rate-limited this cloud session after a few calls, so build product UI in code and keep photos framed.

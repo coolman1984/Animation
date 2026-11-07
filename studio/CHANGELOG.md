@@ -5,6 +5,26 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-11-06 — Athar shelf
+
+Added an original Arabic [interactive shelf](web/gallery/specimens/athar-shelf.html), gallery entry and native links for the no-script reading experience.
+
+## 2026-11-06 — Design reference sources
+
+Linked the [owner-supplied reference catalog](../docs/studio/DESIGN-SOURCES.md) into web direction and research, with a mobile-friendly carousel study and optional connector links.
+
+## 2026-11-06 — Portable Blender and Godot
+
+Added [pinned Linux runtimes and a remote preview workflow](../docs/studio/NATIVE-ENGINES.md), with editable Blender and Godot demos.
+
+## 2026-11-06 — Web and video research kit
+
+Added the [research lab](../docs/studio/RESEARCH.md), ten pinned upstreams, a browser design inventory, a per-frame timestamp index and optional local OCR.
+
+## 2026-11-06 — Repository documentation handbook
+
+Added the [Arabic front door](../README.md) and linked guides for project intake, skill routing, milestones, troubleshooting and documentation ownership.
+
 ## 2026-11-06 — Prompt library, hero motions, one-section edits, publish guide, site reel (DONE)
 Owner: apply the Skill Leap AI website video report in full, as additions, without publishing, merging or bumping a version.
 Before the work, the unmerged branches (`ccr-62b4b736-sfc6qc`, `codex/reference-led-art-direction`, `codex/web-showcase-foundation`) were merged

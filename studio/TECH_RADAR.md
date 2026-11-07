@@ -1,5 +1,7 @@
 # TECH RADAR — dated technology notes (refresh with the `technology-scout` skill)
 
+See the [research kit](../docs/studio/RESEARCH.md) for ten pinned upstreams and their pilot criteria. The design inventory and frame index are local utilities, while frame OCR needs local Tesseract.
+
 This file is **dated market/technology knowledge**, kept apart from timeless craft (`CRAFT.md`) on purpose.
 An entry is not an instruction to install anything. Decisions: **ADOPTED** (in `capabilities.json` with a study),
 **PILOT** (next candidate when a film needs it), **LEARN** (take ideas only), **WATCH** (re-check later), **DEFER** (blocked by licence/hardware).

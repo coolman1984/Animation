@@ -2,6 +2,16 @@
 
 Updated: 2026-11-06.
 
+Shelf demo: [Athar](studio/web/gallery/specimens/athar-shelf.html) is integrated in the web gallery as a standalone fictional archive.
+
+Design reference scope: [catalog and intake workflow](docs/studio/DESIGN-SOURCES.md) for the owner-supplied sources. MotionSites Studio export was not verified.
+
+Native engine scope: [portable Blender/Godot and remote previews](docs/studio/NATIVE-ENGINES.md). The workflow provides software-rendered previews for checked-out projects.
+
+Research kit: [ten pinned upstreams and evidence workflow](docs/studio/RESEARCH.md). Source registration does not certify the optional tools on the owner’s PC.
+
+Documentation scope: added the [repository handbook](README.md) for project intake, skill routing, history, troubleshooting and upkeep. Website gallery review status is recorded below.
+
 **Current scope: DONE — Skill Leap AI website report applied (owner 2026-11-06: "apply the report in full, as additions; no publishing, no merge, no version bump, no force-push").** First, every unmerged branch was merged into the working branch (`ccr-62b4b736-sfc6qc`; the two codex branches were already in main as #35/#36, main's side kept). Then, built on the existing web department: prompt library `studio/web/prompts/` (7 groups, 12 briefs, AR/EN template with `site.json` slots, 12 follow-ups; `web prompts`, `web prompt <id> --site=`), five new gallery examples with one meaningful hero motion each (plumbing pipe, 3D cold-brew bottle with a still twin, course pen, video edit timeline, RTL two-panel offer) + `gallery/devices.html`, site-engine `story` section, `photos/` credits and placeholder-contact warnings, portable `dist/` check, `web edit <site> --section=`, phone review note `takes/web/<site>/REVIEW.md`, `web reel <site>`, `studio/web/PUBLISH.md`, the one-day package in `COMPANY.md`, effort rule in `ANY_MODEL.md`. Verified: 14 web tests; Chromium 390/1440/reduced motion on the new pages; a throwaway story site through check, edit and a 3 s reel. Not verified: real devices, owner's verdict, a real client site, any publishing (not done, by order).
 
 **Previous scope: DONE — Emil Kowalski's skills learned and applied (owner 2026-11-05).** `studio/toolkit/emil-skills` (MIT, pinned) + wrapper skill `emil-skills`; the gallery's six examples re-choreographed by its rules (one role-cast entrance, no scroll reveals, no repeated staggers or loops). Checked frame by frame in Chromium; real phones not tested.
