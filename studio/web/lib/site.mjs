@@ -2,6 +2,9 @@
 //   plan(brief)          → { site, todo }   house structure + the ambition questions, ‹…› where the model must write
 //   validate(site)       → { errors, warnings }   placeholders, honesty (numbers and quotes need a source), alt text, links
 //   build(site, outDir)  → { files, bytes }   index.html + site.css + motion.js + fonts (zero dependencies, no build step)
+//   fakeContacts(site)   → warnings for placeholder phones/emails (555, 0100000000, example.com …) (skill data-honesty)
+//   portable(outDir)     → problems that stop dist/ working as ONE drag-and-drop folder (root-absolute or missing local files)
+//   replaceSection(site, id, section) → a new site with one section swapped (`web edit`)
 import { readFileSync, writeFileSync, mkdirSync, copyFileSync, rmSync, statSync, readdirSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -11,7 +14,15 @@ export const STYLES = () => JSON.parse(readFileSync(join(WEB, 'styles', 'index.j
 const P = (what) => `‹${what}›`;
 const PH = /[‹›]/;
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-export const SECTION_TYPES = ['hero', 'problem', 'features', 'steps', 'ring', 'stats', 'quote', 'marquee', 'faq', 'cta'];
+export const SECTION_TYPES = ['hero', 'problem', 'features', 'steps', 'story', 'ring', 'stats', 'quote', 'marquee', 'faq', 'cta'];
+// The hero motion (2026-11-06, WEB.md "Hero motion"): ONE scroll-drawn line per site that means something for this business
+// (water through a pipe, a launch trajectory, a production timeline, a pen line). Stations sit along it; reduced motion = drawn.
+export const STORY_SHAPES = {
+  pipe: 'M60 0 V200 H104 V460 H16 V740 H60 V1000',
+  trajectory: 'M60 1000 C 6 760, 114 520, 60 300 S 40 80, 60 0',
+  timeline: 'M60 0 V1000',
+  pen: 'M60 0 C 112 120, 8 240, 60 360 S 112 600, 60 720 S 8 900, 60 1000',
+};
 
 // Per-site design settings are data, never raw CSS. Existing presets remain fallbacks.
 const contrast = (a, b) => {
@@ -102,6 +113,11 @@ export function validate(site) {
     if (s.id) { if (!/^[a-z][a-z0-9-]*$/.test(s.id) || ids.has(s.id)) E(`${at}: id must be unique lowercase words`); ids.add(s.id); }
     if (['features', 'steps', 'ring', 'stats', 'faq', 'marquee'].includes(s.type) && (!Array.isArray(s.items) || !s.items.length)) E(`${at}: items must be a nonempty array`);
     if (s.type === 'stats') for (const [j, it] of (s.items || []).entries()) { if (!Number.isFinite(+it.value)) E(`${at}.items.${j}: value must be a number`); if (!it.source) E(`${at}.items.${j}: a number on a site needs its source (skill data-honesty)`); }
+    if (s.type === 'story') {
+      if (!Object.hasOwn(STORY_SHAPES, s.shape)) E(`${at}: shape must be one of ${Object.keys(STORY_SHAPES).join(', ')}`);
+      if (!s.why || String(s.why).trim().length < 12) E(`${at}: the hero motion needs "why": what it means for this business, one sentence (also in DESIGN.md §C)`);
+      if (!Array.isArray(s.items) || !s.items.length) E(`${at}: items must be a nonempty array (the stations along the line)`);
+    }
     if (s.type === 'quote' && (!s.name || !s.source)) E(`${at}: a quote needs the real person's name and a source (permission, link or date)`);
 
     if (s.cta && (!s.cta.label || !s.cta.href)) E(`${at}: cta needs label and href`);
@@ -110,11 +126,56 @@ export function validate(site) {
     if (s.imageFit !== undefined && !['contain','cover'].includes(s.imageFit)) E(`${at}: imageFit must be contain or cover`);
     if ((s.title || '').split(/\s+/).length > 12) W(`${at}: title has ${(s.title || '').split(/\s+/).length} words — headlines read best under 10`);
   });
+  if (site.sections.filter((s) => s?.type === 'story').length > 1) E('one hero motion per site: keep one story section (WEB.md "Hero motion")');
+  warnings.push(...fakeContacts(site));
   if (site.brand?.logo && !site.brand.logoAlt) E('brand.logo needs brand.logoAlt');
   for (const m of mediaOf(site)) if (!safeMedia(m)) E(`image path "${m}" must be a relative path inside the site folder (no "..", no absolute path) or an https URL`);
   if (!site.description || site.description.length > 170) W('description should be one sentence ≤ 155 characters (search results)');
   if (!site.sections.some((s) => s.cta)) E('no call to action anywhere: give the hero or the closing section a cta');
   return { errors, warnings };
+}
+
+// Placeholder contact details read as real to a visitor (and to the client): warn, never silently ship them (skill data-honesty).
+const FAKE_PHONE = [/(?:^|\D)\(?555\)?[\s.-]?\d{3,4}/, /(\d)(?:[\s.-]?\1){6,}/, /0?123[\s.-]?456[\s.-]?78(?:9|90)?/, /x{3,}/i];
+const FAKE_MAIL = /[\w.+-]+@(?:example\.(?:com|org|net)|test\.com|email\.com|domain\.com|yourdomain\.\w+|company\.com|mail\.com)\b|\b(?:test|you|your|name|user|email)@[\w.-]+/i;
+export function fakeContacts(site) {
+  const out = [], seen = new Set();
+  const walk = (o, path) => {
+    if (typeof o === 'string') {
+      const v = o.replace(/^(tel:|mailto:|https:\/\/wa\.me\/)/i, ''), phoneish = /^(tel:|https:\/\/wa\.me\/)/i.test(o) || /\+?\d[\d\s().-]{5,}\d/.test(o);
+      const hit = (FAKE_MAIL.test(o) && 'email') || (phoneish && FAKE_PHONE.some((r) => r.test(v)) && 'phone');
+      if (hit && !seen.has(path)) { seen.add(path); out.push(`${path}: "${o.slice(0, 50)}" looks like a placeholder ${hit} — use the client's real contact or remove it (skill data-honesty)`); }
+    } else if (o && typeof o === 'object') for (const [k, v] of Object.entries(o)) walk(v, path ? `${path}.${k}` : k);
+  };
+  walk(site, '');
+  return out;
+}
+
+// `web edit <site> --section=<id>`: change one section only; everything else stays byte-for-byte the same.
+export function replaceSection(site, id, section) {
+  const i = (site.sections || []).findIndex((s) => s.id === id);
+  if (i < 0) throw new Error(`no section with id "${id}" (ids: ${(site.sections || []).map((s) => s.id).filter(Boolean).join(', ') || 'none — give sections an id'})`);
+  if (!section || typeof section !== 'object' || Array.isArray(section)) throw new Error('the new section must be a JSON object');
+  return { ...site, sections: site.sections.map((s, k) => (k === i ? { ...section, id } : s)) };
+}
+
+// dist/ must work as one folder dropped on any static host (Netlify drag-and-drop, GitHub Pages, a USB stick): relative paths only.
+export function portable(outDir) {
+  const problems = [], files = [];
+  const list = (d) => { for (const f of readdirSync(d)) { const p = join(d, f); statSync(p).isDirectory() ? list(p) : files.push(p); } };
+  list(outDir);
+  for (const f of files.filter((x) => /\.(html|css)$/.test(x))) {
+    const text = readFileSync(f, 'utf8'), base = dirname(f), rel = f.slice(outDir.length + 1);
+    const refs = [...text.matchAll(/(?:src|href)="([^"]+)"|url\(['"]?([^'")]+)['"]?\)/g)].map((m) => m[1] || m[2]);
+    for (const r of refs) {
+      if (/^(https:|mailto:|tel:|#|data:|sms:|whatsapp:)/i.test(r)) continue;
+      if (/^http:/i.test(r)) { problems.push(`${rel}: insecure link ${r}`); continue; }
+      if (/^\/|^[a-z]:\\/i.test(r)) { problems.push(`${rel}: root-absolute path ${r} breaks when the folder is moved; make it relative`); continue; }
+      let clean = r.split(/[?#]/)[0]; try { clean = decodeURI(clean); } catch {}
+      if (clean && !existsSync(join(base, clean))) problems.push(`${rel}: ${r} is not inside the folder`);
+    }
+  }
+  return problems;
 }
 
 // ---------- build ----------
@@ -127,6 +188,7 @@ ${s.image ? `<div class="visual ${s.imageFit || 'contain'}"><img src="${esc(s.im
     case 'problem': return `<section class="problem"${id}><div class="wrap">${h(s.title)}<p class="muted"${s.motion === 'reveal' ? ' data-reveal' : ''}>${esc(s.text)}</p></div></section>`;
     case 'features': return `<section class="features"${id}><div class="wrap">${h(s.title)}${s.text ? `<p class="muted"${s.motion === 'reveal' ? ' data-reveal' : ''}>${esc(s.text)}</p>` : ''}<div class="grid">${s.items.map((it) => `<article class="card"${s.motion === 'reveal' ? ' data-reveal' : ''}>${it.icon ? `<div class="icon" aria-hidden="true">${esc(it.icon)}</div>` : ''}<h3>${esc(it.title)}</h3><p>${esc(it.text)}</p></article>`).join('')}</div></div></section>`;
     case 'steps': return `<section class="steps" data-steps${id}><div class="wrap"><div class="pin" aria-hidden="true">${s.items.map((_, k) => `<span${k ? '' : ' class="on"'}>${(k + 1).toLocaleString(ar ? 'ar-EG' : 'en')}</span>`).join('')}</div><div>${h(s.title)}${s.items.map((it, k) => `<div data-step="${k}"><h3>${esc(it.title)}</h3><p class="muted">${esc(it.text)}</p></div>`).join('')}</div></div></section>`;
+    case 'story': return `<section class="story story-${esc(s.shape)}" data-story${id}><div class="wrap"><div class="story-line" aria-hidden="true"><svg viewBox="0 0 120 1000" preserveAspectRatio="none"><path class="story-track" d="${STORY_SHAPES[s.shape]}"/><path class="story-fill" d="${STORY_SHAPES[s.shape]}"/></svg><span class="story-tip"></span></div><div>${s.title ? h(s.title) : ''}${s.text ? `<p class="muted">${esc(s.text)}</p>` : ''}<ol class="story-stops">${s.items.map((it, k) => `<li data-stop="${k}"><h3>${esc(it.title)}</h3>${it.text ? `<p class="muted">${esc(it.text)}</p>` : ''}</li>`).join('')}</ol></div></div></section>`;
     case 'ring': return `<section class="ring-sec"${id}><div class="wrap">${h(s.title)}${s.hint ? `<p class="label">${esc(s.hint)}</p>` : ''}<div class="ring" data-ring tabindex="0" role="region" aria-label="${esc(s.title)}"><div class="ring-stage">${s.items.map((it) => `<article class="ring-card">${it.image ? `<img src="${esc(it.image)}" alt="${esc(it.imageAlt || it.title)}" loading="lazy">` : ''}<h3>${esc(it.title)}</h3><p>${esc(it.text)}</p></article>`).join('')}</div></div></div></section>`;
     case 'stats': return `<section class="stats"${id}><div class="wrap">${s.title ? h(s.title) : ''}<div class="grid">${s.items.map((it) => `<div class="stat"${s.motion === 'reveal' ? ' data-reveal' : ''}><b>${(+it.value).toLocaleString(ar ? 'ar-EG' : 'en')}</b>${it.suffix ? `<span>${esc(it.suffix)}</span>` : ''}<p>${esc(it.label)}</p><small>${esc(it.source)}</small></div>`).join('')}</div></div></section>`;
     case 'quote': return `<section class="quote"${id}><div class="wrap"><blockquote${s.motion === 'reveal' ? ' data-reveal' : ''}>${esc(s.text)}</blockquote><p class="who"${s.motion === 'reveal' ? ' data-reveal' : ''}>${esc(s.name)}${s.role ? ` · ${esc(s.role)}` : ''}</p></div></section>`;
@@ -149,6 +211,20 @@ export function build(site, outDir, { siteDir } = {}) {
   // site images (logo, hero, ring items) are copied from the site folder; only local relative paths are allowed
   const media = mediaOf(site).filter((p) => !/^https:/.test(p));
   for (const m of media) { if (!siteDir || !existsSync(join(siteDir, m))) throw new Error(`missing image ${m} (put it next to site.json)`); mkdirSync(dirname(join(outDir, m)), { recursive: true }); copyFileSync(join(siteDir, m), join(outDir, m)); }
+  // photos/ (WEB.md "Photos folder"): the client's or free-licence photos sit in web/sites/<site>/photos/ with photos/CREDITS.json
+  // ([{ file, source, author, licence }]); every photo is copied, and a photo without a credit row is a warning (ASSETS.md licence rule).
+  const photoWarnings = [];
+  if (siteDir && existsSync(join(siteDir, 'photos'))) {
+    const pics = readdirSync(join(siteDir, 'photos')).filter((f) => /\.(jpe?g|png|webp|avif|gif|svg)$/i.test(f));
+    let credits = [];
+    try { credits = existsSync(join(siteDir, 'photos', 'CREDITS.json')) ? JSON.parse(readFileSync(join(siteDir, 'photos', 'CREDITS.json'), 'utf8')) : []; } catch { photoWarnings.push('photos/CREDITS.json is not valid JSON'); }
+    mkdirSync(join(outDir, 'photos'), { recursive: true });
+    for (const f of pics) {
+      copyFileSync(join(siteDir, 'photos', f), join(outDir, 'photos', f));
+      const c = Array.isArray(credits) && credits.find((x) => x?.file === f);
+      if (!c || !c.source || !c.licence) photoWarnings.push(`photos/${f}: no source + licence row in photos/CREDITS.json (ASSETS.md: every photo's source and licence; Unsplash photos carry the Unsplash License)`);
+    }
+  }
   const nav = site.sections.filter((s) => s.id && s.label && s.type !== 'hero').map((s) => `<a href="#${esc(s.id)}">${esc(s.label)}</a>`).join('');
   const html = `<!doctype html>
 <html lang="${ar ? 'ar' : 'en'}" dir="${ar ? 'rtl' : 'ltr'}">
@@ -176,5 +252,5 @@ ${site.sections.map((s, i) => sectionHtml(s, i, ar)).join('\n')}
 `;
   writeFileSync(join(outDir, 'index.html'), html);
   const files = []; const list = (d) => { for (const f of readdirSync(d)) { const p = join(d, f); statSync(p).isDirectory() ? list(p) : files.push(p); } }; list(outDir);
-  return { files: files.map((f) => f.slice(outDir.length + 1)), bytes: files.reduce((s, f) => s + statSync(f).size, 0), warnings: v.warnings };
+  return { files: files.map((f) => f.slice(outDir.length + 1)), bytes: files.reduce((s, f) => s + statSync(f).size, 0), warnings: [...v.warnings, ...photoWarnings, ...portable(outDir).map((p) => `not portable: ${p}`)] };
 }

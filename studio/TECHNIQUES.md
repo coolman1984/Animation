@@ -463,3 +463,20 @@ Removed automatic decorative patterns and effect quotas in the first-party web p
 
 ## Reference-led composition upgrade — 2026-11-03
 The owner's supplied visual references now guide composition, imagery, type and mobile art direction (`studio/web/ART_DIRECTION.md`). Presets remain fallbacks: per-site theme tokens/fonts and hero/features/width composition controls are validated, contrast checked, and browser-tested. Preserve intentional gradients, shadows and depth when justified; the earlier cleanup only removes automatic decorative defaults. Controls alone do not certify artistic quality. Uses existing font assets; no new third-party imagery.
+
+## Scroll-drawn hero line, 3D product with a still twin, RTL split panels, site reel — 2026-11-06
+- **Hero line (site engine `story`, gallery pipe/pen):** an inline SVG path in a column beside the stations, `preserveAspectRatio="none"` and
+  `vector-effect: non-scaling-stroke` so the stroke keeps its width. Such a stroke dashes in **screen** units: sample the path 200 times,
+  map each point to the SVG's screen box, sum the distances, set `stroke-dasharray: L L` and `stroke-dashoffset: L·(1−p)`; place any tip
+  or nib at the same screen distance. `p = clamp((0.6·innerHeight − sectionTop) / sectionHeight)`. Re-measure on resize. No JS or reduced
+  motion → no dash, the line is whole.
+- **3D product from primitives with a still twin:** cylinders for body, shoulder, neck, cap and label band in a nested `Scene` (the vendored
+  subset has no `Group`), hemisphere + key + rim light, rotation = one turn across the sticky scene's scroll. Decide the still SVG up front:
+  reduced motion, `saveData`, ≤ 2 cores, ≤ 2 GB, no WebGL or `?still=1`. On phones give the canvas an explicit height and width
+  (`calc(46vh − 24px)` × 0.75): a canvas with `width:auto` falls back to its pixel attributes and covers the page.
+- **Split panels in RTL:** a two-column grid in DOM order reading → picture; with `dir="rtl"` the reading panel lands on the right by itself.
+  Borders and paddings in logical properties (`border-inline-end`, `inset-inline-*`) only. The picture panel is `position: sticky; height: 100vh`
+  and swaps to the offer whose top crossed half the screen. Phone: picture strip sticky under a fixed bar, menu in a bottom tab bar (≥ 60 px).
+- **Edit timeline in Arabic:** the playhead moves in the reading direction of its labels (`right: p%` in RTL), the timecode stays LTR monospace.
+- **Site promo reel:** CDP phone viewport 360 × 640 at device scale 3 → JPEG frames piped into `ffmpeg -f image2pipe` → H.264 1080 × 1920;
+  scroll position = hold 12 % → ease-in-out cubic → hold 14 % of the frames, set with `scrollTo` + two `requestAnimationFrame`s before each shot.

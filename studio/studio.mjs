@@ -20,6 +20,9 @@
 //   node studio.mjs styles [slug | lemo/<slug>] [--library=lemo]   house style cards (styles/README.md) + 59 Lemo-Opuscar film styles
 //   node studio.mjs web audit <label> --dir=<existing site folder> [--before=<label>]   (improve a site: before/after; web/WEB.md)
 //   node studio.mjs web plan <site> [--brand= --style= --lang=ar|en --cta= --problem= --promise=] · web build|check|serve <site> · web styles   (web/WEB.md)
+//   node studio.mjs web prompts [group] · web prompt <id> [--site=<site>] [--lang=ar|en]   ready briefs per business type (web/prompts/README.md)
+//   node studio.mjs web edit <site> --section=<id> [--file=<section.json>]   change one section, re-check only that section (web/WEB.md)
+//   node studio.mjs web reel <site> [--seconds=12]   the site scrolling on a phone → 1080×1920 short (takes/web/<site>/reel.mp4)
 //   node studio.mjs lab                          easing curve, frame ruler, export commands (web/lab/README.md)
 //   node studio.mjs gallery                      website design gallery: directions to choose from + rating of existing work (web/gallery/README.md)
 //   node studio.mjs moves search <words> [--library=motion-prompt|cinetic|shotcraft --pack= --category=] · moves show|prompt|code <#id | technique-id> · moves draw --format=launch|feature|loop|sting|walkthrough|vertical [--energy=calm --seconds=30 --seed=] · moves list   (library/README.md)
@@ -397,6 +400,24 @@ async function webCmd([sub, name, ...more], opt) {
     else console.log(text);
     return;
   }
+  if (sub === 'prompts') {   // the prompt library (web/prompts/README.md): groups → one brief per example site
+    const { prompts } = await import('./web/lib/prompts.mjs'), P = prompts();
+    for (const g of P.groups.filter((x) => !name || x.id === name)) {
+      console.log(`${g.id} — ${g.ar} / ${g.en}`);
+      for (const x of P.prompts.filter((y) => y.group === g.id)) console.log(`  ${pad(x.id, 22)}${pad('gallery/specimens/' + x.specimen + '.html', 44)}${x.heroMotion}`);
+    }
+    console.log('\nnode studio.mjs web prompt <id> [--site=<site>] prints one brief, filled from that site.json; web/prompts/FOLLOW_UPS.md has the follow-ups.');
+    return;
+  }
+  if (sub === 'prompt') {
+    const { promptText } = await import('./web/lib/prompts.mjs');
+    const sj = opt.site ? join(STUDIO, 'web', 'sites', String(opt.site), 'site.json') : null;
+    if (sj && !ex(sj)) throw new Error(`no web/sites/${opt.site}/site.json (node studio.mjs web plan ${opt.site})`);
+    const text = promptText(name, { site: sj ? JSON.parse(rf(sj, 'utf8')) : null, lang: opt.lang });
+    console.log(text); const left = (text.match(/‹[^›]+›/g) || []).length;
+    if (left) console.error(`\n${left} slot(s) still ‹…›: fill them in site.json (or in the text) before building.`);
+    return;
+  }
   if (!name || !/^[a-z0-9][a-z0-9_-]*$/.test(name)) throw new Error('usage: node studio.mjs web plan|build|check|serve <site> (lowercase folder name) · web audit <label> --dir=<folder> [--page=index.html] [--before=<label>] · web styles (build/check/serve need a filled DESIGN.md, or --draft)');
   if (sub === 'audit') {   // any existing static site (the owner's site, another framework's build output): measure before and after an improvement
     if (!opt.dir || !ex(join(opt.dir, opt.page || 'index.html'))) throw new Error('usage: web audit <label> --dir=<folder with index.html> [--page=…] [--before=<earlier label>]');
@@ -422,21 +443,42 @@ async function webCmd([sub, name, ...more], opt) {
   }
   if (!ex(file)) throw new Error(`no web/sites/${name}/site.json (node studio.mjs web plan ${name})`);
   const site = JSON.parse(rf(file, 'utf8'));
-  if (['build', 'check', 'serve'].includes(sub)) {   // stages A–D come first (WEB.md "One workflow"); --draft previews without them, labelled
+  if (['build', 'check', 'serve', 'edit', 'reel'].includes(sub)) {   // stages A–D come first (WEB.md "One workflow"); --draft previews without them, labelled
     const d = W.designRecord(dir);
     if (!d.ok && !opt.draft) throw new Error(`${name}: ${d.errors.join('; ')}. Fill web/sites/${name}/DESIGN.md first, or add --draft for a labelled preview.`);
     if (!d.ok) console.log(`DRAFT (not a delivery): ${d.errors.join('; ')}`);
   }
-  if (sub === 'build') { const r = W.build(site, dist, { siteDir: dir }); console.log(`built web/sites/${name}/dist: ${r.files.length} files, ${Math.round(r.bytes / 1024)} KB`); for (const w of r.warnings) console.log(`note: ${w}`); return; }
+  if (sub === 'build') { const r = W.build(site, dist, { siteDir: dir }); console.log(`built web/sites/${name}/dist: ${r.files.length} files, ${Math.round(r.bytes / 1024)} KB — one folder, ready to drag onto a static host when the owner says «انشر» (web/PUBLISH.md)`); for (const w of r.warnings) console.log(`note: ${w}`); return; }
+  if (sub === 'edit') {   // one section only (WEB.md "Edit one section"): print it, or swap it from a file, rebuild and re-check that section
+    if (!opt.section) throw new Error(`usage: web edit ${name} --section=<id> [--file=<section.json>]  (ids: ${site.sections.map((s) => s.id).filter(Boolean).join(', ')})`);
+    const cur = site.sections.find((s) => s.id === opt.section);
+    if (!cur) throw new Error(`no section "${opt.section}" in ${name} (ids: ${site.sections.map((s) => s.id).filter(Boolean).join(', ')})`);
+    if (!opt.file) { console.log(JSON.stringify(cur, null, 2)); console.log(`\nsave your changed copy as a file, then: node studio.mjs web edit ${name} --section=${opt.section} --file=<that file>`); return; }
+    const next = W.replaceSection(site, String(opt.section), JSON.parse(rf(String(opt.file), 'utf8'))), v = W.validate(next);
+    if (v.errors.length) throw new Error(`not saved — ${v.errors.join('; ')}`);
+    wf(file, JSON.stringify(next, null, 2) + '\n');
+    const b = W.build(next, dist, { siteDir: dir }); for (const w of b.warnings) console.log(`note: ${w}`);
+    const { checkSite, reviewNote } = await import('./web/lib/check.mjs'), out = join(STUDIO, 'takes', 'web', name), r = await checkSite({ dir: dist, outDir: out, focus: String(opt.section) });
+    wf(join(out, 'REVIEW.md'), reviewNote(name, r));
+    console.log(`${name} #${opt.section} saved and rebuilt: ${r.verdict}`); for (const l of r.lights.filter((x) => x.light !== 'green')) console.log(`${pad(l.light.toUpperCase(), 7)} ${pad(l.id, 20)} ${l.why}`);
+    console.log(`section shots: ${r.viewports.filter((x) => x.sheet).map((x) => x.sheet).join(' · ')}`);
+    process.exitCode = r.lights.some((l) => l.light === 'red') ? 1 : 0; return;
+  }
+  if (sub === 'reel') {   // the site's promo short (WEB.md "Promo reel of a site"); content-factory posts it only after the owner approves
+    if (!ex(join(dist, 'index.html'))) W.build(site, dist, { siteDir: dir });
+    const { scrollReel } = await import('./web/lib/reel.mjs'), r = await scrollReel({ dir: dist, out: join(STUDIO, 'takes', 'web', name, 'reel.mp4'), seconds: +opt.seconds || 12 });
+    console.log(`reel: ${r.file} (${r.frames} frames, ${r.seconds.toFixed(1)} s, 1080×1920, ${r.height} px scrolled). Watch it, then hand it to content-factory; nothing is posted without the owner's approval.`); return;
+  }
   if (sub === 'check') {
     W.build(site, dist, { siteDir: dir });   // always check the current site.json, never an older build
-    const { checkSite } = await import('./web/lib/check.mjs'), out = join(STUDIO, 'takes', 'web', name), r = await checkSite({ dir: dist, outDir: out });
+    const { checkSite, reviewNote } = await import('./web/lib/check.mjs'), out = join(STUDIO, 'takes', 'web', name), r = await checkSite({ dir: dist, outDir: out });
     console.log(`${name}: ${r.verdict}`); for (const l of r.lights) console.log(`${pad(l.light.toUpperCase(), 7)} ${pad(l.id, 20)} ${l.why}`);
     console.log(`screenshots: ${r.viewports.filter((v) => v.sheet).map((v) => v.sheet).join(' · ')}`);
+    wf(join(out, 'REVIEW.md'), reviewNote(name, r)); console.log(`phone review for the owner: ${join(out, 'REVIEW.md')} (send the three strips; ask «تمام ولا تعديل؟»)`);
     process.exitCode = r.lights.some((l) => l.light === 'red') ? 1 : 0; return;
   }
   if (sub === 'serve') { if (!ex(join(dist, 'index.html'))) W.build(site, dist, { siteDir: dir }); const { serve } = await import('./lib/serve.mjs'); const s = await serve(dist); console.log(`http://127.0.0.1:${s.port}/index.html  (Ctrl+C to stop)`); return; }
-  throw new Error('usage: node studio.mjs web plan|build|check|serve <site> · web styles');
+  throw new Error('usage: node studio.mjs web plan|build|check|serve|edit|reel <site> · web prompts · web prompt <id> · web styles');
 }
 
 // Move library (library/README.md): Motion Prompt's 120 numbered moves + Cinetic's 273 measured techniques, offline.

@@ -172,3 +172,16 @@ could not be opened from this cloud session (DNS blocked), so their rows rest on
 | Technology | What was learned | Decision | Source |
 |---|---|---|---|
 | SageCut (Claude Code plugin; a "Sage" decision model answers yes/no per frame, Opus critics open only selected frames) | Cheap code checks on every frame + a selector cut critic frame views ~4× in their example ($1.21 → $0.30 for 12 frames) | ADAPT: rebuilt as `lib/triage.mjs` with code measurements + a 2.4 MB text detector instead of their hosted decision model; plugin not installed | owner's screenshot of the @shannholmberg post; github.com/levantolabs/sagecut-release (not opened) |
+
+## Emil Kowalski's skills (emilkowalski/skills, MIT) — adopted 2026-11-05
+Owner sent the /choreograph post: "learn this well". Cloned @ c8a7962, read, checked (text and links only: no installers, network calls
+or telemetry). **ADOPTED** as toolkit package `emil-skills` (13 web/motion skills + two cheatsheets; wrapper skill `emil-skills`).
+Left upstream: write-swift, animate-expo, ask-sonner, pick-ui-library (native apps and his React libraries). First use: the six gallery
+examples were re-choreographed by it (scroll reveals removed, one role-based hero entrance each; `web/gallery/LESSONS.md` §Motion).
+
+## Skill Leap AI — "You won't believe the websites Claude can build now" (YouTube 6m9Wihe9sJ8) — studied 2026-11-06
+Transcript + description only (owner's report). Method: 75 sites from one detailed prompt each, 11 business collections, live preview at
+three sizes, a form that fills the prompt, follow-up prompts, a `photos` folder, Claude Code over chat (it reviews its own work), effort set
+high, artifact link for a quick share, Netlify drag-and-drop + own domain. **Decision: LEARN** — the method is rebuilt on our stages
+(`web/prompts/`, `web edit`, `web reel`, `PUBLISH.md`). Its prompt library sits behind a sponsor form (HubSpot link) and was not opened;
+its "six steps" are not described, so nothing of its text is copied. Netlify/Unsplash: owner/client accounts only.

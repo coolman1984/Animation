@@ -121,10 +121,6 @@ details p{margin:0 0 18px;color:var(--ink2);max-width:62ch}
 footer{padding-block:30px 80px;color:var(--mute);font-size:14px}
 footer .w{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 
-@supports (animation-timeline:view()){
-  .rv{animation:rv linear both;animation-timeline:view();animation-range:entry 5% entry 50%}
-  @keyframes rv{from{opacity:0;transform:translateY(30px)}}
-}
 @media (max-width:1000px){
   nav ul{display:none}
   .hero .w{grid-template-columns:1fr;gap:40px}
@@ -142,6 +138,14 @@ footer .w{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
   .booking{padding:20px;border-radius:22px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* Hero choreography (emil-skills/choreograph): one lead, support overlaps with shrinking gaps, decoration only fades;
+   one entrance per page, no scroll reveals; reduced motion = everything appears together with a short fade. */
+.in{animation:enter .6s cubic-bezier(.23,1,.32,1) both;animation-delay:var(--d,0ms)}
+.in.f{animation-name:fadeonly;animation-duration:.4s}
+@keyframes enter{from{opacity:0;transform:translateY(var(--y,8px))}}
+@keyframes fadeonly{from{opacity:0}}
+.btn:active{transform:scale(.97)}
+@media (prefers-reduced-motion:reduce){.in,.in.f{animation:fadeonly .2s ease-out both!important;animation-delay:0ms!important}}
 </style>
 </head>
 <body>
@@ -157,18 +161,18 @@ footer .w{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 <main>
 <section class="hero" style="padding-top:70px"><div class="w">
   <div>
-    <span class="pill"><i></i>مواعيد متاحة هذا الأسبوع</span>
-    <h1>علاج أسنان <em>واضح</em> من أول زيارة</h1>
-    <p class="lead">نشرح لك حالتك بالصور، ونكتب خطة العلاج وتكلفتها قبل أن نبدأ. بدون مفاجآت وبدون استعجال.</p>
-    <ul class="points">
+    <span class="pill in f"><i></i>مواعيد متاحة هذا الأسبوع</span>
+    <h1 class="in" style="--y:14px">علاج أسنان <em>واضح</em> من أول زيارة</h1>
+    <p class="lead in" style="--d:80ms;--y:8px">نشرح لك حالتك بالصور، ونكتب خطة العلاج وتكلفتها قبل أن نبدأ. بدون مفاجآت وبدون استعجال.</p>
+    <ul class="points in" style="--d:140ms;--y:6px">
       <li><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="13" fill="#E2F1EE"/><path d="M8 13.5l3.2 3.2L18 9.8" fill="none" stroke="#0E6A61" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>خطة علاج مكتوبة بالسعر قبل البدء</li>
       <li><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="13" fill="#E2F1EE"/><path d="M8 13.5l3.2 3.2L18 9.8" fill="none" stroke="#0E6A61" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>أدوات معقّمة ومغلّفة لكل مريض</li>
       <li><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="13" fill="#E2F1EE"/><path d="M8 13.5l3.2 3.2L18 9.8" fill="none" stroke="#0E6A61" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>متابعة بعد كل جلسة عبر الهاتف</li>
     </ul>
-    <div class="rate"><span class="stars" aria-hidden="true">★★★★★</span><span>تقييمات توضيحية لعيادة افتراضية</span></div>
+    <div class="rate in f" style="--d:220ms"><span class="stars" aria-hidden="true">★★★★★</span><span>تقييمات توضيحية لعيادة افتراضية</span></div>
   </div>
 
-  <form class="booking" id="book" aria-labelledby="bk">
+  <form class="booking in" style="--d:120ms;--y:12px" id="book" aria-labelledby="bk">
     <h2 id="bk">احجز موعدك</h2><p class="sub">الكشف الأول ٣٠ دقيقة، ويشمل الأشعة إن لزم.</p>
     <label class="lbl" for="svc">نوع الزيارة</label>
     <select id="svc"><option>كشف وفحص شامل</option><option>تنظيف وتلميع</option><option>حشو أو علاج عصب</option><option>استشارة تقويم</option><option>تبييض الأسنان</option></select>

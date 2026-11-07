@@ -1,6 +1,6 @@
 {
   "about": "Third-party agent tools vendored whole (owner order 2026-10-24: 'take everything we can learn and every tool we can use'). Each package is copied unchanged from a pinned commit except the listed removals; its licence travels with it. Front door: node studio/studio.mjs toolkit. Guide: toolkit/README.md.",
-  "updated": "2026-10-25",
+  "updated": "2026-11-05",
   "packages": [
     {
       "name": "impeccable",
@@ -219,6 +219,38 @@
       "department": "web",
       "what": "Landing-page strategy and ship list: one offer / one audience / one action, intake in one batch, above-the-fold order, layout types A-D, conversion and copy rules, section-by-section build order, SEO/AEO, content realism, full state set, ship requirements, the tagline word-reveal section; plus a Latin-only visual system the house method overrides.",
       "changed": "Nothing (one SKILL.md)."
+    },
+    {
+      "name": "emil-skills",
+      "repo": "emilkowalski/skills",
+      "commit": "c8a7962",
+      "licence": "MIT",
+      "from": ".",
+      "include": [
+        "skills/emil-design-eng",
+        "skills/animate",
+        "skills/choreograph",
+        "skills/review-animations",
+        "skills/improve-animations",
+        "skills/find-animation-opportunities",
+        "skills/remove-animations",
+        "skills/animation-performance",
+        "skills/animation-vocabulary",
+        "skills/apple-design",
+        "skills/mobile-native",
+        "skills/break-ui",
+        "skills/prototype",
+        "ui-cheatsheet.md",
+        "performance-cheatsheet.md",
+        "README.md"
+      ],
+      "notices": [
+        "LICENSE"
+      ],
+      "skill": "emil-skills",
+      "department": "motion",
+      "what": "Emil Kowalski's design-engineering skills (Vercel/Linear): choreograph (lead/support/decoration roles, together/overlap/sequence/carry, stagger budgets, interruption), animate (curves, durations, origins), review/improve/remove/find animations, animation-performance, animation-vocabulary, apple-design, mobile-native, break-ui, prototype, plus UI and performance cheatsheets.",
+      "changed": "Skills for the web and motion only. Left upstream: write-swift and animate-expo (native apps), ask-sonner (his React toast library), pick-ui-library (React library picks), repo images and .pl."
     }
   ],
   "notVendored": [

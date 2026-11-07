@@ -136,7 +136,7 @@
       "check": { "file": "mcp/server.mjs" }, "serves": [], "bestFor": "non-Claude models making or judging films: AGENTS.md, MCP tools, plan, critic, scene-graph eyes (ANY_MODEL.md)",
       "note": "Not yet proven with a film made end to end by another model; compare with bench/." },
     { "id": "web-sites", "name": "Web department (site.json → static animated site)", "department": "web", "maturity": "EXPERIMENTAL", "kind": "native",
-      "check": { "file": "web/lib/site.mjs" }, "serves": [], "bestFor": "landing, company, café, product and portfolio sites with scroll motion and a 3D ring, checked at phone/tablet/desktop (web/WEB.md)",
+      "check": { "file": "web/lib/site.mjs" }, "serves": [], "bestFor": "landing, company, café, product and portfolio sites from a ready brief (web/prompts), one hero motion, checked at phone/tablet/desktop; one-section edits and a scroll promo reel (web/WEB.md)",
       "note": "Example site passes the real-browser check; no real client site or live hosting yet." },
     { "id": "ui-ux-pro-max", "name": "UI UX Pro Max design system (toolkit, MIT)", "department": "web", "maturity": "EXPERIMENTAL", "kind": "python",
       "check": { "file": "toolkit/ui-ux-pro-max/scripts/search.py" }, "serves": [], "bestFor": "web stage B: design system from a brief (`studio.mjs web system`), palettes, type pairs, UX rules; skill ui-ux-pro-max", "license": "MIT",

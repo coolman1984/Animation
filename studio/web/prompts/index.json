@@ -1,0 +1,26 @@
+{
+  "about": "Prompt library (README.md). Each prompt is one ready brief tied to one example site in ../gallery/specimens; fill it with `node studio/studio.mjs web prompt <id> --site=<site>`.",
+  "groups": [
+    { "id": "local-services", "ar": "خدمات محلية", "en": "Local services" },
+    { "id": "food-cafe", "ar": "مطاعم وكافيهات", "en": "Restaurants and cafés" },
+    { "id": "saas", "ar": "برمجيات وتطبيقات", "en": "SaaS and apps" },
+    { "id": "courses", "ar": "كورسات", "en": "Courses" },
+    { "id": "video-production", "ar": "إنتاج فيديو", "en": "Video production" },
+    { "id": "seasonal", "ar": "عروض موسمية ومتاجر", "en": "Seasonal offers and shops" },
+    { "id": "industry", "ar": "مصانع ومنتجات", "en": "Factories and products" }
+  ],
+  "prompts": [
+    { "id": "plumbing", "group": "local-services", "name": "سبّاك البيت", "specimen": "sabbak-plumbing", "file": "local-services/plumbing.md", "heroMotion": "water runs down a pipe through the four steps", "storyShape": "pipe" },
+    { "id": "clinic", "group": "local-services", "name": "لُمى لطب الأسنان", "specimen": "luma-clinic", "file": "local-services/clinic.md", "heroMotion": "none: the booking card is the lead (quiet direction)", "storyShape": null },
+    { "id": "gym", "group": "local-services", "name": "نبض", "specimen": "pulse-gym", "file": "local-services/gym.md", "heroMotion": "none: full-bleed photo + live booking card", "storyShape": null },
+    { "id": "coldbrew", "group": "food-cafe", "name": "بُنّ بارد", "specimen": "bunn-coldbrew", "file": "food-cafe/coldbrew.md", "heroMotion": "a code-built 3D bottle turns with the scroll (still SVG on weak phones)", "storyShape": null },
+    { "id": "saas-dashboard", "group": "saas", "name": "مدار", "specimen": "madar-saas", "file": "saas/saas-dashboard.md", "heroMotion": "none: the product dashboard drawn in code is the hero", "storyShape": null },
+    { "id": "fintech-app", "group": "saas", "name": "رصيد", "specimen": "raseed-fintech", "file": "saas/fintech-app.md", "heroMotion": "the savings calculator answers the pointer", "storyShape": null },
+    { "id": "launch", "group": "saas", "name": "منصة تنطلق", "specimen": "madar-saas", "file": "saas/launch.md", "heroMotion": "a launch trajectory drawn by the scroll through the release stages", "storyShape": "trajectory" },
+    { "id": "copywriting-course", "group": "courses", "name": "قلم", "specimen": "qalam-course", "file": "courses/copywriting-course.md", "heroMotion": "a pen writes the curriculum line week by week", "storyShape": "pen" },
+    { "id": "video-studio", "group": "video-production", "name": "وصلة", "specimen": "wasla-studio", "file": "video-production/video-studio.md", "heroMotion": "an edit timeline whose playhead follows the scroll through four phases", "storyShape": "timeline" },
+    { "id": "white-friday", "group": "seasonal", "name": "سهم", "specimen": "sahm-offer", "file": "seasonal/white-friday.md", "heroMotion": "two panels: the offers scroll, the picture panel swaps with them", "storyShape": null },
+    { "id": "sports-shop", "group": "seasonal", "name": "عُدّة", "specimen": "odda-shop", "file": "seasonal/sports-shop.md", "heroMotion": "none: filters, cart and bundle builder are the interaction", "storyShape": null },
+    { "id": "pump-factory", "group": "industry", "name": "نبع للمضخات", "specimen": "nabaa-industrial", "file": "industry/pump-factory.md", "heroMotion": "the pump explodes and reassembles under the pointer, ghosted interior", "storyShape": null }
+  ]
+}

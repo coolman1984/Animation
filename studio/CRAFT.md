@@ -248,3 +248,14 @@ Removed automatic decorative patterns and effect quotas in the first-party web p
 
 ## Reference-led composition upgrade — 2026-11-03
 The owner's supplied visual references now guide composition, imagery, type and mobile art direction (`studio/web/ART_DIRECTION.md`). Presets remain fallbacks: per-site theme tokens/fonts and hero/features/width composition controls are validated, contrast checked, and browser-tested. Preserve intentional gradients, shadows and depth when justified; the earlier cleanup only removes automatic decorative defaults. Controls alone do not certify artistic quality. Uses existing font assets; no new third-party imagery.
+
+## 2026-11-06 — Prompt library, hero motions and the one-day site (lessons)
+1. **A non-scaling stroke dashes on screen, not in path units:** `pathLength="1"` with `vector-effect: non-scaling-stroke` left the pen nib
+   ~50 px behind the drawn line on desktop. Measure the path in screen pixels and drive both the dash and the marker from that distance.
+2. **A broad descendant rule styles the marker too:** `.line svg { inset: 0; width: 100% }` and `.line path { fill: none }` stretched and emptied
+   the nib that lived in the same box; it was invisible, not missing. Scope rules to the line (`svg:not(.nib)`), give a marker its own fill.
+3. **Check what a vendored subset exports before importing from it:** the Three.js subset has no `Group`; the page silently fell back to its still
+   SVG on every device, which looked "fine". A fallback that hides a failure needs one screenshot where the 3D must be on.
+4. **Clip shots of one section hide fixed and sticky bars:** a sticky header covered the title in every section screenshot.
+5. **Direction belongs to the whole widget:** a timeline whose labels read right-to-left and whose playhead ran left-to-right contradicted itself.
+6. **Test the classic fake first:** a phone rule demanding nine characters missed `555-0123`, the most common placeholder of all.
