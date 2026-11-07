@@ -139,6 +139,13 @@ After `web build`: `node studio/studio.mjs web optimize <site>` (or `images` / `
   `--lighthouse` runs real Lighthouse 13.6.0 from `studio/vendor` with our Chromium. Fixture (2026-11-06): 85 → 100, 910 → 95 KB;
   real Lighthouse 100 on the same page.
 
+## Build swarm — a page that builds itself (2026-11-07)
+`web/motion/build-swarm.js` + `build-swarm.css` (owner reference: a recording of a site built by a swarm of cursors). Mark sections
+`data-build-section` and parts `data-build="text|num|media|box"` (`data-to` for numbers), add `<div data-build-bar></div>` and call
+`BuildSwarm.start({ agents: 6 })`. Agents select each part with a live W × H box and guides, then reveal it (words in reading order,
+rolling digits, placeholder → photo). Parts already scrolled past finish instantly; reduced motion and no-JS get the finished page.
+First use: `gallery/specimens/masar-coach.html` (record: `masar-coach.DESIGN.md`).
+
 ## Not built yet (honest list)
 Multi-page sites with View Transitions, forms with a backend, CMS, payments, analytics, a brand kit scanned from an existing site
 (needs network access), and the automatic promo film of a finished site (planned: the page-flyover style card).

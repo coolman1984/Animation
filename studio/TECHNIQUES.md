@@ -480,3 +480,12 @@ The owner's supplied visual references now guide composition, imagery, type and 
 - **Web delivery**: `web optimize` then `web speed` (see `web/WEB.md` "Delivery weight and speed").
 - **Upscale / stems**: `node studio.mjs upscale in out --scale=2` and `node studio.mjs stems <file>`; both pick the AI route when
   installed (Real-ESRGAN ncnn / audio-separator) and otherwise a labelled classic FFmpeg route; both write a sidecar JSON for the LEDGER.
+
+## Build swarm — a page built in front of the visitor — 2026-11-07
+- Grammar from the owner's recording: coloured cursors select a part (box from the reading-start corner, live `W × H`, red vertical and
+  blue horizontal guides), then the part resolves — words uncovered in reading order with `clip-path` + `steps()`, digits rolling
+  then snapping to the real number already in the HTML, photos as a grey placeholder with handles that uncovers top-down.
+- Keep the content real from the start (text is DOM text, numbers are final in the markup); the effect only hides it while it is built.
+- Never make a visitor wait: parts that leave the screen finish instantly, long queues speed up, reduced motion gets the still page.
+- Overlay in page coordinates (absolute layer as tall as the document) so boxes and cursors scroll with the content.
+- Recipe in `web/WEB.md` "Build swarm"; first use `web/gallery/specimens/masar-coach.html`.

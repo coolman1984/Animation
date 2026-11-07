@@ -1,0 +1,30 @@
+/* BUILD SWARM styles (see build-swarm.js). Only applies once the script runs (html.sw-js); no JS = finished page. */
+.sw-layer { position: absolute; inset: 0 auto auto 0; width: 100%; pointer-events: none; z-index: 60; overflow: hidden; }
+.sw-agent { position: absolute; left: 0; top: 0; display: flex; align-items: flex-start; gap: 2px; will-change: transform; filter: drop-shadow(0 1px 2px rgb(0 0 0 / .45)); }
+.sw-agent span { font: 600 10px/1 var(--sw-mono, ui-monospace, monospace); color: #0B0E13; background: var(--c); border-radius: 3px; padding: 2px 4px; margin-top: 14px; }
+.sw-sel { position: absolute; border: 1px solid var(--c, #5B8CFF); box-shadow: inset 0 0 0 9999px color-mix(in srgb, var(--c, #5B8CFF) 7%, transparent); }
+.sw-sel .h { position: absolute; width: 7px; height: 7px; background: #F4F6F9; border: 1px solid var(--c, #5B8CFF); }
+.sw-sel .h0 { top: -4px; left: -4px } .sw-sel .h1 { top: -4px; right: -4px } .sw-sel .h2 { bottom: -4px; left: -4px } .sw-sel .h3 { bottom: -4px; right: -4px }
+.sw-dim { position: absolute; bottom: -22px; inset-inline-start: 50%; transform: translateX(50%); font: 600 11px/1 var(--sw-mono, ui-monospace, monospace); color: #fff; background: var(--c, #5B8CFF); padding: 3px 6px; border-radius: 3px; white-space: nowrap; direction: ltr; }
+[dir=ltr] .sw-dim { transform: translateX(-50%); }
+.sw-guide { position: absolute; pointer-events: none; }
+.sw-guide.v { width: 1px; background: #F0505A; }
+.sw-guide.hz { height: 1px; background: color-mix(in srgb, #5B8CFF 70%, transparent); }
+.sw-js .sw-pending { opacity: 0; }
+.sw-js [data-build=media].sw-pending { opacity: 1; visibility: hidden; }
+.sw-ph { visibility: visible !important; opacity: 1; background: #2A2F38 !important; outline: 1px solid #5B8CFF; outline-offset: -1px; }
+.sw-ph > * { opacity: 0; }
+.sw-typing { box-shadow: -2px 0 0 -0px #F2B84B; }
+[dir=rtl] .sw-typing { box-shadow: 2px 0 0 0 #F2B84B; }
+.sw-paused .sw-agent, .sw-paused .sw-sel { animation-play-state: paused; }
+/* control bar */
+.sw-bar { position: fixed; inset-block-end: 14px; inset-inline: 0; margin-inline: auto; width: max-content; max-width: calc(100% - 24px); z-index: 70; display: flex; align-items: center; gap: 10px; padding: 6px 6px 6px 12px; border-radius: 12px; background: #151922; border: 1px solid #2A303B; color: #C9D1DC; font-size: 14px; }
+.sw-bar:empty { display: none; }
+.sw-dots { display: flex; gap: 3px; } .sw-dots i { width: 7px; height: 7px; border-radius: 50%; }
+.sw-meter { width: 72px; height: 4px; background: #2A303B; border-radius: 2px; overflow: hidden; } .sw-meter i { display: block; height: 100%; width: 0; background: #5B8CFF; transition: width .3s; }
+.sw-count { font-variant-numeric: tabular-nums; min-width: 4.5em; }
+.sw-bar button { font: inherit; font-weight: 600; color: #0B0E13; background: #E9EDF2; border: 0; border-radius: 8px; min-height: 44px; padding: 0 14px; cursor: pointer; }
+.sw-bar .sw-pause { background: transparent; color: #E9EDF2; border: 1px solid #3A4250; }
+.sw-bar button:focus-visible { outline: 2px solid #5B8CFF; outline-offset: 2px; }
+@media (max-width: 560px) { .sw-label, .sw-meter { display: none; } }
+@media print { .sw-layer, .sw-bar { display: none; } .sw-js .sw-pending { opacity: 1; visibility: visible; } }

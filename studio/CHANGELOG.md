@@ -5,6 +5,10 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-11-07 — Build swarm and the مَسار coach site
+
+From two owner references (a recording of a site built live by a swarm of cursors, and a coach-template screenshot): reusable `web/motion/build-swarm.js` (agents, live W × H selection, guides, word/number/photo reveal, control bar, instant finish off-screen, reduced-motion still page) and an original fictional Arabic coach site `web/gallery/specimens/masar-coach.html` with 11 CC0 photos. `web audit`: no red lights at 390 / 820 / 1440 and reduced motion. Published as a private artifact. Not verified: real phones, the owner's verdict.
+
 ## 2026-11-07 — Remove the Arabic sales page
 
 Deleted the root draft page (`index.html`, `.nojekyll`, `series5/`) and `.github/workflows/pages.yml`, which published only that page. Removed the handbook row that pointed at it.

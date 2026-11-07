@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مَسار | كريم منصور، مدرّب حياة (موقع تخيّلي للعرض)</title>
+<meta name="description" content="موقع تخيّلي لمدرّب حياة يُبنى أمام الزائر: وكلاء يرسمون كل جزء ويقيسونه ثم يملؤونه. مثال من استوديو الحركة.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=Aref+Ruqaa:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../motion/build-swarm.css">
+<style>
+*{box-sizing:border-box}
+:root{--blue:#1F4FC9;--navy:#14204D;--card:#1A2A63;--ink:#141A2E;--muted:#4A5370;--paper:#F3F5FA;--line:#D9DEEA;--script:#2D62F0;--script-dark:#9DB8FF;--white:#FFFFFF;--sw-mono:'IBM Plex Sans Arabic',sans-serif}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 18px/1.85 'IBM Plex Sans Arabic',Tahoma,sans-serif}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit}
+h1,h2,h3,p{margin:0}
+.wrap{width:min(1180px,100% - 40px);margin-inline:auto}
+.label{display:block;font-size:14px;font-weight:600;color:var(--script);margin-bottom:8px}
+.dark .label{color:#AFC4FF}
+.script{font-family:'Aref Ruqaa',serif;font-weight:700;color:var(--script);display:block;line-height:1.35}
+.dark .script{color:var(--script-dark)}
+h2{font-size:clamp(30px,4.4vw,48px);line-height:1.25;font-weight:700}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 24px;border-radius:12px;font-weight:600;font-size:16px;text-decoration:none;background:var(--navy);color:#fff}
+.btn:focus-visible,a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #FFC94D;outline-offset:3px}
+/* header + hero */
+.top{position:relative;z-index:5;background:#fff}
+.top .wrap{display:flex;align-items:center;gap:28px;min-height:72px}
+.brand{display:flex;align-items:center;gap:10px;min-height:44px;font-weight:700;font-size:22px;text-decoration:none;color:var(--navy)}
+.brand i{width:30px;height:30px;border-radius:9px;background:var(--blue);display:grid;place-items:center;color:#fff;font-style:normal;font-size:16px}
+.nav{display:flex;gap:22px;margin-inline-start:auto;font-size:15px}
+.nav a{text-decoration:none;color:var(--muted)} .nav a[aria-current]{color:var(--blue);font-weight:600}
+.top .btn{min-height:44px;padding:0 18px;font-size:15px;background:var(--blue)}
+.hero{background:var(--blue);color:#fff;overflow:hidden}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:32px;min-height:560px;padding-block:56px 0}
+.hero .label{color:#CFE0FF}
+.hero h1{font-size:clamp(40px,5.6vw,68px);line-height:1.2;font-weight:700}
+.hero h1 .script{color:#fff;font-size:.92em;opacity:.95}
+.hero p{max-width:30em;color:#E3EBFF;margin-top:18px}
+.hero .btn{margin-top:28px;background:#fff;color:var(--navy)}
+.arrow{width:72px;color:#fff;opacity:.85;margin-bottom:6px}
+.portrait{position:relative;align-self:end;justify-self:center;width:min(440px,100%)}
+.portrait svg.blob{position:absolute;inset:6% -6% 0 -6%;width:112%;height:94%;fill:#fff}
+.portrait img{position:relative;border-radius:200px 200px 0 0;width:100%;aspect-ratio:460/600;object-fit:cover;object-position:50% 12%}
+.sign{position:absolute;top:8%;inset-inline-end:-6%;font-family:'Aref Ruqaa',serif;font-size:30px;color:#fff;transform:rotate(-8deg)}
+/* journey */
+section{padding-block:96px}
+.journey .intro{max-width:620px}
+.journey .intro p{color:var(--muted);margin-top:14px}
+.stairs{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;align-items:end;margin-top:48px}
+.stair{border-radius:18px;padding:22px;min-height:180px}
+.stair h3{font-size:19px;line-height:1.45;font-weight:700}
+.stair p{font-size:15px;line-height:1.75;margin-top:8px}
+.stair.soft{background:#E7EBF3;min-height:230px}
+.stair.soft p{color:var(--muted)}
+.stair.navy{background:var(--card);color:#fff}
+.stair.navy p{color:#C9D5F5}
+.stair.s1{margin-bottom:0}.stair.s2{margin-bottom:60px}.stair.s3{margin-bottom:120px}
+.stair b{display:block;font-size:30px;line-height:1.2;color:#FFD36B}
+/* story */
+.dark{background:var(--navy);color:#fff}
+.story .wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:center}
+.story .photo img{border-radius:24px;width:100%;aspect-ratio:480/600;object-fit:cover}
+.timeline{list-style:none;margin:28px 0 0;padding:0;display:grid;gap:14px;position:relative}
+.timeline::before{content:"";position:absolute;inset-block:30px;inset-inline-start:70px;border-inline-start:2px dotted #4E64A8}
+.timeline li{position:relative;display:grid;grid-template-columns:140px 1fr;gap:16px;align-items:center;background:var(--blue);border-radius:16px;padding:10px;border:1px solid #3F6BE0}
+.timeline img{border-radius:10px;aspect-ratio:3/2;object-fit:cover;width:140px}
+.timeline .y{font-weight:700;color:#FFD36B;font-size:15px;display:block}
+.timeline h3{font-size:17px;line-height:1.5;font-weight:600}
+/* testimonial */
+.voice .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}
+.quote{color:var(--muted);margin-top:18px;max-width:34em}
+.who{display:flex;align-items:center;gap:12px;margin-top:22px}
+.who img{width:48px;height:48px;border-radius:50%}
+.who strong{display:block;line-height:1.3}.who small{color:var(--muted);font-size:14px}
+.mark99{font-size:64px;line-height:1;color:var(--script);font-family:Georgia,serif;margin-inline-start:auto}
+.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:30px;padding:10px;background:var(--blue);border-radius:16px}
+.strip img{border-radius:10px;aspect-ratio:4/3;object-fit:cover;width:100%}
+.voice .side{position:relative}
+.voice .side img{border-radius:24px;width:100%;aspect-ratio:460/600;object-fit:cover;background:#E7EBF3}
+.voice .side .arrow{position:absolute;inset-inline-end:-40px;top:30%;color:var(--navy);width:84px}
+/* footer */
+footer{background:var(--navy);color:#C9D5F5;padding-block:64px 28px;font-size:15px}
+.cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.3fr;gap:32px}
+footer h3{color:#fff;font-size:16px;margin-bottom:12px}
+footer ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+footer a{text-decoration:none}
+.foot-brand{color:#fff}
+form{display:grid;gap:10px}
+input{font:inherit;min-height:48px;border-radius:10px;border:1px solid #33457F;background:#0F1A40;color:#fff;padding:0 14px}
+form button{font:inherit;font-weight:600;min-height:48px;border-radius:10px;border:0;background:var(--blue);color:#fff;cursor:pointer}
+.note{font-size:14px;color:#93A3CF;min-height:1.5em}
+.legal{max-width:65ch;border-top:1px solid #2A3A70;margin-top:40px;padding-top:18px;font-size:14px;color:#93A3CF;padding-bottom:64px}
+/* phone and tablet */
+@media (max-width:900px){
+ .nav{display:none}
+ .hero .wrap,.story .wrap,.voice .wrap{grid-template-columns:1fr}
+ .hero .wrap{padding-top:40px;min-height:0}
+ .stairs{grid-template-columns:1fr 1fr}
+ .stair.s2,.stair.s3{margin-bottom:0}
+ .cols{grid-template-columns:1fr 1fr}
+ .voice .side .arrow{display:none}
+ .story .photo{max-width:420px}
+}
+@media (max-width:560px){
+ body{font-size:17px}
+ section{padding-block:64px}
+ .top .btn{display:none}
+ .stairs{grid-template-columns:1fr}
+ .timeline li{grid-template-columns:96px 1fr}.timeline img{width:96px}.timeline::before{inset-inline-start:48px}
+ .strip{grid-template-columns:1fr 1fr}
+ .cols{grid-template-columns:1fr}
+ .sign{display:none}
+}
+</style>
+
+<header class="top" data-build-section>
+  <div class="wrap">
+    <a class="brand" href="#top" data-build="box"><i aria-hidden="true">م</i>مَسار</a>
+    <nav class="nav" aria-label="القائمة الرئيسية" data-build="box">
+      <a href="#top" aria-current="page">الرئيسية</a><a href="#journey">من أنا</a><a href="#story">قصتي</a><a href="#voices">آراء العملاء</a><a href="#contact">تواصل</a>
+    </nav>
+    <a class="btn" href="#contact" data-build="box">احجز جلسة تعارف</a>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero" data-build-section style="padding:0">
+  <div class="wrap">
+    <div>
+      <svg class="arrow" viewBox="0 0 80 60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true" data-build="media"><path d="M70 8C40 4 14 18 12 46"/><path d="M4 38l8 10 10-8"/></svg>
+      <span class="label" data-build="text">من أنا؟ · مدرّب تخيّلي للعرض</span>
+      <h1 data-build="text">تعرّف على مدرّبك <span class="script">كريم منصور</span></h1>
+      <p data-build="text">أساعد المديرين وروّاد الأعمال على ترتيب أولوياتهم واتخاذ قرارات أوضح في العمل والحياة، عبر جلسات فردية وبرامج قصيرة يمكن تطبيقها من الأسبوع الأول.</p>
+      <a class="btn" href="#journey" data-build="box">اعرف رحلتي <span aria-hidden="true">←</span></a>
+    </div>
+    <div class="portrait" data-build="media">
+      <svg class="blob" viewBox="0 0 200 200" aria-hidden="true"><path d="M46 18C78-6 140 2 170 34s28 98 4 134-90 40-130 22S2 116 6 78 14 42 46 18z"/></svg>
+      <img src="img/coach-hero.webp" width="460" height="640" alt="كريم منصور مبتسمًا ويداه متشابكتان أمام فريق في مكتب مضيء" fetchpriority="high">
+      <span class="sign" aria-hidden="true">كريم</span>
+    </div>
+  </div>
+</section>
+
+<section class="journey" id="journey" data-build-section>
+  <div class="wrap">
+    <div class="intro">
+      <span class="label" data-build="text">ما مررتُ به</span>
+      <h2 data-build="text">رحلتي لأصبح <span class="script">مدرّب حياة</span></h2>
+      <p data-build="text">قضيت سنوات أقود فرقًا تحت ضغط المواعيد، وتعلّمت أن أغلب التعثّر لا يأتي من قلة الجهد، بل من غياب الوضوح. اليوم أنقل ما تعلّمته في جلسات هادئة ومحددة الهدف.</p>
+    </div>
+    <div class="stairs">
+      <article class="stair soft s0" data-build="box"><h3>تحتاج أن تعرف ما يعنيه النجاح لك أنت</h3><p>نبدأ بأسئلة بسيطة عن وقتك وطاقتك، قبل أي خطة أو جدول.</p></article>
+      <article class="stair navy s1" data-build="box"><b data-build="num" data-to="12">١٢</b><h3>عامًا في إدارة الفرق</h3><p>بين شركات ناشئة ومؤسسات كبيرة.</p></article>
+      <article class="stair navy s2" data-build="box"><b data-build="num" data-to="400" data-suffix="+">+٤٠٠</b><h3>جلسة فردية</h3><p>مع مديرين وروّاد أعمال في المنطقة العربية.</p></article>
+      <article class="stair navy s3" data-build="box"><b data-build="num" data-to="3">٣</b><h3>برامج قصيرة</h3><p>كل برنامج ستة أسابيع، بمهمة واحدة واضحة كل أسبوع.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="story dark" id="story" data-build-section>
+  <div class="wrap">
+    <div class="photo" data-build="media"><img src="img/coach-story.webp" width="480" height="640" loading="lazy" alt="كريم يشرح خطة عمل على لوح ملاحظات لمجموعة من المشاركين"></div>
+    <div>
+      <span class="label" data-build="text">قصتي</span>
+      <h2 data-build="text">تحرّر من القيود <span class="script">واطمح أعلى!</span></h2>
+      <ol class="timeline">
+        <li data-build="box"><img src="img/coach-talk.webp" width="480" height="320" loading="lazy" alt="اجتماع عمل حول طاولة"><div><span class="y">٢٠١٦</span><h3>أول ورشة عمل لفريق من اثني عشر مديرًا</h3></div></li>
+        <li data-build="box"><img src="img/coach-team.webp" width="480" height="320" loading="lazy" alt="فريق يتابع عرضًا في قاعة اجتماعات"><div><span class="y">٢٠١٩</span><h3>إطلاق برنامج «وضوح» للقرارات المهنية</h3></div></li>
+        <li data-build="box"><img src="img/coach-group.webp" width="480" height="320" loading="lazy" alt="مجموعة تتناقش حول طاولة"><div><span class="y">٢٠٢٣</span><h3>برنامج «القيادة الهادئة» للشركات الناشئة</h3></div></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="voice" id="voices" data-build-section>
+  <div class="wrap">
+    <div>
+      <span class="label" data-build="text">آراء العملاء</span>
+      <h2 data-build="text">ماذا يقول <span class="script">عملائي؟</span></h2>
+      <p class="quote" data-build="text">«كنت أبدأ كل أسبوع بقائمة طويلة لا تنتهي. بعد ست جلسات صار عندي ثلاث أولويات فقط، وصرت أقول (لا) دون شعور بالذنب. أهم ما تغيّر أنني أنام مبكرًا من جديد.»</p>
+      <div class="who" data-build="box"><img src="img/coach-avatar.webp" width="96" height="96" alt=""><div><strong>سلمى رشيد</strong><small>مديرة منتج · رأي تخيّلي للعرض</small></div><span class="mark99" aria-hidden="true">”</span></div>
+      <div class="strip" data-build="box">
+        <img src="img/coach-one.webp" width="480" height="320" loading="lazy" alt="حديث بين زميلتين على طاولة">
+        <img src="img/coach-lab.webp" width="480" height="320" loading="lazy" alt="زملاء أمام حاسوب محمول">
+        <img src="img/coach-elder.webp" width="480" height="320" loading="lazy" alt="مدير يقف مع فريقه">
+        <img src="img/coach-work.webp" width="480" height="320" loading="lazy" alt="كريم أثناء ورشة عمل">
+      </div>
+    </div>
+    <div class="side" data-build="media">
+      <img src="img/coach-client.webp" width="460" height="640" loading="lazy" alt="سلمى رشيد مبتسمة في مكتبها">
+      <svg class="arrow" viewBox="0 0 80 60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M74 10C46 2 18 16 14 46"/><path d="M6 38l8 10 10-8"/></svg>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer id="contact" data-build-section>
+  <div class="wrap">
+    <div class="cols">
+      <div data-build="box"><a class="brand foot-brand" href="#top" data-build-finale><i aria-hidden="true">م</i>مَسار</a><p style="margin-top:12px">جلسات تدريب فردية وبرامج قصيرة لمن يريد وضوحًا أكبر في عمله وحياته.</p></div>
+      <div data-build="box"><h3>البرامج</h3><ul><li>أساسيات الوضوح</li><li>القرارات المهنية</li><li>القيادة الهادئة</li><li>إدارة الطاقة لا الوقت</li></ul></div>
+      <div data-build="box"><h3>روابط سريعة</h3><ul><li><a href="#journey">من أنا</a></li><li><a href="#story">قصتي</a></li><li><a href="#voices">آراء العملاء</a></li></ul></div>
+      <div data-build="box"><h3>النشرة الشهرية</h3>
+        <form onsubmit="event.preventDefault();this.querySelector('.note').textContent='هذا موقع تخيّلي للعرض: لم يُرسَل بريدك ولم يُحفظ.'">
+          <label for="mail" class="note" style="min-height:0;color:#C9D5F5">بريدك الإلكتروني</label>
+          <input id="mail" type="email" required autocomplete="email" dir="ltr" placeholder="name@example.com">
+          <button type="submit">اشترك</button><p class="note" role="status"></p>
+        </form>
+      </div>
+    </div>
+    <p class="legal">موقع تخيّلي للعرض من استوديو الحركة: الاسم والأرقام والآراء من تأليفنا، والصور مجانية الترخيص (CC0) من StockSnap. لا يقبل حجوزات ولا يحفظ أي بيانات.</p>
+  </div>
+  <div data-build-bar></div>
+</footer>
+
+<script src="../../motion/build-swarm.js"></script>
+<script>window.BuildSwarm && BuildSwarm.start({ agents: 6 });</script>
+</html>
