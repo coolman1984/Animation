@@ -58,7 +58,7 @@ input[type=range]{width:200px;accent-color:var(--accent)}
   linear-gradient(var(--line) 1px,transparent 1px) 0 0/40px 40px,
   linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/40px 40px,#FBFCFD}
 .canvas svg{display:block;width:100%;height:auto;max-height:440px;direction:ltr}
-.part{transition:transform .9s var(--ease),opacity .4s}
+.part{transition:opacity .4s}
 .part .shape{transition:fill-opacity .4s,stroke .3s}
 .part:hover .shape,.part.on .shape{stroke:var(--accent)}
 .lbl{opacity:0;transition:opacity .4s}
@@ -122,10 +122,6 @@ h2.t{font:700 clamp(32px,3.6vw,50px)/1.3 var(--f);margin:8px 0 0;text-wrap:balan
 footer{padding-block:40px 80px;color:var(--mute);font-size:14px;margin-top:100px;border-top:1px solid var(--line)}
 footer .w{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 
-@supports (animation-timeline:view()){
-  .rv{animation:rv linear both;animation-timeline:view();animation-range:entry 5% entry 50%}
-  @keyframes rv{from{opacity:0;transform:translateY(30px)}}
-}
 @media (max-width:1000px){
   nav ul{display:none}
   .hero-top,.sel,.contact{grid-template-columns:1fr;gap:30px}
@@ -143,6 +139,14 @@ footer .w{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
   section{padding-top:80px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* Hero choreography (emil-skills/choreograph): one lead, support overlaps with shrinking gaps, decoration only fades;
+   one entrance per page, no scroll reveals; reduced motion = everything appears together with a short fade. */
+.in{animation:enter .6s cubic-bezier(.23,1,.32,1) both;animation-delay:var(--d,0ms)}
+.in.f{animation-name:fadeonly;animation-duration:.4s}
+@keyframes enter{from{opacity:0;transform:translateY(var(--y,8px))}}
+@keyframes fadeonly{from{opacity:0}}
+.btn:active{transform:scale(.97)}
+@media (prefers-reduced-motion:reduce){.in,.in.f{animation:fadeonly .2s ease-out both!important;animation-delay:0ms!important}}
 </style>
 </head>
 <body>
@@ -157,12 +161,12 @@ footer .w{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 <main>
 <section class="hero" id="product" style="padding-top:64px"><div class="w">
   <div class="hero-top">
-    <div><span class="eyebrow">سلسلة NB للمضخات الطاردة المركزية</span><h1>مضخات صناعية للتشغيل المتواصل. <span>وقطع غيارها متوفرة دائمًا.</span></h1></div>
-    <div><p>نصنّع مضخات المياه والمحاليل للمصانع ومحطات المعالجة في مصر، ونوفر قطع الغيار والصيانة من نفس المصنع.</p>
+    <div><span class="eyebrow in f">سلسلة NB للمضخات الطاردة المركزية</span><h1 class="in" style="--y:14px">مضخات صناعية للتشغيل المتواصل. <span>وقطع غيارها متوفرة دائمًا.</span></h1></div>
+    <div class="in" style="--d:80ms;--y:8px"><p>نصنّع مضخات المياه والمحاليل للمصانع ومحطات المعالجة في مصر، ونوفر قطع الغيار والصيانة من نفس المصنع.</p>
       <div class="cta"><a class="btn primary" href="#select">اختر المضخة المناسبة</a><a class="btn ghost" href="#contact">تحدث مع مهندس</a></div></div>
   </div>
 
-  <div class="viewer" id="viewer">
+  <div class="viewer in" style="--d:160ms;--y:16px" id="viewer">
     <div class="vbar"><b>مضخة NB‑40</b><span class="mono">END-SUCTION · 2900 RPM</span>
       <div class="ctrl"><label for="ex">فكّ الأجزاء<input id="ex" type="range" min="0" max="100" value="0"></label>
         <button class="toggle" type="button" id="gh" aria-pressed="false">إظهار الأجزاء الداخلية</button></div></div>

@@ -96,3 +96,9 @@ Proven here: every tool answers through MCP from a client with no Claude feature
 passes lint, the critic and the stills text gates in reels 15/30 s and YouTube 30 s; the critic scores the delivered AI × HR spec 83/100 and
 names real weaknesses; the eyes read hand-written films (film 22). **Not proven:** a film made end to end by another model (no other model or
 API key in this container). "Same efficiency" is measured with `bench/` once another model runs it — until then it is a design goal, not a claim.
+
+## Thinking effort for websites (2026-11-06)
+A whole site (stages A–D, `web/WEB.md`) runs at the host's highest reasoning setting with its strongest model; a follow-up
+(`web/prompts/FOLLOW_UPS.md`) or a one-section edit (`web edit <site> --section=<id>`) runs at medium. These are host settings (the
+model menu and effort control of Claude Code, Codex, Gemini CLI…), not repository parameters: record the name the host uses, never invent one.
+Any model can start from a ready brief: `node studio/studio.mjs web prompt <id> --site=<site>` (`web/prompts/README.md`).

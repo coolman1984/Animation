@@ -6,6 +6,7 @@
 //   data-steps               sticky scrollytelling: the visual follows the step in view (data-step on each item)
 //   data-ring                readable collection; native horizontal scroll
 //   data-count="1200"        counts up once when visible (only for real, sourced numbers)
+//   data-story               the hero motion: a line drawn by the scroll through its section, stations light as it passes
 // Buttons stay in place so their targets remain predictable.
 //   .progress                reading progress bar
 (() => {
@@ -47,6 +48,19 @@
     items.forEach((x) => sio.observe(x));
   }
 
+  // story line: progress through the section draws the path; reduced motion keeps it fully drawn (the CSS default).
+  // A non-scaling stroke dashes in screen units, so the path is measured on screen (200 samples) and the tip follows the same distance.
+  const measure = (path, svg) => { const box = svg.getBoundingClientRect(), vb = svg.viewBox.baseVal, L = path.getTotalLength(), pts = []; let acc = 0, prev = null; for (let i = 0; i <= 200; i++) { const q = path.getPointAtLength(L * i / 200), x = q.x / vb.width * box.width, y = q.y / vb.height * box.height; if (prev) acc += Math.hypot(x - prev[0], y - prev[1]); pts.push([acc, x, y]); prev = [x, y]; } path.style.strokeDasharray = `${acc} ${acc}`; return pts; };
+  const pointAt = (pts, d) => { let i = pts.findIndex((s) => s[0] >= d); if (i < 1) i = i < 0 ? pts.length - 1 : 1; const [a0, ax, ay] = pts[i - 1], [b0, bx, by] = pts[i], k = b0 > a0 ? (d - a0) / (b0 - a0) : 0; return [ax + (bx - ax) * k, ay + (by - ay) * k, Math.atan2(by - ay, bx - ax)]; };
+  const stories = $$('[data-story]').map((sec) => ({ sec, fill: sec.querySelector('.story-fill'), tip: sec.querySelector('.story-tip'), stops: $$('[data-stop]', sec), svg: sec.querySelector('svg'), pts: null }));
+  addEventListener('resize', () => stories.forEach((st) => { st.pts = null; }));
+  const drawStory = (st) => {
+    const { sec, fill, tip, stops, svg } = st, r = sec.getBoundingClientRect(), p = Math.min(1, Math.max(0, (innerHeight * 0.6 - r.top) / Math.max(1, r.height)));
+    st.pts = st.pts || measure(fill, svg); const total = st.pts[st.pts.length - 1][0], [x, y] = pointAt(st.pts, total * p);
+    fill.style.strokeDashoffset = String(total * (1 - p)); tip.style.top = `${y}px`; tip.style.left = `${x}px`;
+    for (const li of stops) li.classList.toggle('on', li.getBoundingClientRect().top < innerHeight * 0.6);
+  };
+
   // parallax + progress (one passive scroll loop)
   const par = $$('[data-parallax]'), bar = document.querySelector('.progress');
   let ticking = false;
@@ -55,6 +69,7 @@
     const h = document.documentElement.scrollHeight - innerHeight;
     if (bar) bar.style.transform = `scaleX(${h > 0 ? scrollY / h : 0})`;
     if (reduce) return;
+    for (const st of stories) drawStory(st);
     for (const el of par) { const r = el.getBoundingClientRect(), mid = r.top + r.height / 2 - innerHeight / 2; el.style.transform = `translate3d(0, ${(-mid * (+el.dataset.parallax || 0.15)).toFixed(1)}px, 0)`; }
   };
   addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });

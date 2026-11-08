@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>سبّاك البيت — مثال خدمات محلية</title>
+<meta name="description" content="مثال تصميم لشركة سباكة افتراضية. ليست شركة حقيقية ولا تستقبل طلبات.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --ink:#0F2233; --ink2:#41566A; --mute:#6A7C8D; --line:#DCE5EC; --bg:#FFFFFF; --soft:#F2F6F9;
+  --blue:#0B5FA5; --blue-ink:#FFFFFF; --water:#1C8CE3; --pipe:#C9D5DF; --amber:#B45309;
+  --f:"IBM Plex Sans Arabic",system-ui,"Segoe UI",Tahoma,sans-serif; --ease:cubic-bezier(.23,1,.32,1);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 18px/1.85 var(--f);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.w{max-width:1200px;margin:0 auto;padding-inline:max(20px,4vw)}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:8px}
+.demo{position:fixed;inset:auto auto 16px 16px;z-index:60;background:var(--ink);color:#fff;font:400 13px var(--f);padding:6px 12px;border-radius:99px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 26px;border-radius:12px;font:600 16px var(--f);border:0;cursor:pointer;white-space:nowrap;transition:background .2s,transform .16s var(--ease)}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--blue);color:var(--blue-ink)}.btn.primary:hover{background:#094E88}
+.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}.btn.ghost:hover{border-color:var(--ink)}
+
+header{position:sticky;top:0;z-index:40;background:#fff;border-bottom:1px solid var(--line)}
+header .w{display:flex;align-items:center;gap:32px;height:74px}
+.logo{display:flex;align-items:center;gap:10px;font:700 21px var(--f)}
+.logo svg{width:34px;height:34px}
+nav ul{display:flex;gap:28px;list-style:none;margin:0;padding:0;font-size:16px;color:var(--ink2)}
+nav a:hover{color:var(--ink)}
+header .btn{margin-inline-start:auto;min-height:46px;padding:0 20px}
+
+.hero{background:var(--soft);padding-block:72px 96px}
+.hero .w{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+.eyebrow{display:inline-flex;gap:8px;align-items:center;font:500 15px var(--f);color:var(--ink2);background:#fff;border:1px solid var(--line);border-radius:99px;padding:5px 14px}
+.eyebrow i{width:8px;height:8px;border-radius:50%;background:#16A34A}
+h1{font:700 clamp(40px,5vw,68px)/1.22 var(--f);margin:18px 0;text-wrap:balance}
+.lead{font-size:20px;color:var(--ink2);max-width:36ch;margin:0 0 30px}
+.actions{display:flex;gap:12px;flex-wrap:wrap}
+.trust{display:flex;gap:28px;flex-wrap:wrap;margin-top:34px;color:var(--ink2);font-size:15px}
+.trust b{display:block;font:700 22px var(--f);color:var(--ink)}
+
+/* estimator card */
+.est{background:#fff;border:1px solid var(--line);border-radius:24px;padding:28px}
+.est h2{font:700 22px/1.4 var(--f);margin:0 0 4px}
+.est .sub{color:var(--mute);font-size:15px;margin:0 0 18px}
+.lbl{display:block;font:600 15px var(--f);margin:14px 0 8px}
+.chips{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.chips button{font:500 15px var(--f);text-align:start;border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:12px;min-height:48px;padding:8px 14px;cursor:pointer}
+.chips button[aria-pressed="true"]{border-color:var(--blue);background:#EAF3FB}
+.seg{display:flex;gap:8px}.seg button{flex:1;font:500 15px var(--f);border:1.5px solid var(--line);background:#fff;border-radius:12px;min-height:48px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.total{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);margin:20px 0 16px;padding-top:16px}
+.total b{font:700 30px var(--f);font-variant-numeric:tabular-nums}
+.total span{color:var(--mute);font-size:15px}
+.est .btn{width:100%}
+.est small{display:block;text-align:center;color:var(--mute);font-size:14px;margin-top:10px}
+
+section{padding-block:120px 0}
+.label{font:600 15px var(--f);color:var(--blue)}
+h2.t{font:700 clamp(34px,4vw,52px)/1.25 var(--f);margin:8px 0 14px;text-wrap:balance}
+.intro{color:var(--ink2);max-width:46ch;margin:0 0 48px}
+
+/* hero motion: the water line (scroll-drawn pipe from the call to the fix) */
+.flow .w{display:grid;grid-template-columns:110px 1fr;gap:clamp(24px,5vw,72px)}
+.pipe{position:relative}
+.pipe svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.pipe path{fill:none;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.pipe .tube{stroke:var(--pipe);stroke-width:22}
+.pipe .water{stroke:var(--water);stroke-width:12}
+.pipe .joint{fill:#fff;stroke:var(--pipe);stroke-width:3}
+.stops{list-style:none;margin:0;padding:0;display:grid;gap:clamp(64px,14vh,150px)}
+.stops li{max-width:520px;transition:opacity .4s var(--ease)}
+.js .stops li:not(.on){opacity:.5}
+.stops .n{font:600 15px var(--f);color:var(--blue)}
+.stops h3{font:700 28px/1.35 var(--f);margin:4px 0 8px}
+.stops p{margin:0;color:var(--ink2)}
+
+/* prices */
+.prices{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.price{border:1px solid var(--line);border-radius:20px;padding:30px;display:flex;flex-direction:column;gap:10px}
+.price h3{font:600 20px var(--f);margin:0}
+.price .from{font:700 44px/1.1 var(--f);font-variant-numeric:tabular-nums}
+.price .from small{font:400 16px var(--f);color:var(--mute)}
+.price p{margin:0;color:var(--ink2);font-size:16px}
+.price ul{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:6px;color:var(--ink2);font-size:16px}
+.price li:before{content:"✓";color:var(--blue);margin-inline-end:8px;font-weight:700}
+
+/* quote form */
+.quote{background:var(--ink);color:#fff;border-radius:28px;padding:clamp(28px,5vw,64px);display:grid;grid-template-columns:.9fr 1.1fr;gap:48px;margin-bottom:120px}
+.quote h2.t{color:#fff}.quote .label{color:#8CC8F5}
+.quote p{color:#C6D3DF;margin:0}
+form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+form label{display:grid;gap:6px;font:500 15px var(--f);color:#E3EBF2}
+form .full{grid-column:1/-1}
+input,select,textarea{font:400 16px var(--f);color:var(--ink);background:#fff;border:0;border-radius:12px;min-height:50px;padding:10px 14px;width:100%}
+textarea{min-height:110px;resize:vertical}
+.quote .btn{background:#fff;color:var(--ink)}
+.note{grid-column:1/-1;font-size:14px;color:#AFC0CF}
+footer{border-top:1px solid var(--line);padding-block:30px 80px;color:var(--mute);font-size:15px}
+footer .w{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+/* one entrance, cast by role (gallery LESSONS.md "Motion") */
+@keyframes up{from{opacity:0;transform:translateY(var(--y,12px))}to{opacity:1;transform:none}}
+.in1{animation:up .6s var(--ease) both;--y:14px}.in2{animation:up .6s var(--ease) 80ms both;--y:8px}
+.in3{animation:up .6s var(--ease) 140ms both;--y:6px}.in4{animation:up .6s var(--ease) 180ms both;--y:20px}
+@media (prefers-reduced-motion:reduce){.in1,.in2,.in3,.in4{animation:fade .2s both}@keyframes fade{from{opacity:0}}.js .stops li:not(.on){opacity:1}.stops li{transition:none}}
+
+@media (max-width:980px){
+  nav{display:none}
+  .hero .w,.quote{grid-template-columns:1fr}
+  .prices{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  header .btn{padding:0 14px}
+  .flow .w{grid-template-columns:44px 1fr}
+  .pipe .tube{stroke-width:14}.pipe .water{stroke-width:8}
+  form{grid-template-columns:1fr}
+  .chips{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<span class="demo">مثال تصميم — شركة افتراضية</span>
+<header><div class="w">
+  <a class="logo" href="#top" aria-label="سبّاك البيت"><svg viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="9" fill="#0B5FA5"/><path d="M9 11h10a4 4 0 0 1 4 4v9" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/><circle cx="23" cy="27" r="2.2" fill="#8CC8F5"/></svg>سبّاك البيت</a>
+  <nav aria-label="الأقسام"><ul><li><a href="#how">كيف نعمل</a></li><li><a href="#prices">الأسعار</a></li><li><a href="#quote">عرض سعر</a></li></ul></nav>
+  <a class="btn primary" href="#quote">اطلب سبّاكًا</a>
+</div></header>
+
+<main id="top">
+<section class="hero" style="padding-top:72px"><div class="w">
+  <div>
+    <span class="eyebrow in1"><i></i>فنيون معتمدون في القاهرة والجيزة</span>
+    <h1 class="in1">تسريب في البيت؟ نصلحه اليوم.</h1>
+    <p class="lead in2">سبّاك معتمد يصلك في موعد تحدده، بسعر تعرفه قبل أن يبدأ العمل، وضمان على كل إصلاح.</p>
+    <div class="actions in3"><a class="btn primary" href="#quote">اطلب عرض سعر</a><a class="btn ghost" href="#prices">شاهد الأسعار</a></div>
+    <div class="trust in3"><div><b>السعر أولًا</b>قبل أي عمل</div><div><b>ضمان ٩٠ يومًا</b>على الإصلاح</div><div><b>موعد بالساعة</b>تختاره أنت</div></div>
+  </div>
+  <div class="est in4" aria-labelledby="estT">
+    <h2 id="estT">احسب السعر المبدئي</h2>
+    <p class="sub">اختر المشكلة والموعد. السعر النهائي يؤكده الفني بعد المعاينة.</p>
+    <span class="lbl" id="kT">ما المشكلة؟</span>
+    <div class="chips" role="group" aria-labelledby="kT" id="kinds">
+      <button type="button" aria-pressed="true" data-p="250">تسريب حنفية</button>
+      <button type="button" aria-pressed="false" data-p="400">انسداد حوض</button>
+      <button type="button" aria-pressed="false" data-p="650">تسريب داخل الحائط</button>
+      <button type="button" aria-pressed="false" data-p="900">تركيب سخان</button>
+    </div>
+    <span class="lbl" id="uT">متى؟</span>
+    <div class="seg" role="group" aria-labelledby="uT" id="when"><button type="button" aria-pressed="true" data-k="1">موعد عادي</button><button type="button" aria-pressed="false" data-k="1.4">خلال ساعتين</button></div>
+    <div class="total"><span>يبدأ من</span><b id="sum" aria-live="polite">٢٥٠ ج.م</b></div>
+    <a class="btn primary" href="#quote">أكمل الطلب</a>
+    <small>أسعار المثال افتراضية للعرض فقط.</small>
+  </div>
+</div></section>
+
+<section class="flow" id="how" data-flow><div class="w">
+  <div class="pipe" aria-hidden="true"><svg viewBox="0 0 120 1000" preserveAspectRatio="none">
+    <path class="tube" d="M60 0 V210 H100 V470 H20 V750 H60 V1000"/>
+    <path class="water" d="M60 0 V210 H100 V470 H20 V750 H60 V1000"/>
+  </svg></div>
+  <div>
+    <span class="label">كيف نعمل</span>
+    <h2 class="t">من مكالمتك إلى آخر نقطة ماء</h2>
+    <p class="intro">أربع خطوات واضحة. تعرف في كل خطوة من سيأتي، ومتى، وكم ستدفع.</p>
+    <ol class="stops">
+      <li><span class="n">الخطوة ١</span><h3>تصف المشكلة</h3><p>صورة أو جملة تكفي. نحدد معك نوع العطل والأدوات المطلوبة.</p></li>
+      <li><span class="n">الخطوة ٢</span><h3>تعرف السعر قبل الزيارة</h3><p>سعر مبدئي مكتوب، ولا يتغير إلا بموافقتك بعد المعاينة.</p></li>
+      <li><span class="n">الخطوة ٣</span><h3>يصلك الفني في موعدك</h3><p>تصلك رسالة باسم الفني وصورته قبل وصوله بنصف ساعة.</p></li>
+      <li><span class="n">الخطوة ٤</span><h3>إصلاح بضمان</h3><p>نختبر الضغط أمامك ونترك المكان نظيفًا، مع ضمان ٩٠ يومًا.</p></li>
+    </ol>
+  </div>
+</div></section>
+
+<section id="prices"><div class="w">
+  <span class="label">الأسعار</span>
+  <h2 class="t">أسعار واضحة تبدأ من</h2>
+  <p class="intro">الزيارة والمعاينة مجانية عند تنفيذ الإصلاح. الخامات تُحسب بسعر الفاتورة.</p>
+  <div class="prices">
+    <article class="price"><h3>إصلاحات سريعة</h3><div class="from">٢٥٠ <small>ج.م</small></div><p>حنفيات، سيفونات، وصلات.</p><ul><li>خلال ساعة غالبًا</li><li>ضمان ٩٠ يومًا</li></ul></article>
+    <article class="price"><h3>انسداد وصرف</h3><div class="from">٤٠٠ <small>ج.م</small></div><p>أحواض، بالوعات، مواسير صرف.</p><ul><li>معدات تسليك آلية</li><li>كشف بالكاميرا عند الحاجة</li></ul></article>
+    <article class="price"><h3>تسريب داخل الحائط</h3><div class="from">٦٥٠ <small>ج.م</small></div><p>كشف التسريب وإصلاحه بأقل تكسير.</p><ul><li>جهاز كشف رطوبة</li><li>إعادة المحارة على حسابنا</li></ul></article>
+  </div>
+</div></section>
+
+<section id="quote"><div class="w">
+  <div class="quote">
+    <div><span class="label">عرض سعر</span><h2 class="t">اكتب لنا، ونرد بسعر مكتوب</h2><p>نرد خلال ساعة في أوقات العمل من ٨ صباحًا إلى ١٠ مساءً.</p></div>
+    <form id="qf">
+      <label>الاسم<input name="name" autocomplete="name" required></label>
+      <label>الحي<input name="area" required></label>
+      <label class="full">المشكلة<select name="kind"><option>تسريب حنفية</option><option>انسداد حوض</option><option>تسريب داخل الحائط</option><option>تركيب سخان</option></select></label>
+      <label class="full">تفاصيل<textarea name="text" placeholder="مثال: ماء يخرج من أسفل حوض المطبخ منذ أمس"></textarea></label>
+      <button class="btn" type="submit">أرسل الطلب</button>
+      <p class="note" id="qn" aria-live="polite">هذا مثال تصميم: النموذج لا يرسل شيئًا. في موقع العميل يذهب الطلب إلى بريده أو واتساب الخاص به.</p>
+    </form>
+  </div>
+</div></section>
+</main>
+<footer><div class="w"><span>© ٢٠٢٦ سبّاك البيت — مثال تصميم لشركة غير حقيقية</span><span>بيانات الاتصال الحقيقية تُكتب هنا في موقع العميل</span></div></footer>
+
+<script>
+(() => {
+  document.documentElement.classList.add('js');
+  const AR = (n) => n.toLocaleString('ar-EG');
+  const kinds = document.getElementById('kinds'), when = document.getElementById('when'), sum = document.getElementById('sum');
+  const pick = (group, b) => group.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', x === b));
+  const total = () => { const p = +kinds.querySelector('[aria-pressed="true"]').dataset.p, k = +when.querySelector('[aria-pressed="true"]').dataset.k; sum.textContent = AR(Math.round(p * k / 10) * 10) + ' ج.م'; };
+  for (const g of [kinds, when]) g.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { pick(g, b); total(); } });
+  document.getElementById('qf').addEventListener('submit', (e) => { e.preventDefault(); document.getElementById('qn').textContent = 'تم: هذا مثال، ولم يُرسل أي طلب.'; });
+
+  // the hero motion: water runs down the pipe as the reader moves through the four steps
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, sec = document.querySelector('[data-flow]');
+  const water = sec.querySelector('.water'), stops = [...sec.querySelectorAll('.stops li')];
+  const measure = (path, svg) => { const box = svg.getBoundingClientRect(), vb = svg.viewBox.baseVal, L = path.getTotalLength(), pts = []; let acc = 0, prev = null; for (let i = 0; i <= 200; i++) { const q = path.getPointAtLength(L * i / 200), x = q.x / vb.width * box.width, y = q.y / vb.height * box.height; if (prev) acc += Math.hypot(x - prev[0], y - prev[1]); pts.push([acc, x, y]); prev = [x, y]; } path.style.strokeDasharray = `${acc} ${acc}`; return pts; };
+  const pointAt = (pts, d) => { let i = pts.findIndex((s) => s[0] >= d); if (i < 1) i = i < 0 ? pts.length - 1 : 1; const [a0, ax, ay] = pts[i - 1], [b0, bx, by] = pts[i], k = b0 > a0 ? (d - a0) / (b0 - a0) : 0; return [ax + (bx - ax) * k, ay + (by - ay) * k, Math.atan2(by - ay, bx - ax)]; };
+  let ticking = false, pts = null;
+  const draw = () => {
+    ticking = false;
+    const r = sec.getBoundingClientRect(), p = reduce ? 1 : Math.min(1, Math.max(0, (innerHeight * 0.62 - r.top) / r.height));
+    if (!reduce) { pts = pts || measure(water, sec.querySelector('svg')); water.style.strokeDashoffset = String(pts[pts.length - 1][0] * (1 - p)); }
+    for (const li of stops) li.classList.toggle('on', reduce || li.getBoundingClientRect().top < innerHeight * 0.62);
+  };
+  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(draw); } }, { passive: true });
+  addEventListener('resize', () => { pts = null; draw(); }); draw();
+})();
+</script>
+</body>
+</html>

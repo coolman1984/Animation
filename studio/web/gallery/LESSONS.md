@@ -33,5 +33,24 @@ Thmanyah, Salla, Zid and Aesop served a bot check (not bypassed; left out). Scre
 5. **Trust row early.** Client logos, app ratings or a real number with a source, right under the hero. In fictional examples: say so.
 6. **Sizes:** hero 64–96 px (Arabic needs lh 1.2–1.3, never below 1.1), section headlines 40–56 px, body 18–20 px with lh 1.7–1.9,
    buttons 16 px / 600, pill or 12 px radius, 48–56 px tall.
-7. **Restraint in motion:** fades and gentle rises on scroll, hover states, real interaction where it explains something (a calculator, a
+7. **Restraint in motion:** one role-cast hero entrance (see Motion below), quick hover/press states, real interaction where it explains something (a calculator, a
    timetable, a product configurator). No decorative noise.
+
+## Motion — learned from Emil Kowalski's `choreograph` (2026-11-05, `toolkit/emil-skills`)
+Our six examples broke his rules: a scroll reveal on every section (holds content back on every visit), uniform timing, a stagger replayed
+on every timetable tab, an endless status loop on dashboard data, and pump parts lagging behind the slider. Fixed: each page now has
+**one** entrance, cast by role, and nothing else moves on its own.
+
+| Element | Role | Starts | Duration | Motion | Relationship |
+|---|---|---|---|---|---|
+| Eyebrow / pill / badge | Decoration | 0 ms | 400 ms | fade only | together with the headline |
+| Headline | Lead | 0 ms | 600 ms | fade + 14 px rise | — |
+| Lead paragraph | Support | 80 ms | 600 ms | fade + 8 px rise | overlaps the headline |
+| Product visual / booking card | Support | 100–200 ms | 600 ms | fade + 12–24 px rise | overlaps the text |
+| Buttons | Support | 140 ms | 600 ms | fade + 6 px rise | overlaps the paragraph |
+| Floating chips | Decoration | ≈450 ms | 400 ms | fade only | land as the visual settles, 40 ms apart |
+| Background photo | Decoration | 0 ms | 800 ms | fade only | — |
+
+Doesn't move: sections below the fold (seen once, never gated), timetable rows on a day switch (repeated), dashboard status (data being
+read), pump parts while dragging (the slider is the motion). Reduced motion: one 200 ms fade, no delays. Ease-out `cubic-bezier(.23,1,.32,1)`;
+buttons press to `scale(.97)`. Checked frame by frame in Chromium: reads as one wave, done in < 1 s, everything visible after.

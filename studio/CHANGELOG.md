@@ -29,6 +29,28 @@ Added the [research lab](../docs/studio/RESEARCH.md), ten pinned upstreams, a br
 
 Added the [Arabic front door](../README.md) and linked guides for project intake, skill routing, milestones, troubleshooting and documentation ownership.
 
+## 2026-11-06 — Prompt library, hero motions, one-section edits, publish guide, site reel (DONE)
+Owner: apply the Skill Leap AI website video report in full, as additions, without publishing, merging or bumping a version.
+Before the work, the unmerged branches (`ccr-62b4b736-sfc6qc`, `codex/reference-led-art-direction`, `codex/web-showcase-foundation`) were merged
+into the working branch; the two codex branches were already squashed into main (#35, #36), so main's newer side was kept in each conflict.
+- **New:** `web/prompts/` (7 groups, 12 briefs tied to gallery examples, Arabic/English template with site.json slots, 12 follow-ups);
+  `web prompts`, `web prompt <id> --site=`; five gallery examples (pipe, 3D bottle with a still twin, pen, edit timeline, RTL split panels) and
+  `gallery/devices.html` (three sizes side by side); site-engine section `story` (one hero motion with a required reason); `photos/` + credits
+  warnings; placeholder-contact warnings; portable-output check; `web edit <site> --section=`; `takes/web/<site>/REVIEW.md` for the phone
+  review; `web reel <site>` (1080×1920 scroll short); `web/PUBLISH.md`; the one-day package in `COMPANY.md`; effort rule in `ANY_MODEL.md`.
+- **Proof:** `test/web-prompts.test.mjs` + the three web tests (14 pass). Chromium at 390 and 1440 + reduced motion for the five examples,
+  the device page and the gallery: no script errors, no sideways scroll; the bottle renders in 3D and falls back under reduced motion.
+  A throwaway copy of the example site with a story section: `web check` all green, `web edit` saved one section and shot only it,
+  `web reel --seconds=3` gave a 90-frame 1080×1920 H.264 file; the copy was deleted.
+- **Not verified:** real phones and tablets; the owner's verdict on the new examples; a real client site through the prompt library;
+  Netlify and the artifact route (no publishing was done, by order).
+
+## 2026-11-05 — Emil Kowalski's skills adopted; gallery re-choreographed (DONE)
+Owner sent the /choreograph post: "learn this well".
+- **New:** toolkit package `emil-skills` (MIT @ c8a7962: 13 web/motion skills + 2 cheatsheets) and wrapper skill `emil-skills` (RTL flip, CSS role pattern, timeline in DESIGN.md §C, film shots).
+- **Applied:** the six gallery examples lost their per-section scroll reveals, the tab stagger, the dashboard loop and the slider lag; each has one role-cast hero entrance (`web/gallery/LESSONS.md` §Motion).
+- **Proof:** frame-by-frame Chromium capture at 0/100/200/400/900 ms (one wave, < 1 s), reduced-motion run, no script errors. **Not verified:** real phones.
+
 ## 2026-11-03 — Gallery round 2: learned from 14 professional sites (DRAFT)
 Owner: "very bad — fonts very bad, design and copy very bad; look at professional sites and learn from them well".
 - **Research:** Chromium visits of 14 sites, computed type measured (`web/gallery/LESSONS.md`). Bot-checked sites were skipped, not bypassed.

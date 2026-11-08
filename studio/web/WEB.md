@@ -10,7 +10,8 @@ in a real browser the way a top studio checks before launch. Same philosophy as 
    product, menu, numbers) · the specific methods and tools they would use. Then pick a style: `node studio/studio.mjs web styles`.
 2. **Plan:** `node studio/studio.mjs web plan <site> --brand=… --style=paper-editorial|ink-studio|clay-3d --lang=ar|en --cta=… --problem=… --promise=…`
    (MCP `web_plan`) → the house structure: hero (promise + one action) → problem → features → sticky steps → 3D ring → FAQ → closing action.
-   Remove, reorder or add sections (`hero, problem, features, steps, ring, stats, quote, marquee, faq, cta`) to fit the client.
+   Remove, reorder or add sections (`hero, problem, features, steps, story, ring, stats, quote, marquee, faq, cta`) to fit the client.
+   A ready brief per business type: `node studio/studio.mjs web prompts` → `web prompt <id> --site=<site>` ("Prompt library" below).
 3. **Write** every ‹…› in the client's words (Egyptian Arabic for ads, as the brand writes Latin names). The build refuses placeholders,
    numbers without a source, quotes without a real name and source, images without alt text.
 4. **Build:** `node studio/studio.mjs web build <site>` → `web/sites/<site>/dist/` (index.html, assets/site.css, assets/motion.js, fonts).
@@ -23,7 +24,7 @@ in a real browser the way a top studio checks before launch. Same philosophy as 
    body lines ≤ ~75 characters, no bounce easing, no blank stretch over half a screen (scroll scenes excepted), ≥ 8 moving elements,
    hero media ≥ 40 % of the first desktop screen. Fix each yellow or defend it to a designer in one sentence in the report.
 6. **Preview:** `node studio/studio.mjs web serve <site>`. **Publish:** `dist/` is a plain folder: GitHub Pages, Netlify or any static host
-   (publishing needs the owner's account; say so, never claim a site is live without the URL).
+   (publishing needs the owner's account; say so, never claim a site is live without the URL). Both ways and the «انشر» rule: `PUBLISH.md`.
 
 Use the [design reference catalog](../../docs/studio/DESIGN-SOURCES.md) to select references and record transferable design decisions in DESIGN.md §A.
 
@@ -49,6 +50,7 @@ rules unless the owner asks otherwise. Free tools only; never a paid API without
 | cinematic sequences, scroll storytelling, pinned scenes, synchronized timelines | GSAP + ScrollTrigger (GreenSock standard no-charge licence, not MIT) | skill `gsap-skills`; add per site, pinned version, credited; check the licence for that client |
 | immersive 3D objects and scenes | Three.js | vendored by `node studio/studio.mjs setup gpu` (`capabilities.json`) |
 | custom 2D graphics, drawn lines, morphs, particles | SVG / Canvas (PixiJS for heavy 2D) | inline SVG; PixiJS in `setup gpu` |
+**Groups of moving parts follow skill `emil-skills` → `choreograph` (2026-11-05):** cast lead / support / decoration / static, one entrance per container, no scroll reveal on every section, no stagger on repeated surfaces, timeline written in DESIGN.md §C first; RTL flips his directions.
 Every moving thing: transform/opacity first, ease-out settles (no bounce/elastic), one lead movement with overlapping secondary ones,
 a still complete page under `prefers-reduced-motion`, no layout shift.
 
@@ -128,7 +130,8 @@ A static page for one object's parts: procedural geometry (no downloaded model),
 
 ## Not built yet (honest list)
 Multi-page sites with View Transitions, forms with a backend, CMS, payments, analytics, a brand kit scanned from an existing site
-(needs network access), and the automatic promo film of a finished site (planned: the page-flyover style card).
+(needs network access). The site's promo reel exists as a plain scroll capture (`web reel`, below); a designed page-flyover film with
+titles and music is still a film job for the Studio Engine.
 
 
 ## Owner update — 2026-11-03: content-first, no decorative defaults
@@ -137,3 +140,48 @@ This instruction supersedes earlier default section/effect recipes and motion/me
 
 ## Reference-led composition upgrade — 2026-11-03
 The owner's supplied visual references now guide composition, imagery, type and mobile art direction (`studio/web/ART_DIRECTION.md`). Presets remain fallbacks: per-site theme tokens/fonts and hero/features/width composition controls are validated, contrast checked, and browser-tested. Preserve intentional gradients, shadows and depth when justified; the earlier cleanup only removes automatic decorative defaults. Controls alone do not certify artistic quality. Uses existing font assets; no new third-party imagery.
+
+## Prompt library, hero motion and the one-day site — 2026-11-06
+Learned from the Skill Leap AI video "You won't believe the websites Claude can build now" (YouTube 6m9Wihe9sJ8; transcript and
+description only): a library of detailed prompts grouped by business, each tied to a live example on three screen sizes, a form that
+fills the business details, follow-up prompts, a `photos` folder, a quick share link and a real host with the client's domain. Its
+external prompt library sits behind a sponsor form and was not opened; its "six steps" are never explained, so none are copied.
+Built on top of what was here (this file's loop and stages A–D), not from scratch:
+
+- **Prompt library** (`prompts/README.md`): 7 groups, 12 briefs, each tied to a gallery example. `node studio/studio.mjs web prompts [group]`;
+  `web prompt <id> [--site=<site>] [--lang=ar|en]` prints `prompts/PROMPT_TEMPLATE.md` (business → design → photo conditions → steps →
+  check on three sizes) with every `{{slot}}` filled from that `site.json`, or left as a visible `‹slot›` the build refuses.
+- **Follow-ups:** `prompts/FOLLOW_UPS.md` — twelve one-change prompts (brand colours, font, fix the phone, calm the motion, swap photos, real contacts…).
+- **Three sizes for the client:** `gallery/devices.html` shows any example at 390 / 820 / 1440 side by side, live (`?site=<id>`).
+- **Hero motion** (one per site, only when it means something for the business): section `type: "story"` with `shape`
+  `pipe | trajectory | timeline | pen`, `why` (required: what it says about the business; repeat it in DESIGN.md §C) and `items` (stations).
+  The line is drawn by the scroll through its section and a tip follows it; without JavaScript or with reduced motion it is fully drawn and every
+  station readable. The build refuses a second one. This honours the 2026-11-03 rule: no decorative default, an authored choice with a reason.
+  Five gallery examples show richer versions (pipe, 3D bottle, pen, edit timeline, two panels).
+- **3D without images:** the gallery's `bunn-coldbrew` builds a product from Three.js primitives (the vendored subset in
+  `explainers/anatomy/engine`) that turns with the scroll, and swaps to a still SVG on reduced motion, data saver, ≤ 2 CPU cores or
+  ≤ 2 GB memory, or no WebGL. A real product from a photo: skill `img2threejs`.
+- **Two panels:** `sahm-offer` — reading panel at inline-start, sticky picture panel at inline-end; logical properties only, so Arabic and
+  English flip by `dir`. Phones get a sticky picture strip and a bottom tab bar.
+- **Photos folder:** `web/sites/<site>/photos/` + `photos/CREDITS.json` (`[{ file, source, author, licence }]`). `web build` copies every
+  photo into `dist/photos/` and warns for any photo without source and licence (`ASSETS.md`). No photos → product in code or a text-led page.
+- **Placeholder contacts:** `web build` warns on 555 numbers, repeated or sequential digits, `example.com`/`test@` emails (skill `data-honesty`).
+- **Edit one section:** `node studio/studio.mjs web edit <site> --section=<id>` prints that section's JSON; `--file=<json>` swaps only it,
+  validates, rebuilds and re-checks: the lights still cover the page (one section can break the page), the screenshots show only that
+  section at 390 / 820 / 1440 (fixed and sticky bars hidden for the shot).
+- **One folder:** `web build` checks `dist/` is portable (relative paths that exist, no `http:`); a problem prints as `not portable: …`.
+- **Publishing:** `PUBLISH.md` — a private preview link (Claude artifact; only the owner changes sharing) or Netlify drag-and-drop +
+  the client's own domain. Never without the owner's «انشر»; no agent buys a domain or creates an account.
+- **Owner review from the phone:** `web check` and `web edit` write `takes/web/<site>/REVIEW.md` (the strips + «تمام ولا تعديل؟» + the
+  non-green lights in Egyptian Arabic). Send the strips to the owner (Claude: SendUserFile; others: the paths) and wait for the answer.
+- **Thinking effort:** a whole site (stages A–D) at the host's highest reasoning setting; a follow-up or one-section edit at medium
+  (`../ANY_MODEL.md`). Host settings, not repository parameters.
+- **Promo reel of a site:** `node studio/studio.mjs web reel <site> [--seconds=12]` films the built site scrolling on a 360 × 640 phone at
+  3× and encodes `takes/web/<site>/reel.mp4` (1080 × 1920, H.264, 30 fps); hold → ease → hold, a pure function of the frame. Time-based
+  page animations still run in real time. Content-factory posts it only after the owner approves (`../../content-factory/README.md`).
+- **The one-day site package:** `../../COMPANY.md`.
+
+**Vision brief assessment (VISION_3D_AND_MOTION.md):** exploded/reassembly and ghosted interior — already in `nabaa-industrial`, referenced
+by the `pump-factory` brief; cutaway — not applicable to these sites; working parts — used where they explain (beans at the "bean" station of
+the bottle, water in the pipe); cinematic presentation — the scroll-driven hero motions and the reel; editing — the `wasla-studio` timeline
+shows the edit process. No industrial scene was built in this scope.
