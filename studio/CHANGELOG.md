@@ -5,6 +5,10 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-11-09 — Engine audit report
+
+Added `docs/studio/ENGINE_AUDIT_2026-11-09.md`: a code review of the front door, build, render, Studio Engine, web builder and MCP server, with file and line for each finding, the fix and the test. Proved by running: truncated help, `review`/`taste` opening the source folder, extras tied to the `hero60` name; by calculation: engine films at BPM 110 fail the frame-range check. No code changed. Unverified: every finding marked READ, and the modules the report lists as not reviewed.
+
 ## 2026-11-07 — Remove the Arabic sales page
 
 Deleted the root draft page (`index.html`, `.nojekyll`, `series5/`) and `.github/workflows/pages.yml`, which published only that page. Removed the handbook row that pointed at it.
