@@ -9,7 +9,9 @@
       "licence": "MIT",
       "from": "skills/hallmark",
       "notices": [
-        "LICENSE",
+        "LICENSE"
+      ],
+      "local": [
         "UPSTREAM.md"
       ],
       "skill": "hallmark",
