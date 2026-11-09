@@ -248,3 +248,9 @@ Removed automatic decorative patterns and effect quotas in the first-party web p
 
 ## Reference-led composition upgrade — 2026-11-03
 The owner's supplied visual references now guide composition, imagery, type and mobile art direction (`studio/web/ART_DIRECTION.md`). Presets remain fallbacks: per-site theme tokens/fonts and hero/features/width composition controls are validated, contrast checked, and browser-tested. Preserve intentional gradients, shadows and depth when justified; the earlier cleanup only removes automatic decorative defaults. Controls alone do not certify artistic quality. Uses existing font assets; no new third-party imagery.
+
+## Tool gap integration — 2026-11-06
+- A Node process that serves a page must not `spawnSync` the browser tool that loads it: the blocked event loop starves the server
+  and the tool waits forever (Lighthouse hung > 5 min; async `spawn` finished in ~30 s). Same rule for any child that calls back.
+- Prefer our own small route over a heavy dependency when the idea is simple (FFmpeg for srcset images, CDP for vitals, Three.js for
+  involute gears), and keep the heavy tool as an optional profile for the cases it really owns (exact CAD, AI stems, AI upscaling).

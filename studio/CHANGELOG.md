@@ -5,9 +5,33 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-11-07 — Masar coach site, round 2: human-like swarm motion
+
+Owner: "faster, more agents, random, circular, wavy, smooth like a human hand, like the original". `build-swarm.js` now drives all agents from one requestAnimationFrame loop: random cubic arcs and S-curves with a minimum-jerk profile, a small wave, overshoot and spring-back, 3-ghost trails, idle loops and drift, nearest-part picking, and boxes that grow with the cursor drag. 14 agents on desktop, 8 on phones; an element builds in ≈ 0.35 s. `web audit`: no red. Artifact republished.
+
+## 2026-11-07 — Masar coach site, round 1: English and a professional redesign
+
+Owner: "faster, bigger arrows, all English, professional design, colours and fonts". The page is English/LTR with Manrope + Instrument Serif and a cobalt / navy / warm-paper palette; the swarm builds an element in ≈ 0.45 s (was ≈ 0.7 s), agents are 28 × 35 px with larger tags, and the bar/agent labels follow the page language. `web audit`: no red. Artifact republished.
+
+## 2026-11-07 — Build swarm and the مَسار coach site
+
+From two owner references (a recording of a site built live by a swarm of cursors, and a coach-template screenshot): reusable `web/motion/build-swarm.js` (agents, live W × H selection, guides, word/number/photo reveal, control bar, instant finish off-screen, reduced-motion still page) and an original fictional Arabic coach site `web/gallery/specimens/masar-coach.html` with 11 CC0 photos. `web audit`: no red lights at 390 / 820 / 1440 and reduced motion. Published as a private artifact. Not verified: real phones, the owner's verdict.
+
 ## 2026-11-07 — Remove the Arabic sales page
 
 Deleted the root draft page (`index.html`, `.nojekyll`, `series5/`) and `.github/workflows/pages.yml`, which published only that page. Removed the handbook row that pointed at it.
+
+## 2026-11-06 — Gap tools integrated
+
+- Industrial kit: three-bvh-csg, three-mesh-bvh and postprocessing joined the `gpu` profile and the composer import map; our own `lib/mechparts.js` (involute gears that mesh, pump body, bolts, explodeAt) replaces build123d for parts we design; `lib/xray.js` adds the capped cutaway and the X-ray shell. `examples/industrial-study` (6 s gear pump: cutaway, ghosted cover, working gears, explode → reassemble, outlined drive gear) rendered identically in two runs → `industrial-3d` EXPERIMENTAL.
+- Web delivery: `web optimize|images|fonts` (FFmpeg WebP/AVIF srcset, fontTools WOFF2 subsets renamed for the OFL) and `web speed` (our phone estimate; `--lighthouse` runs Lighthouse 13.6.0). Fixture page: 85 → 100, 910 → 95 KB; real Lighthouse 100.
+- Media: `upscale` (Real-ESRGAN ncnn when installed, labelled Lanczos otherwise) and `stems` (audio-separator when installed, labelled mid/side otherwise), each with a sidecar record. New profiles: `webperf`, `stems`, `cad`, `upscale`.
+- Ideas from Spark, Chatterbox, ACE-Step, Theatre.js and ComfyUI recorded as LEARN in TECH_RADAR.md.
+- Not verified: the Real-ESRGAN and audio-separator AI routes (not installable in the cloud session), build123d, and anything on the owner's Windows PC.
+
+## 2026-11-06 — Tool gap review
+
+Compared the studio's capabilities with well-known GitHub tools and recorded 13 dated decisions in [TECH_RADAR.md](TECH_RADAR.md) ("Gap review against the whole repo"). Research only: nothing installed, cloned or promoted in `capabilities.json`. Next pilots: three-bvh-csg + postprocessing + build123d for the first industrial scene; Lighthouse, sharp and font subsetting for sites; Real-ESRGAN and audio-separator when a film needs them.
 
 ## 2026-11-06 — Athar shelf
 
