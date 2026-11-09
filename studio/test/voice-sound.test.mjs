@@ -59,7 +59,13 @@ test('review server: range requests for seeking, notes and approval bound to the
   try {
     const r = await fetch(`${base}/take01/v.mp4`, { headers: { range: 'bytes=10-19' } });
     assert.equal(r.status, 206); assert.equal((await r.arrayBuffer()).byteLength, 10);
-    const post = (p, b) => fetch(`${base}/take01/review/api/${p}`, { method: 'POST', body: JSON.stringify(b) }).then(x => x.json());
+    const send = (p, b, headers = { 'content-type': 'application/json', 'x-review-token': srv.token }) => fetch(`${base}/take01/review/api/${p}`, { method: 'POST', headers, body: JSON.stringify(b) });
+    const post = (p, b) => send(p, b).then(x => x.json());
+    // audit S2: no token, a foreign origin or a non-JSON post cannot approve
+    assert.equal((await send('approve', { video: 'take01/v.mp4' }, { 'content-type': 'application/json' })).status, 403);
+    assert.equal((await send('approve', { video: 'take01/v.mp4' }, { 'content-type': 'text/plain', 'x-review-token': srv.token })).status, 403);
+    assert.equal((await send('approve', { video: 'take01/v.mp4' }, { 'content-type': 'application/json', 'x-review-token': srv.token, origin: 'https://evil.example' })).status, 403);
+    assert.equal((await send('notes', { video: 'take01/v.mp4', notes: ['x'.repeat(3e6)] })).status, 413);
     await post('notes', { video: 'take01/v.mp4', notes: [{ t: 1, severity: 'major', text: 'x' }] });
     const a = await post('approve', { video: 'take01/v.mp4', reviewer: 'QA' });
     assert.equal(a.approval.sha256, a.sha256); assert.equal(a.notes.length, 1);

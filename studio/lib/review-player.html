@@ -133,7 +133,7 @@ async function load() {
   render();
 }
 async function save() {
-  if (server) await fetch('api/notes', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ video: D.videoPath, notes }) }).catch(() => {});
+  if (server) await fetch('api/notes', { method: 'POST', headers: { 'content-type': 'application/json', 'x-review-token': new URLSearchParams(location.search).get('token') || '' }, body: JSON.stringify({ video: D.videoPath, notes }) }).catch(() => {});
   else localStorage.setItem(key, JSON.stringify(notes));
 }
 function render() {
@@ -158,7 +158,7 @@ $('approve').onclick = async () => {
   if (!server) { alert('Approval needs the review server: node studio.mjs review <take>'); return; }
   const open = notes.filter((n) => n.severity === 'blocker' || n.severity === 'major');
   if (open.length && !confirm(`${open.length} blocker/major note(s) are still listed. Approve anyway?`)) return;
-  const r = await fetch('api/approve', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ video: D.videoPath, reviewer: $('reviewer').value || 'reviewer', openMajor: open.length }) });
+  const r = await fetch('api/approve', { method: 'POST', headers: { 'content-type': 'application/json', 'x-review-token': new URLSearchParams(location.search).get('token') || '' }, body: JSON.stringify({ video: D.videoPath, reviewer: $('reviewer').value || 'reviewer', openMajor: open.length }) });
   const s = await r.json(); showApproval(s.approval, s.sha256);
 };
 load();

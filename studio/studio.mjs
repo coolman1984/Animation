@@ -249,7 +249,7 @@ async function reviewCmd(target, opt) {
   if (!players.length) { console.error(`${take} has no review player (build it with --profile=review or final)`); process.exit(1); }
   const { reviewServer } = await import('./lib/review-server.mjs');
   const srv = await reviewServer(dirname(take), { port: Number(opt.port || 0) });
-  const urls = players.map(p => `http://127.0.0.1:${srv.port}/${basename(take)}/${p}/player.html`);
+  const urls = players.map(p => `http://127.0.0.1:${srv.port}/${basename(take)}/${p}/player.html?token=${srv.token}`);
   console.log(`Review server for ${dirname(take)} (Ctrl+C to stop):\n${urls.map(u => '  ' + u).join('\n')}\nNotes and approval are saved next to each export (<video>.review.json); approval is tied to the file's SHA-256.`);
   if (!opt['no-open']) spawnSync(WINDOWS ? 'cmd' : process.platform === 'darwin' ? 'open' : 'xdg-open', WINDOWS ? ['/c', 'start', '', urls[0]] : [urls[0]], { stdio: 'ignore' });
 }

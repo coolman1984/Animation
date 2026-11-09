@@ -125,3 +125,16 @@ test('config.mjs problems are named before any build step (audit R6)', async () 
   assert.match(validateConfig({ ...ok, fps: 29.97 }).join(), /fps/);
   assert.match(validateConfig({ ...ok, deliveries: undefined }).join(), /deliveries/);
 });
+
+test('the composer file server answers byte ranges and media types (audit S4)', async () => {
+  const { serve } = await import('../lib/serve.mjs'), { mkdtempSync, writeFileSync, rmSync } = await import('node:fs'), { tmpdir } = await import('node:os'), { join } = await import('node:path');
+  const dir = mkdtempSync(join(tmpdir(), 'srv-')); writeFileSync(join(dir, 'a.mp4'), Buffer.alloc(100, 1)); writeFileSync(join(dir, 'm.wasm'), 'x');
+  const s = await serve(dir);
+  try {
+    const r = await fetch(`http://127.0.0.1:${s.port}/a.mp4`, { headers: { range: 'bytes=10-19' } });
+    assert.equal(r.status, 206); assert.equal(r.headers.get('content-type'), 'video/mp4'); assert.equal((await r.arrayBuffer()).byteLength, 10);
+    assert.equal((await fetch(`http://127.0.0.1:${s.port}/m.wasm`)).headers.get('content-type'), 'application/wasm');
+    assert.equal((await fetch(`http://127.0.0.1:${s.port}/nope.js`)).status, 404);
+    assert.equal((await fetch(`http://127.0.0.1:${s.port}/`)).status, 404);
+  } finally { s.close(); rmSync(dir, { recursive: true, force: true }); }
+});

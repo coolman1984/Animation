@@ -105,7 +105,7 @@ export function compareAudits(before, after) {
 
 export async function checkSite({ dir, outDir, page = 'index.html' }) {
   mkdirSync(outDir, { recursive: true });
-  const srv = await serve(dir), url = `http://127.0.0.1:${srv.port}/${page}`, errors = [];
+  const srv = await serve(dir), url = `http://127.0.0.1:${srv.port}/${page}`, errors = [], missing = new Set();
   let client;
   const viewports = [];
   try {
@@ -113,6 +113,10 @@ export async function checkSite({ dir, outDir, page = 'index.html' }) {
     client.on('Runtime.exceptionThrown', (p) => errors.push(p.exceptionDetails?.exception?.description?.split('\n')[0] || p.exceptionDetails?.text));
     client.on('Runtime.consoleAPICalled', (p) => { if (p.type === 'error') errors.push(p.args?.map((a) => a.value ?? a.description).join(' ')); });
     await client.send('Runtime.enable');
+    // a font, stylesheet or script that did not load (audit W3): script errors and broken <img> were the only signals
+    await client.send('Network.enable').catch(() => {});
+    client.on('Network.responseReceived', (p) => { if (p.response?.status >= 400 && !/favicon\.ico$/.test(p.response.url)) missing.add(`${p.response.status} ${p.response.url.replace(/^https?:\/\/127\.0\.0\.1:\d+\//, '')}`); });
+    client.on('Network.loadingFailed', (p) => { if (!p.canceled) missing.add(`${p.errorText} (${p.type || 'request'})`); });
     for (const vp of VIEWPORTS) {
       const m = await visit(client, url, vp);
       const shots = [];
@@ -132,6 +136,7 @@ export async function checkSite({ dir, outDir, page = 'index.html' }) {
   const all = (k) => [...new Set(viewports.filter((v) => !v.reduced).flatMap((v) => (v[k] || []).map((x) => `${v.name}: ${x}`)))];
   const over = viewports.filter((v) => !v.reduced && (v.overflowPx > 1 || v.wide.length));
   add('no-sideways-scroll', over.length ? 'red' : 'green', over.length ? over.map((v) => `${v.name}: ${v.overflowPx}px wider (${v.wide.slice(0, 3).join(', ')})`).join(' · ') : 'nothing wider than the screen at 390 / 820 / 1440 px', over.reduce((m, v) => Math.max(m, v.overflowPx || 0, v.wide.length), 0));
+  add('files-load', missing.size ? 'red' : 'green', missing.size ? [...missing].slice(0, 5).join(' · ') : 'every font, stylesheet, script and image the page asked for loaded', missing.size);
   add('images', all('noAlt').length || all('broken').length ? 'red' : 'green', [...all('noAlt').map((x) => 'no alt ' + x), ...all('broken').map((x) => 'broken ' + x)].slice(0, 5).join(' · ') || 'every image loads and has alt text', all('noAlt').length + all('broken').length);
   add('contrast', all('lowContrast').length ? 'red' : 'green', all('lowContrast').slice(0, 5).join(' · ') || 'all text meets WCAG AA (4.5:1, large 3:1)', all('lowContrast').length);
   add('readable-size', all('small').length ? 'yellow' : 'green', all('small').slice(0, 5).join(' · ') || 'no text under 14 px', all('small').length);

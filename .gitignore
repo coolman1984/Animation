@@ -4,3 +4,7 @@
 
 # Godot generated project cache.
 /studio/native/godot-demo/.godot/
+
+# Recordings and renders never belong at the root either (studio/.gitignore has the same rule).
+/*.mp4
+/*.mov

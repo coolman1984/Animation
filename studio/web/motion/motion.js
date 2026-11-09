@@ -6,6 +6,8 @@
 //   data-steps               sticky scrollytelling: the visual follows the step in view (data-step on each item)
 //   data-ring                readable collection; native horizontal scroll
 //   data-count="1200"        counts up once when visible (only for real, sourced numbers)
+// data-split, data-parallax and data-count are opt-in for hand-written pages only: site.mjs never emits them (owner update 2026-11-03).
+// Without IntersectionObserver the script stops before adding .js, so every element stays visible.
 // Buttons stay in place so their targets remain predictable.
 //   .progress                reading progress bar
 (() => {

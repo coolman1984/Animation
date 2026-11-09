@@ -9,8 +9,9 @@ in a real browser the way a top studio checks before launch. Same philosophy as 
    what would the best studio in this field build for this client · the rawest real material to start from (the client's photos, words,
    product, menu, numbers) · the specific methods and tools they would use. Then pick a style: `node studio/studio.mjs web styles`.
 2. **Plan:** `node studio/studio.mjs web plan <site> --brand=… --style=paper-editorial|ink-studio|clay-3d --lang=ar|en --cta=… --problem=… --promise=…`
-   (MCP `web_plan`) → the house structure: hero (promise + one action) → problem → features → sticky steps → 3D ring → FAQ → closing action.
-   Remove, reorder or add sections (`hero, problem, features, steps, ring, stats, quote, marquee, faq, cta`) to fit the client.
+   (MCP `web_plan`) → the house structure: hero (promise + one action) → problem → features → sticky steps → collection → FAQ → closing action.
+   Remove, reorder or add sections (`hero, problem, features, steps, collection` (alias `ring`)`, stats, quote, marquee, faq, cta`) to fit the client.
+   Links must be https/http/mailto/tel, `#section-id` (the id must exist) or relative; each section type has its required text (`web build` names what is missing).
 3. **Write** every ‹…› in the client's words (Egyptian Arabic for ads, as the brand writes Latin names). The build refuses placeholders,
    numbers without a source, quotes without a real name and source, images without alt text.
 4. **Build:** `node studio/studio.mjs web build <site>` → `web/sites/<site>/dist/` (index.html, assets/site.css, assets/motion.js, fonts).
@@ -99,9 +100,10 @@ unresolved limitations (not tested on real devices, not published, a stage that 
 ## Motion vocabulary (web/motion/motion.js + site.css, opt-in by data attributes)
 Names and exact timings for more web effects and UI parts: Motion Prompt #049–#096 (`node studio/studio.mjs moves search <words> --library=motion-prompt`; `../library/README.md`).
 `data-reveal` rise from blur on entry (native CSS scroll timeline where supported, IntersectionObserver otherwise) · `data-split` headline
-words one by one (split on spaces: Arabic letters stay joined) · `data-parallax` · `data-steps` sticky scrollytelling · `data-ring` 3D card
-ring (drag, wheel, arrow keys; auto-spin until touched) · `data-count` count-up for SOURCED numbers · `data-magnetic` buttons · reading
-progress bar · marquee. Everything respects `prefers-reduced-motion` and stays readable without JavaScript.
+words one by one (split on spaces: Arabic letters stay joined) · `data-parallax` · `data-steps` sticky scrollytelling · `data-ring` a native
+horizontal list (no rotation) · `data-count` count-up for SOURCED numbers · reading progress bar · a static marquee. `site.mjs` emits only
+`data-reveal` (when `motion: "reveal"`), `data-steps` and `data-ring`; split, parallax and count are opt-in for hand-written pages with a
+reason in DESIGN.md (owner update 2026-11-03). Everything respects `prefers-reduced-motion` and stays readable without JavaScript.
 
 ## Styles (web/styles/index.json)
 `paper-editorial` (calm, premium, very readable) · `ink-studio` (dark, sharp, lime signal) · `clay-3d` (warm, tactile, 3D ring).

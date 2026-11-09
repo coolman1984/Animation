@@ -5,7 +5,7 @@
 // Loopback only. Started by `node studio.mjs review <film|take>`.
 import { createServer } from 'node:http';
 import { createReadStream, statSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
-import { createHash } from 'node:crypto';
+import { createHash, randomBytes } from 'node:crypto';
 import { extname } from 'node:path';
 import { inside } from './serve.mjs';
 
@@ -14,15 +14,23 @@ const sha256 = (file) => createHash('sha256').update(readFileSync(file)).digest(
 const store = (file) => file + '.review.json';
 const readStore = (file) => { try { return JSON.parse(readFileSync(store(file), 'utf8')); } catch { return { notes: [], approval: null }; } };
 
-export function reviewServer(root, { port = 0 } = {}) {
-  const body = (req) => new Promise((res, rej) => { let s = ''; req.on('data', (d) => { s += d; if (s.length > 2e6) req.destroy(); }); req.on('end', () => { try { res(JSON.parse(s || '{}')); } catch (e) { rej(e); } }); });
+// Writes need the session token the player got in its URL (sent as x-review-token) and a same-origin request (audit S2): any web page
+// open in the owner's browser could otherwise POST to 127.0.0.1 and record an approval.
+export function reviewServer(root, { port = 0, token = randomBytes(16).toString('hex') } = {}) {
+  const tooBig = Object.assign(new Error('body too large'), { status: 413 });
+  const body = (req) => new Promise((res, rej) => { let s = ''; req.on('data', (d) => { s += d; if (s.length > 2e6) { rej(tooBig); req.removeAllListeners('data'); } }); req.on('end', () => { try { res(JSON.parse(s || '{}')); } catch (e) { rej(e); } }); });
   const json = (rsp, code, value) => { rsp.writeHead(code, { 'content-type': 'application/json' }); rsp.end(JSON.stringify(value)); };
   const server = createServer(async (req, rsp) => {
     try {
       const url = new URL(req.url, 'http://x'), path = decodeURIComponent(url.pathname);
       const api = path.match(/\/api\/(state|notes|approve)$/)?.[1];
       if (api) {
-        const q = api === 'state' ? { video: url.searchParams.get('video') } : await body(req);
+        if (api !== 'state') {
+          const origin = req.headers.origin, host = req.headers.host;
+          if (req.method !== 'POST' || !/^application\/json/.test(req.headers['content-type'] || '') || req.headers['x-review-token'] !== token || (origin && origin !== `http://${host}`)) return json(rsp, 403, { error: 'refused: open the player from the link `node studio.mjs review` printed' });
+        }
+        let q;
+        try { q = api === 'state' ? { video: url.searchParams.get('video') } : await body(req); } catch (e) { return json(rsp, e.status || 400, { error: e.message }); }
         const file = q.video && inside(root, '/' + q.video);
         if (!file || !existsSync(file) || extname(file) !== '.mp4') return json(rsp, 404, { error: 'unknown video' });
         const s = readStore(file);
@@ -44,5 +52,5 @@ export function reviewServer(root, { port = 0 } = {}) {
       createReadStream(file).pipe(rsp);
     } catch { rsp.writeHead(400); rsp.end(); }
   });
-  return new Promise((res, rej) => { server.once('error', rej); server.listen(port, '127.0.0.1', () => res({ server, port: server.address().port, close: () => server.close() })); });
+  return new Promise((res, rej) => { server.once('error', rej); server.listen(port, '127.0.0.1', () => res({ server, port: server.address().port, token, close: () => server.close() })); });
 }
