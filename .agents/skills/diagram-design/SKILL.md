@@ -4,6 +4,8 @@ description: Editorial diagrams as one self-contained HTML+SVG file (diagram-des
 ---
 <!-- generated from .claude/skills by `node studio/studio.mjs agents --sync`; edit the source, not this copy -->
 # diagram-design (vendored)
+
+> **Hallmark is mandatory and loads first; this skill supplements it.** For any app/website/page/UI work, load `.claude/skills/hallmark/` (toolkit `studio/toolkit/hallmark/`) before this skill; Hallmark wins on conflict.
 The full upstream skill lives in `studio/toolkit/diagram-design/` (licence, third-party notices and pinned commit: `studio/toolkit/toolkit.json`).
 Read `studio/toolkit/diagram-design/SKILL.md` and follow it; every `references/…`, `assets/…`, `scripts/…` path is relative to that folder
 (`python studio/toolkit/diagram-design/scripts/self_check.py <file>` is its check).

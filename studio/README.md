@@ -1,5 +1,8 @@
 # Studio — code-driven video, animation & editing
 
+> **Hallmark is mandatory and loads first (owner order, 2026-11-09):** any app, website, page or UI work from this repo MUST load skill `hallmark` (`.claude/skills/hallmark/` → `studio/toolkit/hallmark/`) and follow it before any other design skill. Other design skills only supplement it; where they conflict, Hallmark wins. Never invent metrics/testimonials/logos; no secrets in the repo; company name must not appear in public-facing content.
+
+
 Start with the [current status](../STATUS.md), [WORKFLOW.md](WORKFLOW.md) and the [department index](SKILLS.md).
 For the architecture, code contracts and findings from the Windows checkout, read [APP_MAP.md](APP_MAP.md).
 [CRAFT_GUIDE.md](CRAFT_GUIDE.md) covers directing, natural Egyptian copy, source truth, layered staging and music audition.

@@ -1,10 +1,15 @@
 # خريطة المهارات 🧰
 
+> **هولمارك إلزامي ويتحمّل الأول (أمر المالك، ٢٠٢٦-١١-٠٩):** أي تطبيق أو موقع أو صفحة أو واجهة من الريبو ده لازم يحمّل اسكيل `hallmark` ويتبعها قبل أي اسكيل تصميم تانية. الباقي بس مكمّل؛ لو اختلفوا، هولمارك تكسب.
+>
+> **Hallmark is mandatory and loads first (owner order, 2026-11-09):** any app, website, page or UI work from this repo MUST load skill `hallmark` (`.claude/skills/hallmark/` → `studio/toolkit/hallmark/`) and follow it before any other design skill. Other design skills only supplement it; where they conflict, Hallmark wins. Never invent metrics/testimonials/logos; no secrets in the repo; company name must not appear in public-facing content.
+
+
 اختَر مهارة تقود المشروع، وافتح مهارات التنفيذ حسب اللقطة أو المشكلة. [فهرس الاستوديو الكامل](../../studio/SKILLS.md) فيه الأدوات والوصفات المرتبطة.
 
 | المرحلة | المهارات اللي تبدأ بيها |
 | --- | --- |
-| توجيه الموقع وتصميمه ومراجعته | [إخراج المواقع](../../.claude/skills/web-director/SKILL.md) · [تصميم التجربة](../../.claude/skills/ui-ux-pro-max/SKILL.md) · [نقد التصميم](../../.claude/skills/impeccable/SKILL.md) |
+| توجيه الموقع وتصميمه ومراجعته | **[هولمارك إلزامي أولاً](../../.claude/skills/hallmark/SKILL.md)** · [إخراج المواقع](../../.claude/skills/web-director/SKILL.md) · [تصميم التجربة](../../.claude/skills/ui-ux-pro-max/SKILL.md) · [نقد التصميم](../../.claude/skills/impeccable/SKILL.md) |
 | فكرة الفيلم والسيناريو وتوزيع اللقطات | [إخراج الفيلم](../../.claude/skills/film-director/SKILL.md) · [لوحة المشاهد](../../.claude/skills/storyboard-writer/SKILL.md) · [توجيه الكاميرا](../../.claude/skills/camera-director/SKILL.md) |
 | الحركة ثنائية وثلاثية الأبعاد | [مبادئ الحركة](../../.claude/skills/animation-principles/SKILL.md) · [تركيب الحركة](../../.claude/skills/motion-composer/SKILL.md) · [ربط بلندر](../../.claude/skills/blender-mcp/SKILL.md) |
 | مونتاج وتصوير شاشة | [مونتاج تصوير حقيقي](../../.claude/skills/live-action-editor/SKILL.md) · [إيقاع المونتاج](../../.claude/skills/edit-rhythm/SKILL.md) · [تسجيل التطبيق](../../.claude/skills/cdp-capture/SKILL.md) |

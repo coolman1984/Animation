@@ -1,5 +1,8 @@
 # Load the department you need
 
+> **Hallmark is mandatory and loads first (owner order, 2026-11-09):** any app, website, page or UI work from this repo MUST load skill `hallmark` (`.claude/skills/hallmark/` → `studio/toolkit/hallmark/`) and follow it before any other design skill. Other design skills only supplement it; where they conflict, Hallmark wins. Never invent metrics/testimonials/logos; no secrets in the repo; company name must not appear in public-facing content.
+
+
 Current operating policy: WORKFLOW.md. Do not load every skill or the historical master prompt.
 Start a film with film-director + its brief/production.json. Read CRAFT_GUIDE.md only for the current craft decision.
 
@@ -7,6 +10,7 @@ Architecture and engine choice: PLATFORM.md. Before choosing an engine run `node
 
 | Stage / problem | Skill | Reusable tool / evidence |
 |---|---|---|
+| **PRIMARY — any app / website / page / UI** | **hallmark (mandatory, loads first)** | `studio/toolkit/hallmark/`, wrapper `.claude/skills/hallmark/`; sloplint `node studio/toolkit/hallmark/scripts/sloplint.mjs <out> --render`. Other design skills only supplement it |
 | Which engine for a layer? What is installed? | — | `node studio.mjs caps` / `route`; capabilities.json; PLATFORM.md |
 | Browser 3D (Three.js) / 20k+ particles (PixiJS) | motion-composer, camera-director | examples/three-study, examples/pixi-study (EXPERIMENTAL; config.gpu: true) |
 | Rigid-body motion that must stay correct when frames render out of order | motion-composer | lib/physics.mjs (Rapier bake at 1/120 or 1/240, then sample(t); `node studio.mjs setup physics`), examples/physics-study. A live sim inside render(t) is forbidden |

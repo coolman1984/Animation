@@ -53,15 +53,18 @@ export function updatePackage(name, clone) {
   if (!existsSync(src)) throw new Error(`${src} not found: is ${clone} a clone of ${p.repo}?`);
   const dir = destOf(p), keep = selected(p, files(src).map((f) => relative(src, f).replace(/\\/g, '/')));
   if (!keep.length) throw new Error(`${p.name}: nothing selected in ${src}`);
+  // Studio-added files (e.g. UPSTREAM.md provenance) are not in the upstream clone: keep them across a refresh.
+  const local = (p.local || []).filter((n) => existsSync(join(dir, n))).map((n) => [n, readFileSync(join(dir, n))]);
   rmSync(dir, { recursive: true, force: true });
   for (const r of keep) { mkdirSync(join(dir, r, '..'), { recursive: true }); copyFileSync(join(src, r), join(dir, r)); }
   for (const n of p.notices || []) copyFileSync(join(clone, n), join(dir, n));
+  for (const [n, buf] of local) { mkdirSync(join(dir, n, '..'), { recursive: true }); writeFileSync(join(dir, n), buf); }
   const head = spawnSync('git', ['-C', clone, 'rev-parse', '--short', 'HEAD'], { encoding: 'utf8' }).stdout?.trim();
   if (head && head !== p.commit) {
     const m = manifest(); m.packages.find((x) => x.name === name).commit = head; m.updated = new Date().toISOString().slice(0, 10);
     writeFileSync(join(TOOLKIT, 'toolkit.json'), JSON.stringify(m, null, 2) + '\n');
   }
-  return { name, files: keep.length + (p.notices || []).length, commit: head || p.commit, bytes: files(dir).reduce((a, f) => a + statSync(f).size, 0) };
+  return { name, files: keep.length + (p.notices || []).length + local.length, commit: head || p.commit, bytes: files(dir).reduce((a, f) => a + statSync(f).size, 0) };
 }
 
 // UI UX Pro Max (web stage B): "<product, industry, mood>" → pattern, style, colour tokens, type pair, effects, anti-patterns, checklist.

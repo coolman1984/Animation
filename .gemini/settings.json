@@ -1,6 +1,22 @@
 {
-  "context": { "fileName": ["AGENTS.md", "GEMINI.md"] },
+  "context": {
+    "fileName": [
+      "AGENTS.md",
+      "GEMINI.md"
+    ]
+  },
   "mcpServers": {
-    "animation-studio": { "command": "node", "args": ["studio/mcp/server.mjs"], "cwd": "." }
+    "animation-studio": {
+      "command": "node",
+      "args": [
+        "studio/mcp/server.mjs"
+      ],
+      "cwd": "."
+    }
+  },
+  "hallmark": {
+    "mandatory": true,
+    "loadsFirst": true,
+    "note": "Any app/website/page/UI work must load skill hallmark first; other design skills only supplement it. See AGENTS.md and GEMINI.md."
   }
 }

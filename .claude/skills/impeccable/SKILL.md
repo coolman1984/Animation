@@ -3,6 +3,8 @@ name: impeccable
 description: Design director for any interface (Impeccable 4.7.1 by Paul Bakaus, Apache-2.0, vendored) — shape, critique, audit, polish, typeset, colorize, layout, animate, bolder, quieter, distill, harden, adapt, onboard, document. Use for web stage D (independent critique and polish of a site or web animation), when a page looks generic or AI-made, or to write a site's DESIGN.md from existing code.
 ---
 # impeccable (vendored)
+
+> **Hallmark is mandatory and loads first; this skill supplements it.** For any app/website/page/UI work, load `.claude/skills/hallmark/` (toolkit `studio/toolkit/hallmark/`) before this skill; Hallmark wins on conflict.
 The full upstream skill lives in `studio/toolkit/impeccable/` (pinned commit and licence: `studio/toolkit/toolkit.json`, `LICENSE`, `NOTICE.md`).
 Read `studio/toolkit/impeccable/SKILL.md` and follow it, with these studio adaptations:
 

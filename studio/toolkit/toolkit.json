@@ -1,7 +1,24 @@
 {
   "about": "Third-party agent tools vendored whole (owner order 2026-10-24: 'take everything we can learn and every tool we can use'). Each package is copied unchanged from a pinned commit except the listed removals; its licence travels with it. Front door: node studio/studio.mjs toolkit. Guide: toolkit/README.md.",
-  "updated": "2026-10-25",
+  "updated": "2026-11-09",
   "packages": [
+    {
+      "name": "hallmark",
+      "repo": "Nutlope/hallmark",
+      "commit": "407fa689f4a276f2fd389208d271d0fef08f5058",
+      "licence": "MIT",
+      "from": "skills/hallmark",
+      "notices": [
+        "LICENSE"
+      ],
+      "local": [
+        "UPSTREAM.md"
+      ],
+      "skill": "hallmark",
+      "department": "web",
+      "what": "PRIMARY design skill for every app and website: anti-AI-slop floor, theme deal, layout/macrostructures, sloplint gates. Mandatory before any other design skill.",
+      "changed": "Nothing from upstream. Added UPSTREAM.md with source URL and pinned commit. Studio wrapper skill makes Hallmark mandatory/primary for all app and website work."
+    },
     {
       "name": "impeccable",
       "repo": "pbakaus/impeccable",
@@ -18,7 +35,7 @@
       ],
       "skill": "impeccable",
       "department": "web",
-      "what": "Design director: 24 commands (shape, critique, audit, polish, typeset, colorize, animate, layout, bolder, quieter, distill, harden…) with their playbooks, the craft floor and the absolute bans — web stage D.",
+      "what": "Design director: 24 commands (shape, critique, audit, polish, typeset, colorize, animate, layout, bolder, quieter, distill, harden\u2026) with their playbooks, the craft floor and the absolute bans \u2014 web stage D.",
       "changed": "Removed the engine launcher (scripts/impeccable, impeccable.cmd): it downloads a binary on first run. The skill's own 'Launcher unavailable' path runs instead (reads PRODUCT.md/DESIGN.md directly)."
     },
     {
@@ -35,7 +52,7 @@
       ],
       "skill": "ui-ux-pro-max",
       "department": "web",
-      "what": "Design-system generator and searchable data: 79 styles, 192 product palettes with reasoning, 74 font pairings, 119 UX rules, GSAP presets, charts, 22 stacks (Python standard library, offline) — web stage B.",
+      "what": "Design-system generator and searchable data: 79 styles, 192 product palettes with reasoning, 74 font pairings, 119 UX rules, GSAP presets, charts, 22 stacks (Python standard library, offline) \u2014 web stage B.",
       "changed": "Removed the upstream test folder."
     },
     {
@@ -50,7 +67,7 @@
       ],
       "skill": "diagram-design",
       "department": "design",
-      "what": "45 diagram types (architecture, flowchart, sequence, journey, Sankey, Wardley, axonometric…) as one self-contained HTML+SVG file in an editorial design system, light/dark/full/animated variants, brand onboarding.",
+      "what": "45 diagram types (architecture, flowchart, sequence, journey, Sankey, Wardley, axonometric\u2026) as one self-contained HTML+SVG file in an editorial design system, light/dark/full/animated variants, brand onboarding.",
       "changed": "Nothing."
     },
     {
@@ -69,7 +86,7 @@
       "notices": [],
       "skill": "img2threejs",
       "department": "3d",
-      "what": "Rebuild the object in a reference image as a code-only procedural Three.js model: staged sculpt pipeline (intake → spec → blockout … → rig), quality contract and vision self-correction (Python standard library).",
+      "what": "Rebuild the object in a reference image as a code-only procedural Three.js model: staged sculpt pipeline (intake \u2192 spec \u2192 blockout \u2026 \u2192 rig), quality contract and vision self-correction (Python standard library).",
       "changed": "Removed upstream tests and CI scripts."
     },
     {
@@ -90,7 +107,7 @@
       ],
       "skill": "hyperframes",
       "department": "motion",
-      "what": "HTML → MP4 for agents: the render contract and work loop, the CLI by job, ~450 registry blocks (transitions, titles, kinetic type, captions, charts, maps, 3D, camera moves), Figma brand tokens into video, Remotion→HyperFrames porting.",
+      "what": "HTML \u2192 MP4 for agents: the render contract and work loop, the CLI by job, ~450 registry blocks (transitions, titles, kinetic type, captions, charts, maps, 3D, camera moves), Figma brand tokens into video, Remotion\u2192HyperFrames porting.",
       "changed": "Kept five of its skills; left out media-use (HeyGen paid media services) and slideshow."
     },
     {
@@ -149,7 +166,7 @@
       ],
       "skill": "",
       "department": "motion",
-      "what": "59 film-style cards (essence and what it is not, materials, colour logic, type, motion quality, camera grammar, native moves, pitfalls): art-deco, swiss-motion, ukiyoe, risograph, blueprint, hologram-hud, papercut, newsreel… Read with: node studio/studio.mjs styles --library=lemo.",
+      "what": "59 film-style cards (essence and what it is not, materials, colour logic, type, motion quality, camera grammar, native moves, pitfalls): art-deco, swiss-motion, ukiyoe, risograph, blueprint, hologram-hud, papercut, newsreel\u2026 Read with: node studio/studio.mjs styles --library=lemo.",
       "changed": "Text only (STYLE.md + style.json); demos, posters and subtitles stay upstream.",
       "dest": "library/lemo-styles"
     },
@@ -190,7 +207,7 @@
       "skill": "animation-principles",
       "department": "motion",
       "what": "Disney's 12 principles, one skill each (squash and stretch, anticipation, staging, straight ahead vs pose to pose, follow through, slow in/out, arcs, secondary action, timing, exaggeration, solid drawing, appeal). The house critic scores the ones a spec can show.",
-      "changed": "The 12 principle-focus skills only. The other eleven lenses (domain, role, tool, …) stay upstream."
+      "changed": "The 12 principle-focus skills only. The other eleven lenses (domain, role, tool, \u2026) stay upstream."
     },
     {
       "name": "design-to-motion",

@@ -4,6 +4,8 @@ description: Pick and check thumbnails and the poster frame â€” 3 candidates, â‰
 ---
 <!-- generated from .claude/skills by `node studio/studio.mjs agents --sync`; edit the source, not this copy -->
 # thumbnail-poster
+
+> **Hallmark is mandatory and loads first; this skill supplements it.** For any app/website/page/UI work, load `.claude/skills/hallmark/` (toolkit `studio/toolkit/hallmark/`) before this skill; Hallmark wins on conflict.
 Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `studio/SKILLS.md`.
 
 

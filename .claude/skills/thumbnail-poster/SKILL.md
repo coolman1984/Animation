@@ -3,6 +3,8 @@ name: thumbnail-poster
 description: Pick and check thumbnails and the poster frame — 3 candidates, ≤ 4 words, contrast, safe areas. Use at delivery time for any film.
 ---
 # thumbnail-poster
+
+> **Hallmark is mandatory and loads first; this skill supplements it.** For any app/website/page/UI work, load `.claude/skills/hallmark/` (toolkit `studio/toolkit/hallmark/`) before this skill; Hallmark wins on conflict.
 Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `studio/SKILLS.md`.
 
 

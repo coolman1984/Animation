@@ -1,3 +1,4 @@
+# Hallmark is mandatory and loads first for any app/website/page/UI; see AGENTS.md and .agents/skills/hallmark/.
 # Project-scoped Codex config (loaded when the project is trusted). Instructions come from AGENTS.md; skills from .agents/skills/.
 [mcp_servers.animation-studio]
 command = "node"

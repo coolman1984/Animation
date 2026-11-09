@@ -28,6 +28,8 @@ Animation and Presentations **produce** content; Design gives it the **look**; t
 الأنيميشن والعروض **بيطلّعوا** المحتوى، والتصميم بيدّيله **الشكل**، ومصنع المحتوى **بيوزّعه**. وكله محفوظ في جيت هاب ومعاه درايف.
 
 ## Rules / القواعد
+- **Hallmark is mandatory and loads first (owner order, 2026-11-09):** any app, website, page or UI work from this repo MUST load skill `hallmark` (`.claude/skills/hallmark/` → `studio/toolkit/hallmark/`) and follow it before any other design skill. Other design skills only supplement it; where they conflict, Hallmark wins. Never invent metrics/testimonials/logos; no secrets in the repo; company name must not appear in public-facing content.
+- Apps and websites from any section follow Hallmark first; other design skills only supplement it.
 - No secrets in the repo / مفيش أسرار في الريبو.
 - Nothing is published without the owner's approval / مفيش نشر من غير موافقة المالك.
 - Code from `shorts-animator` is not copied here / كود `shorts-animator` ما اتنسخش هنا.

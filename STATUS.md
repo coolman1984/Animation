@@ -2,6 +2,8 @@
 
 Updated: 2026-11-07.
 
+**Latest scope (open PR): Hallmark primary + mandatory for every app/website (owner 2026-11-09).** Vendored `Nutlope/hallmark` @ `407fa689f4a276f2fd389208d271d0fef08f5058` into `studio/toolkit/hallmark/` with wrapper skill `hallmark`. Hard rule recorded in AGENTS.md and across repo docs: Hallmark loads first; other design skills only supplement it. Not merged until the owner says so.
+
 Removed the root Arabic sales page, its `series5/` folder, `.nojekyll`, and the Pages workflow that published only that page. The handbook no longer points at it.
 
 Shelf demo: [Athar](studio/web/gallery/specimens/athar-shelf.html) is integrated in the web gallery as a standalone fictional archive.

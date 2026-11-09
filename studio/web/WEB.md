@@ -27,6 +27,11 @@ in a real browser the way a top studio checks before launch. Same philosophy as 
 
 Use the [design reference catalog](../../docs/studio/DESIGN-SOURCES.md) to select references and record transferable design decisions in DESIGN.md §A.
 
+## HARD RULE — Hallmark first (owner order, 2026-11-09)
+**Hallmark is mandatory and loads first (owner order, 2026-11-09):** any app, website, page or UI work from this repo MUST load skill `hallmark` (`.claude/skills/hallmark/` → `studio/toolkit/hallmark/`) and follow it before any other design skill. Other design skills only supplement it; where they conflict, Hallmark wins. Never invent metrics/testimonials/logos; no secrets in the repo; company name must not appear in public-facing content.
+
+Hallmark sits above the A→B→C→D loop: load `hallmark` and follow its Floor/gates/theme deal before taste-skill, UI UX Pro Max, build/motion, or Impeccable. Those stages still run and record in DESIGN.md, but only as supplements. Run `node studio/toolkit/hallmark/scripts/sloplint.mjs <output> --render` before handoff.
+
 ## One workflow — mandatory for every site and web animation (owner orders, 2026-10-19)
 Every website or web animation we build or **improve** runs four stages, each owned by one tool, recorded in `web/sites/<site>/DESIGN.md`
 (written by `web plan`; template `web/templates/DESIGN.md`). `web build|check|serve` and MCP `web_check` refuse a site whose DESIGN.md
@@ -36,6 +41,7 @@ rules unless the owner asks otherwise. Free tools only; never a paid API without
 
 | Stage | Owner tool (licence) | Output |
 |---|---|---|
+| 0. **Hallmark (mandatory)** | **hallmark** (Nutlope, MIT, vendored) | Load first for every app/site/UI: Floor, theme deal, layout, gates; run sloplint; other stages only supplement — DESIGN.md stamp + log |
 | A. Creative direction | **taste-skill** (Leonxlnx, MIT) | business/audience/purpose, 8–12 things only this client has, references studied, **three genuinely different directions**, the chosen one + why, the idea sentence (competitor test), storytelling, composition, imagery, type and motion personality — DESIGN.md §A |
 | B. Design architecture | **UI UX Pro Max** (nextlevelbuilder, MIT) | the industry rule followed; colour tokens (≤ 6, tinted neutrals, ≥ 4.5:1), dark mode if it fits, 2 Arabic-capable families, ≤ 5 sizes, spacing/grid, components and states, phone/tablet/desktop rules — DESIGN.md §B, then `site.json` / CSS variables |
 | C. Build and animate | the animation layer (below); **GSAP** via skill `gsap-skills` only when the table's GSAP row is the one that fits | pages in the project's existing technology, built from §B, moving by the **motion storyboard** (DESIGN.md §C: what moves, when, why, how it answers the user, which tech, the reduced-motion state) |

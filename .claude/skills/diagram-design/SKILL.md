@@ -3,6 +3,8 @@ name: diagram-design
 description: Editorial diagrams as one self-contained HTML+SVG file (diagram-design 2.6 by Cathryn Lavery, MIT, vendored) — 45 types (architecture, flowchart, sequence, state, ER, timeline, swimlane, quadrant, Sankey, Wardley, journey, service blueprint, axonometric, org chart, charts…), light/dark/full/animated variants, brand onboarding, Mermaid/draw.io/Excalidraw import. Use when a site, explainer film or report needs a diagram, or a process/system must be shown as a picture.
 ---
 # diagram-design (vendored)
+
+> **Hallmark is mandatory and loads first; this skill supplements it.** For any app/website/page/UI work, load `.claude/skills/hallmark/` (toolkit `studio/toolkit/hallmark/`) before this skill; Hallmark wins on conflict.
 The full upstream skill lives in `studio/toolkit/diagram-design/` (licence, third-party notices and pinned commit: `studio/toolkit/toolkit.json`).
 Read `studio/toolkit/diagram-design/SKILL.md` and follow it; every `references/…`, `assets/…`, `scripts/…` path is relative to that folder
 (`python studio/toolkit/diagram-design/scripts/self_check.py <file>` is its check).
