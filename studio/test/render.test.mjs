@@ -50,3 +50,12 @@ test('encode filter: default conversion unchanged; opt-in dither converts throug
   const d = encodeFilter({ dither: true });
   assert.match(d, /format=rgb48le/); assert.match(d, /sws_dither=ed/); assert.match(d, /yuv420p10le/); assert.ok(d.endsWith('format=yuv420p'));
 });
+
+test('a film that asks for a missing file, or animates on its own, fails with a plain reason (audit R4, R5)', { skip: !enabled, timeout: 90000 }, async () => {
+  const { stills } = await import('../lib/render.mjs');
+  const dir = mkdtempSync(join(tmpdir(), 'studio-render-test-'));
+  try {
+    await assert.rejects(stills({ film: fileURLToPath(new URL('./fixture/missing-file-film.js', import.meta.url)), times: [0.5], outDir: dir, w: 200, h: 200 }), /did not load[\s\S]*no-such-data\.json/);
+    await assert.rejects(stills({ film: fileURLToPath(new URL('./fixture/self-animating-film.js', import.meta.url)), times: [0.5], outDir: dir, w: 400, h: 200 }), /never held still/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});

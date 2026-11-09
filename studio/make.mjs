@@ -4,7 +4,7 @@
 import { mkdirSync, readdirSync, writeFileSync, copyFileSync, readFileSync, existsSync, appendFileSync, rmSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { buildOptions, frameRange } from './lib/build-options.mjs';
+import { buildOptions, frameRange, validateConfig } from './lib/build-options.mjs';
 import { fingerprint, cached } from './lib/cache.mjs';
 import { buildCheck } from './lib/doctor.mjs';
 import { run, video, textTimeline } from './lib/render.mjs';
@@ -34,7 +34,11 @@ if (shotFlag) {
   } catch (error) { console.error(error.message); process.exit(2); }
 }
 let options;
-try { options = buildOptions(cfg, flags); } catch (error) { console.error(error.message); process.exit(2); }
+try {
+  const profileFlag = flags.find((f) => f.startsWith('--profile='))?.slice(10) || 'draft', configErrors = validateConfig(cfg, { profile: profileFlag });
+  if (configErrors.length) throw new Error(`${filmName}/config.mjs: ${configErrors.join('; ')}`);
+  options = buildOptions(cfg, flags);
+} catch (error) { console.error(error.message); process.exit(2); }
 const { profile, selected, range, workers, settings } = options;
 // Every line also goes to takes/<film>/build.log (appended once the folder exists), so a crashed run still leaves its story.
 let logFile = null; const logBuffer = [];
@@ -51,7 +55,7 @@ if (production.errors.length) { console.error(production.errors.join('\n')); pro
 // 0. Tools + syntax. Both are reused while their inputs are unchanged: every process launch costs ~1 s on Windows.
 const doc = await buildCheck();
 if (!doc.ok) { console.error('doctor failed — run node lib/doctor.mjs'); process.exit(1); }
-const syntaxFiles = [...(external ? [] : [cfg.film]), cfg.score, 'lib/motion.js', 'lib/render.mjs', 'lib/audio.mjs'];
+const syntaxFiles = [...(external ? [] : [cfg.film]), ...(cfg.score ? [cfg.score] : []), 'lib/motion.js', 'lib/render.mjs', 'lib/audio.mjs'];
 // One node process parses every module (vm.SourceTextModule: syntax only, nothing is linked or run) instead of one --check each.
 const PARSE = "const vm=require('node:vm'),fs=require('node:fs');for(const f of process.argv.slice(1)){try{new vm.SourceTextModule(fs.readFileSync(f,'utf8'),{identifier:f})}catch(e){console.error(f+': '+e.message);process.exitCode=1}}";
 await cached(join(ROOT, 'takes', filmName, 'syntax.cache.json'), fingerprint(ROOT, syntaxFiles, { node: process.version }), [],
@@ -130,7 +134,7 @@ try {
     const reused = await cached(silent + '.cache.json', key, [silent], async () => {
       renderStats = external
         ? await externalRender(cfg.engine, { ...renderSettings, out: silent, root: ROOT, profile })
-        : await video({ ...renderSettings, workers, film: join(ROOT, cfg.film), out: silent, resumeKey: key, log: say });
+        : await video({ ...renderSettings, workers, film: join(ROOT, cfg.film), out: silent, resumeKey: key, log: say, expect: { fps: cfg.fps, duration: d.duration } });
       log(`  ${renderStats.frames} frames in ${renderStats.seconds.toFixed(1)} s`);
     }, log);
     if (profile === 'draft') {

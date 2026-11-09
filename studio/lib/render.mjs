@@ -31,21 +31,34 @@ export function run(cmd, args, { input, quiet = true, cwd, env } = {}) {
 export const GPU_ARGS = process.env.STUDIO_GPU === 'hardware'
   ? ['--enable-gpu', '--ignore-gpu-blocklist', '--enable-gpu-rasterization', `--use-angle=${process.platform === 'win32' ? 'd3d11' : process.platform === 'darwin' ? 'metal' : 'default'}`]
   : ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'];
+// A film's start (module import, init, fonts, images, registered waits) may take this long before it is called stuck.
+const READY_TIMEOUT = Math.max(5000, +process.env.STUDIO_READY_TIMEOUT || 90000);
 export async function openFilm(port, film, { w, h, variant, segments, fadeOut, scale = 1, gpu = false }) {
   const client = await launch({ width: w, height: h, scale, extraArgs: gpu ? GPU_ARGS : [] });
   try {
     const query = new URLSearchParams({ film: '/' + slash(relative(STUDIO, film)), w: String(w), h: String(h), variant: variant || 'hero' });
     if (segments) query.set('segments', segments);
     if (fadeOut) query.set('fadeOut', String(fadeOut));
-    const errors = [];
+    const errors = [], missing = [];
     client.on('Runtime.exceptionThrown', p => errors.push(p.exceptionDetails?.exception?.description || p.exceptionDetails?.text));
+    // Any file the page asked for and did not get (font, texture, JSON, module chunk) fails the render (audit R4): <img> alone was checked.
+    await client.send('Network.enable').catch(() => {});
+    client.on('Network.responseReceived', p => { if (p.response?.status >= 400 && !/favicon\.ico$/.test(p.response.url)) missing.push(`${p.response.status} ${p.response.url.replace(/^https?:\/\/127\.0\.0\.1:\d+/, '')}`); });
+    client.on('Network.loadingFailed', p => { if (!p.canceled && p.type !== 'Ping') missing.push(`${p.errorText} (${p.type || 'request'})`); });
     await client.goto(`http://127.0.0.1:${port}/lib/composer.html?${query}`);
-    for (let i = 0; i < 100 && !(await client.eval('!!window.ready')); i++) {
+    // Wait as long as any browser call may take (a heavy init on a slow machine), and say which start phase never finished (audit R3).
+    const deadline = Date.now() + READY_TIMEOUT;
+    while (!(await client.eval('!!window.ready'))) {
       if (errors.length) throw new Error('composer error: ' + errors.join('\n'));
+      if (Date.now() > deadline) throw new Error(`composer did not become ready in ${Math.round(READY_TIMEOUT / 1000)} s; stuck at: ${await client.eval('window.__phase || "page load"').catch(() => '?')}`);
       await new Promise(r => setTimeout(r, 50));
     }
     const info = await client.eval('window.ready');
     if (!info || errors.length) throw new Error('composer failed to become ready: ' + errors.join('\n'));
+    if (missing.length) throw new Error(`the film asked for files that did not load:\n  ${[...new Set(missing)].slice(0, 8).join('\n  ')}`);
+    const generic = /^(serif|sans-serif|monospace|system-ui|cursive|fantasy|emoji|math|ui-[a-z-]+|-apple-system|inherit|initial)$/i;
+    const fallback = (info.usedFonts || []).filter((f) => f && !generic.test(f) && !info.fonts.includes(f));
+    if (fallback.length) console.warn(`warning: text asks for font(s) the composer never loaded, shown in a fallback face: ${fallback.join(', ')} (declare them in lib/composer.html)`);
     await settleCapture(client);
     return { client, info, errors };
   } catch (error) { await client.close(); throw error; }
@@ -171,7 +184,7 @@ async function frameCount(file) {
 // slices are reused and only the missing ones are rendered. Slices are deleted only after a successful join.
 export async function video({ film, out, w = 1080, h = 1350, variant, segments, fadeOut,
   workers = Math.min(4, cpus().length), crf = 14, preset = 'slow', t0 = 0, t1,
-  fps: fpsOverride, scale = 1, format = 'png', quality = 95, gpu = false, dither = false, lut, subframes = 1, resumeKey = null, log = (m) => console.log(m) }) {
+  fps: fpsOverride, scale = 1, format = 'png', quality = 95, gpu = false, dither = false, lut, subframes = 1, resumeKey = null, log = (m) => console.log(m), expect = null }) {
   if (!Number.isInteger(workers) || workers < 1 || workers > 16 || !Number.isFinite(scale) || scale <= 0 || scale > 2)
     throw new Error('invalid workers or capture scale');
   if (!['png', 'jpeg'].includes(format)) throw new Error('invalid capture format');
@@ -181,6 +194,9 @@ export async function video({ film, out, w = 1080, h = 1350, variant, segments, 
   try {
     probe = await openFilm(srv.port, film, { w, h, variant, segments, fadeOut, scale, gpu });
     const info = probe.info;
+    // film.js against config.mjs (audit R6): another fps shifts every frame number; a longer film is silently cut to the delivery.
+    if (expect?.fps && info.fps !== expect.fps) throw new Error(`film.js says ${info.fps} fps but config.mjs says ${expect.fps} fps: make them the same`);
+    if (expect?.duration && info.duration - expect.duration > 1 / info.fps) log(`  note: film.js runs ${info.duration} s; this delivery keeps the first ${expect.duration} s`);
     const fps = fpsOverride ?? info.fps, end = t1 ?? info.duration;
     const { first, last, frames: total } = frameRange(t0, end, info.duration, fps);
     const plan = plannedWorkers({ requested: workers, w, h, scale, gpu }), budget = memoryBudget();

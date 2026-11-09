@@ -48,8 +48,10 @@
   // Libraries that load resources outside <img> (textures, data) register promises here; ready awaits them.
   const pending = [];
   window.studioWait = (promise) => { pending.push(promise); return promise; };
+  window.__phase = 'loading the film module';   // audit R3: a stuck start names its phase
   const mod = await import(q.get('film'));
   const film = mod.default;
+  window.__phase = 'film.init';
   await film.init(stage, { W, H, variant: q.get('variant') || 'hero' });
   // Optional cut-down: ?segments=a-b,c-d (film seconds) &fadeOut=sec — output time u maps onto the
   // film's own timeline, so a cut-down is the same deterministic picture, re-edited.
@@ -128,12 +130,19 @@
     return out;
   };
   window.ready = (async () => {
+    window.__phase = 'fonts';
     await document.fonts.ready;
     await Promise.all([...document.fonts].map((f) => f.load()));
+    window.__phase = 'images';
     await Promise.all([...stage.querySelectorAll('img')].map((i) => i.decode().catch(() => { throw new Error('image failed: ' + i.src); })));
+    window.__phase = 'studioWait() resources';
     await Promise.all(pending);
+    window.__phase = 'first frame';
     await window.renderAt(0);
-    return { W, H, duration: total, fps: film.fps || 30, fonts: [...document.fonts].filter((f) => f.status === 'loaded').map((f) => f.family) };
+    window.__phase = 'ready';
+    // Families text lines ask for (first choice), so the studio can warn when one falls back to a system font (audit R4).
+    const used = [...new Set([...stage.querySelectorAll('.line, .line .word')].map((l) => getComputedStyle(l).fontFamily.split(',')[0].trim().replace(/^['"]|['"]$/g, '')))];
+    return { W, H, duration: total, fps: film.fps || 30, fonts: [...document.fonts].filter((f) => f.status === 'loaded').map((f) => f.family), usedFonts: used };
   })();
 </script>
 </body>

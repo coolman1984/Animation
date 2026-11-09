@@ -26,7 +26,7 @@ export function findChromium() {
       if (/^chromium-\d+$/.test(d)) candidates.push(join(process.env.PLAYWRIGHT_BROWSERS_PATH, d, ...(WINDOWS ? ['chrome-win', 'chrome.exe'] : ['chrome-linux', 'chrome'])));
     }
   }
-  return candidates.find((p) => existsSync(p)) || null;
+  return candidates.find((p) => { try { return statSync(p).isFile(); } catch { return false; } }) || null;   // a folder is not a browser
 }
 
 // Launch headless Chromium at a device scale, read one screenshot's PNG width.
@@ -155,17 +155,20 @@ export async function doctor({ quiet = false, optional = true } = {}) {
     ['RAM', report.machine.ramGB >= 4, `${report.machine.ramGB} GB`],
     ['Memory headroom', !mem || mem.headroomGB >= 4, mem ? `${mem.headroomGB} GB usable${mem.commitFreeGB !== null ? ` (commit free ${mem.commitFreeGB} of ${mem.commitLimitGB} GB; page file ${mem.pagefileMB} MB ${mem.pagefileAuto ? 'system-managed' : 'FIXED -> set it to system-managed for more render workers'})` : ''}` : 'not checked in build mode'],
     ['Orphan render browsers', !orph, orph ? `${orph} left by a crashed run -> node studio.mjs cleanup` : 'none'],
-    ['Disk free', true, report.machine.diskFree],
+    ['Disk free', !df || parseInt(df) >= 5, df ? `${df}${parseInt(df) < 5 ? '  LOW: a final build needs a few GB for slices and takes (node studio.mjs cleanup, delete old out/ takes)' : ''}` : 'unknown'],
     ['Python (optional)', true, report.python || 'none'],
     ['Live-action modules (optional)', true, report.live ? `${report.live}${/mediapipe/.test(report.live) && /sherpa_onnx/.test(report.live) ? '' : '  (pip install -r tools/requirements-live.txt)'}` : `none  (pip install -r tools/requirements-live.txt; ${PYTHON} tools/live.py models)`],
     ['Logo tracer (optional)', true, report.logo ? 'potrace + Pillow + OpenCV' : 'none  (pip install potracer pillow opencv-python-headless)'],
     ['Forensics modules (optional)', true, report.forensics ? `${report.forensics}${/cv2/.test(report.forensics) && /librosa/.test(report.forensics) ? '' : '  (pip install -r reference/requirements-optional.txt)'}` : 'none'],
   ];
-  report.ok = rows.slice(0, 9).every((r) => r[1]);
+  // Required for any build, by NAME (audit R7): row order used to decide, so libass (caption burn-in only) blocked every film.
+  const REQUIRED = new Set(['Node >= 22 + WebSocket', 'Chromium', 'Device-scale gate (2x)', 'ffmpeg / ffprobe', 'x264 + AAC', 'loudnorm/alimiter/ebur128', 'freezedetect/blackdetect/tile']);
+  report.ok = rows.filter((r) => REQUIRED.has(r[0])).every((r) => r[1]);
+  report.missingOptional = rows.filter((r) => !REQUIRED.has(r[0]) && !r[1]).map((r) => r[0]);
   if (!quiet) {
     const w = Math.max(...rows.map((r) => r[0].length));
     console.log('\nSTUDIO DOCTOR');
-    for (const [name, ok, note] of rows) console.log(`  ${ok ? 'OK  ' : 'FAIL'}  ${name.padEnd(w)}  ${note ?? ''}`);
+    for (const [name, ok, note] of rows) console.log(`  ${ok ? 'OK  ' : REQUIRED.has(name) ? 'FAIL' : 'WARN'}  ${name.padEnd(w)}  ${note ?? ''}`);
     console.log(`\n  verdict: ${report.ok ? 'studio can run' : 'missing required tools (see FAIL rows)'}\n`);
   }
   if (!optional) return report; // a partial check must not overwrite the full takes/doctor.json

@@ -227,14 +227,18 @@ export async function screenshot(client, params = { format: 'png' }, { timeout =
   throw new Error(`Page.captureScreenshot did not answer after ${tries} tries`);
 }
 
-export async function settleCapture(client, { tries = 8, gap = 30 } = {}) {
+// Never settling means something moves without renderAt (a CSS animation, an autoplaying video, a free-running loop): every run
+// would render different pixels, so it is an error, not a quiet return (audit R5).
+// strict: false for a real app being filmed (a caret may blink); composer films and covers must hold still.
+export async function settleCapture(client, { tries = 20, gap = 50, strict = true } = {}) {
   let prev;
   for (let i = 0; i < tries; i++) {
     const shot = (await screenshot(client, { format: 'png' })).data;
     if (shot === prev) return i;
     prev = shot; await new Promise(r => setTimeout(r, gap));
   }
-  return tries;
+  if (!strict) return tries;
+  throw new Error(`the page never held still over ${tries} screenshots: something animates on its own (CSS animation, video autoplay, requestAnimationFrame loop). Drive every change from render(t).`);
 }
 
 // Width of a PNG or JPEG buffer — used by the device-scale gate.

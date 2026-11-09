@@ -12,6 +12,19 @@ export function frameRange(t0, t1, duration, fps) {
   if (last <= first) throw new Error('range contains no frames');
   return { first, last, frames: last - first };
 }
+// config.mjs shape in plain words (audit R6): a missing field used to surface as a raw TypeError deep in make.mjs.
+export function validateConfig(cfg, { profile = 'draft' } = {}) {
+  const e = [], pos = (v) => Number.isFinite(v) && v > 0;
+  if (!cfg || typeof cfg !== 'object') return ['config.mjs must export default an object'];
+  if (!(Number.isInteger(cfg.w) && cfg.w > 0 && Number.isInteger(cfg.h) && cfg.h > 0)) e.push('config w and h must be positive whole pixels');
+  if (!(Number.isInteger(cfg.fps) && cfg.fps > 0 && cfg.fps <= 120)) e.push('config fps must be a whole number 1..120');
+  if (cfg.engine?.type !== 'external' && (typeof cfg.film !== 'string' || !cfg.film)) e.push('config film must be the path of film.js');
+  if (profile !== 'draft' && (typeof cfg.score !== 'string' || !cfg.score)) e.push('config score must be the path of score.mjs (review and final builds mix sound)');
+  if (!Array.isArray(cfg.deliveries) || !cfg.deliveries.length) e.push('config deliveries must list at least one delivery');
+  else cfg.deliveries.forEach((d, i) => { if (typeof d?.name !== 'string' || !d.name) e.push(`deliveries[${i}] needs a name`); if (!pos(d?.duration)) e.push(`deliveries[${i}] (${d?.name}) needs a positive duration`); if (d?.safe !== undefined && !(Array.isArray(d.safe) && d.safe.length === 4 && d.safe.every(Number.isFinite))) e.push(`deliveries[${i}] (${d.name}) safe must be [x0, y0, x1, y1]`); });
+  if (profile === 'final') for (const k of ['lufs', 'tp']) if (cfg[k] !== undefined && !Number.isFinite(cfg[k])) e.push(`config ${k} must be a number`);
+  return e;
+}
 export function buildOptions(cfg, flags) {
   const opt = {};
   for (const flag of flags) {

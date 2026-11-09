@@ -1,0 +1,2 @@
+// Fixture (audit R5): a film with a CSS animation that runs on its own clock; the render must refuse it.
+export default { duration: 1, fps: 30, init(stage) { const d = document.createElement('div'); Object.assign(d.style, { width: '200px', height: '200px', background: '#f80' }); d.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(300px)' }], { duration: 300, iterations: Infinity }); stage.appendChild(d); }, render() {} };

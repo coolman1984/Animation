@@ -114,3 +114,14 @@ test('render slices are fixed time chunks and resume ignores the worker count (a
   assert.ok(!canResume({ ...stamp, key: 'other' }, stamp));
   assert.ok(!canResume(stamp, { ...stamp, key: null }));
 });
+
+test('config.mjs problems are named before any build step (audit R6)', async () => {
+  const { validateConfig } = await import('../lib/build-options.mjs');
+  const ok = { w: 1080, h: 1920, fps: 30, film: 'f/film.js', score: 'f/score.mjs', deliveries: [{ name: 'reel', duration: 10 }] };
+  assert.deepEqual(validateConfig(ok, { profile: 'final' }), []);
+  assert.deepEqual(validateConfig({ ...ok, score: undefined }), []);   // a draft needs no score
+  assert.match(validateConfig({ ...ok, score: undefined }, { profile: 'review' }).join(), /score/);
+  assert.match(validateConfig({ ...ok, deliveries: [] }).join(), /at least one delivery/);
+  assert.match(validateConfig({ ...ok, fps: 29.97 }).join(), /fps/);
+  assert.match(validateConfig({ ...ok, deliveries: undefined }).join(), /deliveries/);
+});

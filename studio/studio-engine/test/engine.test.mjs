@@ -58,3 +58,31 @@ test('logo width is judged on the format it plays in (audit B5)', () => {
   assert.equal(wide('reel').length, 1);      // 400 of 1080 = 37 %
   assert.ok(lint({ ...spec, scenes: [{ ...spec.scenes[0], elements: [{ type: 'image', role: 'logo', w: 300, src: 'x' }] }] }, brand).warns.some((w) => /cropped/.test(w)));
 });
+
+test('one vocabulary: lint, player modules, catalog, score chords and hooks agree; typos are errors (audit R1)', async () => {
+  const V = await import('../lib/vocab.js'), { CHORDS, HOOKS } = await import('../lib/sound.mjs');
+  const catalog = JSON.parse(readFileSync(join(ENGINE, 'catalog.json'), 'utf8'));
+  const types = Array.isArray(catalog.elements) ? catalog.elements.map((e) => e.type) : Object.keys(catalog.elements);
+  const modulesSrc = readFileSync(join(ENGINE, 'lib', 'modules.js'), 'utf8');
+  for (const t of V.ELEMENTS) { assert.ok(types.includes(t), `catalog lacks ${t}`); assert.match(modulesSrc, new RegExp(`\\b${t}\\b`), `modules lacks ${t}`); }
+  assert.deepEqual([...types].sort(), [...V.ELEMENTS].sort());
+  assert.deepEqual(Object.keys(CHORDS).sort(), [...V.CHORD_NAMES].sort());
+  assert.deepEqual(Object.keys(HOOKS).sort(), [...V.HOOK_NAMES].sort());
+  const bad = { bpm: 120, background: 'rooom', music: { progression: ['Am', 'Fmaj'] }, scenes: [{ id: 'a', beats: 4, music: 'drpo', transition: 'wpie', elements: [{ type: 'words', text: 'x', at: 2, out: 1 }] }] };
+  const e = lint(bad, brand).errors.join('\n');
+  for (const w of ['rooom', 'Fmaj', 'drpo', 'wpie', 'out (1) must come after']) assert.match(e, new RegExp(w.replace(/[()]/g, '\\$&')));
+  for (const f of ['aixhr', 'form-function', 'fable-test', 'demo']) {
+    const own = join(ENGINE, 'films', f, 'brand.json'), b = existsSync(own) ? JSON.parse(readFileSync(own, 'utf8')) : brand;
+    assert.deepEqual(lint(JSON.parse(readFileSync(join(ENGINE, 'films', f, 'spec.json'), 'utf8')), b).errors, [], f);
+  }
+});
+
+test('every brand the engine can use is complete; a missing colour is an error (audit R2)', async () => {
+  const { validateBrand } = await import('../lib/gates.mjs'), { listStyles, brandFor } = await import('../../lib/styles.mjs');
+  assert.deepEqual(validateBrand(brand), []);
+  for (const s of listStyles()) assert.deepEqual(validateBrand(brandFor(s.slug)), [], s.slug);
+  const own = join(ENGINE, 'films', 'form-function', 'brand.json'); assert.deepEqual(validateBrand(JSON.parse(readFileSync(own, 'utf8'))), []);
+  const broken = { ...brand, colors: { ...brand.colors, glow: undefined } };
+  assert.match(validateBrand(broken).join(), /colors\.glow/);
+  assert.match(lint({ bpm: 120, scenes: [{ id: 'a', beats: 4, elements: [{ type: 'words', text: 'x' }] }] }, broken).errors.join(), /colors\.glow/);
+});

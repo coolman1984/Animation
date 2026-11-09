@@ -17,7 +17,10 @@ export function arc(duration) {
 }
 
 export function plan(brief = {}) {
-  const portrait = (brief.placement || 'reels') !== 'youtube', duration = +(brief.duration || (portrait ? 15 : 30));
+  // Only the two layouts the plan knows; anything else used to become a reel silently (audit L7).
+  const placement = { reels: 'reel', reel: 'reel', youtube: 'youtube' }[brief.placement || 'reels'];
+  if (!placement) throw new Error(`placement "${brief.placement}" has no director layout: use reels or youtube (square/post: plan a reel, then add per-format overrides)`);
+  const portrait = placement === 'reel', duration = +(brief.duration || (portrait ? 15 : 30));
   const { hook, chapters, payoff } = arc(duration);
   const Y = portrait ? { head: 0.27, sub: 0.36, hero: 0.52, card: 0.5, cardText: 0.6, name: 0.3, line: 0.4, cta: 0.55 } : { head: 0.3, sub: 0.45, hero: 0.62, card: 0.55, cardText: 0.66, name: 0.3, line: 0.45, cta: 0.66 };
   const n = chapters.length + 2, hero = (i) => `hero-${i}`;

@@ -7,10 +7,10 @@ import { SR, Bus, mtof, rhodes, pluck, bell, noiseHit, reverb, writeWav, peak, b
 import { riser, impact, softHit, click, uiConfirm, whooshBy, sweep } from '../../lib/sfx.mjs';
 import { timeline, eventsOf } from './events.js';
 
-const CHORDS = { Am: { v: [57, 60, 64, 69], r: 33 }, F: { v: [53, 57, 60, 65], r: 29 }, C: { v: [55, 60, 64, 67], r: 36 }, G: { v: [55, 59, 62, 67], r: 31 },
+export const CHORDS = { Am: { v: [57, 60, 64, 69], r: 33 }, F: { v: [53, 57, 60, 65], r: 29 }, C: { v: [55, 60, 64, 67], r: 36 }, G: { v: [55, 59, 62, 67], r: 31 },
   Dm: { v: [57, 62, 65, 69], r: 38 }, Em: { v: [55, 59, 64, 67], r: 40 }, E: { v: [56, 59, 64, 68], r: 40 }, D: { v: [54, 57, 62, 66], r: 38 }, Bb: { v: [53, 58, 62, 65], r: 34 } };
 // hooks: [8th position, interval above the chord's top-voice octave anchor (midi), length in 8ths] — 'pop332' is film 11's hook
-const HOOKS = {
+export const HOOKS = {
   pop332: { Am: [[0, 76, 1.5], [1.5, 76, 1.5], [3, 79, 1], [4, 81, 1.5], [5.5, 79, 1], [6.5, 76, 1.5]], F: [[0, 77, 1.5], [1.5, 77, 1.5], [3, 76, 1], [4, 72, 2], [6, 74, 2]],
     C: [[0, 76, 1.5], [1.5, 76, 1.5], [3, 79, 1], [4, 84, 1.5], [5.5, 83, 1], [6.5, 79, 1.5]], G: [[0, 79, 1.5], [1.5, 79, 1.5], [3, 81, 1], [4, 83, 2], [6, 86, 1], [7, 83, 1]] },
 };

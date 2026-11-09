@@ -74,7 +74,7 @@ export async function captureApp({ steps, outDir, viewport = { w: 390, h: 844, s
         if (!ok) throw new Error(`REFUSING TO FILM: ${step.expect} = ${JSON.stringify(v)} does not satisfy ${JSON.stringify(step)}`);
         log('expect', { name: step.expect, ok });
       } else if (step.shot) {
-        await settleCapture(client);
+        await settleCapture(client, { strict: false });
         let clip;
         if (step.clip) { const r = await client.eval(`(() => { const r = ${q(step.clip)}.getBoundingClientRect(); return { x: r.left, y: r.top, width: r.width, height: r.height }; })()`); clip = { ...r, scale: 1 }; }
         const png = Buffer.from((await client.send('Page.captureScreenshot', { format: 'png', ...(clip ? { clip } : {}) })).data, 'base64');

@@ -96,6 +96,7 @@ function newFilm(name, opt) {
   if (existsSync(dir)) { console.error(`${name}/ already exists; nothing written`); process.exit(1); }
   const place = PLACEMENTS[opt.placement || 'reels']; if (!place) { console.error(`placement: ${Object.keys(PLACEMENTS).join(', ')}`); process.exit(2); }
   const duration = Number(opt.duration || 30), fps = Number(opt.fps || 30), delivery = `${opt.placement || 'reels'}${duration}`;
+  if (!(Number.isInteger(duration) && duration >= 1 && duration <= 600) || !(Number.isInteger(fps) && fps >= 1 && fps <= 120)) { console.error('--duration must be whole seconds 1..600 and --fps a whole number 1..120'); process.exit(2); }
   mkdirSync(dir);
   const plan = JSON.parse(readFileSync(join(STUDIO, 'templates', 'production.json'), 'utf8'));
   plan.duration = duration; plan.fps = fps; plan.assets = [];
@@ -148,7 +149,7 @@ writeWav(join(OUT, 'music.wav'), music); writeWav(join(OUT, 'sfx.wav'), sfx); wr
 `);
   writeFileSync(join(dir, 'BRIEF.md'), `# ${name} — brief\n\nPlacement: ${place.note}, ${place.w}×${place.h}, ${duration} s, ${fps} fps.\n\n- Viewer:\n- One promise:\n- Real evidence (assets + rights):\n- CTA:\n- Direction (one hero, palette, two type roles, camera, transitions, sound):\n- Assumptions:\n`);
   writeFileSync(join(dir, 'LEDGER.md'), `# LEDGER — ${name}\ntime → issue → severity → fix → result. Takes live in \`studio/out/${name}/\` (not in git).\n\n| time | issue | sev | fix | result |\n|---|---|---|---|---|\n`);
-  console.log(`Created ${name}/ (config, production.json, film.js, score.mjs, BRIEF.md, LEDGER.md).\nNext: fill BRIEF + production.json, declare craft.layers per shot, then: node studio.mjs route ${name} && node make.mjs ${name}`);
+  console.log(`Created ${name}/ (config, production.json, film.js, score.mjs, BRIEF.md, LEDGER.md).\nNext: fill BRIEF + production.json, declare craft.layers per shot, then: node studio.mjs route ${name} && node studio.mjs build ${name}\nThis is the hand-coded door (film.js). New films normally use the Studio Engine: node studio.mjs director plan <film> (studio-engine/STUDIO.md).`);
 }
 
 // Voice studio (VOICE_STUDIO.md): providers, one line, a film's voice.json script.

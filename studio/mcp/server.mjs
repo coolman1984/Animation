@@ -12,6 +12,7 @@ import { lint } from '../studio-engine/lib/gates.mjs';
 import { timeline } from '../studio-engine/lib/events.js';
 import { forFormat } from '../studio-engine/lib/spec.mjs';
 import { lockHolder } from '../lib/procs.mjs';
+import { ELEMENTS } from '../studio-engine/lib/vocab.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url)), STUDIO = resolve(HERE, '..'), ENGINE = join(STUDIO, 'studio-engine');
 const FILMS = join(ENGINE, 'films'), JOBS = join(STUDIO, 'takes', 'mcp-jobs');
@@ -24,7 +25,7 @@ const brandOf = (film) => readJSON(existsSync(join(FILMS, film, 'brand.json')) ?
 // One hint per known failure, so a model of any size knows the next edit, not only what broke.
 const HINTS = [
   [/contrast/, 'Pick a colour with ≥ 3:1 contrast on the scene bg; if the text sits on a shape/pill, set "on" to that colour.'],
-  [/unknown element/, 'Use a type from engine_catalog.elements (words, stack, extrude, lockup, mark, storm, slice, cards, ring, pill, wipes, slab, hosts, sparks, shape, path, icon, image, ribbon, cursor).'],
+  [/unknown element/, `Use a type from engine_catalog.elements (${ELEMENTS.join(', ')}).`],
   [/starts after the scene ends/, '"at" counts BEATS from the scene start: keep it below the scene\'s "beats".'],
   [/duration must match/, 'Delete "duration" or set it to sum(beats) × 60 / bpm.'],
   [/beats must be/, 'Every scene needs "beats" > 0 (120 BPM: 4 beats = 2 s).'],
@@ -48,7 +49,7 @@ function filmDir(film) {
 }
 function check(spec, film, format) {
   const brand = brandOf(film), fmt = format || spec.format || 'youtube';
-  if (!brand.export.formats[fmt]) return { ok: false, issues: [issue('error', `unknown format ${fmt} (use youtube or reel)`)] };
+  if (!brand.export.formats[fmt]) return { ok: false, issues: [issue('error', `unknown format ${fmt} (use one of brand.json export.formats)`)] };
   const L = lint(forFormat(spec, fmt), brand, { format: fmt });
   let summary = null;
   try { const tl = timeline(spec); summary = { seconds: +tl.duration.toFixed(2), bpm: tl.bpm, scenes: tl.scenes.map((s) => ({ id: s.id, from: +s.a.toFixed(2), to: +s.b.toFixed(2), elements: (s.elements || []).map((e) => e.type) })) }; } catch { /* reported by lint */ }
@@ -97,7 +98,7 @@ async function sheetImage(sheet) {
 
 const text = (o) => ({ type: 'text', text: typeof o === 'string' ? o : JSON.stringify(o, null, 2) });
 const FILM = { type: 'string', description: 'film folder under studio/studio-engine/films (lowercase, a-z 0-9 - _)' };
-const FORMAT = { type: 'string', enum: ['youtube', 'reel'], description: 'youtube 1920×1080 or reel 1080×1920; default: the spec\'s format' };
+const FORMAT = { type: 'string', enum: Object.keys(readJSON(join(ENGINE, 'brand', 'brand.json')).export.formats), description: 'youtube 1920×1080, reel 1080×1920, square 1080×1080 or post 1080×1350 (brand.json formats); default: the spec\'s format' };
 export const TOOLS = [
   { name: 'studio_guide', description: 'START HERE. The studio\'s method for any model: the film loop, house taste, honesty rules and what each next tool does.', inputSchema: { type: 'object', properties: {} },
     run: () => [text(readFileSync(join(STUDIO, 'ANY_MODEL.md'), 'utf8'))] },

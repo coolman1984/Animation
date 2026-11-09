@@ -3,24 +3,52 @@
 import { spawnSync } from 'node:child_process';
 import { timeline, eventsOf } from './events.js';
 import { onsets } from './analyze.mjs';
+import { ELEMENTS, SECTIONS, TRANSITIONS, BACKGROUNDS, CHORD_NAMES, HOOK_NAMES } from './vocab.js';
 
 const ARABIC = /[؀-ۿ]/, LATIN = /[A-Za-z]{2,}/;
 const lum = (hex) => { if (typeof hex !== 'string' || !/^#[0-9a-f]{6}$/i.test(hex)) return NaN; const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
 export const contrast = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
-const KNOWN = new Set(['words', 'stack', 'extrude', 'lockup', 'storm', 'slice', 'cards', 'ring', 'pill', 'wipes', 'slab', 'hosts', 'mark', 'sparks', 'shape', 'path', 'icon', 'image', 'ribbon', 'cursor', 'painted', 'caption']);
+export const KNOWN = new Set(ELEMENTS);
 
 // format: the delivery format name (sizes come from brand.export.formats); defaults to spec.format, then youtube.
+// brand.json shape (audit R2): a missing colour used to paint "undefined47" with no error. Keys = what the player and modules read.
+export const BRAND_COLORS = ['ink', 'text', 'primary', 'primaryDark', 'glow', 'ice', 'accent', 'accentDark', 'warm', 'muted', 'paper'];
+export function validateBrand(brand) {
+  const e = [], hex = (v) => typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v), num = (v) => Number.isFinite(v);
+  if (!brand || typeof brand !== 'object') return ['brand must be an object'];
+  for (const k of BRAND_COLORS) if (!hex(brand.colors?.[k])) e.push(`brand.colors.${k} must be a six-digit hex colour`);
+  if (typeof brand.fonts?.display !== 'string' || !brand.fonts.display) e.push('brand.fonts.display must name a font family');
+  const x = brand.export || {};
+  if (!(Number.isInteger(x.fps) && x.fps > 0 && x.fps <= 120)) e.push('brand.export.fps must be an integer 1..120');
+  if (!num(x.lufs) || !num(x.tp)) e.push('brand.export.lufs and tp must be numbers');
+  if (!x.formats || !Object.keys(x.formats).length) e.push('brand.export.formats must list at least one format');
+  for (const [name, f] of Object.entries(x.formats || {})) {
+    if (!(Number.isInteger(f?.w) && Number.isInteger(f?.h) && f.w > 0 && f.h > 0)) { e.push(`brand.export.formats.${name}: w and h must be positive integers`); continue; }
+    const s = f.safe; if (!(Array.isArray(s) && s.length === 4 && s.every(num) && s[0] >= 0 && s[1] >= 0 && s[2] <= f.w && s[3] <= f.h && s[0] < s[2] && s[1] < s[3])) e.push(`brand.export.formats.${name}.safe must be [x0, y0, x1, y1] inside ${f.w}×${f.h}`);
+    if (!(num(f.shareMB) && f.shareMB > 0)) e.push(`brand.export.formats.${name}.shareMB must be positive`);
+  }
+  return e;
+}
+
 export function lint(spec, brand, { format } = {}) {
   const errors = [], warns = [];
   let tl;
   try { tl = timeline(spec); } catch (error) { return { errors: [error.message], warns, duration: null }; }
-  if (!brand?.colors) return { errors: ['brand.colors is required'], warns, duration: tl.duration };
+  const brandErrors = validateBrand(brand);
+  if (brandErrors.length) return { errors: brandErrors, warns, duration: tl.duration };
   if (spec.assets != null && (!Array.isArray(spec.assets) || spec.assets.some((a) => !a || typeof a !== 'object'))) errors.push('assets must be an array of objects');
   for (const key of ['music', 'voice']) if (spec.audio?.[key] != null && typeof spec.audio[key] !== 'string') errors.push(`audio.${key} must be a local file path`);
+  // closed word lists (audit R1): a typo used to fall back silently (A minor, a cut, a generic section) or crash in the browser
+  const oneOf = (value, list, what) => { if (value != null && !list.includes(value)) errors.push(`${what} "${value}" is not one of: ${list.join(', ')}`); };
+  oneOf(spec.background, BACKGROUNDS, 'background');
+  for (const c of spec.music?.progression || []) oneOf(c, CHORD_NAMES, 'music.progression chord');
+  oneOf(spec.music?.final, CHORD_NAMES, 'music.final chord');
+  if (spec.music?.hook != null && !HOOK_NAMES.includes(spec.music.hook)) warns.push(`music.hook "${spec.music.hook}" has no written line; the automatic 3-3-2 hook plays (written hooks: ${HOOK_NAMES.join(', ')})`);
   const B = brand.colors, hex = (c, d) => (c ? (B[c] || c) : d);
   const bgOf = (s) => (/^#[0-9a-f]{6}$/i.test(s.bg || '') ? s.bg : s.bg === 'light' ? '#E8EEF8' : s.bg === 'blue' ? '#0A2A8C' : B.ink);
   tl.scenes.forEach((s, i) => {
     const where = `scene ${s.id}`;
+    oneOf(s.music, SECTIONS, `${where}: music section`); oneOf(s.transition, TRANSITIONS, `${where}: transition`);
     if (!(s.beats > 0)) errors.push(`${where}: beats must be > 0`);
     if (!s.elements?.length) errors.push(`${where}: no elements — a scene must move`);
     if (i > 0 && (s.transition || 'cut') === 'cut' && s.elements?.some((e) => e.type === 'shape') && tl.scenes[i - 1].elements?.some((e) => e.type === 'shape' && !e.morphTo)) warns.push(`${where}: hard cut between two scenes with shapes — a morphTo would carry the eye`);
@@ -38,6 +66,8 @@ export function lint(spec, brand, { format } = {}) {
       if (e.type === 'ribbon') for (const key of ['count', 'cols']) if (e[key] != null && (!Number.isInteger(e[key]) || e[key] < 1 || e[key] > 24)) errors.push(`${where}: ribbon.${key} must be an integer between 1 and 24`);
       for (const k of ['at', 'out', 'cutAt', 'midAt', 'pushAt', 'implodeAt', 'start', 'step']) if (e[k] != null && Math.abs(e[k] * 4 - Math.round(e[k] * 4)) > 1e-6 && Math.abs(e[k] * 10 - Math.round(e[k] * 10)) > 1e-6) warns.push(`${where}: ${e.type}.${k}=${e[k]} is off the 16th grid`);
       if (e.at != null && e.at > s.beats) errors.push(`${where}: ${e.type} starts after the scene ends`);
+      if (e.out != null && Number.isFinite(e.out) && e.out <= (e.at ?? 0)) errors.push(`${where}: ${e.type}.out (${e.out}) must come after its at (${e.at ?? 0})`);
+      else if (e.out != null && e.out > s.beats + 1e-9) warns.push(`${where}: ${e.type}.out (${e.out}) is after the scene ends (${s.beats} beats); it is cut at the scene end`);
       const texts = [e.text, ...(e.lines || []).map((l) => l.text), ...(e.parts || []).map((p) => (typeof p === 'string' ? p : p.text))].filter(Boolean);
       if (texts.some((t) => typeof t !== 'string')) { errors.push(`${where}: text must be a string`); continue; }
       for (const t of texts) if (/[‹›]/.test(t)) errors.push(`${where}: placeholder left in "${t}" — write the real line`);

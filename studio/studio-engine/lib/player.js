@@ -44,7 +44,7 @@ export function makeFilm(spec, brand) {
       shell = div(st, { width: px(W), height: px(H), overflow: 'hidden', zIndex: '1' });
       // world
       const wr = div(shell, { width: px(W), height: px(H), zIndex: '1' });
-      const bg = div(wr, { width: px(W), height: px(H), background: BG[spec.background || 'room'](brand) });
+      const bg = div(wr, { width: px(W), height: px(H), background: (BG[spec.background || 'room'] || (() => spec.background))(brand) });
       const hz = div(wr, { top: px(H * 0.435), width: px(W), height: px(240 * H / 1080), background: `linear-gradient(180deg, transparent, ${B.glow}47, transparent)`, zIndex: '1' });
       const grid = (top, flip) => { const p = div(wr, { width: px(W), height: px(H), perspective: '700px', perspectiveOrigin: `50% ${flip ? 60 : 40}%`, zIndex: '1', overflow: 'hidden', opacity: flip ? '0.5' : '1' });
         return div(p, { left: px(-1200), top: px(flip ? -3000 : H / 2), width: px(W + 2400), height: px(flip ? 3000 + H / 2 : 3000), transformOrigin: flip ? '50% 100%' : '50% 0', transform: `rotateX(${flip ? -78 : 78}deg)`,
