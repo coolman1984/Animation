@@ -4,6 +4,8 @@ description: Landing-page strategy, conversion copy and ship checklist (landing-
 ---
 <!-- generated from .claude/skills by `node studio/studio.mjs agents --sync`; edit the source, not this copy -->
 # landing-page-design (vendored)
+
+> **Hallmark is mandatory and loads first; this skill supplements it.** For any app/website/page/UI work, load `.claude/skills/hallmark/` (toolkit `studio/toolkit/hallmark/`) before this skill; Hallmark wins on conflict.
 Upstream text: `studio/toolkit/landing-page-design/SKILL.md` (licence and pinned commit: `studio/toolkit/toolkit.json`).
 It runs inside the one web workflow (`studio/web/WEB.md`), never instead of it.
 

@@ -3,6 +3,8 @@ name: design-to-motion
 description: Turn a static design (a Figma frame, dashboard, app screen, bento or card set, UI on a photo) into a pixel-exact animated showcase (design-to-motion by Elaya, MIT, vendored text) — empty state → smooth load → every visual acts out what it does in a seamless loop, with fidelity, overflow, seam, empty-beat and rest checks, and MP4/GIF exports. Use when the owner says "animate this design/screenshot/dashboard", for product-UI promo shots, and for the bento/feature cards of a site (web stage C).
 ---
 # design-to-motion (vendored)
+
+> **Hallmark is mandatory and loads first; this skill supplements it.** For any app/website/page/UI work, load `.claude/skills/hallmark/` (toolkit `studio/toolkit/hallmark/`) before this skill; Hallmark wins on conflict.
 Upstream text: `studio/toolkit/design-to-motion/SKILL.md` (licence and pinned commit: `studio/toolkit/toolkit.json`). Read it whole before
 building; its "Make it yours" table holds every timing. Two contexts: **showcase** (the whole frame loops, exports) and **website** (only
 sections with a visual part; intro once on scroll, stories while on screen).

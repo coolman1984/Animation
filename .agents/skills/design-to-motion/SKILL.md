@@ -4,6 +4,8 @@ description: Turn a static design (a Figma frame, dashboard, app screen, bento o
 ---
 <!-- generated from .claude/skills by `node studio/studio.mjs agents --sync`; edit the source, not this copy -->
 # design-to-motion (vendored)
+
+> **Hallmark is mandatory and loads first; this skill supplements it.** For any app/website/page/UI work, load `.claude/skills/hallmark/` (toolkit `studio/toolkit/hallmark/`) before this skill; Hallmark wins on conflict.
 Upstream text: `studio/toolkit/design-to-motion/SKILL.md` (licence and pinned commit: `studio/toolkit/toolkit.json`). Read it whole before
 building; its "Make it yours" table holds every timing. Two contexts: **showcase** (the whole frame loops, exports) and **website** (only
 sections with a visual part; intro once on scroll, stories while on screen).

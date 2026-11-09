@@ -1,5 +1,16 @@
 {
   "servers": {
-    "animation-studio": { "type": "stdio", "command": "node", "args": ["${workspaceFolder}/studio/mcp/server.mjs"] }
+    "animation-studio": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/studio/mcp/server.mjs"
+      ]
+    }
+  },
+  "hallmark": {
+    "mandatory": true,
+    "loadsFirst": true,
+    "note": "Any app/website/page/UI must load skill hallmark first; see AGENTS.md."
   }
 }

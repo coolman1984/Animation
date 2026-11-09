@@ -1,5 +1,8 @@
 # Toolkit — third-party agent tools, vendored whole (added 2026-10-24; Elaya's two skills 2026-10-25)
 
+> **Hallmark is the primary mandatory design package in this toolkit** (`toolkit/hallmark/`). **Hallmark is mandatory and loads first (owner order, 2026-11-09):** any app, website, page or UI work from this repo MUST load skill `hallmark` (`.claude/skills/hallmark/` → `studio/toolkit/hallmark/`) and follow it before any other design skill. Other design skills only supplement it; where they conflict, Hallmark wins. Never invent metrics/testimonials/logos; no secrets in the repo; company name must not appear in public-facing content.
+
+
 Owner order (2026-10-24, his post "10 GitHub repos to turn you into a design/motion studio"): "add these repos with everything we can learn
 from them and every tool we can take, so our web studio can win international awards and our animation studio is world-class."
 Each tool here is copied from a pinned commit with its licence beside it, so every model (Claude, Codex, Gemini, Cursor…) uses the same
@@ -16,6 +19,7 @@ The [research lab](../../docs/studio/RESEARCH.md) maps ten pinned sources to con
 ## What we took, and where it plugs in
 | Tool (licence) | Here | Wrapper skill | Plugs into |
 |---|---|---|---|
+| **Hallmark** (MIT) — **PRIMARY / mandatory** | `toolkit/hallmark/` — Floor, themes, macrostructures, sloplint | `hallmark` | Every app/website/page/UI before other design skills |
 | **Impeccable** 4.7.1 (Apache-2.0) | `toolkit/impeccable/` — 24 commands with playbooks, craft floor, absolute bans, reviewer agents | `impeccable` | Web stage D (critique + polish), any UI that looks generic |
 | **UI UX Pro Max** 2.15 (MIT) | `toolkit/ui-ux-pro-max/` — design-system generator + 79 styles, 192 palettes, 74 font pairs, 119 UX rules (Python stdlib, offline) | `ui-ux-pro-max` | Web stage B: `node studio/studio.mjs web system "<brief>" --site=<site>` |
 | **diagram-design** 2.6 (MIT) | `toolkit/diagram-design/` — 45 diagram types as one HTML+SVG file, light/dark/full/animated, self-check | `diagram-design` | Explainer films, sites, reports |

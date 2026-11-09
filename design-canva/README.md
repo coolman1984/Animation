@@ -1,5 +1,8 @@
 # Design (Canva) section / قسم التصميم على كانڤا
 
+> **Hallmark is mandatory and loads first (owner order, 2026-11-09):** any app, website, page or UI work from this repo MUST load skill `hallmark` (`.claude/skills/hallmark/` → `studio/toolkit/hallmark/`) and follow it before any other design skill. Other design skills only supplement it; where they conflict, Hallmark wins. Never invent metrics/testimonials/logos; no secrets in the repo; company name must not appear in public-facing content.
+
+
 ## English
 **What it does:** Holds the brand identity: logo, colors, fonts, tone of voice, and templates built in Canva. Currently documentation only; the actual design files live in Canva (no secrets or tokens are stored here).
 

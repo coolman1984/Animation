@@ -4,6 +4,8 @@ description: Turn a client's real assets into camera-ready brand tokens — colo
 ---
 <!-- generated from .claude/skills by `node studio/studio.mjs agents --sync`; edit the source, not this copy -->
 # brand-kit
+
+> **Hallmark is mandatory and loads first; this skill supplements it.** For any app/website/page/UI work, load `.claude/skills/hallmark/` (toolkit `studio/toolkit/hallmark/`) before this skill; Hallmark wins on conflict.
 Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `studio/SKILLS.md`.
 
 

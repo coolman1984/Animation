@@ -4,6 +4,8 @@ description: UI/UX design intelligence (UI UX Pro Max 2.15 by NextLevelBuilder, 
 ---
 <!-- generated from .claude/skills by `node studio/studio.mjs agents --sync`; edit the source, not this copy -->
 # ui-ux-pro-max (vendored)
+
+> **Hallmark is mandatory and loads first; this skill supplements it.** For any app/website/page/UI work, load `.claude/skills/hallmark/` (toolkit `studio/toolkit/hallmark/`) before this skill; Hallmark wins on conflict.
 The full upstream skill lives in `studio/toolkit/ui-ux-pro-max/` (licence and pinned commit: `studio/toolkit/toolkit.json`). Read
 `studio/toolkit/ui-ux-pro-max/SKILL.md`; its scripts are at `studio/toolkit/ui-ux-pro-max/scripts/` (Python 3 standard library, no network).
 

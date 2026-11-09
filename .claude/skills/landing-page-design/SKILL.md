@@ -3,6 +3,8 @@ name: landing-page-design
 description: Landing-page strategy, conversion copy and ship checklist (landing-page-design by Elaya, MIT, vendored text) — one offer / one audience / one action, intake in one batch, above-the-fold order, layout types A–D, copy formulas, section-by-section build, SEO/AEO, content realism, full interaction states, ship requirements and the tagline word-reveal section. Use with web-director when the site is a landing page or campaign page (feeds stages A and C, checked in D).
 ---
 # landing-page-design (vendored)
+
+> **Hallmark is mandatory and loads first; this skill supplements it.** For any app/website/page/UI work, load `.claude/skills/hallmark/` (toolkit `studio/toolkit/hallmark/`) before this skill; Hallmark wins on conflict.
 Upstream text: `studio/toolkit/landing-page-design/SKILL.md` (licence and pinned commit: `studio/toolkit/toolkit.json`).
 It runs inside the one web workflow (`studio/web/WEB.md`), never instead of it.
 

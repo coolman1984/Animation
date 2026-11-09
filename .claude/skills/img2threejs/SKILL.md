@@ -3,6 +3,8 @@ name: img2threejs
 description: Rebuild the object in a reference image as a code-only, procedural, animation-ready Three.js model (img2threejs 2.0 by img2threejs, Apache-2.0, vendored; Python standard library) — staged sculpt pipeline (validate → quality contract → spec → blockout, structure, form, material, lighting, interaction, optimisation → review → rig) with a vision self-correction loop. Use when a film or site needs a real product, prop or character as live 3D built in code from a photo.
 ---
 # img2threejs (vendored)
+
+> **Hallmark is mandatory and loads first; this skill supplements it.** For any app/website/page/UI work, load `.claude/skills/hallmark/` (toolkit `studio/toolkit/hallmark/`) before this skill; Hallmark wins on conflict.
 The full upstream checkout lives in `studio/toolkit/img2threejs/` (licence and pinned commit: `studio/toolkit/toolkit.json`; tests and CI removed).
 Read `studio/toolkit/img2threejs/SKILL.md` and follow it **from that folder**: run its commands with that folder as the checkout,
 e.g. `python studio/toolkit/img2threejs/forge/next.py --state <work>/.img2threejs/state.json`, and keep the run's state and outputs in the

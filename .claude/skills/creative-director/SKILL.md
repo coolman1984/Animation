@@ -4,6 +4,8 @@ description: Turn a brief into a distinct, evidence-led visual direction before 
 ---
 # creative-director
 
+> **Hallmark is mandatory and loads first; this skill supplements it.** For any app/website/page/UI work, load `.claude/skills/hallmark/` (toolkit `studio/toolkit/hallmark/`) before this skill; Hallmark wins on conflict.
+
 Operating policy: `studio/WORKFLOW.md`. This skill owns direction, not rendering.
 
 1. Reduce the job to viewer → one promise/proof → one action. Keep factual claims tied to product evidence.

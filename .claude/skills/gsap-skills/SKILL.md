@@ -3,6 +3,8 @@ name: gsap-skills
 description: Official GSAP skills (GreenSock, MIT, vendored) for web stage C — core tweens, timelines, ScrollTrigger, plugins, utils, React, Vue/Svelte, performance. Use when a site needs cinematic sequences, scroll storytelling, pinned scenes or synchronized timelines. The GSAP library itself is GreenSock's standard no-charge licence, not MIT.
 ---
 # gsap-skills (vendored)
+
+> **Hallmark is mandatory and loads first; this skill supplements it.** For any app/website/page/UI work, load `.claude/skills/hallmark/` (toolkit `studio/toolkit/hallmark/`) before this skill; Hallmark wins on conflict.
 The official skills live in `studio/toolkit/gsap-skills/` (pinned commit and licence: `studio/toolkit/toolkit.json`, `LICENSE`).
 Start at `studio/toolkit/gsap-skills/llms.txt`, then read the one skill for the job. Paths inside a skill are relative to its own folder.
 

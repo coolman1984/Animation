@@ -4,6 +4,8 @@ description: Build a complete, beautiful, animated static website (landing pages
 ---
 <!-- generated from .claude/skills by `node studio/studio.mjs agents --sync`; edit the source, not this copy -->
 # web-director
+
+> **Hallmark is mandatory and loads first; this skill supplements it.** For any app/website/page/UI work, load `.claude/skills/hallmark/` (toolkit `studio/toolkit/hallmark/`) before this skill; Hallmark wins on conflict.
 Read `studio/web/WEB.md`. **Owner orders (2026-10-19): every site or web animation runs WEB.md "One workflow" — A creative direction (taste-skill: three real directions, pick one) → B design system (UI UX Pro Max) → C build + animate from the motion storyboard with the minimum tech → D critique and polish (Impeccable) — recorded in `web/sites/<site>/DESIGN.md`; WEB.md says how each runs, installed or not. Done = the visual quality loop passed, never "it compiled".** Honesty rules: skill `data-honesty` (client's words and real numbers only; sources for stats and quotes).
 
 1. Answer the ambition questions first (best studio in the field · rawest real material · methods and tools), then pick a style: `node studio/studio.mjs web styles`.

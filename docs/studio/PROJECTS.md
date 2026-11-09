@@ -1,5 +1,10 @@
 # إنشاء مشروع وتسليمه 🎬
 
+> **هولمارك إلزامي ويتحمّل الأول (أمر المالك، ٢٠٢٦-١١-٠٩):** أي تطبيق أو موقع أو صفحة أو واجهة من الريبو ده لازم يحمّل اسكيل `hallmark` ويتبعها قبل أي اسكيل تصميم تانية. الباقي بس مكمّل؛ لو اختلفوا، هولمارك تكسب.
+>
+> **Hallmark is mandatory and loads first (owner order, 2026-11-09):** any app, website, page or UI work from this repo MUST load skill `hallmark` (`.claude/skills/hallmark/` → `studio/toolkit/hallmark/`) and follow it before any other design skill. Other design skills only supplement it; where they conflict, Hallmark wins. Never invent metrics/testimonials/logos; no secrets in the repo; company name must not appear in public-facing content.
+
+
 ابدأ بتحديد الجمهور، الرسالة، المطلوب تسليمه ومكان عرضه، ثم املأ [قالب المشروع](MAINTENANCE.md#project-record). لو الشغل موجود، وثّق حالته الحالية وصورة أو فيديو مرجعي قبل التعديل.
 
 | نوع المشروع | المسار | دليل من الريبو |

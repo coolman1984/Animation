@@ -1,5 +1,15 @@
 {
   "mcpServers": {
-    "animation-studio": { "command": "node", "args": ["studio/mcp/server.mjs"] }
+    "animation-studio": {
+      "command": "node",
+      "args": [
+        "studio/mcp/server.mjs"
+      ]
+    }
+  },
+  "hallmark": {
+    "mandatory": true,
+    "loadsFirst": true,
+    "note": "Any app/website/page/UI must load skill hallmark first; see AGENTS.md."
   }
 }

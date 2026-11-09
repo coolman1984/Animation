@@ -3,6 +3,8 @@ name: brand-kit
 description: Turn a client's real assets into camera-ready brand tokens — colours, type, logo matte, motifs — without hard-coding any brand into the engine. Use when starting a film for a new brand.
 ---
 # brand-kit
+
+> **Hallmark is mandatory and loads first; this skill supplements it.** For any app/website/page/UI work, load `.claude/skills/hallmark/` (toolkit `studio/toolkit/hallmark/`) before this skill; Hallmark wins on conflict.
 Operating policy: `studio/WORKFLOW.md`; load only the relevant department via `studio/SKILLS.md`.
 
 

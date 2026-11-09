@@ -4,6 +4,8 @@ description: Official GSAP skills (GreenSock, MIT, vendored) for web stage C —
 ---
 <!-- generated from .claude/skills by `node studio/studio.mjs agents --sync`; edit the source, not this copy -->
 # gsap-skills (vendored)
+
+> **Hallmark is mandatory and loads first; this skill supplements it.** For any app/website/page/UI work, load `.claude/skills/hallmark/` (toolkit `studio/toolkit/hallmark/`) before this skill; Hallmark wins on conflict.
 The official skills live in `studio/toolkit/gsap-skills/` (pinned commit and licence: `studio/toolkit/toolkit.json`, `LICENSE`).
 Start at `studio/toolkit/gsap-skills/llms.txt`, then read the one skill for the job. Paths inside a skill are relative to its own folder.
 
