@@ -5,6 +5,10 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-11-07 — Masar coach site, round 2: human-like swarm motion
+
+Owner: "faster, more agents, random, circular, wavy, smooth like a human hand, like the original". `build-swarm.js` now drives all agents from one requestAnimationFrame loop: random cubic arcs and S-curves with a minimum-jerk profile, a small wave, overshoot and spring-back, 3-ghost trails, idle loops and drift, nearest-part picking, and boxes that grow with the cursor drag. 14 agents on desktop, 8 on phones; an element builds in ≈ 0.35 s. `web audit`: no red. Artifact republished.
+
 ## 2026-11-07 — Masar coach site, round 1: English and a professional redesign
 
 Owner: "faster, bigger arrows, all English, professional design, colours and fonts". The page is English/LTR with Manrope + Instrument Serif and a cobalt / navy / warm-paper palette; the swarm builds an element in ≈ 0.45 s (was ≈ 0.7 s), agents are 28 × 35 px with larger tags, and the bar/agent labels follow the page language. `web audit`: no red. Artifact republished.

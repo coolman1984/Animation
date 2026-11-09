@@ -45,4 +45,11 @@ and code are original. Live: private artifact https://claude.ai/artifact/DksCJS9
 - Owner round 1 (2026-11-07): faster (element ≈ 0.45 s, section of ~10 parts ≈ 1 s), agents 28 × 35 px with larger number tags,
   English copy, new palette and type above. Bar and agent labels now follow the page language (`start({ labels })` overrides).
   `web audit`: no red; remaining yellow = the transient typing caret only.
-- Not verified: real phones; the owner's verdict on round 1 (correction round 1 of 2 used).
+- Owner round 2 (2026-11-07): "faster, more agents, and move like a human hand: random, circular, wavy, very smooth, like the
+  original". Studied the reference frame by frame: many small cursors in loose flocks, curved paths, short motion trails, boxes
+  dragged open by the cursor. Now: 14 agents on desktop / 8 on phones; one requestAnimationFrame loop; every move is a random
+  cubic arc or S-curve timed with a minimum-jerk profile (Fitts-like duration), a small perpendicular wave, a slight overshoot
+  that springs back, and a 3-ghost trail; idle agents circle in small loops and drift; each agent takes the nearest waiting part;
+  the selection box grows with the cursor drag. Element ≈ 0.35 s. Screencast at ~58 fps confirmed smooth motion.
+  `web audit`: no red; remaining yellow = a transient caret/label shadow during the build.
+- Not verified: real phones; the owner's verdict on round 2 (correction round 2 of 2 used — scope closes as DONE or BLOCKED next).

@@ -489,3 +489,7 @@ The owner's supplied visual references now guide composition, imagery, type and 
 - Never make a visitor wait: parts that leave the screen finish instantly, long queues speed up, reduced motion gets the still page.
 - Overlay in page coordinates (absolute layer as tall as the document) so boxes and cursors scroll with the content.
 - Recipe in `web/WEB.md` "Build swarm"; first use `web/gallery/specimens/masar-coach.html`.
+- Human-like pointer motion (round 2): cubic path with a random perpendicular bend (mostly arcs, sometimes an S), minimum-jerk
+  timing `k³(10 − 15k + 6k²)` with duration ≈ 110 + 70·log2(1 + d/36) ms, a small sine wave across the path that fades at both ends,
+  a 4–9 px overshoot that springs back in ~90 ms, and a 3-ghost trail. Idle cursors loop (circle / figure-eight) and drift; never
+  keyframe a fixed path, so no two moves repeat.
