@@ -9,12 +9,14 @@ import { fingerprint, cached } from './lib/cache.mjs';
 import { buildCheck } from './lib/doctor.mjs';
 import { run, video, textTimeline } from './lib/render.mjs';
 import { probe, loudness, measureAll, contactSheet, gates } from './lib/measure.mjs';
-import { assembleAudio, masterAudio, mux, shareCopy, captions, stillAt, webpPreview } from './lib/finish.mjs';
+import { assembleAudio, masterAudio, mux, shareCopy, captions, stillAt, webpPreview, deliveryExtras, captionLanguage } from './lib/finish.mjs';
 import { loadProduction, reviewTimes } from './lib/production.mjs';
 import { reviewEvidence, aspectCompare } from './lib/review.mjs';
 import { loadMusicMap } from './lib/musicmap.mjs';
 import { externalRender, validateEngine } from './lib/engines.mjs';
 import { memoryBudget } from './lib/platform.mjs';
+import { tasteGate } from './lib/tastegate.mjs';
+import { mixCheck } from './lib/mixcheck.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 // Films live in <name>/ or examples/<name>/; output file names use the last path part.
@@ -170,32 +172,48 @@ try {
     const file = join(OUT, `${label}-${d.name}${profile === 'review' ? '-REVIEW' : ''}-${dw}x${dh}.mp4`);
     await mux(silent, master, file);
     const m = { ...(await measureAll(file)), text };
-    if (profile === 'final' && d.name === 'hero60') {
-      log('share copy');
-      const share = join(OUT, `${label}-${d.name}-share-${cfg.shareMB}MB.mp4`);
-      await shareCopy(file, share, { targetMB: cfg.shareMB, duration: m.probe.duration });
+    const extras = deliveryExtras(cfg, d, { profile, first: d === selected[0] });
+    if (extras.shareMB) {
+      step = `share copy ${d.name}`; log('share copy');
+      const share = join(OUT, `${label}-${d.name}-share-${extras.shareMB}MB.mp4`);
+      await shareCopy(file, share, { targetMB: extras.shareMB, duration: m.probe.duration });
       m.share = await probe(share);
-      log('music-only, captions, thumbnails, sheet');
+    }
+    if (extras.musicOnly) {
+      step = `music-only ${d.name}`;
       const mus = join(TAKES, 'music-master.wav');
-      await cached(mus + '.cache.json', fingerprint(ROOT, ['lib', `takes/${filmName}/music.wav`], { lufs: cfg.lufs, tp: cfg.tp }), [mus], () => masterAudio(join(TAKES, 'music.wav'), mus, { lufs: cfg.lufs, tp: cfg.tp }), log);
-      const musLoud = await loudness(mus);
-      await run('ffmpeg', ['-v', 'error', '-y', '-i', mus, '-c:a', 'aac', '-b:a', '256k', join(OUT, `${label}-music-only.m4a`)]);
-      m.musicOnly = musLoud;
-      captions(text.lines, join(OUT, `${label}-${d.name}.ar`));
-      captions(text.lines, join(OUT, `${label}-${d.name}.en`), { translate: cfg.en });
-      for (const [i, t] of cfg.thumbs.entries()) await stillAt(file, t, join(OUT, `thumb-${i + 1}.jpg`));
-      await stillAt(file, cfg.poster, join(OUT, 'poster.jpg'));
-      await contactSheet(file, join(OUT, 'contact-sheet.png'));
+      try {
+        await cached(mus + '.cache.json', fingerprint(ROOT, ['lib', `takes/${filmName}/music.wav`], { lufs: cfg.lufs, tp: cfg.tp }), [mus], () => masterAudio(join(TAKES, 'music.wav'), mus, { lufs: cfg.lufs, tp: cfg.tp }), log);
+        m.musicOnly = await loudness(mus);
+        await run('ffmpeg', ['-v', 'error', '-y', '-i', mus, '-c:a', 'aac', '-b:a', '256k', join(OUT, `${label}-music-only.m4a`)]);
+      } catch (error) { say(`   NOTE  no music-only file: ${error.message.split('\n')[0]}`); }
     }
-    if (profile === 'final' && d.shareMB) {
-      const share = join(OUT, `${label}-${d.name}-share-${d.shareMB}MB.mp4`);
-      await shareCopy(file, share, { targetMB: d.shareMB, duration: m.probe.duration });
-      m.share = await probe(share);
+    if (extras.captions) {
+      if (text.unavailable || !text.lines?.length) say(`   NOTE  no caption file: ${text.unavailable || 'no readable text in the film'}`);
+      else {
+        const lang = captionLanguage(text.lines);
+        captions(text.lines, join(OUT, `${label}-${d.name}.${lang}`));
+        if (cfg.en && lang === 'ar') captions(text.lines, join(OUT, `${label}-${d.name}.en`), { translate: cfg.en });
+      }
     }
-    if (profile === 'final' && Number.isFinite(d.poster)) await stillAt(file, d.poster, join(OUT, `poster-${d.name}.jpg`)); // poster: 0 is valid (audit B11)
-    if (profile === 'final' && d.name === 'bumper6') await webpPreview(file, join(OUT, `${label}-bumper6-preview.webp`));
-    const g = gates(m, { w: dw, h: dh, duration: range ? range[1] - range[0] : d.duration, fps: settings.fps, lufs: cfg.lufs, tp: cfg.tp, fadeOut: range ? Math.max(0, range[1] - (d.duration - (d.fadeOut || 0))) : (d.fadeOut || 0), shareMB: d.shareMB || cfg.shareMB, holds: (d.holds || (d.segments ? [] : cfg.holds) || []).map(([a, b]) => [a - (range?.[0] || 0), b - (range?.[0] || 0)]),
+    for (const [i, t] of extras.thumbs.entries()) await stillAt(file, t, join(OUT, `thumb-${i + 1}.jpg`));
+    if (extras.poster !== null && extras.poster !== undefined) await stillAt(file, Math.min(extras.poster, m.probe.duration - 0.05), join(OUT, extras.posterName)); // poster: 0 is valid (audit B11)
+    if (extras.sheet) await contactSheet(file, join(OUT, d === selected[0] ? 'contact-sheet.png' : `contact-sheet-${d.name}.png`));
+    if (extras.preview) await webpPreview(file, join(OUT, `${label}-${d.name}-preview.webp`));
+    const g = gates(m, { w: dw, h: dh, duration: range ? range[1] - range[0] : d.duration, fps: settings.fps, lufs: cfg.lufs, tp: cfg.tp, fadeOut: range ? Math.max(0, range[1] - (d.duration - (d.fadeOut || 0))) : (d.fadeOut || 0), shareMB: extras.shareMB, holds: (d.holds || (d.segments ? [] : cfg.holds) || []).map(([a, b]) => [a - (range?.[0] || 0), b - (range?.[0] || 0)]),
       darkSpans: (d.segments ? [] : (d.darkSpans || cfg.darkSpans || [])).map(([a, b]) => [a - (range?.[0] || 0), b - (range?.[0] || 0)]) });
+    // One finishing checklist for both doors (audit L5): the taste gate and the mix notes ran only for Studio Engine films.
+    if (profile === 'final') {
+      step = `taste gate ${d.name}`;
+      const declared = [...(d.darkSpans || cfg.darkSpans || []), ...(d.holds || (d.segments ? [] : cfg.holds) || [])];
+      const tg = tasteGate(file), blank = tg.metrics.blankRuns.filter(([a, b]) => !declared.some(([x, y]) => a >= x - 0.1 && b <= y + 0.1));
+      g.push({ name: 'taste: no empty frames mid-film', ok: !blank.length, value: blank.length ? blank.map(([a, b]) => `${a}–${b} s`).join(', ') : 'none outside declared dark spans/holds' });
+      const motion = tg.lights.find((x) => x.id === 'motion');   // red only once taste/calibration.json is fitted on the owner's verdicts
+      if (motion?.light === 'red') g.push({ name: 'taste: the film moves (owner-calibrated)', ok: false, value: motion.why });
+      for (const l of tg.lights.filter((x) => x.light === 'yellow' && x.id !== 'blank-frames')) say(`   NOTE  taste ${l.id}: ${l.why}`);
+      m.taste = { metrics: { ...tg.metrics, by10s: undefined }, lights: tg.lights.map(({ id, light }) => ({ id, light })) };
+      try { const mc = await mixCheck(file); m.mix = mc; for (const n of mc.notes) say(`   NOTE  mix: ${n}`); } catch (error) { say(`   NOTE  mix check unavailable: ${error.message.split('\n')[0]}`); }
+    }
     report.deliveries[d.name] = { file, ...m, cached: reused, textCached, audioCached,
       seconds: (performance.now() - deliveryStarted) / 1000, render: renderStats, range, gates: g };
     say(`\n  ${d.name}`);

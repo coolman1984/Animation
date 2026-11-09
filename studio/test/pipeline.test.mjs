@@ -44,3 +44,18 @@ test('one command: draft skips score; review/final mux and gate; unchanged stage
     assert.ok(final.deliveries.clip4.gates.every(g => g.ok));
   } finally { for (const path of [film, takes, out]) rmSync(path, { recursive: true, force: true }); }
 });
+
+test('final extras come from data, not the delivery name hero60 (audit B2)', async () => {
+  const { deliveryExtras, captionLanguage } = await import('../lib/finish.mjs');
+  const cfg = { shareMB: 27, thumbs: [1, 2], poster: 5 };
+  const reel = { name: 'reels30', duration: 30, shareMB: 14 }, cut = { name: 'cut15', duration: 15 };
+  const a = deliveryExtras(cfg, reel, { profile: 'final', first: true });
+  assert.equal(a.captions, true); assert.equal(a.sheet, true); assert.equal(a.musicOnly, true); assert.deepEqual(a.thumbs, [1, 2]); assert.equal(a.poster, 5); assert.equal(a.shareMB, 14);
+  const b = deliveryExtras(cfg, cut, { profile: 'final', first: false });
+  assert.equal(b.captions, false); assert.deepEqual(b.thumbs, []); assert.equal(b.poster, null); assert.equal(b.shareMB, undefined);
+  assert.equal(deliveryExtras(cfg, { name: 'hero60', duration: 60 }, { profile: 'final', first: true }).shareMB, 27);   // legacy: one share copy, not two
+  assert.equal(deliveryExtras(cfg, { ...cut, extras: { captions: true } }, { profile: 'final', first: false }).captions, true);
+  assert.equal(deliveryExtras(cfg, reel, { profile: 'review', first: true }).captions, false);
+  assert.equal(deliveryExtras(cfg, { name: 'bumper6', duration: 6 }, { profile: 'final', first: false }).preview, true);
+  assert.equal(captionLanguage([{ text: 'مرحبا' }]), 'ar'); assert.equal(captionLanguage([{ text: 'Hello' }]), 'en');
+});

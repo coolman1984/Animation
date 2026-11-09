@@ -1,6 +1,6 @@
 // Finishing: audio master (limiter → loudnorm → limiter, measured), mux, 2-pass share copy,
 // captions (SRT + VTT) from the read-back text timeline, thumbnails, animated preview.
-import { writeFileSync, readFileSync, rmSync } from 'node:fs';
+import { writeFileSync, readFileSync, rmSync, statSync } from 'node:fs';
 import { run } from './render.mjs';
 import { loudness, probe } from './measure.mjs';
 import { devNull } from './platform.mjs';
@@ -73,11 +73,18 @@ export async function shareCopy(master, out, { targetMB = 27, duration, audioKbp
   const v = Math.floor(totalKbps - audioKbps);
   if (v < 300) throw new Error(`share budget ${targetMB} MiB for ${duration.toFixed(1)} s leaves ${v} kb/s of video (minimum 300); raise shareMB`);
   const log = out + '.2pass';
-  const common = ['-c:v', 'libx264', '-preset', 'slow', '-b:v', `${v}k`, '-maxrate', `${Math.round(v * 1.6)}k`, '-bufsize', `${v * 2}k`, '-pix_fmt', 'yuv420p', '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-passlogfile', log];
-  await run('ffmpeg', ['-v', 'error', '-y', '-i', master, ...common, '-pass', '1', '-an', '-f', 'mp4', devNull]);
-  await run('ffmpeg', ['-v', 'error', '-y', '-i', master, ...common, '-pass', '2', '-c:a', 'aac', '-b:a', `${audioKbps}k`, '-movflags', '+faststart', out]);
-  for (const ext of ['-0.log', '-0.log.mbtree']) rmSync(log + ext, { force: true });
-  return { videoKbps: v };
+  // Two-pass rate control can land a little over budget on short, busy films: one retry at a lower rate instead of failing the
+  // whole build at its last gate (audit R12).
+  let rate = v;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const common = ['-c:v', 'libx264', '-preset', 'slow', '-b:v', `${rate}k`, '-maxrate', `${Math.round(rate * 1.6)}k`, '-bufsize', `${rate * 2}k`, '-pix_fmt', 'yuv420p', '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv', '-passlogfile', log];
+    await run('ffmpeg', ['-v', 'error', '-y', '-i', master, ...common, '-pass', '1', '-an', '-f', 'mp4', devNull]);
+    await run('ffmpeg', ['-v', 'error', '-y', '-i', master, ...common, '-pass', '2', '-c:a', 'aac', '-b:a', `${audioKbps}k`, '-movflags', '+faststart', out]);
+    for (const ext of ['-0.log', '-0.log.mbtree']) rmSync(log + ext, { force: true });
+    const sizeMB = statSync(out).size / 2 ** 20;
+    if (sizeMB <= targetMB || attempt) return { videoKbps: rate, retried: attempt > 0 };
+    rate = Math.max(300, Math.floor(rate * 0.9 * targetMB / sizeMB));
+  }
 }
 
 const ts = (t, sep) => {
@@ -102,3 +109,20 @@ export async function webpPreview(video, out, { width = 540, fps = 15 } = {}) {
   await run('ffmpeg', ['-v', 'error', '-y', '-i', video, '-vf', `fps=${fps},scale=${width}:-2:flags=lanczos`, '-c:v', 'libwebp_anim', '-loop', '0', '-quality', '70', '-an', out]);
   return out;
 }
+
+// What a final delivery gets besides the master (audit B2): these were tied to the delivery NAMES 'hero60' and 'bumper6', so only
+// film2 ever had captions, thumbnails, a poster, a contact sheet or a music-only file. Now: the first delivery of a final build gets
+// captions, the sheet and music-only by default; any delivery can switch each one with `extras: { captions, sheet, musicOnly, preview }`.
+export function deliveryExtras(cfg, d, { profile, first }) {
+  if (profile !== 'final') return { captions: false, sheet: false, musicOnly: false, thumbs: [], poster: null, preview: false, shareMB: undefined };
+  const x = d.extras || {}, own = Number.isFinite(d.poster);
+  return {
+    shareMB: d.shareMB ?? (d.name === 'hero60' ? cfg.shareMB : undefined),   // legacy: hero60 took the film-wide shareMB
+    captions: x.captions ?? first, sheet: x.sheet ?? first, musicOnly: x.musicOnly ?? first,
+    thumbs: first && Array.isArray(cfg.thumbs) ? cfg.thumbs.filter(Number.isFinite) : [],
+    poster: own ? d.poster : first && Number.isFinite(cfg.poster) ? cfg.poster : null, posterName: own ? `poster-${d.name}.jpg` : 'poster.jpg',
+    preview: x.preview ?? d.name === 'bumper6',
+  };
+}
+// Caption files take the language of the text they carry; a translation is written only when a translation map exists.
+export const captionLanguage = (lines) => (lines.some((l) => /[؀-ۿ]/.test(l.text)) ? 'ar' : 'en');

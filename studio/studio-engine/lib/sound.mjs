@@ -135,6 +135,10 @@ function saw(bus, t, midis, dur, vel, { cut0 = 3200, cut1 = 700, decay = 0.4, p 
   const send = mk(); pads.mixInto(send, 0.4); keys.mixInto(send, 0.55); arp.mixInto(send, 0.5); lead.mixInto(send, 0.6);
   reverb(send, { room: 0.86, damp: 0.4 }).mixInto(music, 0.75); hp(music, 28);
   if (musicPCM) for (let i = 0; i < Math.min(music.n, musicPCM.n); i++) { music.L[i] += musicPCM.L[i] * 0.9; music.R[i] += musicPCM.R[i] * 0.9; }
+  // Narration level (audit L4): scale the voice so its SPOKEN parts sit at one level whatever the recording gain (target RMS 0.1 ≈ -20 dBFS).
+  if (voicePCM) { let s = 0, n = 0; for (let i = 0; i < voicePCM.n; i += 4) { const v = (Math.abs(voicePCM.L[i]) + Math.abs(voicePCM.R[i])) / 2; if (v > 0.003) { s += v * v; n++; } }
+    const rms = n ? Math.sqrt(s / n) : 0, k = rms > 0 ? Math.min(8, 0.1 / rms) : 1;
+    if (Math.abs(k - 1) > 0.05) { for (let i = 0; i < voicePCM.n; i++) { voicePCM.L[i] *= k; voicePCM.R[i] *= k; } log(`voice level: spoken RMS ${(20 * Math.log10(rms || 1e-9)).toFixed(1)} dBFS → -20 dBFS`); } }
   if (voicePCM) { // narration on top; the music ducks under it (follow the voice envelope, 6 dB)
     let env = 0; const a = Math.exp(-1 / (0.01 * SR)), r = Math.exp(-1 / (0.25 * SR));
     for (let i = 0; i < Math.min(music.n, voicePCM.n); i++) { const v = Math.abs(voicePCM.L[i]) + Math.abs(voicePCM.R[i]); env = v > env ? a * env + (1 - a) * v : r * env + (1 - r) * v; const g = 1 - 0.5 * Math.min(1, env * 8); music.L[i] *= g; music.R[i] *= g; }
