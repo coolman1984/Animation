@@ -2,7 +2,9 @@
 
 Updated: 2026-11-09.
 
-**Current scope: DONE — Engine audit report (owner 2026-11-09: "review all code, write a detailed report, write no code").** [Audit report](docs/studio/ENGINE_AUDIT_2026-11-09.md): 7 confirmed bugs, 9 broken links between steps, robustness, safety, web, tests and a batch order for the implementing agent. Review only: no code changed, nothing in the report is implemented. Quick suite here: 156 pass, 18 skipped, 0 fail. Not verified: any render or browser job; the modules listed as "not reviewed" in the report.
+**Current scope: DONE — Engine audit fixes (owner 2026-11-09: "solve").** Six batches on the [audit report](docs/studio/ENGINE_AUDIT_2026-11-09.md): one studio job at a time (lock), resume after a crash with any worker count, engine durations that never fail the range check, captions/thumbnails/contact sheet for every final, taste gate and mix notes in both build doors, Openverse sounds in engine specs with their licences, plain errors for bad specs, brands, configs and missing files, safer sites and review approvals. Quick suite: 169 pass, 19 skipped, 0 fail; end-to-end build test passed. Open: the items marked Partly/Open in the report, and five owner questions (reel safe box, LRA rule, search client name, tracked recording, type checker). Not verified: the owner's Windows machine; a full engine final with narration and a downloaded sound.
+
+**Previous scope: DONE — Engine audit report (2026-11-09).** Review only; it is now the fix list above.
 
 Removed the root Arabic sales page, its `series5/` folder, `.nojekyll`, and the Pages workflow that published only that page. The handbook no longer points at it.
 

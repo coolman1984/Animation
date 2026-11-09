@@ -2,10 +2,10 @@
 // See WORKFLOW.md for profiles, targeted ranges, cache dependencies and artistic acceptance.
 // Each run writes a new numbered take in out/<film>/takeNN — nothing is overwritten.
 import { mkdirSync, readdirSync, writeFileSync, copyFileSync, readFileSync, existsSync, appendFileSync, rmSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { join, dirname, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildOptions, frameRange, validateConfig } from './lib/build-options.mjs';
-import { fingerprint, cached } from './lib/cache.mjs';
+import { fingerprint, cached, importGraph, vendorVersions } from './lib/cache.mjs';
 import { buildCheck } from './lib/doctor.mjs';
 import { run, video, textTimeline } from './lib/render.mjs';
 import { probe, loudness, measureAll, contactSheet, gates } from './lib/measure.mjs';
@@ -93,7 +93,8 @@ log('take', OUT);
 const pictureInputs = [filmName, 'lib', 'assets', ...(cfg.production ? [cfg.production] : []), ...(cfg.lut ? [cfg.lut] : []), ...visualAssets, ...(cfg.cacheInputs || []), ...(cfg.engine?.inputs || [])];
 // Browser session mode is part of the key: an attached launcher browser and the private headless one rasterise slightly
 // differently (measured 42 dB PSNR), so one film's frames must never mix modes.
-const pictureKey = fingerprint(ROOT, pictureInputs, { chromium: doc.chromium.version, engine: cfg.engine ?? 'native', session: process.env.STUDIO_CDP_URL ? 'attach' : 'private' }, [cfg.score, ...audioAssets]);
+const filmImports = external ? [] : importGraph(join(ROOT, cfg.film)).map((f) => relative(ROOT, f)).filter((f) => !f.startsWith('..'));
+const pictureKey = fingerprint(ROOT, [...pictureInputs, ...filmImports], { chromium: doc.chromium.version, engine: cfg.engine ?? 'native', session: process.env.STUDIO_CDP_URL ? 'attach' : 'private', vendor: vendorVersions(ROOT) }, [cfg.score, ...audioAssets]);
 
 const report = { film: filmName, take: n, profile, final: profile === 'final', at: new Date().toISOString(),
   content: { available: !!production.plan, warnings: production.warnings }, scoreCached, deliveries: {} };

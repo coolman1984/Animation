@@ -33,3 +33,22 @@ export async function cached(manifest, key, outputs, build, log = console.log) {
   if (cacheHit(manifest, key, outputs)) { log('cached'); return true; }
   await build(); saveCache(manifest, key, outputs); return false;
 }
+
+// Every local module a film really imports, followed from its entry (static `from '…'` and `import('…')` with relative paths). Files a
+// film pulls from outside its own folder and lib/ (library packs, another film's helper) used to be missing from the picture key (audit R8).
+export function importGraph(entry, { max = 400 } = {}) {
+  const seen = new Set(), todo = [resolve(entry)];
+  while (todo.length && seen.size < max) {
+    const file = todo.pop(); if (seen.has(file) || !existsSync(file) || !/\.(m?js)$/.test(file)) continue;
+    seen.add(file);
+    const src = readFileSync(file, 'utf8');
+    for (const m of src.matchAll(/(?:\bfrom\s*|\bimport\s*\(\s*|\bimport\s+)['"](\.{1,2}\/[^'"]+)['"]/g)) todo.push(resolve(dirname(file), m[1]));
+  }
+  return [...seen].sort();
+}
+// Versions of the vendored browser engines (three, pixi.js, rapier): an upgrade must re-render, not reuse old frames.
+export function vendorVersions(root) {
+  const dir = join(root, 'vendor', 'node_modules'), out = {};
+  for (const name of ['three', 'pixi.js', '@dimforge/rapier3d-compat']) { try { out[name] = JSON.parse(readFileSync(join(dir, name, 'package.json'), 'utf8')).version; } catch {} }
+  return out;
+}

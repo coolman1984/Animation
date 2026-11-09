@@ -138,3 +138,17 @@ test('the composer file server answers byte ranges and media types (audit S4)', 
     assert.equal((await fetch(`http://127.0.0.1:${s.port}/`)).status, 404);
   } finally { s.close(); rmSync(dir, { recursive: true, force: true }); }
 });
+
+test('the picture key follows what a film imports, wherever it lives (audit R8)', async () => {
+  const { importGraph, fingerprint } = await import('../lib/cache.mjs'), { mkdtempSync, writeFileSync, mkdirSync, rmSync } = await import('node:fs'), { tmpdir } = await import('node:os'), { join, relative } = await import('node:path');
+  const root = mkdtempSync(join(tmpdir(), 'graph-'));
+  try {
+    mkdirSync(join(root, 'f')); mkdirSync(join(root, 'library', 'packs'), { recursive: true });
+    writeFileSync(join(root, 'f', 'film.js'), "import p from '../library/packs/a.js';\nconst later = () => import('./more.js');\nexport default {};");
+    writeFileSync(join(root, 'f', 'more.js'), 'export const x = 1;'); writeFileSync(join(root, 'library', 'packs', 'a.js'), "import '../../f/more.js'; export default 1;");
+    const g = importGraph(join(root, 'f', 'film.js')).map((x) => relative(root, x).replaceAll('\\', '/'));
+    assert.deepEqual(g, ['f/film.js', 'f/more.js', 'library/packs/a.js']);
+    const k1 = fingerprint(root, g); writeFileSync(join(root, 'library', 'packs', 'a.js'), "import '../../f/more.js'; export default 2;");
+    assert.notEqual(fingerprint(root, g), k1);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});

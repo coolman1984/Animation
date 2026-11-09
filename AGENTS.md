@@ -58,7 +58,8 @@ On this Windows machine every process launch costs ~1 s, so even "small" command
 **Rendering rule:** run every film render through `node studio/studio.mjs build <film> …` in the background. It sizes workers to real memory
 headroom (this machine's fixed page file allows 1 worker today), reaps browsers left by crashes, resumes finished slices and logs everything to
 `takes/<film>/build-full.log`. Never pass `--workers` above the planner; never run a second render or another browser job while one is running:
-memory exhaustion here kills the host session too.
+memory exhaustion here kills the host session too. Since 2026-11-09 the studio enforces this with a lock (`takes/.studio-lock.json`; a stale one is cleared by `node studio/studio.mjs cleanup`),
+and renders are cut into 4 s slices so a crashed build resumes with any worker count.
 
 Documentation is part of done: when a scope closes, update `STATUS.md`, `studio/CHANGELOG.md`, `studio/CRAFT.md`, `studio/TECHNIQUES.md`,
 `studio/ASSETS.md`, the film's `LEDGER.md` and every skill whose advice changed, in the same commit. `npm test` (`test/docs.test.mjs`) checks the checkable parts.
@@ -71,6 +72,8 @@ Reusable recipes: `studio/TECHNIQUES.md`. Quality method: `studio/QUALITY_PLAYBO
 appends its licence + attribution to `CREDITS.json`/`CREDITS.md`) before any other source (sound library, synthesis, other sites).
 Record licence and attribution for every file used (in the film's LEDGER too). Ads and paid use: commercial-safe licences only (the default
 filter; CC0 / BY / BY-SA; never NC/ND, never `--any-license`). If nothing fits, say so in the LEDGER, then use the house synths (`lib/sfx.mjs`).
+Studio Engine films: `--download=<engine film>` saves into `studio-engine/films/<film>/assets/sfx/`; place the file with `audio.sounds` in the spec
+(its licence is read from `CREDITS.json`, and a final build refuses a sound without one).
 
 **AI mailbox (owner order, 2026-10-10):** Claude, Codex and Grok share the private repo `coolman1984/Inbox`. At the start of
 every session, attach or clone it and read the open messages in `inbox/<your-name>/` before other work. When you need something you

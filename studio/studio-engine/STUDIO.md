@@ -37,7 +37,7 @@ Stay with a render until it prints its gates: start it with `nohup … & echo $!
 - Paint: `lib/brush.js`, our own GPU pass on the flat drawing — oil/gouache (anisotropic Kuwahara + stroke cells + bristles), watercolour (rim
   darkening, bleed, blooms, granulation, dry brush), ink (wobbly outline over washes), pastel (chalk strokes on paper), then paper, grain and grade.
   New drawing 12×/s (boil). Half resolution on the CPU, full with `STUDIO_GPU=hardware` (the graphics card).
-- `fast.mjs <film>`: captures only the 12 drawings a second, one encode with score + voice, a contact sheet and a loudness reading (16 s reel: 287 s on
+- `fast.mjs <film>` (writes `fast/<film>-<format>-QUICK.mp4`, never a delivery; takes the studio lock like every render): captures only the 12 drawings a second, one encode with score + voice, a contact sheet and a loudness reading (16 s reel: 287 s on
   this cloud CPU, far less on a graphics card). `run.mjs <film>` stays the delivery path with every gate.
 - Proof films: `fable-test` (3 Arabic lines, oil, reel, 6 shots), `kit-test` (custom drawings: a lighthouse and two friends, gouache, square).
 
@@ -64,7 +64,7 @@ New parametric elements: ribbon (analytic depth-sorted CPU surface; twist/materi
 
 ## Validation and delivery changes (2026-10-04)
 `--stage=check` fails on missing assets or malformed inputs. Beats/BPM must be positive finite numbers; explicit duration equals summed scene beats; scene IDs are unique. Text/stills errors stop rendering. Final delivery requires a new numeric take, a passing final measurement and a nonempty share MP4; sync/motion failures stop delivery. No eligible hard-hit events reports UNCHECKED. Historical MP4s are never used to hide a failed current run.
-Supplied file paths resolve from the film folder. Assets carry `rights`; audio uses `musicRights`, `licenseScope`, `voiceRights`. These paths enter cache dependencies. `audio.musicOffset` overrides detected phase in seconds: positive trims the opening, negative pads it. Narration cache invalidates when the source changes and uses automatic language detection through platform PYTHON.
+Supplied file paths resolve from the film folder. Assets carry `rights`; audio uses `musicRights`, `licenseScope`, `voiceRights`. These paths enter cache dependencies. `audio.musicOffset` overrides detected phase in seconds: positive trims the opening, negative pads it. Narration cache invalidates when the source changes and uses automatic language detection through platform PYTHON. Narration is levelled to one spoken loudness before mixing and must end inside the film. `audio.sounds` places recorded effects and ambience beds on the film clock with their licence (2026-11-09).
 STUDIO_WORKERS is a bounded request. Browser HTTP and handshake startup have deadlines. Hard cuts are opaque at entry; wipes/fades retain the outgoing scene. Morphs inherit unspecified properties and retarget from their actual current state. Deep format overrides retain nested camera settings. Regression evidence and limits: ../CODE_REVIEW_2026-10-04.md.
 
 ## Any model (2026-10-16)

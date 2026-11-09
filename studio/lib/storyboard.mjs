@@ -4,7 +4,7 @@
 //   lintStoryboard(shots) → { ok, issues: [{ level: red|yellow, shot, rule, msg, fix }] }
 //   shotsFromProduction(production) / shotsFromSpec(spec) → [{ id, start, end, subject, action, camera, copy, layers, oner, hold }]
 import { timeline } from '../studio-engine/lib/events.js';
-import { copyOf } from '../studio-engine/lib/critic.mjs';
+import { copyOf } from '../studio-engine/lib/copy.mjs';
 
 const GENERIC_THING = /^(?:the\s+)?(?:title|titles|text|texts|words?|copy|headline|label|labels|list|bullets?|caption|subtitles?|card|cards|background|bg|screen|frame|image|icon|logo card|scene|shot|graphics?|motion|animation|stuff|عنوان|نص|نصوص|كلام|خلفية|كارت|شاشة|صورة|أيقونة|مشهد|لقطة|جرافيك)$/i;
 const EMPTY_THING = /^(?:empty|blank|black|solid colou?r|gradient|nothing|فاضي|أسود|خلفية سادة)$/i;

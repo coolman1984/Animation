@@ -5,6 +5,10 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-11-09 — Engine audit fixes
+
+Fixed the confirmed bugs and broken links from `docs/studio/ENGINE_AUDIT_2026-11-09.md` in six commits: lock for one browser job at a time (`lib/procs.mjs`), time-sliced renders that resume with any worker count (`lib/render.mjs`), one duration for engine films, data-driven final extras and one finishing checklist in `make.mjs`, a spec vocabulary (`studio-engine/lib/vocab.js`), brand and config validation, `audio.sounds` with licences, safer Openverse downloads, sites and review approvals. Proved: quick suite, end-to-end build test, a refused second build, a resumed render. Unverified: Windows, a full engine final with narration. The report's status table lists what stays open.
+
 ## 2026-11-09 — Engine audit report
 
 Added `docs/studio/ENGINE_AUDIT_2026-11-09.md`: a code review of the front door, build, render, Studio Engine, web builder and MCP server, with file and line for each finding, the fix and the test. Proved by running: truncated help, `review`/`taste` opening the source folder, extras tied to the `hero60` name; by calculation: engine films at BPM 110 fail the frame-range check. No code changed. Unverified: every finding marked READ, and the modules the report lists as not reviewed.

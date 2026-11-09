@@ -1,9 +1,9 @@
 // Operating-system differences in one place: the studio runs on Linux CI and on the owner's Windows machine.
-import { existsSync } from 'node:fs';
+import { existsSync, realpathSync } from 'node:fs';
 import { devNull, freemem, totalmem, cpus } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { join, delimiter } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { pathToFileURL, fileURLToPath } from 'node:url';
 
 export const WINDOWS = process.platform === 'win32';
 export { devNull };
@@ -12,7 +12,12 @@ export { devNull };
 export const PYTHON = process.env.STUDIO_PYTHON || (WINDOWS ? 'python' : 'python3');
 
 // True when the module at `metaUrl` is the script node was started with (works with spaces and drive letters).
-export const isMain = (metaUrl) => !!process.argv[1] && metaUrl === pathToFileURL(process.argv[1]).href;
+// Real paths, case-insensitive on Windows (audit R13e): a linked folder or a drive letter typed in another case made a CLI do nothing.
+export const isMain = (metaUrl) => {
+  if (!process.argv[1]) return false;
+  if (metaUrl === pathToFileURL(process.argv[1]).href) return true;
+  try { const a = realpathSync(fileURLToPath(metaUrl)), b = realpathSync(process.argv[1]); return WINDOWS ? a.toLowerCase() === b.toLowerCase() : a === b; } catch { return false; }
+};
 
 // Forward slashes for URLs and FFmpeg list files; FFmpeg and Chromium accept them on every platform.
 export const slash = (path) => path.replaceAll('\\', '/');

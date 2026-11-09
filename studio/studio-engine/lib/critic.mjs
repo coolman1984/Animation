@@ -6,6 +6,7 @@
 // facts = optional films/<film>/facts.json { claims: [{ id, text, source, sentence }], copy: [approved lines] } (QUALITY_PLAYBOOK §10).
 import { timeline } from './events.js';
 import { lint } from './gates.mjs';
+import { copyOf } from './copy.mjs';
 import { forFormat } from './spec.mjs';
 import { lintStoryboard, shotsFromSpec } from '../../lib/storyboard.mjs';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
@@ -38,18 +39,7 @@ const TEXT_TYPES = new Set(['words', 'stack', 'pill', 'slab', 'slice', 'wipes', 
 const HERO_TYPES = new Set(['shape', 'path', 'ribbon', 'extrude', 'lockup', 'mark', 'cursor', 'image', 'ring', 'icon']);
 const PAYOFF_TYPES = new Set(['pill', 'lockup', 'mark', 'extrude']);
 // every visible string of an element, with its size (px at a 1080 short side) and its window in beats
-export function copyOf(e) {
-  const at = e.at ?? 0, out = [];
-  if (e.type === 'words' && e.text) out.push({ text: e.text, size: e.size, at, end: e.out });
-  if (e.type === 'stack') for (const [i, l] of (e.lines || []).entries()) out.push({ text: l.text, size: l.size || e.size || 120, at: l.at ?? at + i * 0.5, end: e.out, fact: l.fact });
-  if (e.type === 'pill') { const parts = (e.parts || [e.text]).filter(Boolean); out.push({ text: parts.map((p) => (typeof p === 'string' ? p : p.text)).join(' '), size: Math.min(...parts.map((p) => (typeof p === 'object' && p.size) || e.size || 70)), at, end: e.out }); }
-  if (e.type === 'slab') for (const l of e.lines || []) out.push({ text: l.text, size: l.size || 120, at: l.at ?? at, end: e.out, fact: l.fact });
-  if (['slice', 'extrude'].includes(e.type) && e.text) out.push({ text: e.text, size: e.size || 300, at, end: e.out });
-  if (e.type === 'wipes') for (const w of e.items || []) out.push({ text: w.text, size: w.size || 250, at: w.at, end: w.at + 2, fact: w.fact });
-  if (e.type === 'cards') for (const [i, it] of (e.items || []).entries()) for (const [k, size] of [['title', 76], ['titleAr', 48], ['old', 46], ['oldAr', 40], ['new', 46], ['newAr', 40]]) if (it?.[k]) out.push({ text: it[k], size, at: (e.start ?? 1) + i * (e.step ?? 5), end: (e.start ?? 1) + (i + 1) * (e.step ?? 5), fact: it.fact });
-  if (['lockup', 'mark'].includes(e.type)) out.push({ text: (e.parts || []).join(' '), size: e.size || 300, at, end: e.out });
-  return out.filter((c) => typeof c.text === 'string' && c.text.trim());
-}
+export { copyOf };   // moved to copy.mjs: storyboard.mjs needs it, and importing the critic made a circle (audit T5)
 
 // pace of new compositions per mode (motion-director prompt 2026-10-17): the longest gap with nothing new entering or morphing
 export const PACE = { showreel: [1, 2.5], product: [1.4, 3.5] };

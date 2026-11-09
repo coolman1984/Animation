@@ -1,6 +1,31 @@
 # Studio engine audit — 2026-11-09
 
-**Status: proposed work, nothing in this report is implemented.** This is a review document. No code was changed. The next agent implements it.
+**Status (updated 2026-11-09, same day): most findings are fixed on branch `ccr-4274692f-uid8jt` in six batches. See "Implementation status" below for what is done, partly done and still open.**
+
+## حالة التنفيذ ✅
+
+- ✅ اتحل: كل الأخطاء الأساسية السبعة، وكل الحلقات المقطوعة ما عدا توحيد منطقة الأمان (مستنية قرارك).
+- 🟡 اتحل جزء: الكاش، تكرار الشغل، الاختبارات، الأسماء الموحّدة.
+- ⏳ لسه: التنظيف الكبير لملف الحالة، أدوات الفحص التلقائي، صور المواقع بأكتر من مقاس، وكل بنود القسم ٨.
+
+## Implementation status
+
+| Status | Items | Notes |
+| --- | --- | --- |
+| Fixed | B1, B2, B3, B4, B5, B6, B7 | B2: captions use the language of their text; a translation file only with a map. |
+| Fixed | L1, L2, L3, L4, L5, L6, L8, L9 | L1 lock: `takes/.studio-lock.json`, taken in `lib/cdp.mjs` launch, builds, engine stages and `fast.mjs`; test runners skip it. L2: 4 s slices from a queue. |
+| Fixed | R1, R2, R3, R4, R5, R6, R7, R9, R11 | R4: a fallback font is a warning, not a failure, so older films still render. R5: real-app capture keeps the old lenient settle. |
+| Fixed | R13a, b, c, e, f, g, h, i, j, l, n, o, p, q | R13k: the error was already clear; the new top-level handler prints it as one line. |
+| Fixed | S1, S2, S4, W3, W4, W5, T5, D2 | S1: the search now sends a generic client name (owner question 3 answered by default; say if you want the old one). |
+| Partly | L7 | `director plan` rejects placements it cannot lay out; MCP offers every brand format. The reel safe box is still two values: owner question 1. |
+| Partly | R8 | Picture key now follows the film's import graph and the vendor versions. Not done: streaming hashes and per-run memo. |
+| Partly | R10 | The probe page is reused as the first render worker. Not done: shared text timeline between stills and final, stills keyed on the package. |
+| Partly | R12 | Share copy retries once. The LRA gate is unchanged: owner question 2. |
+| Partly | S5 | `studio-engine/b-*` was already ignored (this report was wrong there); root recordings are now ignored. Removing tracked files waits for owner question 4. |
+| Partly | T1, T2, D4 | New tests: `test/cli.test.mjs`, `test/lock.test.mjs`, browser fixtures in `test/render.test.mjs`, and cases in the engine, web, Openverse, options and pipeline files. MCP hints read the element list from `studio-engine/lib/vocab.js`. |
+| Open | R13d, R13m, T3, T4, T6, T7, D1, D3, W1, W2, W6, section 8 | T6 waits for owner question 5. |
+
+Verified while fixing: `npm test` 169 pass, 19 skipped, 0 fail; the end-to-end build test (`STUDIO_RENDER_TEST=1 node --test test/pipeline.test.mjs`); the browser fixture test; a second build refused while one ran; a render killed after two slices resumed with 120 frames reused; `web check example` all green. Not verified: the owner's Windows machine, a full Studio Engine final with narration and a downloaded sound.
 
 ## ملخص لصاحب الاستوديو 🧭
 
