@@ -86,3 +86,29 @@ test('every brand the engine can use is complete; a missing colour is an error (
   assert.match(validateBrand(broken).join(), /colors\.glow/);
   assert.match(lint({ bpm: 120, scenes: [{ id: 'a', beats: 4, elements: [{ type: 'words', text: 'x' }] }] }, broken).errors.join(), /colors\.glow/);
 });
+
+test('recorded sounds in a spec: lint checks place and gain; the licence comes from CREDITS.json (audit L3)', async () => {
+  const { mediaAssets } = await import('../lib/spec.mjs'), { mkdtempSync, writeFileSync, rmSync } = await import('node:fs'), { tmpdir } = await import('node:os');
+  const base = { bpm: 120, scenes: [{ id: 'a', beats: 8, elements: [{ type: 'words', text: 'x' }] }] };
+  assert.deepEqual(lint({ ...base, audio: { sounds: [{ file: 'a.wav', at: 2 }] } }, brand).errors, []);
+  const e = lint({ ...base, audio: { sounds: [{ file: 'a.wav', at: 2, t: 1 }, { file: 'b.wav', t: 99 }, { at: 1 }, { file: 'c.wav', at: 1, gain: 9, role: 'music' }] } }, brand).errors.join('\n');
+  for (const w of ['exactly one of t', 'sounds\\[1\\]\\.t must be inside', 'sounds\\[2\\]\\.file', 'gain must be 0..4', 'role must be effect or ambience']) assert.match(e, new RegExp(w));
+  const dir = mkdtempSync(join(tmpdir(), 'snd-'));
+  try {
+    writeFileSync(join(dir, 'CREDITS.json'), JSON.stringify([{ file: 'ping.wav', title: 'Ping', creator: 'Ann', license: 'CC BY 4.0', source: 'https://x' }]));
+    const a = mediaAssets({ audio: { sounds: [{ file: join(dir, 'ping.wav') }, { file: join(dir, 'other.wav') }] } }, {});
+    assert.match(a[0].rights, /CC BY 4\.0.*Ann/); assert.equal(a[1].rights, '');   // no licence → the final build refuses it
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('two films supplying different logos never share a library entry (audit R11)', async () => {
+  const { resolveAssets } = await import('../lib/assets.mjs'), { mkdtempSync, writeFileSync, rmSync } = await import('node:fs'), { tmpdir } = await import('node:os');
+  const dir = mkdtempSync(join(tmpdir(), 'lib-')), lib = join(dir, 'lib');
+  try {
+    writeFileSync(join(dir, 'a.png'), 'logo A'); writeFileSync(join(dir, 'b.png'), 'logo B');
+    const A = resolveAssets([{ name: 'logo', kind: 'image', file: 'a.png' }], { libraryDir: lib, sourceDir: dir }).ready.logo;
+    const B = resolveAssets([{ name: 'logo', kind: 'image', file: 'b.png' }], { libraryDir: lib, sourceDir: dir }).ready.logo;
+    assert.notEqual(A, B);
+    assert.equal(resolveAssets([{ name: 'logo', kind: 'image', file: 'a.png' }], { libraryDir: lib, sourceDir: dir }).ready.logo, A);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});

@@ -76,3 +76,12 @@ test('looks: named bases, words move the numbers, explicit numbers win', () => {
   assert.equal(resolveLook('ink', 'comic book').posterize, 6);
   assert.equal(resolveLook({ base: 'oil', radius: 3 }).radius, 3);
 });
+
+test('a recording with one extra recognised word does not shift the later lines (audit R13o)', () => {
+  const at = (w, t) => ({ w, start: t, end: t + 0.3 });
+  const heard = [at('the', 0.5), at('sea', 0.9), at('uh', 1.3), at('was', 1.6), at('calm', 2.0), at('night', 3.0), at('fell', 3.4), at('slowly', 3.8)];
+  const s = lineSpans(heard, ['the sea was calm', 'night fell slowly']);
+  assert.equal(s[0].start, 0.5); assert.equal(s[1].start, 3.0); assert.equal(s[0].end, 2.3);
+  const ar = [at('الْبَحْرُ', 0.2), at('هادئ', 0.7), at('والليل', 1.5), at('طويل', 2.0)];
+  assert.deepEqual(lineSpans(ar, ['البحر هادئ', 'والليل طويل']).map((x) => x.start), [0.2, 1.5]);
+});

@@ -24,10 +24,22 @@ test('openverse search defaults to commercial licences and parses results', asyn
 test('openverse download writes the file and a licence record', async () => {
   const root = mkdtempSync(join(tmpdir(), 'ov-')); mkdirSync(join(root, 'film99'));
   const { results } = await searchAudio('whoosh', {}, mock([]));
-  const d = await downloadAudio(results[0], 'film99', { root, query: 'whoosh' }, mock([]));
-  assert.ok(existsSync(join(root, d.path)));
+  const d = await downloadAudio(results[0], 'film99', { root, query: 'whoosh', probe: () => true }, mock([]));
+  assert.ok(existsSync(d.path));
   const creds = JSON.parse(readFileSync(join(root, 'film99/assets/sfx/CREDITS.json'), 'utf8'));
   assert.equal(creds[0].license, 'CC0 1.0'); assert.equal(creds[0].creator, 'Kinoton');
   assert.match(readFileSync(join(root, 'film99/assets/sfx/CREDITS.md'), 'utf8'), /Kinoton/);
   await assert.rejects(downloadAudio(results[0], '../x', { root }, mock([])));
+});
+
+test('downloads: engine films are a target, the extension comes from a known list, non-audio is deleted (audit L3, S1)', async () => {
+  const { safeExt, filmDir } = await import('../lib/openverse.mjs');
+  const root = mkdtempSync(join(tmpdir(), 'ov-')); mkdirSync(join(root, 'studio-engine', 'films', 'eng1'), { recursive: true });
+  assert.equal(filmDir('eng1', root), join(root, 'studio-engine', 'films', 'eng1'));
+  assert.throws(() => filmDir('../x', root), /bad film name/); assert.throws(() => filmDir('nope', root), /not found/);
+  assert.equal(safeExt('wav'), 'wav'); assert.equal(safeExt('../../evil'), 'mp3'); assert.equal(safeExt('mp3/../../x'), 'mp3');
+  const { results } = await searchAudio('whoosh', {}, mock([]));
+  const d = await downloadAudio({ ...results[0], filetype: '../../../escape' }, 'eng1', { root, probe: () => true }, mock([]));
+  assert.equal(d.dir, join(root, 'studio-engine', 'films', 'eng1', 'assets', 'sfx')); assert.match(d.file, /\.mp3$/);
+  await assert.rejects(downloadAudio(results[0], 'eng1', { root, probe: () => false }, mock([])), /not playable audio/);
 });

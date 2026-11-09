@@ -17,7 +17,7 @@ export const HOOKS = {
 // a hook for any chord: arpeggiated 3-3-2 over the chord tones (used when the named hook has no line for that chord)
 const autoHook = (c) => { const v = c.v.map((m) => m + 12); return [[0, v[2], 1.5], [1.5, v[2], 1.5], [3, v[3], 1], [4, v[3] + 2, 1.5], [5.5, v[3], 1], [6.5, v[2], 1.5]]; };
 
-export function renderScore(spec, outDir, { log = console.log, music: musicPCM = null, voice: voicePCM = null } = {}) {
+export function renderScore(spec, outDir, { log = console.log, music: musicPCM = null, voice: voicePCM = null, sounds = [] } = {}) {
   const tl = timeline(spec), BEAT = tl.B, BAR = BEAT * 4, E8 = BEAT / 2, S16 = BEAT / 4, DUR = tl.duration, N = DUR + 2, b = (n) => n * BEAT;
   const mk = () => new Bus(N);
   const drums = mk(), low = mk(), pads = mk(), keys = mk(), arp = mk(), lead = mk(), fx = mk(), kicks = [];
@@ -143,6 +143,9 @@ function saw(bus, t, midis, dur, vel, { cut0 = 3200, cut1 = 700, decay = 0.4, p 
     let env = 0; const a = Math.exp(-1 / (0.01 * SR)), r = Math.exp(-1 / (0.25 * SR));
     for (let i = 0; i < Math.min(music.n, voicePCM.n); i++) { const v = Math.abs(voicePCM.L[i]) + Math.abs(voicePCM.R[i]); env = v > env ? a * env + (1 - a) * v : r * env + (1 - r) * v; const g = 1 - 0.5 * Math.min(1, env * 8); music.L[i] *= g; music.R[i] *= g; }
   }
+  // recorded sounds (spec.audio.sounds): effects join the SFX stem (sync is checked on it), ambience beds join the music
+  for (const x of sounds) { if (!x.pcm) continue; const bus = x.role === 'ambience' ? music : fx, i0 = Math.round((x.t ?? (x.at ?? 0) * BEAT) * SR), g = x.gain ?? 1;
+    for (let i = 0; i < x.pcm.n && i0 + i < bus.n; i++) { bus.L[i0 + i] += x.pcm.L[i] * g; bus.R[i0 + i] += x.pcm.R[i] * g; } }
   const sfx = mk(); fx.mixInto(sfx, 1);
   for (const bb of [music, sfx]) { for (let i = 0; i < bb.n; i++) { const t = i / SR, g = t >= DUR ? 0 : t > DUR - 0.6 ? Math.cos(((t - (DUR - 0.6)) / 0.6) * Math.PI / 2) : 1; bb.L[i] *= g; bb.R[i] *= g; } bb.n = Math.round(DUR * SR); bb.L = bb.L.subarray(0, bb.n); bb.R = bb.R.subarray(0, bb.n); }
   const mix = new Bus(DUR); music.mixInto(mix, M.mode === 'sfx' && !musicPCM ? 0 : 1); sfx.mixInto(mix, 0.9);

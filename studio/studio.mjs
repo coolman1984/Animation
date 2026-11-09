@@ -264,7 +264,7 @@ async function sfxCmd(q, opt) {
   if (opt.download) {
     const pick = results[(+opt.pick || 1) - 1]; if (!pick) throw new Error(`no result #${opt.pick || 1}`);
     const d = await ov.downloadAudio(pick, String(opt.download), { query: q });
-    console.log(`saved ${d.path} (${d.record.license}); credit added to ${String(opt.download)}/assets/sfx/CREDITS.md`);
+    console.log(`saved ${d.path} (${d.record.license}); credit added to ${join(d.dir, 'CREDITS.md')}`);
   }
 }
 

@@ -99,8 +99,15 @@ function ssml(text, lang, d, { voiceName, azure = false } = {}) {
 
 // ---------- providers ----------
 async function toWav(src, out) { await run('ffmpeg', ['-v', 'error', '-y', '-i', src, '-ar', '48000', '-ac', '1', '-c:a', 'pcm_s16le', out]); rmSync(src, { force: true }); }
-async function http(url, opts, out) {
-  const r = await fetch(url, opts);
+// A cloud voice that never answers must not hang a film (audit R13q): 60 s per request, one retry on a network error or a 5xx/429.
+async function http(url, opts, out, { tries = 2, timeout = 60000 } = {}) {
+  let r;
+  for (let i = 0; i < tries; i++) {
+    try { r = await fetch(url, { ...opts, signal: AbortSignal.timeout(timeout) }); }
+    catch (error) { if (i + 1 >= tries) throw new Error(`${url}: no answer (${error.name === 'TimeoutError' ? `${timeout / 1000} s timeout` : error.message})`); continue; }
+    if (r.ok || !(r.status >= 500 || r.status === 429) || i + 1 >= tries) break;
+    await new Promise((res) => setTimeout(res, 1500));
+  }
   if (!r.ok) throw new Error(`${url}: HTTP ${r.status} ${(await r.text()).slice(0, 300)}`);
   const tmp = out + '.download'; writeFileSync(tmp, Buffer.from(await r.arrayBuffer())); await toWav(tmp, out);
 }

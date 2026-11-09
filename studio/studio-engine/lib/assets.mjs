@@ -26,11 +26,14 @@ export function resolveAssets(list = [], { libraryDir = LIB, sourceDir = process
   const db = load(libraryDir), ready = Object.create(null), todo = [];
   let changed = false;
   for (const a of list) {
-    const id = safeName(a.id || assetId(a.kind, a.prompt, a.refs)), alias = safeName(a.name || id);
+    // A supplied file without a prompt is named by its CONTENT (audit R11): kind alone gave every film's logo the same id, so films
+    // overwrote each other's stored logo in turn.
+    const supplied = a.file ? resolve(sourceDir, a.file) : null;
+    const id = safeName(a.id || (supplied && !a.prompt && existsSync(supplied) ? `${safeName(a.kind || 'file')}-${digest(supplied).slice(0, 12)}` : assetId(a.kind, a.prompt, a.refs))), alias = safeName(a.name || id);
     if (Object.hasOwn(ready, alias) || todo.some((r) => r.name === alias)) throw new Error(`duplicate asset name: ${alias}`);
     const hit = Object.hasOwn(db.assets, id) ? db.assets[id] : null;
     if (hit) safeName(hit.file);
-    const source = a.file ? resolve(sourceDir, a.file) : null;
+    const source = supplied;
     if (source) {
       if (!existsSync(source)) throw new Error(`missing supplied asset: ${source}`);
       const file = safeName(`${id}${extname(source)}`), hash = digest(source);

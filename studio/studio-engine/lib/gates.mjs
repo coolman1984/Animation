@@ -38,6 +38,18 @@ export function lint(spec, brand, { format } = {}) {
   if (brandErrors.length) return { errors: brandErrors, warns, duration: tl.duration };
   if (spec.assets != null && (!Array.isArray(spec.assets) || spec.assets.some((a) => !a || typeof a !== 'object'))) errors.push('assets must be an array of objects');
   for (const key of ['music', 'voice']) if (spec.audio?.[key] != null && typeof spec.audio[key] !== 'string') errors.push(`audio.${key} must be a local file path`);
+  // audio.sounds: recorded effects / ambience beds (Openverse first: node studio.mjs sfx "…" --download=<film>) placed on the film clock
+  if (spec.audio?.sounds != null) {
+    if (!Array.isArray(spec.audio.sounds)) errors.push('audio.sounds must be an array');
+    else spec.audio.sounds.forEach((x, i) => {
+      const at = `audio.sounds[${i}]`;
+      if (!x || typeof x.file !== 'string' || !x.file) { errors.push(`${at}.file must be a local file path`); return; }
+      if ((x.t == null) === (x.at == null)) errors.push(`${at}: give exactly one of t (seconds) or at (beats from the film start)`);
+      for (const k of ['t', 'at']) if (x[k] != null && !(Number.isFinite(x[k]) && x[k] >= 0 && (k === 't' ? x[k] < tl.duration : x[k] < tl.beats))) errors.push(`${at}.${k} must be inside the film`);
+      if (x.gain != null && !(Number.isFinite(x.gain) && x.gain >= 0 && x.gain <= 4)) errors.push(`${at}.gain must be 0..4`);
+      if (x.role != null && !['effect', 'ambience'].includes(x.role)) errors.push(`${at}.role must be effect or ambience`);
+    });
+  }
   // closed word lists (audit R1): a typo used to fall back silently (A minor, a cut, a generic section) or crash in the browser
   const oneOf = (value, list, what) => { if (value != null && !list.includes(value)) errors.push(`${what} "${value}" is not one of: ${list.join(', ')}`); };
   oneOf(spec.background, BACKGROUNDS, 'background');

@@ -34,10 +34,25 @@ const MOVE_CYCLE = ['push', 'pan-left', 'rise', 'pull', 'pan-right', 'drift'];
 export function shotsFor(line, sec) { const n = chunkLine(line).length; return Math.max(1, Math.min(3, n, Math.floor(sec / 1.6))); }
 
 // the owner's own recording: find where each line starts in the transcript (lines are said in order, word counts match)
+// Matched by the WORDS, not only counted (audit R13o): one extra or missing recognised word used to shift every later line.
+const norm = (w) => String(w || '').toLowerCase().normalize('NFC').replace(/[\u064B-\u065F\u0670\u0640]/g, '').replace(/[أإآ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/[^\p{L}\p{N}]/gu, '');
 export function lineSpans(words, lines) {
-  const W = words.filter((w) => Number.isFinite(w.start ?? w.t)); let wi = 0;
-  return lines.map((line) => { const n = line.split(/\s+/).filter(Boolean).length, a = W[Math.min(wi, W.length - 1)], b = W[Math.min(wi + n - 1, W.length - 1)]; wi += n;
-    return { start: a.start ?? a.t, end: b.end ?? (b.start ?? b.t) + 0.3 }; });
+  const W = words.filter((w) => Number.isFinite(w.start ?? w.t)), T = W.map((w) => norm(w.w ?? w.word ?? w.text)); let wi = 0;
+  return lines.map((line, li) => {
+    const L = line.split(/\s+/).filter(Boolean).map(norm), n = L.length;
+    // best start near the expected place: the most line words found in order in the next n + 3 recognised words
+    let best = Math.min(wi, Math.max(0, W.length - 1)), bestScore = -1;
+    if (T.some(Boolean)) for (let s = Math.max(0, wi - 3); s <= Math.min(W.length - 1, wi + 4); s++) {
+      let k = 0, hit = 0; for (let j = s; j < Math.min(W.length, s + n + 3) && k < n; j++) if (T[j] && T[j] === L[k]) { hit++; k++; } else if (T[j] && L.indexOf(T[j], k) > k) { k = L.indexOf(T[j], k) + 1; hit++; }
+      const score = hit - 0.01 * Math.abs(s - wi); if (score > bestScore) { bestScore = score; best = s; }
+    }
+    // the line ends where its last word was heard; else at the count
+    let end = Math.min(best + n - 1, W.length - 1);
+    for (let j = Math.min(W.length - 1, best + n + 2); j >= best; j--) if (T[j] && T[j] === L[n - 1]) { end = j; break; }
+    const next = li < lines.length - 1 ? end + 1 : W.length; wi = next;
+    const a = W[best], b = W[end];
+    return { start: a.start ?? a.t, end: b.end ?? (b.start ?? b.t) + 0.3 };
+  });
 }
 
 export function storySpec({ lines, look = 'watercolour', lookWords = '', format = 'reel', title, bpm = 80, seed = 7, durations, seconds, voice, captions = 'plain', plan = [] }) {
@@ -102,12 +117,16 @@ async function main() {
     const src = resolve(opt.recording), dst = join(dir, 'voice' + extname(src)); copyFileSync(src, dst);
     const { voiceWords } = await import('./lib/analyze.mjs'), w = voiceWords(dst, join(dir, 'voice-words'));
     if (w?.error) throw new Error(`cannot time the recording: ${w.error}`);
-    const spans = lineSpans((w.words || w).map((x) => ({ start: x.start ?? x.t, end: x.end })), lines);
+    const spans = lineSpans((w.words || w).map((x) => ({ start: x.start ?? x.t, end: x.end, w: x.w ?? x.word ?? x.text })), lines);
     const seconds = spans.map((sp, i) => (i < spans.length - 1 ? spans[i + 1].start - sp.start : sp.end - sp.start + 1.2)); seconds[0] += spans[0].start; seconds.lead = spans[0].start;
     spec = storySpec({ ...base, title: undefined, seconds, voice: basename(dst) }); note = `voice: the owner's recording (${lines.length} lines aligned)`;
   } else if (provider !== 'none') {
     try { const n = await narrate(lines, provider, dir, bpm, (durations) => storySpec({ ...base, durations, voice: 'voice.wav' })); spec = n.spec; note = `voice: ${n.voices[0].voice} (${n.voices[0].provider})`; }
-    catch (error) { note = `no voice: ${error.message.split('\n')[0]} — captions are timed by reading speed`; }
+    catch (error) {
+      // A named provider that fails is an error; `auto` may fall back to captions only, but says so loudly and in the spec (audit R13p).
+      if (provider !== 'auto') throw new Error(`narration with ${provider} failed: ${error.message.split('\n')[0]} (use --voice=none for a captions-only film)`);
+      note = `NO VOICE: ${error.message.split('\n')[0]}; captions are timed by reading speed`; spec.narration = note; console.warn(`[story] ${note}`);
+    }
   }
   writeFileSync(join(dir, 'story.json'), JSON.stringify({ text, ...base, plan: undefined, voice: provider, note, made: new Date().toISOString() }, null, 2) + '\n');
   writeFileSync(join(dir, 'spec.json'), JSON.stringify(spec, null, 2) + '\n');
