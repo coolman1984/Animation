@@ -77,7 +77,7 @@ export async function stills({ film, times, outDir, w = 1080, h = 1350, variant,
   const rows = Math.ceil(times.length / sheetCols);
   // An explicit list instead of `-pattern_type glob`, which Windows FFmpeg builds do not support.
   const list = join(outDir, 'sheet-list.txt');
-  writeFileSync(list, readdirSync(outDir).filter(f => /^t.*\.png$/.test(f)).sort().map(f => `file '${slash(join(outDir, f)).replaceAll("'", "'\\''")}'`).join('\n'));
+  writeFileSync(list, times.map(t => `t${t.toFixed(2).padStart(6, '0')}.png`).map(f => `file '${slash(join(outDir, f)).replaceAll("'", "'\\''")}'`).join('\n'));
   await run('ffmpeg', ['-v', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', list, '-vf', `scale=${Math.round(w / 4)}:-1,tile=${sheetCols}x${rows}:padding=6:color=0x222222`, '-frames:v', '1', join(outDir, 'sheet.png')]);
   return { info, boxes };
 }
@@ -96,14 +96,17 @@ export async function textTimeline({ film, w = 1080, h = 1350, variant, segments
     for (let t = t0; t < end - 1e-9; t += step) {
       await client.eval(`window.renderAt(${t})`);
       const boxes = await client.eval('window.textBoxes()');
+      const seen = new Map();
       for (const b of boxes) {
-        const key = b.text;
+        // Two lines with the same words on screen at once are two spans, not one merged box (audit R13b).
+        const nth = seen.get(b.text) || 0; seen.set(b.text, nth + 1);
+        const key = nth ? `${b.text}\u0000${nth}` : b.text;
         const s = spans.get(key) || []; const last = s[s.length - 1];
         const box = [b.x0, b.y0, b.x1, b.y1].map(Math.round);
         if (last && Math.abs(last.end - (t - step)) < step / 2) { last.end = t; last.box = [Math.min(last.box[0], box[0]), Math.min(last.box[1], box[1]), Math.max(last.box[2], box[2]), Math.max(last.box[3], box[3])]; }
         else s.push({ start: t, end: t, box });
         spans.set(key, s);
-        if (b.x0 < sx0 || b.x1 > sx1 || b.y0 < sy0 || b.y1 > sy1) issues.push({ t: +t.toFixed(2), kind: 'outside-safe', text: key, box: [b.x0, b.y0, b.x1, b.y1].map(Math.round) });
+        if (b.x0 < sx0 || b.x1 > sx1 || b.y0 < sy0 || b.y1 > sy1) issues.push({ t: +t.toFixed(2), kind: 'outside-safe', text: b.text, box: [b.x0, b.y0, b.x1, b.y1].map(Math.round) });
       }
       for (let i = 0; i < boxes.length; i++) for (let j = i + 1; j < boxes.length; j++) {
         const a = boxes[i], b = boxes[j];
@@ -117,7 +120,7 @@ export async function textTimeline({ film, w = 1080, h = 1350, variant, segments
       camera = await client.eval(`(() => { const out = []; for (let t = ${t0}; t < ${end} - 1e-9; t += ${dt}) { const c = window.cameraAt(t) || {}; out.push([+t.toFixed(5), c.x ?? 0, c.y ?? 0, c.zoom ?? 1, c.focus ?? 1, c.aperture ?? 0]); } return out; })()`);
     }
   } finally { await client?.close(); srv.close(); }
-  const lines = [...spans.entries()].flatMap(([text, ss]) => ss.map((s) => ({ text, start: +s.start.toFixed(2), end: +Math.min(end, s.end + step).toFixed(2), box: s.box }))).sort((a, b) => a.start - b.start);
+  const lines = [...spans.entries()].flatMap(([key, ss]) => ss.map((s) => ({ text: key.split('\u0000')[0], start: +s.start.toFixed(2), end: +Math.min(end, s.end + step).toFixed(2), box: s.box }))).sort((a, b) => a.start - b.start);
   return { lines, issues, ...(camera ? { camera: { fields: ['t', 'x', 'y', 'zoom', 'focus', 'aperture'], samples: camera } } : {}) };
 }
 
@@ -138,6 +141,14 @@ export const shutterFilter = (S, fps) => {
   const lin = (e) => `lutrgb=r='${e}':g='${e}':b='${e}'`;
   return `format=gbrp16le,${lin('pow(val/65535,2.2)*65535')},tmix=frames=${S},${lin('pow(val/65535,1/2.2)*65535')},select='not(mod(n+1\\,${S}))',setpts=N/${fps}/TB,format=rgb48le`;
 };
+
+// The frame number a film sees for time t is always its OWN fps grid, whatever the build fps (drafts render at 15).
+export const captureFrameNumber = (t, filmFps) => Math.round(t * filmFps);
+// Capture times for one output frame: just t, or S sub-frames over half a frame centred on t, clamped inside the film.
+export function subframeTimes(t, S, fps, duration) {
+  if (S <= 1) return [t];
+  return Array.from({ length: S }, (_, i) => Math.min(Math.max(t + (i / (S - 1) - 0.5) * 0.5 / fps, 0), duration - 1e-4));
+}
 
 // Frames actually stored in a slice file (ffprobe packet count): a crashed run leaves complete and partial slices behind.
 async function frameCount(file) {
@@ -202,32 +213,34 @@ export async function video({ film, out, w = 1080, h = 1350, variant, segments, 
         ff.on('close', c => c === 0 ? res() : rej(new Error('ffmpeg: ' + ferr)));
       });
       closed.catch(() => {}); // Capture failures still await/reap the encoder below.
+      // One capture path for every frame and sub-frame (audit B6): the film's own frame number, stall recovery, width gate.
+      // Sub-frames of one output frame share its frame number, so per-frame grain does not smear into the average.
+      const capture = async (ts, frameNo) => {
+        try { return await frameAt(client, ts, frameNo, { format, quality }); }
+        catch (error) {
+          // A page that has rendered hundreds of heavy 3D frames can stop answering captures (film 11, headless software mode);
+          // frames are pure functions of t, so a fresh page continues the slice with identical pixels.
+          if (!/did not answer/.test(error.message) || reopened >= 3) throw error;
+          reopened++; log(`\n  slice ${k}: capture stalled at ${ts.toFixed(3)} s; reopening the page (${reopened}/3)`);
+          await client.close().catch(() => {}); ({ client } = await open());
+          return frameAt(client, ts, frameNo, { format, quality });
+        }
+      };
+      const push = async (image) => {
+        if (ff.stdin.destroyed) throw new Error('encoder stopped: ' + ferr);
+        if (!ff.stdin.write(image)) await once(ff.stdin, 'drain');
+      };
       try {
         for (let f = a; f < b; f++) {
           const t = f / fps;
           // A lower preview fps must keep the film's authored frame-dependent motion.
-          let image;
-          if (SUB > 1) { // 180° shutter: SUB captures spread over half a frame centred on t; ffmpeg averages them in (approximate) linear light
-            for (let i = 0; i < SUB; i++) {
-              const ts = Math.min(Math.max(t + (i / (SUB - 1) - 0.5) * 0.5 / fps, 0), info.duration - 1e-4);
-              const img = await frameAt(client, ts, f, { format, quality });
-              if (ff.stdin.destroyed) throw new Error('encoder stopped: ' + ferr);
-              if (!ff.stdin.write(img)) await once(ff.stdin, 'drain');
-            }
-            done++; continue;
+          // 180° shutter: SUB captures spread over half a frame centred on t; ffmpeg averages them in (approximate) linear light.
+          const frameNo = captureFrameNumber(t, info.fps);
+          for (const ts of subframeTimes(t, SUB, fps, info.duration)) {
+            const image = await capture(ts, frameNo);
+            if (f === a && imageWidth(image) !== captureWidth) throw new Error(`frame width ${imageWidth(image)} != ${captureWidth}`);
+            await push(image);
           }
-          try { image = await frameAt(client, t, Math.round(t * info.fps), { format, quality }); }
-          catch (error) {
-            // A page that has rendered hundreds of heavy 3D frames can stop answering captures (film 11, headless software mode);
-            // frames are pure functions of t, so a fresh page continues the slice with identical pixels.
-            if (!/did not answer/.test(error.message) || reopened >= 3) throw error;
-            reopened++; log(`\n  slice ${k}: capture stalled at frame ${f}; reopening the page (${reopened}/3)`);
-            await client.close().catch(() => {}); ({ client } = await open());
-            image = await frameAt(client, t, Math.round(t * info.fps), { format, quality });
-          }
-          if (f === a && imageWidth(image) !== captureWidth) throw new Error(`frame width ${imageWidth(image)} != ${captureWidth}`);
-          if (ff.stdin.destroyed) throw new Error('encoder stopped: ' + ferr);
-          if (!ff.stdin.write(image)) await once(ff.stdin, 'drain');
           done++;
           if (done % 60 === 0) {
             const el = (Date.now() - started) / 1000;

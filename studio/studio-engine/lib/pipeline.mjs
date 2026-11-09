@@ -26,3 +26,25 @@ export function deliveryVideo(take, format) {
   if (!statSync(path).isFile() || statSync(path).size === 0) throw new Error('share MP4 is empty or missing');
   return path;
 }
+// Take lookup shared by `studio.mjs review` and `taste` (audit B3, R13n). A bare film name means out/<film>, never the source folder.
+export function resolveTake(target, outRoot) {
+  if (!target) return null;
+  const isTake = (d) => existsSync(d) && statSync(d).isDirectory() && (/^take\d+$/.test(d.split(/[\\/]/).filter(Boolean).at(-1)) || readdirSync(d).some((n) => n.startsWith('review-')));
+  if (isTake(target)) return target;
+  const base = join(outRoot, target), takes = listTakes(base);
+  return takes.length ? join(base, takes.at(-1)) : null;
+}
+// The export to judge: the share or master of the newest FINAL take; else the newest non-draft export, flagged.
+export function judgedVideo(film, outRoot) {
+  const base = join(outRoot, film), takes = listTakes(base).reverse();
+  const mp4s = (d) => readdirSync(d).filter((f) => f.endsWith('.mp4'));
+  for (const t of takes) {
+    const d = join(base, t); let final = false;
+    try { final = JSON.parse(readFileSync(join(d, 'measure.json'), 'utf8')).profile === 'final'; } catch {}
+    if (!final) continue;
+    const v = mp4s(d), pick = v.find((f) => /-share-/.test(f)) || v.find((f) => !/-(DRAFT|REVIEW)/.test(f));
+    if (pick) return { file: join(d, pick), note: `final take ${t}` };
+  }
+  for (const t of takes) { const d = join(base, t), v = mp4s(d).filter((f) => !/-DRAFT/.test(f)); if (v.length) return { file: join(d, v[0]), note: `no final take: judging the review export of ${t}` }; }
+  return null;
+}

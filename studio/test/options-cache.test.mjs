@@ -82,3 +82,23 @@ test('autonomous owner request selects one delivery and rejects wrong aspect, le
  for(const patch of [{w:1920},{duration:15},{fps:60}])assert.throws(()=>buildOptions({...plan,ownerRequest:{...plan.ownerRequest,...patch}},['--profile=final']),/must match/);
  assert.throws(()=>buildOptions({...plan,ownerRequest:{delivery:'reels'}},[]),/ownerRequest needs/);
 });
+
+test('a config duration rounded to ms never fails the range check (audit B1: BPM 110 → 16.3636 s vs 16.364 s)', () => {
+  for (const bpm of [110, 127.84, 133.33, 96]) {
+    const exact = 30 * 60 / bpm, rounded = +exact.toFixed(3);
+    for (const [a, b] of [[rounded, exact], [exact, rounded]]) {
+      const r = frameRange(0, a, b, 30);
+      assert.equal(r.frames, Math.min(Math.round(a * 30), Math.round(b * 30)));
+    }
+  }
+  assert.throws(() => frameRange(0, 10.1, 10, 30), /invalid range/); // a really longer request still fails
+});
+
+test('capture frame numbers follow the film fps; motion-blur sub-frames stay inside the film (audit B6)', async () => {
+  const { captureFrameNumber, subframeTimes } = await import('../lib/render.mjs');
+  assert.equal(captureFrameNumber(1, 30), 30);          // a 15 fps draft frame #15 is the film's frame 30
+  assert.deepEqual(subframeTimes(2, 1, 30, 10), [2]);
+  const s = subframeTimes(0, 4, 30, 10);
+  assert.equal(s.length, 4); assert.ok(s.every((x) => x >= 0 && x < 10)); assert.equal(s[0], 0);
+  assert.ok(subframeTimes(10, 3, 30, 10).every((x) => x < 10));
+});

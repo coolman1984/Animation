@@ -48,7 +48,7 @@ function filmDir(film) {
 function check(spec, film, format) {
   const brand = brandOf(film), fmt = format || spec.format || 'youtube';
   if (!brand.export.formats[fmt]) return { ok: false, issues: [issue('error', `unknown format ${fmt} (use youtube or reel)`)] };
-  const L = lint(forFormat(spec, fmt), brand);
+  const L = lint(forFormat(spec, fmt), brand, { format: fmt });
   let summary = null;
   try { const tl = timeline(spec); summary = { seconds: +tl.duration.toFixed(2), bpm: tl.bpm, scenes: tl.scenes.map((s) => ({ id: s.id, from: +s.a.toFixed(2), to: +s.b.toFixed(2), elements: (s.elements || []).map((e) => e.type) })) }; } catch { /* reported by lint */ }
   return { ok: !L.errors.length, format: fmt, summary, issues: [...L.errors.map((m) => issue('error', m)), ...L.warns.map((m) => issue('note', m))] };

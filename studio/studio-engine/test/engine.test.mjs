@@ -42,3 +42,19 @@ test('tempo: the studio\'s own scores are detected exactly (96 / 120 BPM, beat 0
   const a = tempo(join(ENGINE, '..', 'takes', 'film8', 'music.wav'));
   assert.ok(Math.abs(a.bpm - 96) < 0.1, `got ${a.bpm}`); assert.ok(Math.abs(a.offset) < 0.03);
 });
+
+test('a spec carrying its ms-rounded duration still times out (audit B1: run.mjs writes one duration everywhere)', () => {
+  for (const bpm of [110, 127.84, 133.33]) {
+    const spec = { bpm, scenes: [{ id: 'a', beats: 30, elements: [{ type: 'words', text: 'x' }] }] };
+    const dur = +timeline(spec).duration.toFixed(3);
+    assert.equal(timeline({ ...spec, duration: dur }).duration, dur);
+  }
+});
+
+test('logo width is judged on the format it plays in (audit B5)', () => {
+  const spec = { bpm: 120, scenes: [{ id: 'a', beats: 4, elements: [{ type: 'image', role: 'logo', w: 400, fit: 'contain', src: 'x' }] }] };
+  const wide = (fmt) => lint(spec, brand, { format: fmt }).warns.filter((w) => /logo is/.test(w));
+  assert.equal(wide('youtube').length, 0);   // 400 of 1920 = 21 %
+  assert.equal(wide('reel').length, 1);      // 400 of 1080 = 37 %
+  assert.ok(lint({ ...spec, scenes: [{ ...spec.scenes[0], elements: [{ type: 'image', role: 'logo', w: 300, src: 'x' }] }] }, brand).warns.some((w) => /cropped/.test(w)));
+});

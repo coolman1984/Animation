@@ -108,7 +108,7 @@ export function critique(base, brand, { format, frames, facts } = {}) {
   const rules = [], add = (id, status, source, evidence, fix = '') => rules.push({ id, status, source, evidence, fix });
   const fmt = format || base.format || 'youtube', spec = forFormat(base, fmt), portrait = fmt === 'reel';
   let tl; try { tl = timeline(spec); } catch (e) { return { score: 0, verdict: 'broken spec', rules: [{ id: 'spec', status: 'fail', source: 'catalog.json', evidence: e.message, fix: 'Fix the spec structure first (spec_check).' }] }; }
-  const L = lint(spec, brand), scenes = tl.scenes, n = scenes.length, dur = tl.duration;
+  const L = lint(spec, brand, { format: fmt }), scenes = tl.scenes, n = scenes.length, dur = tl.duration;
   const copy = scenes.flatMap((s) => (s.elements || []).flatMap((e) => copyOf(e).map((c) => ({ ...c, fact: c.fact ?? e.fact, scene: s.id, a: s.a + c.at * tl.B, b: c.end != null ? s.a + c.end * tl.B : s.b, y: e.y ?? 0.5, type: e.type }))));
 
   // 1. structure the owner asked for: hook → idea → payoff (QUALITY_PLAYBOOK §0 "Shape of every film")

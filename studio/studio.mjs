@@ -13,7 +13,7 @@
 //   node studio.mjs build <film> [make flags]   the safe way to render: reaps orphans, sizes workers to memory, logs everything to takes/<film>/build-full.log
 //   node studio.mjs cleanup                     kill browsers left by crashed runs, remove their temp profiles, show memory headroom
 //   node studio.mjs director plan <film> --placement=reels|youtube --duration=15 [--mode=showreel|product|launch-story|explainer --brand= --cta= --problem= --promise= --viewer= --endState= --logo=]
-//   node studio.mjs director review <film> [--format=reel|youtube] [--frames]   ·   director inspect <film | path/film.js> [--times=1,2.5]
+//   node studio.mjs director review <film> [--format=reel|youtube] [--frames]   ·   director inspect <film> [--times=1,2.5]
 //   node studio.mjs triage <video.mp4> [--format=reel] [--brand=brand.json | --palette=#hex,#hex] [--ask="q1|q2"]   code checks every frame; the critic opens only the flagged ones
 //   node studio.mjs taste <video.mp4 | film> [--json]  ·  taste calibrate     the owner-calibrated taste gate on a finished export
 //   node studio.mjs storyboard <film>                 shot-list check before any render (production.json or engine spec)
@@ -165,7 +165,7 @@ async function voiceCmd([sub, ...rest], opt) {
     for (const l of m.lines) console.log(`${pad(l.id, 8)} t=${pad(l.t, 7)} ${pad(l.duration + 's', 9)} slot ${l.slot ?? '-'}${l.overruns ? '  OVERRUNS: shorten the line' : ''}  ${l.voice}`);
     console.log(`manifest: takes/${rest[0]}/voice/manifest.json — listen before calling it natural.`); return;
   }
-  console.error('usage: node studio.mjs voice [status] | say <text> --lang=ar|en [--voice=id --provider=… --style=warm --pace=0.95 --final] | script <film> [--final]');
+  process.exitCode = 2; console.error('usage: node studio.mjs voice [status] | say <text> --lang=ar|en [--voice=id --provider=… --style=warm --pace=0.95 --final] | script <film> [--final]');
 }
 async function transcriptCmd(src, opt) {
   if (!src) { console.error('usage: node studio.mjs transcript <pack-folder | transcript.json> [--out=base] [--translation=layer.json --layer=en]'); process.exit(2); }
@@ -192,7 +192,7 @@ async function colorCmd([sub, video, t], opt) {
   if (sub === 'check') { const r = await c.colorCheck({ dither: !!opt.dither, lut: opt.lut }); console.log(`ΔE mean ${r.meanDE}, max ${r.maxDE} over ${r.patches.length} patches (< 1 invisible, > 3 a real shift)${r.lut ? ' with LUT ' + r.lut : ''}`); return; }
   if (sub === 'scopes') { console.log(await c.scopes(video, +(t || 0), opt.out || join(STUDIO, 'takes', 'scopes.png'))); return; }
   if (sub === 'range') { console.log(JSON.stringify(await c.legalRange(video))); return; }
-  console.error('usage: node studio.mjs color check [--dither --lut=file.cube] | scopes <video> <t> [--out=png] | range <video>   (LUTs: python tools/ocio_bake.py)');
+  process.exitCode = 2; console.error('usage: node studio.mjs color check [--dither --lut=file.cube] | scopes <video> <t> [--out=png] | range <video>   (LUTs: python tools/ocio_bake.py)');
 }
 
 // Playback review: serve out/<film>/ and open the newest take's player (or the given take folder).
@@ -232,13 +232,10 @@ async function buildCmd(args) {
   process.exitCode = code === 0 ? 0 : 1;
 }
 async function reviewCmd(target, opt) {
-  const { readdirSync, statSync } = await import('node:fs');
+  const { readdirSync } = await import('node:fs');
   const { dirname, basename, resolve } = await import('node:path');
-  let take = target && existsSync(resolve(target)) && statSync(resolve(target)).isDirectory() ? resolve(target) : null;
-  if (!take && target && existsSync(join(STUDIO, 'out', target))) {
-    const takes = readdirSync(join(STUDIO, 'out', target)).filter(d => /^take\d+$/.test(d)).sort();
-    if (takes.length) take = join(STUDIO, 'out', target, takes.at(-1));
-  }
+  const { resolveTake } = await import('./studio-engine/lib/pipeline.mjs');
+  const take = target && resolveTake(target, join(STUDIO, 'out'));
   if (!take) { console.error('usage: node studio.mjs review <film | out/<film>/takeNN> [--port=8765] [--no-open]'); process.exit(2); }
   const players = readdirSync(take).filter(d => d.startsWith('review-') && existsSync(join(take, d, 'player.html')));
   if (!players.length) { console.error(`${take} has no review player (build it with --profile=review or final)`); process.exit(1); }
@@ -310,7 +307,7 @@ async function directorCmd([sub, film], opt) {
       const spec = JSON.parse(rf(join(dir, 'spec.json'), 'utf8')), format = opt.format || spec.format || 'youtube', fmt = brandOf().export.formats[format];
       const pkg = spawnSync(process.execPath, ['studio-engine/run.mjs', film, '--stage=check', `--format=${format}`], { cwd: STUDIO, encoding: 'utf8' });
       if (pkg.status !== 0) throw new Error('spec check failed:\n' + pkg.stdout + pkg.stderr);
-      const { timeline } = await import('./studio-engine/lib/events.js'); duration = timeline(spec).duration;
+      const { timeline } = await import('./studio-engine/lib/events.js'), { forFormat } = await import('./studio-engine/lib/spec.mjs'); duration = timeline(forFormat(spec, format)).duration;
       path = join(ENG, `b-${film}-${format}`, 'film.js'); ({ w, h, safe } = fmt);
     } else throw new Error('usage: director inspect <studio film folder | engine film> [--times=1,2.5]');
     const times = opt.times ? String(opt.times).split(',').map(Number) : Array.from({ length: Math.max(1, Math.floor(duration || 10)) }, (_, i) => i + 0.5);
@@ -322,7 +319,7 @@ async function directorCmd([sub, film], opt) {
     }
     return;
   }
-  console.log('usage: node studio.mjs director plan|review|inspect … (ANY_MODEL.md)');
+  console.error('usage: node studio.mjs director plan|review|inspect … (ANY_MODEL.md)'); process.exitCode = 2;
 }
 
 // Taste gate (lib/tastegate.mjs) and storyboard lint (lib/storyboard.mjs): judgments any model can run, calibrated on the owner's verdicts.
@@ -342,7 +339,6 @@ async function triageCmd([video], opt) {
 
 async function tasteCmd([target], opt) {
   const tg = await import('./lib/tastegate.mjs'), { readdirSync: rd, existsSync: ex, readFileSync: rf, writeFileSync: wf } = await import('node:fs');
-  const latest = (film) => { const base = join(STUDIO, 'out', film); if (!ex(base)) return null; const takes = rd(base).filter((d) => /^take\d+$/.test(d)).sort((a, b) => +a.slice(4) - +b.slice(4)); for (const t of takes.reverse()) { const v = rd(join(base, t)).filter((f) => f.endsWith('.mp4')).sort((a, b) => (/-share-/.test(b) ? 1 : 0) - (/-share-/.test(a) ? 1 : 0))[0]; if (v) return join(base, t, v); } return null; };
   const takeFile = (film, take) => { const d = join(STUDIO, 'out', film, take); if (!ex(d)) return null; const v = rd(d).filter((f) => f.endsWith('.mp4')).sort((a, b) => (/-share-/.test(b) ? 1 : 0) - (/-share-/.test(a) ? 1 : 0))[0]; return v ? join(d, v) : null; };
   if (target === 'calibrate') {
     const V = JSON.parse(rf(join(STUDIO, 'taste', 'verdicts.json'), 'utf8')).verdicts, rows = [];
@@ -352,8 +348,10 @@ async function tasteCmd([target], opt) {
     if (rows.length) { wf(join(STUDIO, 'taste', 'calibration.json'), JSON.stringify({ date: new Date().toISOString().slice(0, 10), ...c, rows: rows.map(({ film, take, verdict, metrics }) => ({ film, take, verdict, fastRatio: metrics.fastRatio, blankRunS: metrics.blankRunS })) }, null, 2) + '\n'); console.log('wrote taste/calibration.json'); }
     return;
   }
-  const file = target && ex(target) ? target : target ? latest(target) : null;
+  const { judgedVideo } = await import('./studio-engine/lib/pipeline.mjs'), { statSync } = await import('node:fs');
+  const found = target && ex(target) && statSync(target).isFile() ? { file: target } : target ? judgedVideo(target, join(STUDIO, 'out')) : null, file = found?.file;
   if (!file) throw new Error('usage: node studio.mjs taste <video.mp4 | film with out/<film>/takeNN> [--json] · taste calibrate');
+  if (found.note && !opt.json) console.log(`judging ${found.note}`);
   const r = tg.tasteGate(file);
   if (opt.json) { console.log(JSON.stringify(r, null, 2)); return; }
   console.log(`${file}\n${r.verdict}`);
@@ -435,7 +433,8 @@ async function webCmd([sub, name, ...more], opt) {
     console.log(`screenshots: ${r.viewports.filter((v) => v.sheet).map((v) => v.sheet).join(' · ')}`);
     process.exitCode = r.lights.some((l) => l.light === 'red') ? 1 : 0; return;
   }
-  if (sub === 'serve') { if (!ex(join(dist, 'index.html'))) W.build(site, dist, { siteDir: dir }); const { serve } = await import('./lib/serve.mjs'); const s = await serve(dist); console.log(`http://127.0.0.1:${s.port}/index.html  (Ctrl+C to stop)`); return; }
+  if (sub === 'serve') { W.build(site, dist, { siteDir: dir });   // always the current site.json (audit R13j)
+  const { serve } = await import('./lib/serve.mjs'); const s = await serve(dist); console.log(`http://127.0.0.1:${s.port}/index.html  (Ctrl+C to stop)`); return; }
   throw new Error('usage: node studio.mjs web plan|build|check|serve <site> · web styles');
 }
 
@@ -511,8 +510,12 @@ async function agentsCmd(opt) {
   process.exitCode = door.ok ? 0 : 1;
 }
 
-if (isMain(import.meta.url)) {
-  const [cmd, ...args] = process.argv.slice(2);
+// Help = every leading comment line, up to the first import (audit B4: the old fixed slice hid 15 commands).
+export function helpText(src = readFileSync(new URL(import.meta.url), 'utf8')) {
+  const out = []; for (const l of src.split('\n').slice(1)) { if (!l.startsWith('//')) break; out.push(l.replace(/^\/\/ ?/, '')); } return out.join('\n');
+}
+
+async function main(cmd, args) {
   if (cmd === 'caps') caps();
   else if (cmd === 'route') await routeCmd(args.filter(a => !a.startsWith('--')));
   else if (cmd === 'setup') setup(args[0]);
@@ -540,5 +543,13 @@ if (isMain(import.meta.url)) {
   else if (cmd === 'sfx') await sfxCmd(args.filter(a => !a.startsWith('--')).join(' '), flags(args));
   else if (cmd === 'sounds') { const { searchSounds } = await import('./lib/sounds.mjs'); for (const s of searchSounds(args[0] || '')) console.log(`${pad(s.id, 20)}${pad(s.category, 11)}${pad(s.kind, 7)}${s.use}  [${s.rights}]`); }
   else if (cmd === 'cover') await (await import('./lib/covers.mjs')).coverCli(args.find(a => !a.startsWith('--')), flags(args));
-  else console.log(readFileSync(new URL(import.meta.url), 'utf8').split('\n').slice(1, 13).map(l => l.replace(/^\/\/ ?/, '')).join('\n'));
+  else if (!cmd || ['help', '--help', '-h'].includes(cmd)) console.log(helpText());
+  else { console.error(`unknown command: ${cmd}\n\n${helpText()}`); process.exitCode = 2; }
+}
+
+if (isMain(import.meta.url)) {
+  const [cmd, ...args] = process.argv.slice(2);
+  // One plain line for the owner; the stack only with STUDIO_DEBUG=1 (audit R13l).
+  try { await main(cmd, args); }
+  catch (error) { console.error(`error: ${error.message}`); if (process.env.STUDIO_DEBUG) console.error(error.stack); process.exitCode = process.exitCode || 1; }
 }

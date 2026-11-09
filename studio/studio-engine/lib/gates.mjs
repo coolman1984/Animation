@@ -9,7 +9,8 @@ const lum = (hex) => { if (typeof hex !== 'string' || !/^#[0-9a-f]{6}$/i.test(he
 export const contrast = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
 const KNOWN = new Set(['words', 'stack', 'extrude', 'lockup', 'storm', 'slice', 'cards', 'ring', 'pill', 'wipes', 'slab', 'hosts', 'mark', 'sparks', 'shape', 'path', 'icon', 'image', 'ribbon', 'cursor', 'painted', 'caption']);
 
-export function lint(spec, brand) {
+// format: the delivery format name (sizes come from brand.export.formats); defaults to spec.format, then youtube.
+export function lint(spec, brand, { format } = {}) {
   const errors = [], warns = [];
   let tl;
   try { tl = timeline(spec); } catch (error) { return { errors: [error.message], warns, duration: null }; }
@@ -43,7 +44,11 @@ export function lint(spec, brand) {
       for (const t of texts) { const lat = t.match(/[A-Za-z][A-Za-z&-]*/g) || []; if (e.type !== 'cards' && ARABIC.test(t) && (lat.length > 1 || lat.some((w) => w.length > 4))) warns.push(`${where}: "${t}" mixes Arabic with Latin words — bidi can reorder them; use pill parts or two lines`); }
       if (e.type === 'words') { const vis = ((e.out ?? s.beats) - (e.at ?? 0)) * tl.B, need = Math.max(0.8, [...e.text].length / 17); if (vis < need) warns.push(`${where}: "${e.text}" is readable ${vis.toFixed(1)} s, needs ~${need.toFixed(1)} s`);
         const c = contrast(hex(e.color, B.text), e.on ? hex(e.on) : bgOf(s)); /* `on` = what the text sits on */ if (!Number.isFinite(c)) errors.push(`${where}: words.color/on must resolve to a six-digit hex color`); else if (c < 3) errors.push(`${where}: "${e.text}" contrast ${c.toFixed(1)}:1 on the scene background`); }
-      if (e.type === 'image' && e.role === 'logo' && (e.w ?? 800) > 0.22 * 1920) warns.push(`${where}: logo wider than 22% of the frame`);
+      if (e.type === 'image' && e.role === 'logo') {   // audit B5: the real frame of this format, the module's real scale and default
+        const F = brand.export?.formats?.[format || spec.format || 'youtube'] || { w: 1920, h: 1080 }, shown = (e.w ?? 800) * Math.min(F.w, F.h) / 1080;
+        if (shown > 0.22 * F.w) warns.push(`${where}: logo is ${Math.round(100 * shown / F.w)}% of the frame width (house rule: at most 22%)`);
+        if ((e.fit || 'cover') !== 'contain') warns.push(`${where}: logo uses fit "${e.fit || 'cover'}" and may be cropped; set fit: "contain" so it shows whole`);
+      }
     }
   });
   if (Math.abs(tl.duration - Math.round(tl.duration)) > 0.01) warns.push(`duration ${tl.duration.toFixed(2)} s is not a whole second`);

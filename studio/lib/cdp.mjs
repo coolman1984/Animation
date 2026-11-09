@@ -196,7 +196,8 @@ export async function connect(url, { timeout = CDP_TIMEOUT } = {}) {
     },
     async goto(url, { timeout: t = 45000 } = {}) {
       const loaded = client.once('Page.loadEventFired');
-      await client.send('Page.navigate', { url });
+      const nav = await client.send('Page.navigate', { url });
+      if (nav?.errorText) { loaded.catch?.(() => {}); throw new Error(`navigation failed (${nav.errorText}): ${url}`); }   // audit R13c: no 45 s wait for a load that cannot come
       let timer;
       await Promise.race([loaded, new Promise((_, rej) => { timer = setTimeout(() => rej(new Error(`page load timed out after ${t / 1000} s: ${url}`)), t); })]).finally(() => clearTimeout(timer));
     },

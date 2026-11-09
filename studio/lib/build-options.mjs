@@ -5,9 +5,10 @@ export const PROFILES = Object.freeze({
   final: { scale: 1, format: 'png', crf: 14, preset: 'slow' },
 });
 export function frameRange(t0, t1, duration, fps) {
-  if (![t0, t1, duration, fps].every(Number.isFinite) || fps <= 0 || t0 < 0 || t1 <= t0 || t1 > duration + 1e-6)
+  // An end up to half a frame past the duration is float rounding (e.g. a 3-decimal config duration), not a longer request: clamp it.
+  if (![t0, t1, duration, fps].every(Number.isFinite) || fps <= 0 || t0 < 0 || t1 <= t0 || t1 > duration + 0.5 / fps)
     throw new Error(`invalid range ${t0}-${t1}; duration ${duration}, fps ${fps}`);
-  const first = Math.round(t0 * fps), last = Math.round(t1 * fps);
+  const first = Math.round(t0 * fps), last = Math.min(Math.round(t1 * fps), Math.round(duration * fps));
   if (last <= first) throw new Error('range contains no frames');
   return { first, last, frames: last - first };
 }
