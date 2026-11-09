@@ -17,7 +17,11 @@ import { BOIL_FPS } from './lib/painted.js';
 const HERE = dirname(fileURLToPath(import.meta.url)), STUDIO = resolve(HERE, '..');
 const [film, ...flags] = process.argv.slice(2);
 const opt = Object.fromEntries(flags.map((f) => f.replace(/^--/, '').split('=')));
-if (!film || !/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(film)) { console.log('usage: node studio-engine/fast.mjs <film> [--format=reel|youtube|square|post] [--fps=24]'); process.exit(2); }
+const USAGE = 'usage: node studio-engine/fast.mjs <film> [--format=reel|youtube|square|post] [--fps=24] [--copy=<path to also copy the MP4 to>]';
+if (!film || !/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(film) || flags.some((f) => !/^--(format|fps|copy)=.+$/.test(f)) || (opt.fps && !(Number.isInteger(+opt.fps) && +opt.fps >= 1 && +opt.fps <= 60))) { console.log(USAGE); process.exit(2); }
+if (!existsSync(join(HERE, 'films', film, 'spec.json'))) { console.error(`[fast] no studio-engine/films/${film}/spec.json`); process.exit(2); }
+// Same safety as every build (audit L9): one browser job at a time, orphans of a crashed run reaped first.
+{ const { acquireLock, reap } = await import('../lib/procs.mjs'); try { acquireLock({ what: `fast ${film}` }); } catch (error) { console.error(`[fast] ${error.message}`); process.exit(3); } reap({ log: (m) => console.log(`[fast] ${m}`) }); }
 const say = (m) => console.log(`[fast] ${m}`), started = Date.now();
 const sh = (cmd, args, o = {}) => { const r = spawnSync(cmd, args, { cwd: STUDIO, encoding: 'utf8', maxBuffer: 1 << 26, ...o }); if (r.status !== 0) throw new Error(`${cmd} ${args.slice(0, 3).join(' ')} failed:\n${(r.stderr || r.stdout || r.error?.message || '').slice(-1500)}`); return r.stdout; };
 
@@ -26,6 +30,7 @@ sh('node', ['studio-engine/run.mjs', film, '--stage=check', ...(opt.format ? [`-
 const spec = JSON.parse(readFileSync(join(HERE, 'films', film, 'spec.json'), 'utf8'));
 const brand = JSON.parse(readFileSync(existsSync(join(HERE, 'films', film, 'brand.json')) ? join(HERE, 'films', film, 'brand.json') : join(HERE, 'brand', 'brand.json'), 'utf8'));
 const fmtName = opt.format || spec.format || 'youtube';
+if (!brand.export.formats[fmtName]) { console.error(`[fast] unknown format ${fmtName} (${Object.keys(brand.export.formats).join(', ')}); one format per quick render`); process.exit(2); }
 const fmt = brand.export.formats[fmtName], name = `b-${film}-${fmtName}`, TAKES = join(STUDIO, 'takes', 'studio-engine', name);
 say('score and narration…');
 sh('node', [join('studio-engine', name, 'score.mjs')]);
@@ -33,7 +38,7 @@ const mixWav = join(TAKES, 'mix.wav'); if (!existsSync(mixWav)) throw new Error(
 
 // 3. drawings: one capture per drawing, piped into one encode
 const fps = +(opt.fps || 24), draw = BOIL_FPS, srv = await serve(STUDIO), OUT = join(STUDIO, 'out', 'studio-engine', name, 'fast'); mkdirSync(OUT, { recursive: true });
-const file = join(OUT, `${film}-${fmtName}.mp4`);
+const file = join(OUT, `${film}-${fmtName}-QUICK.mp4`);   // a quick look, never a delivery: run.mjs owns every gate
 const { client, info } = await openFilm(srv.port, join(STUDIO, 'studio-engine', name, 'film.js'), { w: fmt.w, h: fmt.h, gpu: true });
 const total = Math.ceil(info.duration * draw);
 const ff = spawn('ffmpeg', ['-v', 'error', '-y', '-f', 'image2pipe', '-c:v', 'mjpeg', '-framerate', String(draw), '-i', '-', '-i', mixWav,
@@ -41,12 +46,15 @@ const ff = spawn('ffmpeg', ['-v', 'error', '-y', '-f', 'image2pipe', '-c:v', 'mj
   '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-ar', '48000',
   '-c:a', 'aac', '-b:a', '192k', '-t', info.duration.toFixed(3), '-movflags', '+faststart', file], { stdio: ['pipe', 'ignore', 'pipe'] });
 let ferr = ''; ff.stderr.on('data', (d) => (ferr += d));
-const closed = new Promise((res, rej) => ff.on('close', (c) => (c === 0 ? res() : rej(new Error('ffmpeg: ' + ferr)))));
+ff.stdin.on('error', () => {});   // a dead encoder is reported by `closed`, not as an EPIPE crash
+const closed = new Promise((res, rej) => { ff.on('error', rej); ff.on('close', (c) => (c === 0 ? res() : rej(new Error('ffmpeg: ' + ferr)))); });
+closed.catch(() => {});
 try {
   for (let d = 0; d < total; d++) {
     const t = Math.min(info.duration - 1e-3, d / draw + 1e-4);
     await client.eval(`window.renderAt(${t}, ${Math.round(t * info.fps)})`);
     const img = Buffer.from((await screenshot(client, { format: 'jpeg', quality: 92, captureBeyondViewport: false })).data, 'base64');
+    if (ff.stdin.destroyed) throw new Error('encoder stopped: ' + ferr);
     if (!ff.stdin.write(img)) await once(ff.stdin, 'drain');
     if (d % 24 === 0) process.stdout.write(`\r[fast] painting ${d}/${total} drawings · ${((Date.now() - started) / 1000).toFixed(0)} s`);
   }

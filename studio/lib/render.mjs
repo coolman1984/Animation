@@ -150,6 +150,15 @@ export function subframeTimes(t, S, fps, duration) {
   return Array.from({ length: S }, (_, i) => Math.min(Math.max(t + (i / (S - 1) - 0.5) * 0.5 / fps, 0), duration - 1e-4));
 }
 
+// Fixed-length time slices (about 4 s of output frames): the resume unit. Pure, so it is tested without a browser.
+export function planSlices(first, last, fps, seconds = 4) {
+  const len = Math.max(1, Math.round(seconds * fps)), out = [];
+  for (let a = first; a < last; a += len) out.push({ a, b: Math.min(last, a + len) });
+  return out;
+}
+// A crashed render resumes only when it was the same render: same content key, frames, fps and slice length (never the worker count).
+export const canResume = (previous, stamp) => !!stamp.key && !!previous && ['key', 'fps', 'first', 'last', 'slice'].every((k) => previous[k] === stamp[k]);
+
 // Frames actually stored in a slice file (ffprobe packet count): a crashed run leaves complete and partial slices behind.
 async function frameCount(file) {
   try { const { out } = await run('ffprobe', ['-v', 'error', '-select_streams', 'v:0', '-count_packets', '-show_entries', 'stream=nb_read_packets', '-of', 'csv=p=0', file]); return +out.trim() || 0; }
@@ -168,36 +177,33 @@ export async function video({ film, out, w = 1080, h = 1350, variant, segments, 
   if (!['png', 'jpeg'].includes(format)) throw new Error('invalid capture format');
   const srv = await serve(STUDIO);
   const tmp = out + '.slices', keyFile = join(tmp, 'key.json');
+  let probe;
   try {
-    const probe = await openFilm(srv.port, film, { w, h, variant, segments, fadeOut, scale, gpu });
+    probe = await openFilm(srv.port, film, { w, h, variant, segments, fadeOut, scale, gpu });
     const info = probe.info;
-    await probe.client.close();
     const fps = fpsOverride ?? info.fps, end = t1 ?? info.duration;
     const { first, last, frames: total } = frameRange(t0, end, info.duration, fps);
     const plan = plannedWorkers({ requested: workers, w, h, scale, gpu }), budget = memoryBudget();
     if (plan.workers !== workers || plan.low) log(`  workers ${workers} → ${plan.workers}: memory headroom ${budget.headroomGB} GB (RAM free ${budget.freeGB}${budget.commitFreeGB !== null ? `, commit free ${budget.commitFreeGB}` : ''} GB), ~${plan.perWorkerGB} GB per worker${plan.low ? '  LOW: close other apps or enlarge the Windows page file' : ''}${plan.forced ? ' (bounded STUDIO_WORKERS request)' : ''}`);
-    const count = Math.min(plan.workers, total), per = Math.ceil(total / count);
-    // Resume only when the previous attempt was the same render (same content key, slice layout and fps).
-    const stamp = { key: resumeKey, count, fps, first, last };
+    // Slices are cut by TIME, not by worker count (audit L2): with one worker the film used to be one slice, so a crash at 95 %
+    // lost everything, and a different worker count on the next run cancelled the resume. Workers pull slices from a queue.
+    const slices = planSlices(first, last, fps);
+    const count = Math.min(plan.workers, slices.length);
+    // Resume only when the previous attempt was the same render (same content key, frames, fps and slice length).
+    const stamp = { key: resumeKey, fps, first, last, slice: slices[0].b - slices[0].a };
     let previous = null; try { previous = JSON.parse(readFileSync(keyFile, 'utf8')); } catch {}
-    const resume = !!resumeKey && !!previous && JSON.stringify(previous) === JSON.stringify(stamp);
+    const resume = canResume(previous, stamp);
     if (!resume) rmSync(tmp, { recursive: true, force: true });
     mkdirSync(tmp, { recursive: true }); writeFileSync(keyFile, JSON.stringify(stamp));
     const SUB = Math.max(1, Math.round(subframes));
     const captureWidth = Math.round(w * scale), captureHeight = Math.round(h * scale);
     const outputWidth = Math.ceil(captureWidth / 2) * 2, outputHeight = Math.ceil(captureHeight / 2) * 2;
     const started = Date.now(); let done = 0, reused = 0;
-    const jobs = Array.from({ length: count }, async (_, k) => {
-      const a = first + k * per, b = Math.min(last, a + per);
-      if (a >= b) return null;
-      const file = join(tmp, `s${String(k).padStart(2, '0')}.mp4`);
-      if (resume && existsSync(file)) {
-        const n = await frameCount(file);
-        if (n === b - a) { done += n; reused += n; log(`  slice ${k}: ${n} frames reused from the crashed run`); return file; }
-        rmSync(file, { force: true });
-      }
-      const open = () => openFilm(srv.port, film, { w, h, variant, segments, fadeOut, scale, gpu });
-      let { client } = await open(), reopened = 0;
+    const open = () => openFilm(srv.port, film, { w, h, variant, segments, fadeOut, scale, gpu });
+    const queue = slices.map((sl, k) => ({ ...sl, k, file: join(tmp, `s${String(k).padStart(3, '0')}.mp4`) }));
+    // One slice = one encoder fed by this worker's page. `page` is the worker's state, so a reopened page stays with the worker.
+    const encodeSlice = async (page, { a, b, k, file }) => {
+      let reopened = 0;
       const ff = spawn('ffmpeg', ['-v', 'error', '-y', '-f', 'image2pipe', '-c:v', format === 'png' ? 'png' : 'mjpeg', '-framerate', String(fps * SUB), '-i', '-',
         '-c:v', 'libx264', '-threads', '1', '-preset', preset, '-crf', String(crf), '-pix_fmt', 'yuv420p',
         '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv',
@@ -216,19 +222,15 @@ export async function video({ film, out, w = 1080, h = 1350, variant, segments, 
       // One capture path for every frame and sub-frame (audit B6): the film's own frame number, stall recovery, width gate.
       // Sub-frames of one output frame share its frame number, so per-frame grain does not smear into the average.
       const capture = async (ts, frameNo) => {
-        try { return await frameAt(client, ts, frameNo, { format, quality }); }
+        try { return await frameAt(page.client, ts, frameNo, { format, quality }); }
         catch (error) {
           // A page that has rendered hundreds of heavy 3D frames can stop answering captures (film 11, headless software mode);
           // frames are pure functions of t, so a fresh page continues the slice with identical pixels.
           if (!/did not answer/.test(error.message) || reopened >= 3) throw error;
           reopened++; log(`\n  slice ${k}: capture stalled at ${ts.toFixed(3)} s; reopening the page (${reopened}/3)`);
-          await client.close().catch(() => {}); ({ client } = await open());
-          return frameAt(client, ts, frameNo, { format, quality });
+          await page.client.close().catch(() => {}); ({ client: page.client } = await open());
+          return frameAt(page.client, ts, frameNo, { format, quality });
         }
-      };
-      const push = async (image) => {
-        if (ff.stdin.destroyed) throw new Error('encoder stopped: ' + ferr);
-        if (!ff.stdin.write(image)) await once(ff.stdin, 'drain');
       };
       try {
         for (let f = a; f < b; f++) {
@@ -238,8 +240,9 @@ export async function video({ film, out, w = 1080, h = 1350, variant, segments, 
           const frameNo = captureFrameNumber(t, info.fps);
           for (const ts of subframeTimes(t, SUB, fps, info.duration)) {
             const image = await capture(ts, frameNo);
-            if (f === a && imageWidth(image) !== captureWidth) throw new Error(`frame width ${imageWidth(image)} != ${captureWidth}`);
-            await push(image);
+            if (!page.checked) { if (imageWidth(image) !== captureWidth) throw new Error(`frame width ${imageWidth(image)} != ${captureWidth}`); page.checked = true; }
+            if (ff.stdin.destroyed) throw new Error('encoder stopped: ' + ferr);
+            if (!ff.stdin.write(image)) await once(ff.stdin, 'drain');
           }
           done++;
           if (done % 60 === 0) {
@@ -248,21 +251,39 @@ export async function video({ film, out, w = 1080, h = 1350, variant, segments, 
           }
         }
         ff.stdin.end(); await closed;
-        return file;
-      } catch (error) { ff.kill('SIGKILL'); await closed.catch(() => {}); throw error; }
-      finally { await client.close(); }
-    });
+      } catch (error) { ff.kill('SIGKILL'); await closed.catch(() => {}); rmSync(file, { force: true }); throw error; }
+    };
+    let probeClient = probe.client, failed = null;
+    const worker = async () => {
+      // The probe's page is reused by the first worker (one browser start fewer); later workers open their own.
+      const page = { client: null, checked: false };
+      try {
+        while (!failed && queue.length) {
+          const sl = queue.shift();
+          if (resume && existsSync(sl.file)) {
+            const n = await frameCount(sl.file);
+            if (n === sl.b - sl.a) { done += n; reused += n; continue; }
+            rmSync(sl.file, { force: true });
+          }
+          if (!page.client) { if (probeClient) { page.client = probeClient; probeClient = null; } else ({ client: page.client } = await open()); }
+          await encodeSlice(page, sl);
+        }
+      } catch (error) { failed ||= error; throw error; }
+      finally { await page.client?.close(); }
+    };
     // Reap all workers before closing the server or deleting their slices.
-    const results = await Promise.allSettled(jobs);
-    const failed = results.find(r => r.status === 'rejected');
-    if (failed) throw failed.reason;
-    const files = results.map(r => r.value).filter(Boolean);
+    const results = await Promise.allSettled(Array.from({ length: count }, worker));
+    await probeClient?.close();
+    const rejected = results.find(r => r.status === 'rejected');
+    if (rejected) throw rejected.reason;
+    if (reused) log(`  ${reused} frames reused from a crashed run`);
+    const files = slices.map((_, k) => join(tmp, `s${String(k).padStart(3, '0')}.mp4`));
     process.stdout.write('\n');
     writeFileSync(join(tmp, 'list.txt'), files.map(f => `file '${slash(f).replaceAll("'", "'\\''")}'`).join('\n'));
     await run('ffmpeg', ['-v', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', join(tmp, 'list.txt'), '-c', 'copy', '-movflags', '+faststart', out]);
     rmSync(tmp, { recursive: true, force: true }); // only after a successful join: a failed run keeps its slices for resume
     return { frames: total, fps, width: outputWidth, height: outputHeight, range: [first / fps, last / fps], seconds: (Date.now() - started) / 1000, workers: count, workersRequested: workers, reusedFrames: reused, headroomGB: budget.headroomGB };
-  } finally { srv.close(); }
+  } finally { await probe?.client.close().catch(() => {}); srv.close(); }
 }
 
 if (isMain(import.meta.url)) {

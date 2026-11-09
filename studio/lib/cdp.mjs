@@ -5,7 +5,7 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { findChromium } from './doctor.mjs';
-import { register, unregister, reap } from './procs.mjs';
+import { register, unregister, reap, acquireLock } from './procs.mjs';
 
 // Every browser we launch is tracked: reaped if an earlier node died (procs.mjs), killed if THIS node exits for any reason
 // that still runs exit handlers. A native fatal error (out of memory) skips exit handlers: the registry covers that case.
@@ -29,6 +29,7 @@ export const sessionMode = () => (process.env.STUDIO_CDP_URL ? 'attach' : 'priva
 
 // One bounded retry for transient startup failures, never for navigation/render/verification errors.
 export async function launch(options = {}) {
+  acquireLock();   // one render or browser job at a time, for every browser user (audit L1)
   if (sessionMode() === 'attach') return attach(options);
   try { return await launchOnce(options); }
   catch(error){

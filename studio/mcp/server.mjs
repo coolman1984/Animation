@@ -11,6 +11,7 @@ import { fileURLToPath } from 'node:url';
 import { lint } from '../studio-engine/lib/gates.mjs';
 import { timeline } from '../studio-engine/lib/events.js';
 import { forFormat } from '../studio-engine/lib/spec.mjs';
+import { lockHolder } from '../lib/procs.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url)), STUDIO = resolve(HERE, '..'), ENGINE = join(STUDIO, 'studio-engine');
 const FILMS = join(ENGINE, 'films'), JOBS = join(STUDIO, 'takes', 'mcp-jobs');
@@ -195,6 +196,7 @@ export const TOOLS = [
     run: async ({ film, format }) => {
       const p = join(filmDir(film), 'spec.json'); if (!existsSync(p)) throw new Error(`no spec for ${film}`);
       if (jobs().some((j) => jobView(j).state === 'running')) throw new Error('a render is running; one browser job at a time (film_job shows it)');
+      { const h = lockHolder(); if (h) throw new Error(`another studio job is using the browser: ${h.what} (pid ${h.pid}); one browser job at a time`); }
       const fmt = format || readJSON(p).format || 'youtube', e = await engine(film, ['--stage=stills', `--format=${fmt}`]);
       const sheet = join(STUDIO, 'takes', 'studio-engine', `b-${film}-${fmt}`, 'stills', 'sheet.png');
       const out = [text({ ok: e.code === 0, issues: engineIssues(e.out), sheet: existsSync(sheet) ? sheet : null, tail: e.out.trim().split('\n').slice(-8),
@@ -208,6 +210,7 @@ export const TOOLS = [
       if (!['preview', 'final'].includes(stage)) throw new Error('stage must be preview or final');
       if (scene != null && !/^[\w-]{1,64}$/.test(scene)) throw new Error('scene must be a scene id');
       const busy = jobs().map(jobView).find((j) => j.state === 'running'); if (busy) throw new Error(`render ${busy.id} is still running; one render at a time`);
+      { const h = lockHolder(); if (h) throw new Error(`another studio job is using the browser: ${h.what} (pid ${h.pid}); one render at a time`); }
       mkdirSync(JOBS, { recursive: true });
       const id = `${film}-${stage}-${Date.now().toString(36)}`, logFile = join(JOBS, `${id}.log`), fmt = format || readJSON(p).format || 'youtube';
       writeFileSync(logFile, `${new Date().toISOString()} node studio-engine/run.mjs ${film} --stage=${stage} --format=${fmt}\n`);

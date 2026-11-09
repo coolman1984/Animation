@@ -21,12 +21,14 @@ const opt = Object.fromEntries(flags.map((f) => f.replace(/^--/, '').split('='))
 if (!film) { console.log('usage: node studio-engine/run.mjs <film> [--format=youtube|reel|both] [--fps=60] [--stage=check|stills|preview|final] [--scene=id]'); process.exit(2); }
 if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(film)) { console.error('film must be a folder name without path separators'); process.exit(2); }
 if (flags.some((flag) => !/^--(format|fps|stage|scene)=.+$/.test(flag)) || (opt.stage && !['check', 'stills', 'preview', 'final'].includes(opt.stage)) || (opt.fps && (!Number.isInteger(+opt.fps) || +opt.fps < 1 || +opt.fps > 120))) { console.error('invalid flag, stage or fps (1..120)'); process.exit(2); }
+if (!existsSync(join(HERE, 'films', film, 'spec.json'))) { console.error(`[engine] no studio-engine/films/${film}/spec.json (node studio.mjs director plan ${film} …)`); process.exit(2); }
 const FILM = join(HERE, 'films', film), say = (...a) => console.log(`[engine] ${a.join(' ')}`);
 const brand = JSON.parse(readFileSync(existsSync(join(FILM, 'brand.json')) ? join(FILM, 'brand.json') : join(HERE, 'brand', 'brand.json'), 'utf8'));
 const base = JSON.parse(readFileSync(join(FILM, 'spec.json'), 'utf8'));
 if (!base || typeof base !== 'object' || Array.isArray(base)) { console.error('spec must be an object'); process.exit(2); }
 const formats = (opt.format || base.format || 'youtube') === 'both' ? ['youtube', 'reel'] : [opt.format || base.format || 'youtube'];
 const stage = opt.stage || 'final';
+if (stage !== 'check') { const { acquireLock } = await import('../lib/procs.mjs'); try { acquireLock({ what: `engine ${film} --stage=${stage}` }); } catch (error) { console.error(`[engine] ${error.message}`); process.exit(3); } }
 
 // per-format overrides: any element/scene may carry { reel: {...} } or { youtube: {...} }
 const sh = (cmd, args) => spawnSync(cmd, args, { cwd: STUDIO, encoding: 'utf8', maxBuffer: 1 << 26 });

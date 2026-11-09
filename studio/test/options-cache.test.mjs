@@ -102,3 +102,15 @@ test('capture frame numbers follow the film fps; motion-blur sub-frames stay ins
   assert.equal(s.length, 4); assert.ok(s.every((x) => x >= 0 && x < 10)); assert.equal(s[0], 0);
   assert.ok(subframeTimes(10, 3, 30, 10).every((x) => x < 10));
 });
+
+test('render slices are fixed time chunks and resume ignores the worker count (audit L2)', async () => {
+  const { planSlices, canResume } = await import('../lib/render.mjs');
+  const s = planSlices(0, 900, 30);   // 30 s at 30 fps → 120-frame slices
+  assert.equal(s.length, 8); assert.deepEqual(s[0], { a: 0, b: 120 }); assert.deepEqual(s.at(-1), { a: 840, b: 900 });
+  assert.equal(s.reduce((n, x) => n + x.b - x.a, 0), 900);
+  assert.deepEqual(planSlices(10, 12, 30), [{ a: 10, b: 12 }]);
+  const stamp = { key: 'k', fps: 30, first: 0, last: 900, slice: 120 };
+  assert.ok(canResume({ ...stamp, count: 4 }, stamp));         // an old stamp with a different worker count still resumes
+  assert.ok(!canResume({ ...stamp, key: 'other' }, stamp));
+  assert.ok(!canResume(stamp, { ...stamp, key: null }));
+});

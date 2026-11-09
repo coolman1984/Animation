@@ -6,7 +6,7 @@ import { cpus, totalmem, freemem, tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { WINDOWS, PYTHON, isMain, browserCandidates, onPath, memoryBudget, plannedWorkers } from './platform.mjs';
-import { orphans } from './procs.mjs';
+import { orphans, acquireLock } from './procs.mjs';
 import { shutdown } from './cdp.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -31,7 +31,8 @@ export function findChromium() {
 
 // Launch headless Chromium at a device scale, read one screenshot's PNG width.
 async function probeChromium(bin, scale = 2) {
-  const dir = mkdtempSync(join(tmpdir(), 'doctor-'));
+  try { acquireLock(); } catch (e) { return { ok: false, error: e.message }; }   // never a second browser beside a running job
+  const dir = mkdtempSync(join(tmpdir(), 'studio-doctor-'));
   const proc = spawn(bin, [
     '--headless=new', '--no-sandbox', '--disable-gpu', '--remote-debugging-port=0',
     `--force-device-scale-factor=${scale}`, '--window-size=400,300', `--user-data-dir=${dir}`, 'about:blank',

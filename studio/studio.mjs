@@ -198,12 +198,15 @@ async function colorCmd([sub, video, t], opt) {
 // Playback review: serve out/<film>/ and open the newest take's player (or the given take folder).
 // Kill browsers whose node died, remove stale temp profiles (never a live run's), report memory headroom.
 async function cleanupCmd() {
-  const { reap, liveEntries } = await import('./lib/procs.mjs');
+  const { reap, liveEntries, clearStaleLock } = await import('./lib/procs.mjs');
+  const lock = clearStaleLock();
+  if (lock?.removed) console.log(`removed a stale job lock (pid ${lock.removed.pid}: ${lock.removed.what})`);
+  if (lock?.live) console.log(`a studio job is running: ${lock.live.what} (pid ${lock.live.pid}, since ${lock.live.started}); its browsers are left alone`);
   const { readdirSync, rmSync } = await import('node:fs'); const { tmpdir } = await import('node:os');
   const killed = reap({ log: console.log });
   const keep = new Set(liveEntries().map((e) => e.profile));
   let removed = 0;
-  for (const d of readdirSync(tmpdir())) { const p = join(tmpdir(), d); if (/^(studio-chrome-|doctor-)/.test(d) && !keep.has(p)) { try { rmSync(p, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 }); removed++; } catch {} } }
+  for (const d of readdirSync(tmpdir())) { const p = join(tmpdir(), d); if (/^(studio-chrome-|studio-doctor-)/.test(d) && !keep.has(p)) { try { rmSync(p, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 }); removed++; } catch {} } }
   const mb = memoryBudget({ refresh: true });
   console.log(`orphan browsers killed: ${killed.length} · temp profiles removed: ${removed} · live studio browsers: ${keep.size}`);
   console.log(`memory headroom now ${mb.headroomGB} GB (RAM free ${mb.freeGB} GB${mb.commitFreeGB !== null ? `, commit free ${mb.commitFreeGB} GB, page file ${mb.pagefileMB} MB ${mb.pagefileAuto ? 'system-managed' : 'FIXED'}` : ''})`);
@@ -212,8 +215,9 @@ async function cleanupCmd() {
 // message) written to takes/<film>/build-full.log, exit code passed through. Workers are capped by memory inside render.mjs.
 async function buildCmd(args) {
   const film = args.find((a) => !a.startsWith('--'));
-  if (!film) { console.error('usage: node studio.mjs build <film> [--profile=draft|review|final] [--range=a:b] [--only=…] [--workers=n]'); process.exit(2); }
-  const { reap } = await import('./lib/procs.mjs');
+  if (!film || !/^[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*$/.test(film) || !existsSync(join(STUDIO, film, 'config.mjs'))) { console.error(`usage: node studio.mjs build <film folder with config.mjs> [--profile=draft|review|final] [--range=a:b] [--only=…] [--workers=n]${film ? `\n${film}: no config.mjs there` : ''}`); process.exit(2); }   // audit R13g: no takes/<typo> folder
+  const { reap, acquireLock } = await import('./lib/procs.mjs');
+  acquireLock({ what: `build ${film}` });   // refuse before anything starts; make.mjs and its browsers inherit it
   const { createWriteStream, mkdirSync: mk } = await import('node:fs');
   const { spawn } = await import('node:child_process');
   reap({ log: console.log });
@@ -225,6 +229,9 @@ async function buildCmd(args) {
   const child = spawn(process.execPath, ['make.mjs', ...args], { cwd: STUDIO, stdio: ['ignore', 'pipe', 'pipe'] });
   const tee = (chunk) => { process.stdout.write(chunk); out.write(chunk); };
   child.stdout.on('data', tee); child.stderr.on('data', tee);
+  // Ctrl+C / a stop request reaches make.mjs too, so its browsers and encoders are closed instead of orphaned (audit R13g).
+  const forward = (sig) => () => { try { child.kill(sig); } catch {} };
+  for (const sig of ['SIGINT', 'SIGTERM']) process.on(sig, forward(sig));
   const code = await new Promise((res) => child.on('close', (c, sig) => res(c ?? `signal ${sig}`)));
   out.end(`\n[exit ${code}]\n`);
   console.log(`\nbuild exit ${code} · full log: ${logPath}`);
