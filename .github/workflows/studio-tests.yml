@@ -31,6 +31,9 @@ jobs:
       - name: Vendored browser engines (three, pixi.js) for the GPU example studies
         working-directory: studio
         run: node studio.mjs setup gpu
+      - name: Type check (core modules, dev-only tools)
+        working-directory: studio
+        run: npm ci --no-audit --no-fund && npm run typecheck
       - name: Unit checks
         working-directory: studio
         run: npm run test:all

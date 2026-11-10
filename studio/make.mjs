@@ -218,7 +218,7 @@ try {
     report.deliveries[d.name] = { file, ...m, cached: reused, textCached, audioCached,
       seconds: (performance.now() - deliveryStarted) / 1000, render: renderStats, range, gates: g };
     say(`\n  ${d.name}`);
-    for (const x of g) { say(`   ${x.unchecked ? 'UNCHK' : x.ok ? 'PASS' : 'FAIL'}  ${x.name.padEnd(36)} ${x.value}`); allOk &&= x.ok; if (x.unchecked) unchecked.push(`${d.name}: ${x.name}`); }
+    for (const x of g) { say(`   ${x.unchecked ? 'UNCHK' : x.advisory ? 'NOTE ' : x.ok ? 'PASS' : 'FAIL'}  ${x.name.padEnd(36)} ${x.value}`); allOk &&= x.ok; if (x.unchecked) unchecked.push(`${d.name}: ${x.name}`); }
     // Evidence for LOOKING at the export: frames at cuts/copy/camera peaks, strips, crops, advisory notes.
     step = `review evidence ${d.name}`; log(`review evidence ${d.name}`);
     const offset = range?.[0] || 0, sv = shifted(offset, production.plan, text, range?.[1]);

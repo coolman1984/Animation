@@ -5,6 +5,10 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-11-10 — Owner answers on the audit
+
+Reel safe box unified on the published Meta band in `studio-engine/brand/brand.json` (same as `studio.mjs new`); `films/demo` text moved inside. Loudness range became a note (`lib/measure.mjs`). The root screen recording left git. New dev-only `npm run typecheck` (`studio/tsconfig.json`, TypeScript 5.9.3, pinned in `package.json` and `package-lock.json`) with JSDoc fixes in 10 modules; CI runs it.
+
 ## 2026-11-09 — Engine audit fixes
 
 Fixed the confirmed bugs and broken links from `docs/studio/ENGINE_AUDIT_2026-11-09.md` in six commits: lock for one browser job at a time (`lib/procs.mjs`), time-sliced renders that resume with any worker count (`lib/render.mjs`), one duration for engine films, data-driven final extras and one finishing checklist in `make.mjs`, a spec vocabulary (`studio-engine/lib/vocab.js`), brand and config validation, `audio.sounds` with licences, safer Openverse downloads, sites and review approvals. Proved: quick suite, end-to-end build test, a refused second build, a resumed render. Unverified: Windows, a full engine final with narration. The report's status table lists what stays open.

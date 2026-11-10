@@ -30,6 +30,7 @@ export function validateBrand(brand) {
   return e;
 }
 
+/** @param {any} spec @param {any} brand @param {{ format?: string }} [opts] */
 export function lint(spec, brand, { format } = {}) {
   const errors = [], warns = [];
   let tl;

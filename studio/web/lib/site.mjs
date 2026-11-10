@@ -152,6 +152,7 @@ export function validate(site) {
 }
 
 // ---------- build ----------
+/** @param {any} s @param {number} i @param {boolean} ar @param {(src: string) => ({ w: number, h: number } | null)} [dims] */
 const sectionHtml = (s, i, ar, dims = () => null) => {
   if (s.type === 'collection') s = { ...s, type: 'ring' };
   const id = s.id ? ` id="${esc(s.id)}"` : '', h = (t, lvl = 2) => (t ? `<h${lvl}>${esc(t)}</h${lvl}>` : '');
@@ -172,6 +173,7 @@ ${s.image ? `<div class="visual ${s.imageFit || 'contain'}"><img src="${esc(s.im
     default: return '';
   }
 };
+/** @param {any} site @param {string} outDir @param {{ siteDir?: string }} [opts] */
 export function build(site, outDir, { siteDir } = {}) {
   const v = validate(site);
   if (v.errors.length) throw Object.assign(new Error(`site.json has ${v.errors.length} error(s):\n- ${v.errors.join('\n- ')}`), { validation: v });

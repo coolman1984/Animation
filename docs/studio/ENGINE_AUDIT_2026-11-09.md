@@ -17,13 +17,14 @@
 | Fixed | R1, R2, R3, R4, R5, R6, R7, R9, R11 | R4: a fallback font is a warning, not a failure, so older films still render. R5: real-app capture keeps the old lenient settle. |
 | Fixed | R13a, b, c, e, f, g, h, i, j, l, n, o, p, q | R13k: the error was already clear; the new top-level handler prints it as one line. |
 | Fixed | S1, S2, S4, W3, W4, W5, T5, D2 | S1: the search now sends a generic client name (owner question 3 answered by default; say if you want the old one). |
-| Partly | L7 | `director plan` rejects placements it cannot lay out; MCP offers every brand format. The reel safe box is still two values: owner question 1. |
+| Fixed | L7 | `director plan` rejects placements it cannot lay out; MCP offers every brand format. Owner let the agent choose (2026-11-10): one reel safe box everywhere, the published Meta band [65, 269, 1015, 1248]. The reel films pass the text gates with it; `films/demo` text moved inside. Its pulse card still grows close to the headline mid-morph (an older look issue, unchanged after two tries). |
 | Partly | R8 | Picture key now follows the film's import graph and the vendor versions. Not done: streaming hashes and per-run memo. |
 | Partly | R10 | The probe page is reused as the first render worker. Not done: shared text timeline between stills and final, stills keyed on the package. |
-| Partly | R12 | Share copy retries once. The LRA gate is unchanged: owner question 2. |
-| Partly | S5 | `studio-engine/b-*` was already ignored (this report was wrong there); root recordings are now ignored. Removing tracked files waits for owner question 4. |
+| Fixed | R12 | Share copy retries once. Loudness range is a NOTE, not a gate (owner 2026-11-10). |
+| Fixed | S5 | `studio-engine/b-*` was already ignored (this report was wrong there); root recordings are ignored and the 7 MB root recording was removed from git (owner 2026-11-10). |
 | Partly | T1, T2, D4 | New tests: `test/cli.test.mjs`, `test/lock.test.mjs`, browser fixtures in `test/render.test.mjs`, and cases in the engine, web, Openverse, options and pipeline files. MCP hints read the element list from `studio-engine/lib/vocab.js`. |
-| Open | R13d, R13m, T3, T4, T6, T7, D1, D3, W1, W2, W6, section 8 | T6 waits for owner question 5. |
+| Fixed | T6 | Owner said yes (2026-11-10): `npm run typecheck` in `studio/` (TypeScript 5.9.3 over JSDoc, dev-only, 19 core modules in `studio/tsconfig.json`, clean); CI runs it. Widen `include` one module at a time. |
+| Open | R13d, R13m, T3, T4, T7, D1, D3, W1, W2, W6, section 8 | |
 
 Verified while fixing: `npm test` 169 pass, 19 skipped, 0 fail; the end-to-end build test (`STUDIO_RENDER_TEST=1 node --test test/pipeline.test.mjs`); the browser fixture test; a second build refused while one ran; a render killed after two slices resumed with 120 frames reused; `web check example` all green. Not verified: the owner's Windows machine, a full Studio Engine final with narration and a downloaded sound.
 
@@ -416,7 +417,11 @@ Each batch is one scope with its own tests and one commit. Stop and report after
 
 ---
 
-## 10. Open questions for the owner
+## 10. Owner answers (2026-11-10)
+
+1. Reel safe box: agent's choice, the Meta band. 2. LRA: a note. 3. Search client name: generic (kept). 4. Root recording: deleted from git. 5. Type checker: yes.
+
+### Original questions
 
 1. Reel safe area: which box is current, the one in `studio.mjs` or the one in the brand file (L7)?
 2. Is "loudness range under 8" a rule or advice (R12)?

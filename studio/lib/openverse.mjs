@@ -10,6 +10,7 @@ const STUDIO = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const API = 'https://api.openverse.org/v1/audio/';
 const UA = 'studio-audio-search/1.0';   // generic client name: no project address sent to an outside service (audit S1)
 
+/** @param {string} q @param {{ n?: number, anyLicense?: boolean, category?: string, page?: number }} [opts] */
 export function searchUrl(q, { n = 8, anyLicense = false, category, page = 1 } = {}) {
   const u = new URL(API);
   u.searchParams.set('q', q);

@@ -42,6 +42,6 @@ export function serve(root, { placeholder = false } = {}) {
       }
     });
     server.once('error', rej);
-    server.listen(0, '127.0.0.1', () => res({ server, port: server.address().port, close: () => server.close() }));
+    server.listen(0, '127.0.0.1', () => res({ server, port: /** @type {import('node:net').AddressInfo} */ (server.address()).port, close: () => server.close() }));
   });
 }

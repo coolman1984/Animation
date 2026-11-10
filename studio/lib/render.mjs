@@ -14,6 +14,7 @@ import { isMain, slash, memoryBudget, plannedWorkers } from './platform.mjs';
 
 const STUDIO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
+/** @param {string} cmd @param {string[]} args @param {{ input?: Buffer | string, quiet?: boolean, cwd?: string, env?: Record<string, string> }} [opts] @returns {Promise<{ out: string, err: string }>} */
 export function run(cmd, args, { input, quiet = true, cwd, env } = {}) {
   return new Promise((res, rej) => {
     const p = spawn(cmd, args, { stdio: [input ? 'pipe' : 'ignore', 'pipe', 'pipe'], ...(cwd ? { cwd } : {}), ...(env ? { env: { ...process.env, ...env } } : {}) });
@@ -33,6 +34,7 @@ export const GPU_ARGS = process.env.STUDIO_GPU === 'hardware'
   : ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'];
 // A film's start (module import, init, fonts, images, registered waits) may take this long before it is called stuck.
 const READY_TIMEOUT = Math.max(5000, +process.env.STUDIO_READY_TIMEOUT || 90000);
+/** @param {number} port @param {string} film @param {{ w: number, h: number, variant?: string, segments?: string, fadeOut?: number, scale?: number, gpu?: boolean }} o */
 export async function openFilm(port, film, { w, h, variant, segments, fadeOut, scale = 1, gpu = false }) {
   const client = await launch({ width: w, height: h, scale, extraArgs: gpu ? GPU_ARGS : [] });
   try {
@@ -142,6 +144,7 @@ export async function textTimeline({ film, w = 1080, h = 1350, variant, segments
 // Optional creative grade (config.lut: a .cube, e.g. from tools/ocio_bake.py) runs in RGB before the YUV conversion.
 // Windows: forward slashes, escaped drive colon, quoted for spaces.
 export const lutFilter = (file) => `lut3d=file='${slash(resolve(file)).replace(/:/g, '\\:')}':interp=tetrahedral`;
+/** @param {{ dither?: boolean, lut?: string }} [opts] */
 export function encodeFilter({ dither = false, lut } = {}) {
   const pad = (lut ? lutFilter(lut) + ',' : '') + 'pad=ceil(iw/2)*2:ceil(ih/2)*2';
   return dither

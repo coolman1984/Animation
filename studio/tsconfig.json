@@ -1,0 +1,14 @@
+{
+  "//": "Development-only type check (owner yes, 2026-11-10): JSDoc/inference over the core modules, no build step, no runtime dependency. Run: npm run typecheck",
+  "compilerOptions": {
+    "allowJs": true, "checkJs": true, "noEmit": true, "strict": false,
+    "target": "es2023", "module": "nodenext", "moduleResolution": "nodenext",
+    "lib": ["es2023", "dom"], "types": ["node"], "skipLibCheck": true, "resolveJsonModule": true
+  },
+  "include": [
+    "lib/build-options.mjs", "lib/cache.mjs", "lib/procs.mjs", "lib/platform.mjs", "lib/serve.mjs", "lib/review-server.mjs",
+    "lib/finish.mjs", "lib/measure.mjs", "lib/openverse.mjs", "lib/tastegate.mjs", "lib/storyboard.mjs",
+    "studio-engine/lib/pipeline.mjs", "studio-engine/lib/spec.mjs", "studio-engine/lib/events.js", "studio-engine/lib/gates.mjs",
+    "studio-engine/lib/vocab.js", "studio-engine/lib/copy.mjs", "studio-engine/lib/assets.mjs", "web/lib/site.mjs"
+  ]
+}

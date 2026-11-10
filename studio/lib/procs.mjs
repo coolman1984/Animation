@@ -23,6 +23,7 @@ export function killTree(pid) {
 }
 export const orphans = () => read().filter((e) => alive(e.pid) && !alive(e.parent));
 // Kill browsers whose launching node is dead, remove their profiles, drop dead entries. Returns what was killed.
+/** @param {{ log?: (m: string) => void }} [opts] */
 export function reap({ log } = {}) {
   const keep = [], killed = [];
   for (const e of read()) {

@@ -52,7 +52,8 @@ Do not load PROMPT_STUDIO.md or all skills for routine work. Record unknown mode
 **Testing policy (owner order, 2026-10-03; overrides any other instruction to run test suites):** slow checks cost the owner
 real time and tokens. NEVER run `npm run test:render`, `npm run test:all`, full `make` builds or other multi-minute checks to
 verify a code change. Check an edit with the one relevant test file (`node --test test/<file>.test.mjs`, optionally
-`--test-name-pattern`) or one direct command; `npm test` (= quick suite) is the most you run routinely. Slow suites and
+`--test-name-pattern`) or one direct command; `npm test` (= quick suite) is the most you run routinely. After editing a module listed in
+`studio/tsconfig.json`, also run `npm run typecheck` in `studio/` (seconds; `npm install` once first). Slow suites and
 real builds run ONLY while producing a real video the owner asked for, once, before delivery. Never re-run a slow suite to "confirm".
 On this Windows machine every process launch costs ~1 s, so even "small" commands add up: batch work.
 **Rendering rule:** run every film render through `node studio/studio.mjs build <film> …` in the background. It sizes workers to real memory

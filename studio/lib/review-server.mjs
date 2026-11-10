@@ -52,5 +52,5 @@ export function reviewServer(root, { port = 0, token = randomBytes(16).toString(
       createReadStream(file).pipe(rsp);
     } catch { rsp.writeHead(400); rsp.end(); }
   });
-  return new Promise((res, rej) => { server.once('error', rej); server.listen(port, '127.0.0.1', () => res({ server, port: server.address().port, token, close: () => server.close() })); });
+  return new Promise((res, rej) => { server.once('error', rej); server.listen(port, '127.0.0.1', () => res({ server, port: /** @type {import('node:net').AddressInfo} */ (server.address()).port, token, close: () => server.close() })); });
 }

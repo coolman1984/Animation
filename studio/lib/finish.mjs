@@ -7,6 +7,7 @@ import { devNull } from './platform.mjs';
 
 // Cut at exact picture times. 20ms edge fades suppress clicks; these are NOT overlap crossfades.
 // True crossfades would shorten the output unless handles were added to each picture edit.
+/** @param {string} src @param {string} out @param {{ segments?: string, fadeOut?: number }} [opts] */
 export async function assembleAudio(src, out, { segments, fadeOut = 0 } = {}) {
   const info = await probe(src);
   if (!info.acodec || !Number.isFinite(info.duration)) throw new Error('source has no usable audio');
@@ -66,6 +67,7 @@ export async function mux(video, audio, out) {
   return out;
 }
 
+/** @param {string} master @param {string} out @param {{ targetMB?: number, duration?: number, audioKbps?: number }} [opts] */
 export async function shareCopy(master, out, { targetMB = 27, duration, audioKbps = 160 } = {}) {
   // targetMB is MiB (2^20 bytes), matching probe().sizeMB. Refuse budgets that cannot hold audio + a usable picture (audit B12).
   if (!(Number.isFinite(duration) && duration > 0) || !(Number.isFinite(targetMB) && targetMB > 0)) throw new Error(`shareCopy needs a positive duration and size (got ${duration} s, ${targetMB} MiB)`);
@@ -91,6 +93,7 @@ const ts = (t, sep) => {
   const ms = Math.round(t * 1000), h = Math.floor(ms / 3600000), m = Math.floor(ms / 60000) % 60, s = Math.floor(ms / 1000) % 60, r = ms % 1000;
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}${sep}${String(r).padStart(3, '0')}`;
 };
+/** @param {{ text: string, start: number, end: number }[]} lines @param {string} base @param {{ translate?: Record<string, string> }} [opts] */
 export function captions(lines, base, { translate } = {}) {
   const cues = lines.map((l) => ({ ...l, text: translate ? (translate[l.text] ?? l.text) : l.text }));
   const srt = cues.map((c, i) => `${i + 1}\n${ts(c.start, ',')} --> ${ts(c.end, ',')}\n${c.text}\n`).join('\n');

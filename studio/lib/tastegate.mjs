@@ -36,6 +36,7 @@ export function decodeGray(path, { fps = FPS, width = WIDTH, maxSeconds = 600 } 
 }
 const median = (a) => { const s = [...a].sort((x, y) => x - y); return s.length ? s[Math.floor(s.length / 2)] : 0; };
 
+/** @param {{ frames: Buffer[], w: number, h: number, fps: number }} input @param {{ vertical?: boolean }} [opts] */
 export function measure({ frames, w, h, fps }, { vertical } = {}) {
   const portrait = vertical ?? h > w, rows = Math.floor(h * (1 - (portrait ? 0.18 : 0.15)));   // subtitle band masked
   const n = frames.length, d = new Float64Array(Math.max(0, n - 1)), edge = new Float64Array(n);

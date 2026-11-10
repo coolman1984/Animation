@@ -8,6 +8,8 @@
     "doctor": "node lib/doctor.mjs",
     "test": "node --test --test-skip-pattern=\"local reference|direct media URL|static silent reference|probe duration|real audio|audio deep|motion curves|librosa|ducking|one photo|OTIO|real app capture|review crops\" test/*.test.mjs",
     "test:all": "node --test test/*.test.mjs",
-    "test:render": "node --env-file=test/render.env --test --test-concurrency=1 test/*.test.mjs"
-  }
+    "test:render": "node --env-file=test/render.env --test --test-concurrency=1 test/*.test.mjs",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "devDependencies": { "typescript": "5.9.3", "@types/node": "22.20.5" }
 }

@@ -76,7 +76,8 @@ export function gates(m, brief) {
   if (m.loud) {
     add(`loudness ${brief.lufs} LUFS ±1`, Number.isFinite(m.loud.I) && Math.abs(m.loud.I - brief.lufs) <= 1, `${m.loud.I} LUFS`);
     add(`true peak ≤ ${brief.tp ?? -1.5} dBTP (+0.2 tol)`, Number.isFinite(m.loud.TP) && m.loud.TP <= (brief.tp ?? -1.5) + 0.2, `${m.loud.TP} dBTP`);
-    add('LRA < 8 LU', Number.isFinite(m.loud.LRA) && m.loud.LRA < 8, `${m.loud.LRA} LU`);
+    // Owner decision 2026-11-10: loudness range is advice, not a gate (a quiet opening and a loud payoff can exceed 8 LU by design).
+    add('LRA (note, not a gate)', true, `${m.loud.LRA} LU${Number.isFinite(m.loud.LRA) && m.loud.LRA >= 8 ? ' — above 8 LU: check the quiet parts on a phone speaker' : ''}`); g.at(-1).advisory = true;
   }
   const allowedFrozen = (brief.holds || []);
   const badFrozen = m.frozen.filter((f) => !allowedFrozen.some(([a, b]) => f.start >= a - 0.1 && (f.end ?? m.probe.duration) <= b + 0.1));
