@@ -168,6 +168,11 @@ could not be opened from this cloud session (DNS blocked), so their rows rest on
 | Shorts Animator (read only; no licence, so no code copied and nothing run; its CLAUDE.md/AGENTS.md tell agents to run its installer on "hi") | Flat Canvas drawing → one WebGL paint pass (stroke cells / watercolour wash), drawings on twos at 24 fps, Kokoro TTS (no Arabic), synth music moods with sidechain ducking, ≤ 5-word caption chunks timed by characters, shots cut on chunks, camera moves; speed from 12 drawings/s, GPU, canvas capture, one encode | LEARN → our own: `lib/storykit.js`, `lib/brush.js` (published Kuwahara method), shots/moves/chunks/recording/plan in `story.mjs`, `fast.mjs` | coolman1984/shorts-animator @ 6afaf25 (private) |
 
 
+## Claude Fable 5.2 HTML studies (miaai-lab) — 2026-11-10
+| Technology | What was learned | Decision | Source |
+|---|---|---|---|
+| 76 single-file HTML studies generated from long written briefs (no licence) | The site level the owner wants: one concept the interface proves, one material + geometry, a signature interaction on a real model, drawn SVG/Canvas worlds, exact palettes, type by role, specific copy, motion in numbers, full a11y/reduced-motion floor, zero dependencies | ADOPTED as the web taste baseline (`web/FOUNDATION.md`, world brief template); study only, nothing copied | miaai-lab.github.io/Claude-Fable-5.2-HTML-Files (studied 2026-11-10) |
+
 ## SageCut (levantolabs) — 2026-10-27
 | Technology | What was learned | Decision | Source |
 |---|---|---|---|

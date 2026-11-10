@@ -4,6 +4,8 @@ Added 2026-10-16 (owner: "the repo should help build complete websites on the in
 A site is ONE `web/sites/<name>/site.json`; the studio turns it into a fast static site (no build tools, no dependencies) and checks it
 in a real browser the way a top studio checks before launch. Same philosophy as the films: plan → write → check → deliver.
 
+**Foundation — the level every site must reach (owner order, 2026-11-10): [FOUNDATION.md](FOUNDATION.md).** The owner chose the 76 "Claude Fable 5.2" HTML studies (miaai-lab.github.io/Claude-Fable-5.2-HTML-Files) as exactly the level they want. Every site starts with a world brief (`templates/WORLD_BRIEF.md` → DESIGN.md §0) and is judged against FOUNDATION.md's twelve laws and its bar in stage D: one concept the interface itself proves, one material and geometry, one signature moment on a real model, drawn or real material (never stock), exact palette, type by role, specific copy, motion written as numbers, a full craft floor, self-contained. Where an older taste rule below disagrees, FOUNDATION.md wins; workflow, gates and honesty rules stay.
+
 ## The loop (new site; the stages and the redesign path are in "One workflow" below)
 1. **Be ambitious first** (after Felix Rieseberg's "be ambitious" prompt): before any line, answer in `ambition`:
    what would the best studio in this field build for this client · the rawest real material to start from (the client's photos, words,

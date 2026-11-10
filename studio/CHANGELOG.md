@@ -5,6 +5,10 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-11-10 — Web foundation: the "Fable 5.2" level
+
+Owner order: the 76 studies at miaai-lab.github.io/Claude-Fable-5.2-HTML-Files are "exactly the level I want; make it the foundation of the websites section". All 76 files and briefs were downloaded and measured (76/76 reduced motion, focus-visible, aria and lang; 0 network requests or libraries; SVG 71, Canvas 52, WebGL 8, Web Audio 38; briefs 517–1,127 words) and the seven brand landing pages were viewed at 1440 px and two at 390 px. New [`web/FOUNDATION.md`](web/FOUNDATION.md) (twelve laws, Arabic/real-client adaptation, a 12-question stage-D bar, study map), [`web/templates/WORLD_BRIEF.md`](web/templates/WORLD_BRIEF.md) and DESIGN.md §0. WEB.md, the web-director skill, gallery/LESSONS.md, ART_DIRECTION.md and AGENTS.md point to it; it overrides older taste rules (one family, restraint in motion) where they disagree. Documentation only: no site was built to the new bar yet, and nothing from the reference (no licence) was copied.
+
 ## 2026-11-07 — Remove the Arabic sales page
 
 Deleted the root draft page (`index.html`, `.nojekyll`, `series5/`) and `.github/workflows/pages.yml`, which published only that page. Removed the handbook row that pointed at it.

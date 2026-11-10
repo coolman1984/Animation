@@ -1,5 +1,7 @@
 # Reference-led art direction — 2026-11-03
 
+> **2026-11-10: the taste baseline for every site is [`FOUNDATION.md`](FOUNDATION.md)** (the owner's "Fable 5.2" level); this file's composition controls remain tools for reaching it.
+
 Owner target: exceed the visual quality of the supplied screenshots (45709, 45711, 45715, 45719, 45717, 45729, 45731, 45735, 45739, 45737). These are visual references, not proof of award status, real interactions or performance. Do not copy their logos, claims, people or products into a deliverable.
 
 ## What the references establish
