@@ -2,7 +2,9 @@
 
 Updated: 2026-11-10.
 
-**Current scope: DONE — Web foundation at the "Fable 5.2" level (owner 2026-11-10).** The owner chose the 76 studies at miaai-lab.github.io/Claude-Fable-5.2-HTML-Files as the level for all websites. Studied all 76 files and briefs; wrote `studio/web/FOUNDATION.md` (twelve laws, Arabic/real-client adaptation, stage-D bar), `studio/web/templates/WORLD_BRIEF.md` and DESIGN.md §0, and pointed WEB.md, web-director, LESSONS.md, ART_DIRECTION.md and AGENTS.md at it. Not verified: no site built to the new bar yet; the gallery's round-2 examples predate it.
+**Current scope: DONE — Emil Kowalski's interface skills (owner 2026-11-10).** emilkowalski/skills @ 715c180 (MIT, 18 skills) vendored in `studio/toolkit/emil-skills/` with the wrapper skill `emil-skills` (web stages C and D: interface motion numbers, choreography, gestures, phone-native fixes, strict motion review, worst-case data). Not verified: no site built or reviewed with them yet.
+
+**Previous scope: DONE — Web foundation at the "Fable 5.2" level (owner 2026-11-10).** The owner chose the 76 studies at miaai-lab.github.io/Claude-Fable-5.2-HTML-Files as the level for all websites. Studied all 76 files and briefs; wrote `studio/web/FOUNDATION.md` (twelve laws, Arabic/real-client adaptation, stage-D bar), `studio/web/templates/WORLD_BRIEF.md` and DESIGN.md §0, and pointed WEB.md, web-director, LESSONS.md, ART_DIRECTION.md and AGENTS.md at it. Not verified: no site built to the new bar yet; the gallery's round-2 examples predate it.
 
 Removed the root Arabic sales page, its `series5/` folder, `.nojekyll`, and the Pages workflow that published only that page. The handbook no longer points at it.
 

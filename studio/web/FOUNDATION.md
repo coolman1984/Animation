@@ -53,7 +53,7 @@ The repository has no licence. **We study it; we never copy its code, drawings, 
    only where the world is loud), idle life, hover and the reward. Motion explains the world; it never decorates it.
 10. **Details that reward attention.** A cursor drawn from the world (desktop only), hover that reveals a real spec, a stamped confirmation,
     a revision log, a small live readout ("now falling: drizzle"), sound off by default behind a drawn toggle.
-11. **The craft floor is not optional.** Reduced motion gives a complete still page where the key interaction still works; every interaction
+11. **The craft floor is not optional** (interface numbers and phone fixes: skill `emil-skills`). Reduced motion gives a complete still page where the key interaction still works; every interaction
     works from the keyboard; focus rings are styled in the world; labels and roles are set; animation pauses when hidden or off screen;
     canvas DPR capped at 2; the phone layout is re-composed (the hex grid becomes 3 columns), never shrunk; no sideways scroll.
 12. **Self-contained and light.** One file or one folder, no CDN, no framework, no tracking, no web font from the network; 30–120 KB of
