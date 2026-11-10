@@ -1,5 +1,7 @@
 # What professional sites do — measured 2026-11-03
 
+> **2026-11-10: the foundation is now [`../FOUNDATION.md`](../FOUNDATION.md)** (the owner's "Fable 5.2" level). Where it disagrees on taste it wins: 2–3 type families by role instead of one (rule 1), one signature moment plus motion the world motivates instead of restraint (rule 7), drawn or real material in the world's own composition instead of soft colour panels (rules 3–4). Copy clarity (rule 2), sizes (rule 6) and honest trust rows (rule 5) still apply.
+
 Owner verdict on the first gallery: "very bad — fonts very bad, design and copy very bad; study professional sites and learn well".
 So we opened 14 real sites in Chromium at 1440 × 900 (Arabic locale), took four screens of each and measured the computed type.
 Thmanyah, Salla, Zid and Aesop served a bot check (not bypassed; left out). Screens are research only and are not republished.
