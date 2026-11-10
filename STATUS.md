@@ -1,6 +1,6 @@
 # Studio status and session handoff
 
-Updated: 2026-11-09.
+Updated: 2026-11-10.
 
 **Current scope: DONE — Owner answers on the audit (2026-11-10: "4 yes, 3 delete, 2 note, 1 you choose").** One reel safe box everywhere (Meta band 65, 269, 1015, 1248; reel films pass the text gates, `films/demo` text moved inside); loudness range is a note; the root screen recording is removed from git; `npm run typecheck` (TypeScript over JSDoc, dev-only) is clean on 19 core modules and runs in CI. Quick suite 170 pass. Not verified: Windows; the demo's card still grows close to its headline mid-morph.
 
