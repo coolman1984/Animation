@@ -19,7 +19,18 @@ in a real browser the way a top studio checks before launch. Same philosophy as 
 5. **Check:** `node studio/studio.mjs web check <site>` (MCP `web_check`, returns the screenshot strips as images): phone 390, tablet 820,
    desktop 1440 — sideways scroll, image alt / broken images, WCAG AA contrast, type ≥ 14 px, tap targets ≥ 44 px, motion never hides
    content (after scrolling AND on the first screen), reduced motion = a still complete page, title/description/lang/dir/viewport,
-   script errors, total weight. Red lights block; look at the strips too (a gate cannot judge taste).
+   script errors, total weight, **missing files** (a stylesheet, script, font or photo the page asks for and does not get is red; a page
+   with no tab icon is a yellow note) and **names** (a link, button or field a screen reader cannot name is red; a repeated id is yellow).
+   Red lights block; look at the strips too (a gate cannot judge taste). Each line shows the first few findings: `--all`
+   (MCP `web_check` with `all: true`) lists every one, which is what you need while fixing. A carousel that scrolls sideways inside
+   its own box is not page overflow.
+   **What the build writes for you (2026-11-11):** a tab icon in the site's colours, `og:type`/`og:site_name`/`twitter:card`, and, only
+   when site.json gives them, `"url"` (public https address → canonical link + `og:url`) and `"shareImage"` (the picture WhatsApp and
+   Facebook show). `layout.width` narrow/standard/wide = 960/1180/1440 px. Buttons answer hover (an inner line) and press (2 %) and stay
+   in place; in-page links land below the sticky header; the page prints complete.
+   **What the build refuses (2026-11-11):** a missing title or brand name, a section without its heading or an item without its text
+   (an empty `<h2>` or the word "undefined" never reaches a page), a link that is not `#anchor`, http(s), `mailto:`, `tel:`, `sms:`,
+   `whatsapp:` or a relative page, and an in-page link that points at no section.
    **Taste lights** (yellow, 2026-10-19; adapted from taste-skill, MIT, and Impeccable, Apache-2.0): headlines ≤ 2 lines, ≤ 2 typefaces,
    no decorative gradients / resting shadows / glows, neutrals tinted toward the brand, no grey text on colour, no tiny tracked caps,
    body lines ≤ ~75 characters, no bounce easing, no blank stretch over half a screen (scroll scenes excepted), ≥ 8 moving elements,

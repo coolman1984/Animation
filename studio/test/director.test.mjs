@@ -164,3 +164,29 @@ test('quality bar (motion-director prompt): facts traced, edit pace per mode, co
     { kind: 'text', text: 'x', size: 40, color: 'rgb(110, 110, 110)', x0: 10, y0: 10, x1: 90, y1: 50, opacity: 1, z: 1 }], { w: 100, h: 100 });
   assert.deepEqual(grey.findings.filter((f) => f.rule === 'contrast').map((f) => f.level), ['warn']);
 });
+
+// ---- 2026-11-11 improvement pass: the critic and the shared clock on specs nobody has linted ----
+test('a spec with a broken structure gets the verdict "broken spec", never a crash or a frozen check', async () => {
+  const { timeline, MAX_SECONDS } = await import('../studio-engine/lib/events.js'), { lint } = await import('../studio-engine/lib/gates.mjs'), { copyOf } = await import('../studio-engine/lib/critic.mjs');
+  const brand = JSON.parse(readFileSync(join(STUDIO, 'studio-engine/brand/brand.json'), 'utf8'));
+  const scene = (elements, more = {}) => ({ title: 't', format: 'reel', bpm: 120, scenes: [{ id: 'a', beats: 8, elements, ...more }] });
+  // a typo in beats: lint used to accept a 55-hour film and the per-second checks then ran for minutes
+  const huge = { title: 't', bpm: 120, scenes: [{ id: 'a', beats: 4e9, elements: [{ type: 'words', text: 'x' }] }] };
+  assert.throws(() => timeline(huge), /check "beats" and "bpm"/);
+  assert.match(lint(huge, brand).errors.join(), /at most 3600 s/);
+  const started = Date.now(), r = critique(huge, brand, { format: 'reel' });
+  assert.equal(r.verdict, 'broken spec'); assert.ok(Date.now() - started < 2000, 'answers at once');
+  assert.doesNotThrow(() => timeline({ bpm: 120, scenes: [{ id: 'a', beats: MAX_SECONDS * 2, elements: [] }] }), 'exactly an hour is still a film');
+  for (const [name, spec] of Object.entries({
+    linesString: scene([{ type: 'stack', lines: 'abc' }]), linesNull: scene([{ type: 'stack', lines: [null, 5] }]), partsString: scene([{ type: 'pill', parts: 'x' }]),
+    morphNumber: scene([{ type: 'shape', id: 's', morph: 5 }]), itemsString: scene([{ type: 'cards', items: 'x' }]), nullSpec: null, noScenes: {}, sceneNull: { scenes: [null] },
+  })) {
+    const out = critique(spec, brand, { format: 'reel' });
+    // either the whole spec is refused, or the scorecard carries lint's failure: both tell the model what to fix
+    assert.ok(out.verdict === 'broken spec' || out.rules.some((x) => x.id === 'lint' && x.status === 'fail'), `${name}: ${out.verdict}`);
+    assert.ok(out.rules.every((x) => typeof x.evidence === 'string' && x.evidence.length > 0), name);
+  }
+  for (const e of [null, 'words', { type: 'stack', lines: 'abc' }, { type: 'stack', lines: [null, { text: 'سطر' }] }, { type: 'pill', parts: 'x' }, { type: 'pill', parts: [null, 'كلمة', { text: 'تانية' }] }, { type: 'wipes', items: {} }, { type: 'mark', parts: [1, 'نور'] }]) assert.ok(Array.isArray(copyOf(e)), JSON.stringify(e));
+  assert.deepEqual(copyOf({ type: 'stack', lines: [null, { text: 'سطر' }] }).map((c) => c.text), ['سطر']);
+  assert.equal(copyOf({ type: 'pill', parts: [null, 'كلمة', { text: 'تانية' }] })[0].text, 'كلمة تانية');
+});
