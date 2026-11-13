@@ -38,16 +38,19 @@ const TEXT_TYPES = new Set(['words', 'stack', 'pill', 'slab', 'slice', 'wipes', 
 const HERO_TYPES = new Set(['shape', 'path', 'ribbon', 'extrude', 'lockup', 'mark', 'cursor', 'image', 'ring', 'icon']);
 const PAYOFF_TYPES = new Set(['pill', 'lockup', 'mark', 'extrude']);
 // every visible string of an element, with its size (px at a 1080 short side) and its window in beats
+// It reads specs that lint has NOT passed yet (director review, storyboard), so a malformed list or line is skipped, never a crash.
 export function copyOf(e) {
+  if (!e || typeof e !== 'object') return [];
+  const list = (v) => (Array.isArray(v) ? v.filter((x) => x && typeof x === 'object') : []);
   const at = e.at ?? 0, out = [];
   if (e.type === 'words' && e.text) out.push({ text: e.text, size: e.size, at, end: e.out });
-  if (e.type === 'stack') for (const [i, l] of (e.lines || []).entries()) out.push({ text: l.text, size: l.size || e.size || 120, at: l.at ?? at + i * 0.5, end: e.out, fact: l.fact });
-  if (e.type === 'pill') { const parts = (e.parts || [e.text]).filter(Boolean); out.push({ text: parts.map((p) => (typeof p === 'string' ? p : p.text)).join(' '), size: Math.min(...parts.map((p) => (typeof p === 'object' && p.size) || e.size || 70)), at, end: e.out }); }
-  if (e.type === 'slab') for (const l of e.lines || []) out.push({ text: l.text, size: l.size || 120, at: l.at ?? at, end: e.out, fact: l.fact });
+  if (e.type === 'stack') for (const [i, l] of list(e.lines).entries()) out.push({ text: l.text, size: l.size || e.size || 120, at: l.at ?? at + i * 0.5, end: e.out, fact: l.fact });
+  if (e.type === 'pill') { const parts = (Array.isArray(e.parts) ? e.parts : [e.text]).filter((p) => typeof p === 'string' ? p : p && typeof p === 'object'); out.push({ text: parts.map((p) => (typeof p === 'string' ? p : p.text)).join(' '), size: Math.min(...parts.map((p) => (typeof p === 'object' && p.size) || e.size || 70)), at, end: e.out }); }
+  if (e.type === 'slab') for (const l of list(e.lines)) out.push({ text: l.text, size: l.size || 120, at: l.at ?? at, end: e.out, fact: l.fact });
   if (['slice', 'extrude'].includes(e.type) && e.text) out.push({ text: e.text, size: e.size || 300, at, end: e.out });
-  if (e.type === 'wipes') for (const w of e.items || []) out.push({ text: w.text, size: w.size || 250, at: w.at, end: w.at + 2, fact: w.fact });
-  if (e.type === 'cards') for (const [i, it] of (e.items || []).entries()) for (const [k, size] of [['title', 76], ['titleAr', 48], ['old', 46], ['oldAr', 40], ['new', 46], ['newAr', 40]]) if (it?.[k]) out.push({ text: it[k], size, at: (e.start ?? 1) + i * (e.step ?? 5), end: (e.start ?? 1) + (i + 1) * (e.step ?? 5), fact: it.fact });
-  if (['lockup', 'mark'].includes(e.type)) out.push({ text: (e.parts || []).join(' '), size: e.size || 300, at, end: e.out });
+  if (e.type === 'wipes') for (const w of list(e.items)) out.push({ text: w.text, size: w.size || 250, at: w.at, end: w.at + 2, fact: w.fact });
+  if (e.type === 'cards') for (const [i, it] of (Array.isArray(e.items) ? e.items : []).entries()) for (const [k, size] of [['title', 76], ['titleAr', 48], ['old', 46], ['oldAr', 40], ['new', 46], ['newAr', 40]]) if (it?.[k]) out.push({ text: it[k], size, at: (e.start ?? 1) + i * (e.step ?? 5), end: (e.start ?? 1) + (i + 1) * (e.step ?? 5), fact: it.fact });
+  if (['lockup', 'mark'].includes(e.type)) out.push({ text: (Array.isArray(e.parts) ? e.parts : []).filter((p) => typeof p === 'string').join(' '), size: e.size || 300, at, end: e.out });
   return out.filter((c) => typeof c.text === 'string' && c.text.trim());
 }
 
@@ -104,7 +107,18 @@ function landsEarly(s) {
 const digits = (x) => (String(x).replace(/[٠-٩]/g, (d) => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).match(/\d+(?:[.,٫]\d+)?/g) || []).map((n) => n.replace(/[,٫]/, '.'));
 const norm = (x) => String(x).replace(/[\u064B-\u0652\u0640]/g, '').replace(/\s+/g, ' ').trim();
 
-export function critique(base, brand, { format, frames, facts } = {}) {
+// The critic is also run on specs nobody has linted (a hand-written spec.json, another model's draft). A spec whose structure
+// is wrong gets the verdict "broken spec" with lint's own messages; an exception on a spec that lints clean is a critic bug and is rethrown.
+export function critique(base, brand, options = {}) {
+  try { return scoreSpec(base, brand, options); }
+  catch (error) {
+    let errors = [];
+    try { errors = lint(forFormat(base, options.format || base?.format || 'youtube'), brand).errors; } catch (e) { errors = [e.message]; }
+    if (!errors.length) throw error;
+    return { score: 0, verdict: 'broken spec', rules: [{ id: 'spec', status: 'fail', source: 'catalog.json', evidence: errors.slice(0, 6).join(' · '), fix: 'Fix the spec structure first (spec_check names each error with a hint).' }] };
+  }
+}
+function scoreSpec(base, brand, { format, frames, facts } = {}) {
   const rules = [], add = (id, status, source, evidence, fix = '') => rules.push({ id, status, source, evidence, fix });
   const fmt = format || base.format || 'youtube', spec = forFormat(base, fmt), portrait = fmt === 'reel';
   let tl; try { tl = timeline(spec); } catch (e) { return { score: 0, verdict: 'broken spec', rules: [{ id: 'spec', status: 'fail', source: 'catalog.json', evidence: e.message, fix: 'Fix the spec structure first (spec_check).' }] }; }

@@ -7,9 +7,17 @@ import { createServer } from 'node:http';
 import { createReadStream, statSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { extname } from 'node:path';
-import { inside } from './serve.mjs';
+import { inside, parseRange, TYPES } from './serve.mjs';
 
-const TYPES = { '.html': 'text/html; charset=utf-8', '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg', '.mp4': 'video/mp4', '.m4a': 'audio/mp4', '.vtt': 'text/vtt', '.srt': 'text/plain; charset=utf-8' };
+// Notes and approvals are written by this server, so only its own page may call the API: a request must name this loopback
+// host (a DNS-rebinding page names its own), and a browser request from another origin (any site the reviewer has open could
+// POST here) is refused. Tools without an Origin header (curl, tests) still work.
+const LOOPBACK = /^(127\.0\.0\.1|localhost|\[::1\])(:\d+)?$/;
+export function sameOrigin(headers) {
+  if (!LOOPBACK.test(String(headers.host || ''))) return false;
+  if (headers.origin === undefined) return true;
+  try { return new URL(headers.origin).host === headers.host; } catch { return false; }
+}
 const sha256 = (file) => createHash('sha256').update(readFileSync(file)).digest('hex');
 const store = (file) => file + '.review.json';
 const readStore = (file) => { try { return JSON.parse(readFileSync(store(file), 'utf8')); } catch { return { notes: [], approval: null }; } };
@@ -22,6 +30,8 @@ export function reviewServer(root, { port = 0 } = {}) {
       const url = new URL(req.url, 'http://x'), path = decodeURIComponent(url.pathname);
       const api = path.match(/\/api\/(state|notes|approve)$/)?.[1];
       if (api) {
+        if (!sameOrigin(req.headers)) return json(rsp, 403, { error: 'the review API only answers its own page' });
+        if (api !== 'state' && req.method !== 'POST') return json(rsp, 405, { error: 'POST only' });
         const q = api === 'state' ? { video: url.searchParams.get('video') } : await body(req);
         const file = q.video && inside(root, '/' + q.video);
         if (!file || !existsSync(file) || extname(file) !== '.mp4') return json(rsp, 404, { error: 'unknown video' });
@@ -32,11 +42,11 @@ export function reviewServer(root, { port = 0 } = {}) {
       }
       const file = inside(root, path.endsWith('/') ? path + 'index.html' : path);
       if (!file || !existsSync(file) || !statSync(file).isFile()) { rsp.writeHead(404); return rsp.end('not found'); }
-      const size = statSync(file).size, type = TYPES[extname(file)] || 'application/octet-stream';
-      const range = req.headers.range?.match(/bytes=(\d*)-(\d*)/);
+      const size = statSync(file).size, type = TYPES[extname(file).toLowerCase()] || 'application/octet-stream';
+      const range = parseRange(req.headers.range, size);   // a suffix longer than the file is the whole file, not an error
+      if (range === false) { rsp.writeHead(416, { 'content-range': `bytes */${size}` }); return rsp.end(); }
       if (range) {
-        const start = range[1] ? +range[1] : size - +range[2], end = range[1] && range[2] ? Math.min(+range[2], size - 1) : size - 1;
-        if (!(start >= 0 && start <= end)) { rsp.writeHead(416, { 'content-range': `bytes */${size}` }); return rsp.end(); }
+        const { start, end } = range;
         rsp.writeHead(206, { 'content-type': type, 'accept-ranges': 'bytes', 'content-range': `bytes ${start}-${end}/${size}`, 'content-length': end - start + 1 });
         return createReadStream(file, { start, end }).pipe(rsp);
       }
