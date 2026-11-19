@@ -4,6 +4,8 @@ Added 2026-10-16 (owner: "the repo should help build complete websites on the in
 A site is ONE `web/sites/<name>/site.json`; the studio turns it into a fast static site (no build tools, no dependencies) and checks it
 in a real browser the way a top studio checks before launch. Same philosophy as the films: plan → write → check → deliver.
 
+**Foundation — the level every site must reach (owner order, 2026-11-10): [FOUNDATION.md](FOUNDATION.md).** The owner chose the 76 "Claude Fable 5.2" HTML studies (miaai-lab.github.io/Claude-Fable-5.2-HTML-Files) as exactly the level they want. Every site starts with a world brief (`templates/WORLD_BRIEF.md` → DESIGN.md §0) and is judged against FOUNDATION.md's twelve laws and its bar in stage D: one concept the interface itself proves, one material and geometry, one signature moment on a real model, drawn or real material (never stock), exact palette, type by role, specific copy, motion written as numbers, a full craft floor, self-contained. Where an older taste rule below disagrees, FOUNDATION.md wins; workflow, gates and honesty rules stay.
+
 ## The loop (new site; the stages and the redesign path are in "One workflow" below)
 1. **Be ambitious first** (after Felix Rieseberg's "be ambitious" prompt): before any line, answer in `ambition`:
    what would the best studio in this field build for this client · the rawest real material to start from (the client's photos, words,
@@ -18,7 +20,18 @@ in a real browser the way a top studio checks before launch. Same philosophy as 
 5. **Check:** `node studio/studio.mjs web check <site>` (MCP `web_check`, returns the screenshot strips as images): phone 390, tablet 820,
    desktop 1440 — sideways scroll, image alt / broken images, WCAG AA contrast, type ≥ 14 px, tap targets ≥ 44 px, motion never hides
    content (after scrolling AND on the first screen), reduced motion = a still complete page, title/description/lang/dir/viewport,
-   script errors, total weight. Red lights block; look at the strips too (a gate cannot judge taste).
+   script errors, total weight, **missing files** (a stylesheet, script, font or photo the page asks for and does not get is red; a page
+   with no tab icon is a yellow note) and **names** (a link, button or field a screen reader cannot name is red; a repeated id is yellow).
+   Red lights block; look at the strips too (a gate cannot judge taste). Each line shows the first few findings: `--all`
+   (MCP `web_check` with `all: true`) lists every one, which is what you need while fixing. A carousel that scrolls sideways inside
+   its own box is not page overflow.
+   **What the build writes for you (2026-11-11):** a tab icon in the site's colours, `og:type`/`og:site_name`/`twitter:card`, and, only
+   when site.json gives them, `"url"` (public https address → canonical link + `og:url`) and `"shareImage"` (the picture WhatsApp and
+   Facebook show). `layout.width` narrow/standard/wide = 960/1180/1440 px. Buttons answer hover (an inner line) and press (2 %) and stay
+   in place; in-page links land below the sticky header; the page prints complete.
+   **What the build refuses (2026-11-11):** a missing title or brand name, a section without its heading or an item without its text
+   (an empty `<h2>` or the word "undefined" never reaches a page), a link that is not `#anchor`, http(s), `mailto:`, `tel:`, `sms:`,
+   `whatsapp:` or a relative page, and an in-page link that points at no section.
    **Taste lights** (yellow, 2026-10-19; adapted from taste-skill, MIT, and Impeccable, Apache-2.0): headlines ≤ 2 lines, ≤ 2 typefaces,
    no decorative gradients / resting shadows / glows, neutrals tinted toward the brand, no grey text on colour, no tiny tracked caps,
    body lines ≤ ~75 characters, no bounce easing, no blank stretch over half a screen (scroll scenes excepted), ≥ 8 moving elements,
@@ -64,6 +77,7 @@ a still complete page under `prefers-reduced-motion`, no layout shift.
   owner may add the full plugin on his PC (`/plugin marketplace add pbakaus/impeccable`, `DO_NOT_TRACK=1`).
 - **A:** taste-skill stays an install on the owner's PC (`/plugin marketplace add Leonxlnx/taste-skill`) or the studio's taste pass below.
 - **C, when the GSAP row is the minimum that does the job:** skill `gsap-skills` (`studio/toolkit/gsap-skills/`, official GreenSock skills, MIT — core, timeline, scrolltrigger, plugins, utils, react, frameworks, performance). The GSAP library is not vendored and is not MIT: GreenSock's standard no-charge licence (gsap.com/standard-license). Check it per client, pin the version, credit GreenSock in DESIGN.md §C. Reduced motion stays a still complete page (`gsap.matchMedia()`).
+- **Interface layer (added 2026-11-10):** skill `emil-skills` (Emil Kowalski, MIT, vendored) — stage C: should it animate, easing and duration numbers, choreography, gestures, `mobile-native` phone fixes; stage D: `review-animations` (strict), `break-ui` (worst-case data, Arabic names), `animation-performance`. Its React/library advice becomes CSS/WAAPI on our static sites.
 - **Also for sites:** skill `diagram-design` (a diagram as inline SVG), skill `img2threejs` (a real product as live Three.js, stage C 3D row),
   skill `penpot-mcp` (the client's Penpot file → §B), skill `video-shotcraft` (the site's promo film from its real pages).
 - **Landing pages (added 2026-10-25):** skill `landing-page-design` feeds §A (one action, intake, above-the-fold order, layout type A–D,

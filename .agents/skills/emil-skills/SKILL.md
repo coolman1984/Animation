@@ -1,38 +1,38 @@
 ---
 name: emil-skills
-description: Emil Kowalski's design-engineering skills (MIT, vendored text) — choreograph several elements that animate together (lead / support / decoration / static, together / overlap / sequence / carry, stagger budgets, interruption, reduced motion), build one animation right (curve, duration, origin), review, improve, remove or find animations, fix dropped frames, name motion precisely, Apple's fluid-motion principles, native feel on phones, break a UI with worst-case data, prototype variants. Use for any web or UI motion, a hero or list entrance, a stagger, a view swap or multi-step flow, an animation audit ("feels slow", "feels robotic", "too much going on"), and when timing a group of moving parts in a film shot.
+description: Emil Kowalski's design-engineering skills (MIT, vendored; 18 skills from Emil's Vercel/Linear practice) — should it animate, easing and duration numbers, building and choreographing motion, gestures and sheets, reviewing/improving/finding/removing animations, frame-drop fixes, motion vocabulary, Apple-style design, making a web page feel native on a phone, breaking UI with worst-case data, prototype pickers, UI library picks, Sonner, Expo motion and Swift. Use for the interface layer of any site or app (stage C build, stage D polish), when motion feels slow, janky or off, on phone polish, and to stress-test a screen.
 ---
 <!-- generated from .claude/skills by `node studio/studio.mjs agents --sync`; edit the source, not this copy -->
 # emil-skills (vendored)
-Upstream text: `studio/toolkit/emil-skills/skills/<skill>/SKILL.md` (+ RECIPES / STANDARDS / AUDIT / CATALOG beside it), cheatsheets
-`ui-cheatsheet.md` and `performance-cheatsheet.md`. Licence and pinned commit: `studio/toolkit/toolkit.json`. Read the one skill the
-job needs, whole, before writing motion. Skip each upstream "Initial Response" line: answer the owner directly.
+The skills live in `studio/toolkit/emil-skills/` (pinned commit and licence: `studio/toolkit/toolkit.json`, `LICENSE`). Each folder under
+`skills/` is one skill; paths inside a skill are relative to its own folder. Two one-page cheatsheets: `ui-cheatsheet.md`, `performance-cheatsheet.md`.
+Do not install them again with `npx skills add` (unpinned; it writes its own agent folders). Read the one skill for the job:
 
-| Job | Upstream skill |
-|---|---|
-| Several things move on one event (hero, list, view swap, steps, morph) | `choreograph` (+ `RECIPES.md`) |
-| One animation from scratch: curve, duration, origin, properties | `animate` (+ `RECIPES.md`) |
-| Strict review / codebase audit with plans | `review-animations` (`STANDARDS.md`) · `improve-animations` (`AUDIT.md`) |
-| Should it move at all? | `find-animation-opportunities` · `remove-animations` |
-| Dropped frames | `animation-performance`, `performance-cheatsheet.md` |
-| Words for asking for motion | `animation-vocabulary` |
-| Principles behind it | `emil-design-eng`, `apple-design` |
-| Site feels like a website on a phone | `mobile-native` · worst-case data: `break-ui` · several variants to compare: `prototype` |
+| Job | Read (`studio/toolkit/emil-skills/skills/…`) | Stage |
+|---|---|---|
+| The philosophy: should it animate (frequency table), purpose, easing, duration, springs, component rules, review table | `emil-design-eng/SKILL.md` | C, D |
+| Build one animation from scratch, in decision order | `animate/SKILL.md` + `RECIPES.md` | C |
+| Several elements moving together: who leads, overlap, what stays still | `choreograph/SKILL.md` + `RECIPES.md` | C (motion storyboard, DESIGN.md §C) |
+| Drag, swipe, sheets, fling, hold-to-confirm that track the finger 1:1 | `gestures/SKILL.md` | C (signature interactions) |
+| Strict review of motion code (flag by default) | `review-animations/SKILL.md` + `STANDARDS.md` | D |
+| Audit all motion in a project → prioritised plans | `improve-animations/SKILL.md` | D, redesigns |
+| Where motion would help, and where it must not | `find-animation-opportunities/SKILL.md` | A/C |
+| Remove motion that slows the product | `remove-animations/SKILL.md` | D |
+| Dropped frames: composite-only properties, CSS vs WAAPI vs rAF, blur cost, `will-change` | `animation-performance/SKILL.md` | C, D |
+| Name an effect exactly ("what's it called when…") | `animation-vocabulary/SKILL.md` | A, briefs |
+| Apple's design and fluid motion for the web: springs, momentum, materials, type | `apple-design/SKILL.md` | A, C |
+| A web page that feels native on a phone: sticky hover, tap flash, 100vh, input zoom, notch, long-press | `mobile-native/SKILL.md` | C, D (every site) |
+| Break a screen with worst-case data (long names, Arabic, empty, huge counts) | `break-ui/SKILL.md` + `CATALOG.md` | D |
+| Several real variants behind a picker | `prototype/SKILL.md` + `PICKER.md` | A (directions) |
+| Pick a UI library (only for component apps) | `pick-ui-library/SKILL.md` | B/C |
+| Sonner toasts · React Native/Expo motion · modern Swift | `ask-sonner/` · `animate-expo/` · `write-swift/` | the owner's apps |
 
 Studio adaptations:
-- **Right-to-left.** His directions assume left-to-right. In our Arabic pages "forward" moves content to the **right** and new content
-  enters from the **left**; a stagger across a row runs right → left; top → bottom is unchanged. Arabic is never split per letter.
-- **Our stack.** Sites are plain HTML/CSS (`web/WEB.md`), so translate his Motion recipes to the CSS role pattern used in
-  `web/gallery/specimens/*`: `.in` with `--d` (delay) and `--y` (distance) per element, `animation-fill-mode: both`, ease-out
-  `cubic-bezier(.23,1,.32,1)`, decoration `.in.f` fades only; reduced motion collapses to one short fade with no delays. GSAP or Motion
-  only when the `web/WEB.md` table says so.
-- **Write the timeline first** (his Required Output Format) into the site's `DESIGN.md` §C motion storyboard: one row per moving element
-  with role, start, duration, motion and relationship, then what does not move and why, then the moment to scrub.
-- **His budgets, our pages.** Marketing heroes: lead first, support overlapping at shrinking gaps (≈80 → 140 ms), whole entrance < 1 s.
-  Product UI groups < 300 ms. No scroll reveal on every section, no stagger on tabs/menus/rows the visitor repeats, no motion on data
-  being read, no `transition` lag on a slider or drag (the pointer is the animation).
-- **Films too.** In a studio-engine shot, cast each beat (one lead, support, decoration, static) and choose together / overlap / sequence
-  before keyframing; it agrees with `animation-principles` (staging, timing) and `edit-rhythm`.
-- **Verify like he says:** step the entrance frame by frame (pause `document.getAnimations()` and set `currentTime`, or film it with
-  `cdp-capture`), check it reads as one wave, then the interruption checks and the 50th-use test.
-- House method (`QUALITY_PLAYBOOK.md` §0, `web/gallery/LESSONS.md`, owner update 2026-11-03 in `AGENTS.md`) wins on taste, copy and honesty.
+
+1. **Where it sits:** the interface layer of web stages C and D (`studio/web/WEB.md` "One workflow"). The world, the concept and the signature moment come from `studio/web/FOUNDATION.md`; these skills make every control, transition and gesture inside it feel right. Findings go in DESIGN.md §D.
+2. **Two budgets, both from the skills:** interface feedback stays fast (press 100–160 ms, popovers 125–200 ms, dropdowns 150–250 ms, modals ≤ 500 ms, never `ease-in` on UI, never from `scale(0)`); explanatory or world motion ("marketing / explanatory: can be longer") follows the site's motion grammar in DESIGN.md §C. A physical simulation (falling honey) is not UI easing.
+3. **Static sites first.** Our sites have no framework (WEB.md): translate React/Motion/Sonner/Vaul/Base UI advice into CSS transitions, `@starting-style`, WAAPI or the site's own Canvas/SVG code. Library picks apply only when the project is already a component app; never add a dependency to a static site for a toast or a sheet.
+4. **Springs and bounce:** house taste bans bounce/elastic by default. A subtle spring (bounce ≤ 0.2) is allowed for drag, fling and gesture release, or where DESIGN.md defends it for the world (FOUNDATION law 9).
+5. **Arabic and RTL:** never split Arabic text into letters; mirror swipe directions, drawers, `transform-origin` and chevrons under `dir="rtl"`; run `break-ui` with long Arabic names and mixed Arabic/Latin strings.
+6. **Reduced motion and testing:** `prefers-reduced-motion` keeps a complete still page (WEB.md). The skills' "test on real devices" stays an honest limit in the report when no phone was used; `web check` covers 390/820/1440 in Chromium.
+7. **Authority:** the client's brief and brand → DESIGN.md → the owner's taste (`studio/QUALITY_PLAYBOOK.md` §0, `studio/web/FOUNDATION.md`) → these skills. Their numbers and checklists win over guesses; they never override honesty rules or the house's taste.

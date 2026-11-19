@@ -4,13 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>نبع للمضخات — مثال موقع صناعي</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%232B3A4A%22%2F%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%226%22%20fill%3D%22%23F26B1D%22%2F%3E%3C%2Fsvg%3E">
 <meta name="description" content="مثال تصميم لمصنع مضخات افتراضي. المنتجات والمواصفات توضيحية.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 :root{
-  --ink:#0F1720; --ink2:#4A5564; --mute:#7B8594; --line:#DDE2E8; --bg:#F6F7F9; --card:#FFFFFF;
-  --steel:#2B3A4A; --accent:#F26B1D; --accent-ink:#FFFFFF; --blue:#1F5FA8; --night:#0E1621;
+  --ink:#0F1720; --ink2:#4A5564; --mute:#67707C; --line:#DDE2E8; --bg:#F6F7F9; --card:#FFFFFF;
+  --steel:#2B3A4A; --accent:#F26B1D; --accent-ink:#0F1720; --accent-text:#B85116; --blue:#1F5FA8; --night:#0E1621;
   --f:"IBM Plex Sans Arabic",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
   --ease:cubic-bezier(.2,.7,.2,1);
 }
@@ -37,7 +38,7 @@ nav ul a:hover{color:var(--ink)}
 /* hero */
 .hero{padding-block:64px 40px}
 .hero-top{display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:end;margin-bottom:28px}
-.eyebrow{font:500 15px var(--f);color:var(--accent);display:flex;align-items:center;gap:10px}
+.eyebrow{font:500 15px var(--f);color:var(--accent-text);display:flex;align-items:center;gap:10px}
 .eyebrow:before{content:"";width:24px;height:2px;background:var(--accent)}
 h1{font:700 clamp(38px,4.3vw,62px)/1.25 var(--f);margin:16px 0 0;text-wrap:balance}
 h1 span{display:block}
@@ -52,7 +53,7 @@ h1 span{color:var(--mute);font-weight:400}
 .ctrl{margin-inline-start:auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .ctrl label{font:500 14px var(--f);color:var(--ink2);display:flex;align-items:center;gap:10px}
 input[type=range]{width:200px;accent-color:var(--accent)}
-.toggle{font:500 14px var(--f);border:1.5px solid var(--line);background:#fff;border-radius:6px;padding:7px 14px;cursor:pointer;min-height:40px}
+.toggle{font:500 14px var(--f);border:1.5px solid var(--line);background:#fff;border-radius:6px;padding:7px 14px;cursor:pointer;min-height:44px}
 .toggle[aria-pressed="true"]{background:var(--steel);color:#fff;border-color:var(--steel)}
 .canvas{position:relative;background:
   linear-gradient(var(--line) 1px,transparent 1px) 0 0/40px 40px,
@@ -80,7 +81,7 @@ input[type=range]{width:200px;accent-color:var(--accent)}
 
 section{padding-block:110px 0}
 .head{display:flex;justify-content:space-between;align-items:end;gap:30px;flex-wrap:wrap;margin-bottom:44px}
-.label{font:500 15px var(--f);color:var(--accent)}
+.label{font:500 15px var(--f);color:var(--accent-text)}.sel .label{color:var(--accent)}
 h2.t{font:700 clamp(32px,3.6vw,50px)/1.3 var(--f);margin:8px 0 0;text-wrap:balance}
 .head p{color:var(--ink2);max-width:46ch;margin:0}
 
@@ -100,14 +101,14 @@ h2.t{font:700 clamp(32px,3.6vw,50px)/1.3 var(--f);margin:8px 0 0;text-wrap:balan
 .model{display:grid;grid-template-columns:1fr auto auto auto;gap:24px;align-items:center;background:#162131;border:1.5px solid #233247;border-radius:10px;padding:16px 20px;transition:border-color .3s,background .3s}
 .model b{font:600 18px var(--f);display:block}.model small{color:#8D99A9;font-size:13px}
 .model .mono{font-size:14px;color:#C9D2DD}
-.model .fit{font:600 13px var(--f);padding:4px 10px;border-radius:99px;background:#233247;color:#8D99A9;white-space:nowrap}
+.model .fit{font:600 13px var(--f);padding:4px 10px;border-radius:99px;background:#233247;color:#97A3B3;white-space:nowrap}
 .model.best{border-color:var(--accent);background:#1C2535}
-.model.best .fit{background:var(--accent);color:#fff}
+.model.best .fit{background:var(--accent);color:var(--accent-ink)}
 .model.no{opacity:.45}
 
 .why{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:2px solid var(--ink)}
 .why div{padding:30px 0 0;padding-inline-end:36px}
-.why .n{font:500 14px var(--mono);color:var(--accent)}
+.why .n{font:500 14px var(--mono);color:var(--accent-text)}
 .why h3{font:700 22px/1.4 var(--f);margin:8px 0 10px}.why p{color:var(--ink2);margin:0;font-size:16px}
 
 .contact{display:grid;grid-template-columns:1fr 1fr;gap:40px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:clamp(28px,4vw,56px)}

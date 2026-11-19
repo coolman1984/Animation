@@ -160,11 +160,13 @@ export async function doctor({ quiet = false, optional = true } = {}) {
     ['Logo tracer (optional)', true, report.logo ? 'potrace + Pillow + OpenCV' : 'none  (pip install potracer pillow opencv-python-headless)'],
     ['Forensics modules (optional)', true, report.forensics ? `${report.forensics}${/cv2/.test(report.forensics) && /librosa/.test(report.forensics) ? '' : '  (pip install -r reference/requirements-optional.txt)'}` : 'none'],
   ];
-  report.ok = rows.slice(0, 9).every((r) => r[1]);
+  const REQUIRED_ROWS = 9;
+  report.ok = rows.slice(0, REQUIRED_ROWS).every((r) => r[1]);
   if (!quiet) {
     const w = Math.max(...rows.map((r) => r[0].length));
     console.log('\nSTUDIO DOCTOR');
-    for (const [name, ok, note] of rows) console.log(`  ${ok ? 'OK  ' : 'FAIL'}  ${name.padEnd(w)}  ${note ?? ''}`);
+    // Only the first nine rows are required; a missing GPU encoder or a small machine is a NOTE, never a FAIL beside "studio can run".
+    rows.forEach(([name, ok, note], i) => console.log(`  ${ok ? 'OK  ' : i < REQUIRED_ROWS ? 'FAIL' : 'NOTE'}  ${name.padEnd(w)}  ${note ?? ''}`));
     console.log(`\n  verdict: ${report.ok ? 'studio can run' : 'missing required tools (see FAIL rows)'}\n`);
   }
   if (!optional) return report; // a partial check must not overwrite the full takes/doctor.json

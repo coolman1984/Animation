@@ -5,7 +5,7 @@
 // image for models that can see, and as named text issues for models that cannot) → film_render (background) → film_job.
 //   node studio/mcp/server.mjs            (clients start it; see AGENTS.md for each client's config file)
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, openSync, statSync } from 'node:fs';
-import { join, dirname, resolve } from 'node:path';
+import { join, dirname, resolve, relative, isAbsolute } from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { lint } from '../studio-engine/lib/gates.mjs';
@@ -18,6 +18,27 @@ const VERSIONS = ['2025-11-25', '2025-06-18', '2025-03-26', '2024-11-05'];
 const NAME = /^[a-z0-9][a-z0-9_-]{0,47}$/;
 const log = (...a) => process.stderr.write(`[studio-mcp] ${a.join(' ')}\n`);
 const readJSON = (p) => JSON.parse(readFileSync(p, 'utf8'));
+// Path containment by components: a prefix test also accepts the sibling folders studio/out-old and studio/takes2 (audit B01 class).
+const within = (dir, abs) => { const rel = relative(dir, abs); return rel !== '' && !rel.startsWith('..') && !isAbsolute(rel); };
+// Arguments checked against the tool's own inputSchema before it runs, so a model of any size reads "duration must be an integer"
+// instead of a crash from deep inside the engine. Covers what the schemas here use: required, type, enum, minimum/maximum, maxItems, items.type.
+const typeOf = (v) => (Array.isArray(v) ? 'array' : v === null ? 'null' : Number.isInteger(v) ? 'integer' : typeof v);
+export function argErrors(schema, args) {
+  if (args === null || typeof args !== 'object' || Array.isArray(args)) return ['arguments must be an object'];
+  const errors = [], props = schema?.properties || {};
+  for (const k of schema?.required || []) if (args[k] === undefined || args[k] === null) errors.push(`"${k}" is required`);
+  for (const [k, v] of Object.entries(args)) {
+    const p = props[k]; if (!p || v === undefined || v === null) continue;
+    const t = typeOf(v), ok = p.type === t || (p.type === 'number' && t === 'integer');
+    if (p.type && !ok) { errors.push(`"${k}" must be ${/^[aeio]/.test(p.type) ? 'an' : 'a'} ${p.type} (got ${t})`); continue; }
+    if (p.enum && !p.enum.includes(v)) errors.push(`"${k}" must be one of: ${p.enum.join(', ')}`);
+    if (p.minimum !== undefined && v < p.minimum) errors.push(`"${k}" must be at least ${p.minimum}`);
+    if (p.maximum !== undefined && v > p.maximum) errors.push(`"${k}" must be at most ${p.maximum}`);
+    if (p.maxItems !== undefined && t === 'array' && v.length > p.maxItems) errors.push(`"${k}" takes at most ${p.maxItems} items`);
+    if (p.items?.type && t === 'array' && v.some((x) => typeOf(x) !== p.items.type && !(p.items.type === 'number' && typeOf(x) === 'integer'))) errors.push(`every item of "${k}" must be a ${p.items.type}`);
+  }
+  return errors;
+}
 const brandOf = (film) => readJSON(existsSync(join(FILMS, film, 'brand.json')) ? join(FILMS, film, 'brand.json') : join(ENGINE, 'brand', 'brand.json'));
 
 // One hint per known failure, so a model of any size knows the next edit, not only what broke.
@@ -77,7 +98,8 @@ const webName = (s) => { if (typeof s !== 'string' || !NAME.test(s)) throw new E
 const alive = (pid) => { try { process.kill(pid, 0); return true; } catch { return false; } };
 function jobs() {
   if (!existsSync(JOBS)) return [];
-  return readdirSync(JOBS).filter((f) => f.endsWith('.json')).map((f) => readJSON(join(JOBS, f))).sort((a, b) => a.started.localeCompare(b.started));
+  // a job file cut short by a crash must not hide every other job
+  return readdirSync(JOBS).filter((f) => f.endsWith('.json')).flatMap((f) => { try { const j = readJSON(join(JOBS, f)); return j && typeof j.started === 'string' && typeof j.log === 'string' ? [j] : []; } catch { return []; } }).sort((a, b) => a.started.localeCompare(b.started));
 }
 function jobView(j) {
   const text = existsSync(j.log) ? readFileSync(j.log, 'utf8') : '';
@@ -103,7 +125,7 @@ export const TOOLS = [
   { name: 'engine_catalog', description: 'The spec vocabulary: spec/scene fields and every element type with its parameters, defaults and sound. Read before writing a spec.', inputSchema: { type: 'object', properties: {} },
     run: () => [text(readFileSync(join(ENGINE, 'catalog.json'), 'utf8'))] },
   { name: 'film_list', description: 'Films made with the Studio Engine (each is one spec.json) — read one as a worked example with spec_read.', inputSchema: { type: 'object', properties: {} },
-    run: () => [text(readdirSync(FILMS).filter((d) => existsSync(join(FILMS, d, 'spec.json'))).map((d) => { const s = readJSON(join(FILMS, d, 'spec.json')); return { film: d, title: s.title, format: s.format || 'youtube', scenes: s.scenes?.length }; }))] },
+    run: () => [text(readdirSync(FILMS).filter((d) => existsSync(join(FILMS, d, 'spec.json'))).map((d) => { try { const s = readJSON(join(FILMS, d, 'spec.json')); return { film: d, title: s.title, format: s.format || 'youtube', scenes: s.scenes?.length }; } catch (e) { return { film: d, error: `spec.json is not valid JSON (${e.message})` }; } }))] },
   { name: 'spec_read', description: 'Read a film\'s spec.json.', inputSchema: { type: 'object', properties: { film: FILM }, required: ['film'] },
     run: ({ film }) => { const p = join(filmDir(film), 'spec.json'); if (!existsSync(p)) throw new Error(`no spec for ${film}`); return [text(readFileSync(p, 'utf8'))]; } },
   { name: 'spec_save', description: 'Validate a spec and save it as studio/studio-engine/films/<film>/spec.json. Refuses (and saves nothing) while it has errors; every issue carries a "fix" hint.', inputSchema: { type: 'object', properties: { film: FILM, spec: { type: 'object', description: 'the whole spec (see engine_catalog)' }, format: FORMAT, facts: { type: 'object', description: 'optional facts.json { claims: [{ id, text, source: URL, sentence: exact source sentence }], copy: [brand-approved lines] }; lines carry "fact": "<id>" (QUALITY_PLAYBOOK §10)' } }, required: ['film', 'spec'] },
@@ -125,9 +147,10 @@ export const TOOLS = [
   { name: 'film_plan', description: 'Director\'s plan: turn a brief into a spec skeleton that already follows the house method (hook in 2 s, one hero carried by morphTo, proof chapters on whole bars, payoff with the brand whole and one action). Saves it and lists the ‹…› lines you must write. Use this instead of inventing structure.', inputSchema: { type: 'object', properties: { film: FILM, placement: { type: 'string', enum: ['reels', 'youtube'] }, duration: { type: 'integer', minimum: 8, maximum: 90 }, brand: { type: 'string' }, cta: { type: 'string', description: 'the client\'s own CTA words' }, problem: { type: 'string' }, promise: { type: 'string' }, viewer: { type: 'string' }, logo: { type: 'string', description: 'logo file path relative to the film folder' }, style: { type: 'string', description: 'a slug from style_list: its palette and fonts go to the film\'s brand.json' }, force: { type: 'boolean' } }, required: ['film', 'placement', 'duration'] },
     run: async ({ film, force, ...brief }) => {
       const dir = filmDir(film); if (existsSync(join(dir, 'spec.json')) && !force) throw new Error(`${film} already has a spec; pass force: true to replace it`);
+      const styleBrand = brief.style ? (await import('../lib/styles.mjs')).brandFor(brief.style) : null;   // an unknown style fails before anything is written
       const { plan } = await import('../studio-engine/lib/director.mjs'), r = plan(brief);
       mkdirSync(dir, { recursive: true }); writeFileSync(join(dir, 'spec.json'), JSON.stringify(r.spec, null, 2) + '\n');
-      if (brief.style) { const { brandFor } = await import('../lib/styles.mjs'); writeFileSync(join(dir, 'brand.json'), JSON.stringify(brandFor(brief.style), null, 2) + '\n'); }
+      if (styleBrand) writeFileSync(join(dir, 'brand.json'), JSON.stringify(styleBrand, null, 2) + '\n');
       return [text({ saved: `studio/studio-engine/films/${film}/spec.json`, arc: r.arc, write: r.todo, spec: r.spec, next: 'replace every ‹…› (spec_save with the whole spec), then film_review' })];
     } },
   { name: 'principle_read', description: 'Read one of Disney\'s 12 principles as vendored for our films (animation-principles). slug: anticipation, staging, timing, slow-in-out, arc, follow-through, or the skill folder (anticipation-mastery). The house critic scores the ones a spec can show; film_review lists the rest as principles (a manual checklist, not scored).', inputSchema: { type: 'object', properties: { slug: { type: 'string' } }, required: ['slug'] },
@@ -159,20 +182,21 @@ export const TOOLS = [
   { name: 'film_storyboard', description: 'Shot-list check before any render: every scene must name a concrete thing on screen and what it does (scene "purpose"), keep copy short, avoid 8 s+ shots and repeated camera moves, and neither open nor close on a text card. Red issues block.', inputSchema: { type: 'object', properties: { film: FILM }, required: ['film'] },
     run: async ({ film }) => { const p = join(filmDir(film), 'spec.json'); if (!existsSync(p)) throw new Error(`no spec for ${film}`); const sb = await import('../lib/storyboard.mjs'), shots = sb.shotsFromSpec(readJSON(p)); return [text({ ...sb.lintStoryboard(shots), shots })]; } },
   { name: 'film_taste', description: 'The taste gate on a finished MP4: empty frames mid-film (red), how much of the film really moves vs a slideshow (thresholds calibrated on the owner\'s own accepted/rejected films when available), sagging 10 s windows. Pass the deliverable path from film_job.', inputSchema: { type: 'object', properties: { video: { type: 'string', description: 'path of an MP4 inside studio/out or studio/takes' } }, required: ['video'] },
-    run: async ({ video }) => { const abs = resolve(STUDIO, video); if (!/\.mp4$/i.test(abs) || ![join(STUDIO, 'out'), join(STUDIO, 'takes')].some((d) => abs.startsWith(d)) || !existsSync(abs)) throw new Error('video must be an existing .mp4 under studio/out or studio/takes'); const { tasteGate } = await import('../lib/tastegate.mjs'); return [text(tasteGate(abs))]; } },
+    run: async ({ video }) => { const abs = resolve(STUDIO, video); if (!/\.mp4$/i.test(abs) || ![join(STUDIO, 'out'), join(STUDIO, 'takes')].some((d) => within(d, abs)) || !existsSync(abs)) throw new Error('video must be an existing .mp4 under studio/out or studio/takes'); const { tasteGate } = await import('../lib/tastegate.mjs'); return [text(tasteGate(abs))]; } },
   { name: 'web_plan', description: 'Website department: a site.json skeleton in the house structure (hero → problem → features → sticky steps → 3D ring → FAQ → closing action) plus the ambition questions (what would the best studio build, from which raw material, with which methods). Lists every ‹…› to write.', inputSchema: { type: 'object', properties: { site: { type: 'string', description: 'lowercase folder name under studio/web/sites' }, brand: { type: 'string' }, style: { type: 'string', enum: ['paper-editorial', 'ink-studio', 'clay-3d'] }, lang: { type: 'string', enum: ['ar', 'en'] }, cta: { type: 'string' }, problem: { type: 'string' }, promise: { type: 'string' }, force: { type: 'boolean' } }, required: ['site'] },
     run: async ({ site, force, ...brief }) => { const W = await import('../web/lib/site.mjs'), dir = join(STUDIO, 'web', 'sites', webName(site)); if (existsSync(join(dir, 'site.json')) && !force) throw new Error(`${site} already has a site.json; pass force: true`); const r = W.plan(brief); mkdirSync(dir, { recursive: true }); writeFileSync(join(dir, 'site.json'), JSON.stringify(r.site, null, 2) + '\n'); if (!existsSync(join(dir, 'DESIGN.md'))) writeFileSync(join(dir, 'DESIGN.md'), readFileSync(join(STUDIO, 'web', 'templates', 'DESIGN.md'), 'utf8')); return [text({ saved: `studio/web/sites/${site}/site.json`, design: `studio/web/sites/${site}/DESIGN.md (stages A–D: direction, design system, motion storyboard, critique log)`, write: r.todo, site: r.site, next: 'fill DESIGN.md, web_save the whole site with every ‹…› written, then web_check' })]; } },
   { name: 'web_save', description: 'Validate a whole site.json and save it (refuses while placeholders, unsourced numbers/quotes, missing alt text or links remain).', inputSchema: { type: 'object', properties: { site: { type: 'string' }, json: { type: 'object' } }, required: ['site', 'json'] },
     run: async ({ site, json }) => { const W = await import('../web/lib/site.mjs'), v = W.validate(json); if (v.errors.length) return [text({ saved: false, ...v })]; const dir = join(STUDIO, 'web', 'sites', webName(site)); mkdirSync(dir, { recursive: true }); writeFileSync(join(dir, 'site.json'), JSON.stringify(json, null, 2) + '\n'); return [text({ saved: true, ...v, next: 'web_check' })]; } },
-  { name: 'web_check', description: 'Build the site and check it in a real browser at phone (390), tablet (820) and desktop (1440): sideways scroll, image alt, contrast, type size, tap targets, motion never hiding content (incl. the first screen), reduced motion, meta, script errors, weight. Returns the lights and the screenshot strips as images. dir: check an EXISTING static site folder instead (site is then a label; improving a site = audit before and after, WEB.md).', inputSchema: { type: 'object', properties: { site: { type: 'string' }, dir: { type: 'string', description: 'folder of an existing built site (with index.html)' }, page: { type: 'string' }, draft: { type: 'boolean', description: 'preview a site whose DESIGN.md is not filled yet (labelled draft, never a delivery)' } }, required: ['site'] },
-    run: async ({ site, dir: given, page, draft }) => {
+  { name: 'web_check', description: 'Build the site and check it in a real browser at phone (390), tablet (820) and desktop (1440): sideways scroll, image alt, contrast, type size, tap targets, motion never hiding content (incl. the first screen), reduced motion, meta, script errors, weight. Returns the lights and the screenshot strips as images. dir: check an EXISTING static site folder instead (site is then a label; improving a site = audit before and after, WEB.md).', inputSchema: { type: 'object', properties: { site: { type: 'string' }, dir: { type: 'string', description: 'folder of an existing built site (with index.html)' }, page: { type: 'string' }, draft: { type: 'boolean', description: 'preview a site whose DESIGN.md is not filled yet (labelled draft, never a delivery)' }, all: { type: 'boolean', description: 'return every finding under each light (items), not only the first few named in "why": use it when fixing the page' } }, required: ['site'] },
+    run: async ({ site, dir: given, page, draft, all }) => {
+      const brief = (lights) => (all ? lights : lights.map(({ items, ...l }) => l));
       if (given) { const { checkSite } = await import('../web/lib/check.mjs'), outDir = join(STUDIO, 'takes', 'web', webName(site)), r = await checkSite({ dir: resolve(given), outDir, page: page || 'index.html' }); mkdirSync(outDir, { recursive: true }); writeFileSync(join(outDir, 'audit.json'), JSON.stringify(r, null, 2));
-        const out = [text({ verdict: r.verdict, lights: r.lights, saved: `studio/takes/web/${webName(site)}/audit.json` })]; for (const v of r.viewports.filter((x) => x.sheet && existsSync(x.sheet))) out.push(await sheetImage(v.sheet)); return out; }
+        const out = [text({ verdict: r.verdict, lights: brief(r.lights), saved: `studio/takes/web/${webName(site)}/audit.json` })]; for (const v of r.viewports.filter((x) => x.sheet && existsSync(x.sheet))) out.push(await sheetImage(v.sheet)); return out; }
       const W = await import('../web/lib/site.mjs'), dir = join(STUDIO, 'web', 'sites', webName(site)); if (!existsSync(join(dir, 'site.json'))) throw new Error(`no site ${site}`);
       const rec = W.designRecord(dir); if (!rec.ok && !draft) return [text({ ok: false, design: rec.errors, next: `fill studio/web/sites/${site}/DESIGN.md (stages A–D), or pass draft: true for a labelled preview` })];
       W.build(readJSON(join(dir, 'site.json')), join(dir, 'dist'), { siteDir: dir });
       const { checkSite } = await import('../web/lib/check.mjs'), r = await checkSite({ dir: join(dir, 'dist'), outDir: join(STUDIO, 'takes', 'web', webName(site)) });
-      const out = [text({ verdict: rec.ok ? r.verdict : 'DRAFT (DESIGN.md not filled): ' + r.verdict, lights: r.lights, dist: `studio/web/sites/${site}/dist/index.html`, ...(rec.ok ? {} : { design: rec.errors }) })];
+      const out = [text({ verdict: rec.ok ? r.verdict : 'DRAFT (DESIGN.md not filled): ' + r.verdict, lights: brief(r.lights), dist: `studio/web/sites/${site}/dist/index.html`, ...(rec.ok ? {} : { design: rec.errors }) })];
       for (const v of r.viewports.filter((x) => x.sheet && existsSync(x.sheet))) out.push(await sheetImage(v.sheet));
       return out; } },
   { name: 'moves_search', description: 'Move library (library/README.md): find named moves by a few words (English, Arabic or Japanese). Motion Prompt #001–#120 (motion graphics, camera moves & cuts, UI parts, landing-page effects, photo looks), Cinetic\'s 273 measured film techniques and video-shotcraft\'s 124 product-promo shot cards. Then moves_show one id.', inputSchema: { type: 'object', properties: { query: { type: 'string' }, library: { type: 'string', enum: ['all', 'motion-prompt', 'cinetic', 'shotcraft'] }, pack: { type: 'string', enum: ['motion', 'camera', 'ui', 'lp', 'photo'] }, limit: { type: 'integer', minimum: 1, maximum: 30 } }, required: ['query'] },
@@ -239,7 +263,9 @@ async function handle(m) {
   if (m.method === 'tools/call') {
     const tool = TOOLS.find((t) => t.name === m.params?.name);
     if (!tool) throw Object.assign(new Error(`unknown tool ${m.params?.name}`), { code: -32602 });
-    try { return { content: await tool.run(m.params?.arguments || {}) }; } catch (e) { return { content: [text(`ERROR: ${e.message}`)], isError: true }; }
+    const args = m.params?.arguments ?? {}, bad = argErrors(tool.inputSchema, args);
+    if (bad.length) return { content: [text(`ERROR: ${tool.name}: ${bad.join('; ')}`)], isError: true };
+    try { return { content: await tool.run(args) }; } catch (e) { return { content: [text(`ERROR: ${e.message}`)], isError: true }; }
   }
   throw Object.assign(new Error(`method not found: ${m.method}`), { code: -32601 });
 }
@@ -252,6 +278,7 @@ export function serve(input = process.stdin) {
       const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
       if (!line) continue;
       let m; try { m = JSON.parse(line); } catch { send({ id: null, error: { code: -32700, message: 'parse error' } }); continue; }
+      if (!m || typeof m !== 'object' || Array.isArray(m)) { send({ id: null, error: { code: -32600, message: 'invalid request: one JSON-RPC object per line' } }); continue; }
       if (m.id === undefined || m.id === null) continue;   // notifications (initialized, cancelled…) need no answer
       handle(m).then((result) => send({ id: m.id, result }), (e) => send({ id: m.id, error: { code: e.code || -32603, message: e.message } }));
     }

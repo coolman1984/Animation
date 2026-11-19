@@ -1,6 +1,7 @@
 // Studio Engine — the shared clock (DOM-free: imported by the browser player AND the Node score).
 // A spec is written in beats; this turns it into seconds and lists every audible/visible event of every element,
 // so picture (shake, flashes) and sound (SFX, drops) can never drift apart.
+export const MAX_SECONDS = 3600;
 export function timeline(spec) {
   if (!spec || !Array.isArray(spec.scenes) || !spec.scenes.length) throw new Error('spec.scenes must be a nonempty array');
   const bpm = spec.bpm ?? 120, B = 60 / bpm;
@@ -15,6 +16,8 @@ export function timeline(spec) {
   }
   let beat = 0;
   const scenes = spec.scenes.map((s, i) => { const a0 = beat; beat += s.beats; return { ...s, index: i, a0, b0: beat, a: a0 * B, b: beat * B }; });
+  // A typo such as beats: 4000000 used to pass lint and then freeze every per-second check; no film here runs over an hour.
+  if (beat * B > MAX_SECONDS) throw new Error(`the scenes add up to ${Math.round(beat * B)} s (${beat} beats at ${bpm} BPM): check "beats" and "bpm" — a film is at most ${MAX_SECONDS} s`);
   const duration = spec.duration ?? beat * B;
   if (!Number.isFinite(duration) || duration <= 0 || Math.abs(duration - beat * B) > .001) throw new Error('duration must match the scene beats at the specified bpm');
   return { bpm, B, scenes, duration, beats: beat };
