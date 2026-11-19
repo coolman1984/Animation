@@ -152,3 +152,15 @@ Removed automatic decorative patterns and effect quotas in the first-party web p
 
 ## Reference-led composition upgrade — 2026-11-03
 The owner's supplied visual references now guide composition, imagery, type and mobile art direction (`studio/web/ART_DIRECTION.md`). Presets remain fallbacks: per-site theme tokens/fonts and hero/features/width composition controls are validated, contrast checked, and browser-tested. Preserve intentional gradients, shadows and depth when justified; the earlier cleanup only removes automatic decorative defaults. Controls alone do not certify artistic quality. Uses existing font assets; no new third-party imagery.
+
+## Website photos folder and the 2026-11-06 examples
+- **Rule:** a site's photos live in `web/sites/<site>/photos/` with `photos/CREDITS.json` — one row per file: `{ file, source, author, licence }`.
+  `web build` copies them to `dist/photos/` and warns for a photo without source and licence. Record the same rows in the site's DESIGN.md
+  "Delivery" line. The client's own photos: licence = "client-supplied, permission on <date>".
+- **Unsplash:** photos from unsplash.com carry the Unsplash License (free for commercial use, attribution appreciated, not required; you may
+  not sell unaltered copies or build a competing photo service). Record the photo page URL and the photographer anyway. Openverse stays the
+  first search for the studio's own assets (AGENTS.md); Unsplash is for a client site when the client wants it.
+- **New gallery examples** (`sabbak-plumbing`, `bunn-coldbrew`, `qalam-course`, `wasla-studio`, `sahm-offer`): no photos, no downloaded models;
+  every drawing is original inline SVG or Three.js primitives. Fonts load from Google Fonts at view time like the other examples
+  (IBM Plex Sans Arabic, Rubik, Noto Naskh Arabic, Vazirmatn, Almarai — all SIL OFL 1.1). `bunn-coldbrew` imports the repository's
+  Three.js 0.186.1 subset (MIT) from `web/explainers/anatomy/engine/three/` (no new copy).

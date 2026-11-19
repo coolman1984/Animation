@@ -20,4 +20,6 @@ Read `studio/ANY_MODEL.md` (the ladder and the loop). Owner taste: `studio/QUALI
    Render: `node studio/studio-engine/run.mjs <film>` (MCP `film_render` stage final, then `film_job`). Delivery is refused unless gates pass.
 5. **Compare models:** `studio/bench/README.md` — same briefs, same scores, plus watching. Record unverified items honestly.
 
+Websites: any model starts from `node studio/studio.mjs web prompt <id> --site=<site>` (skill `web-director`); a whole site at the host's highest effort, follow-ups and one-section edits at medium (ANY_MODEL.md).
+
 Scores measure structure and finish, not taste. Never call a film "as good as" another model's without watching both.

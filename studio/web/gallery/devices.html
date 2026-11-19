@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المعرض على ثلاثة أجهزة — موبايل وتابلت وكمبيوتر</title>
+<meta name="description" content="كل نموذج من معرض الاستوديو معروض على الموبايل والتابلت والكمبيوتر جنبًا إلى جنب، وكل إطار يتحرك بالتمرير مستقلًا.">
+<style>
+:root{--bg:#F3F2EF;--ink:#16161A;--ink2:#4C4C55;--mute:#6C6C76;--line:#DCDAD4;--accent:#1D4ED8;--f:system-ui,"Segoe UI",Tahoma,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.7 var(--f)}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:8px}
+header{padding:28px max(20px,4vw) 8px}
+h1{font:700 30px/1.3 var(--f);margin:0 0 6px}
+header p{margin:0;color:var(--ink2);max-width:70ch}
+.picker{display:flex;gap:8px;flex-wrap:wrap;padding:18px max(20px,4vw)}
+.picker button{font:500 15px var(--f);min-height:44px;padding:0 16px;border-radius:99px;border:1.5px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.picker button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.row{display:flex;gap:24px;align-items:flex-end;padding:10px max(20px,4vw) 40px;overflow-x:auto}
+figure{margin:0;flex:none;display:grid;gap:10px;justify-items:center}
+figcaption{font:600 15px var(--f);color:var(--ink2)}
+.dev{background:#121214;padding:10px;border-radius:26px;box-shadow:0 1px 0 #0003}
+.dev.desktop{border-radius:14px}
+.screen{overflow:hidden;border-radius:18px;background:#fff;position:relative}
+.dev.desktop .screen{border-radius:6px}
+.screen iframe{border:0;transform-origin:0 0;position:absolute;top:0;left:0}
+.meta{padding:0 max(20px,4vw) 30px;color:var(--mute);font-size:15px}
+.meta a{font-weight:600}
+</style>
+</head>
+<body>
+<header><h1>كل نموذج على ثلاثة أجهزة</h1><p>اختر نموذجًا لترى الموقع نفسه على الموبايل (٣٩٠) والتابلت (٨٢٠) والكمبيوتر (١٤٤٠) في وقت واحد. كل إطار موقع حقيقي يعمل: مرّر داخله وجرّب الأزرار. كل النماذج أمثلة تصميم لأنشطة غير حقيقية.</p></header>
+<div class="picker" role="group" aria-label="اختر نموذجًا" id="picker"></div>
+<div class="row" id="row" aria-live="polite"></div>
+<p class="meta">افتح النموذج وحده: <a id="solo" href="#">في صفحة كاملة</a> · البرومبت الخاص به: <code id="cmd"></code> · <a href="index.html">رجوع للمعرض</a></p>
+<script>
+// Specimens come from the prompt library index when served from studio/web (node studio/studio.mjs gallery); the list below is the fallback.
+const FALLBACK = [['sabbak-plumbing','سبّاك البيت','plumbing'],['bunn-coldbrew','بُنّ بارد','coldbrew'],['qalam-course','قلم','copywriting-course'],['wasla-studio','وصلة','video-studio'],['sahm-offer','سهم','white-friday'],['luma-clinic','لُمى','clinic'],['pulse-gym','نبض','gym'],['madar-saas','مدار','saas-dashboard'],['raseed-fintech','رصيد','fintech-app'],['odda-shop','عُدّة','sports-shop'],['nabaa-industrial','نبع','pump-factory']];
+const DEVICES = [['موبايل','phone',390,844,0.62],['تابلت','tablet',820,1180,0.42],['كمبيوتر','desktop',1440,900,0.42]];
+let list = FALLBACK;
+const picker = document.getElementById('picker'), row = document.getElementById('row');
+function show(id) {
+  const it = list.find((x) => x[0] === id) || list[0];
+  picker.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.id === it[0]));
+  const fit = Math.min(1, (innerWidth - 120) / DEVICES.reduce((s, d) => s + d[2] * d[4] + 44, 0));
+  row.innerHTML = DEVICES.map(([label, cls, w, h, k]) => { const s = k * Math.max(0.5, fit);
+    return `<figure><div class="dev ${cls}"><div class="screen" style="width:${Math.round(w * s)}px;height:${Math.round(h * s)}px"><iframe src="specimens/${it[0]}.html" title="${it[1]} على ${label}" style="width:${w}px;height:${h}px;transform:scale(${s})"></iframe></div></div><figcaption>${label} · ${w.toLocaleString('ar-EG')} بكسل</figcaption></figure>`; }).join('');
+  document.getElementById('solo').href = `specimens/${it[0]}.html`;
+  document.getElementById('cmd').textContent = `node studio/studio.mjs web prompt ${it[2]}`;
+  history.replaceState(null, '', `?site=${it[0]}`);
+}
+function draw() {
+  picker.innerHTML = list.map(([id, name]) => `<button type="button" data-id="${id}" aria-pressed="false">${name}</button>`).join('');
+  show(new URLSearchParams(location.search).get('site') || list[0][0]);
+}
+picker.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) show(b.dataset.id); });
+let t; addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => show(new URLSearchParams(location.search).get('site')), 200); });
+fetch('../prompts/index.json').then((r) => (r.ok ? r.json() : null)).then((j) => {
+  if (!j) return;
+  const seen = new Set(); list = j.prompts.filter((p) => !seen.has(p.specimen) && seen.add(p.specimen)).map((p) => [p.specimen, p.name, p.id]);
+  draw();
+}).catch(() => {});
+draw();
+</script>
+</body>
+</html>

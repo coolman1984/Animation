@@ -31,3 +31,18 @@ Animation and Presentations **produce** content; Design gives it the **look**; t
 - No secrets in the repo / مفيش أسرار في الريبو.
 - Nothing is published without the owner's approval / مفيش نشر من غير موافقة المالك.
 - Code from `shorts-animator` is not copied here / كود `shorts-animator` ما اتنسخش هنا.
+
+## Package: «موقع متحرك في يوم» — an animated site in one day (2026-11-06)
+For local businesses (services, cafés, clinics, courses, shops). Uses the web department (`studio/web/WEB.md`), not a new tool.
+1. **Pick the look with the client:** the gallery is the portfolio — `node studio/studio.mjs gallery`, and `web/gallery/devices.html`
+   shows any example on phone, tablet and desktop side by side. All examples are labelled fictional.
+2. **Brief:** the matching ready prompt (`studio/web/prompts/`), filled with the client's real name, offer, prices, contacts and photos
+   (`photos/` + licence rows). Nothing invented.
+3. **Build + check:** one working day: stages A–D, one hero motion that means something for the business, checked at three sizes.
+4. **Owner review from the phone:** the three strips + «تمام ولا تعديل؟»; follow-ups from `FOLLOW_UPS.md`, at most two rounds.
+5. **Publish only on «انشر»:** `studio/web/PUBLISH.md` (preview link, or Netlify + the client's domain on the client's account).
+6. **Promo short (optional):** `web reel <site>` → content-factory, posted only after approval.
+Prices for the package are the owner's decision; none are written here.
+
+باقة «موقع متحرك في يوم» للعملاء المحليين: نختار الشكل من معرض النماذج (هو البورتفوليو) ← نملا البرومبت الجاهز ببيانات العميل الحقيقية ←
+نبني ونفحص على الموبايل والتابلت والكمبيوتر ← المالك يراجع من الموبايل ← النشر بكلمة «انشر» بس ← وفيديو قصير للموقع لو العميل عايز.

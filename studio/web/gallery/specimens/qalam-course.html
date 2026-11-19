@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>قلم — مثال كورس كتابة إعلانية</title>
+<meta name="description" content="مثال تصميم لكورس كتابة إعلانية افتراضي: قلم يكتب خط المنهج وأنت تنزل في الصفحة. ليس كورسًا حقيقيًا ولا يقبل تسجيلًا.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --paper:#FBF8F2; --ink:#1B1A17; --ink2:#4F4B43; --mute:#716B60; --line:#E7E0D3; --red:#B42318; --red-ink:#FFFFFF; --hl:#F7E3A1;
+  --f:"Noto Naskh Arabic",Georgia,"Times New Roman",serif; --ease:cubic-bezier(.23,1,.32,1);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 19px/1.95 var(--f);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.w{max-width:1120px;margin:0 auto;padding-inline:max(20px,4vw)}
+:focus-visible{outline:3px solid var(--red);outline-offset:3px;border-radius:6px}
+.demo{position:fixed;inset:auto auto 16px 16px;z-index:60;background:var(--ink);color:#fff;font:400 13px system-ui,sans-serif;padding:6px 12px;border-radius:99px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 28px;border-radius:10px;font:700 17px var(--f);border:0;cursor:pointer;white-space:nowrap;transition:background .2s,transform .16s var(--ease)}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--red);color:var(--red-ink)}.btn.primary:hover{background:#912018}
+.btn.ghost{border:1.5px solid var(--ink);background:transparent;color:var(--ink)}
+header .w{display:flex;justify-content:space-between;align-items:center;height:80px;border-bottom:1px solid var(--line)}
+.logo{font:700 26px var(--f)}
+.hero{padding-block:90px 110px;text-align:center}
+.hero .label{font:600 16px var(--f);color:var(--red)}
+h1{font:700 clamp(42px,5.4vw,76px)/1.35 var(--f);margin:14px auto 22px;max-width:16ch;text-wrap:balance}
+h1 mark{background:linear-gradient(transparent 62%,var(--hl) 62%);color:inherit;padding-inline:4px}
+.lead{font-size:21px;color:var(--ink2);max-width:40ch;margin:0 auto 34px}
+.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.meta{display:flex;justify-content:center;gap:34px;margin-top:40px;color:var(--mute);font-size:16px;flex-wrap:wrap}
+.meta b{display:block;color:var(--ink);font:700 22px var(--f)}
+
+/* before/after: the one real interaction — the headline a student writes in week 3 */
+.ba{background:#fff;border:1px solid var(--line);border-radius:22px;padding:clamp(24px,4vw,48px);margin-top:20px}
+.ba .tabs{display:flex;gap:8px;margin-bottom:22px}
+.ba .tabs button{font:600 16px var(--f);min-height:46px;padding:0 20px;border-radius:99px;border:1.5px solid var(--line);background:#fff;cursor:pointer}
+.ba .tabs button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.ad{font:700 clamp(26px,3vw,38px)/1.5 var(--f);margin:0 0 10px;min-height:2.6em}
+.why{color:var(--ink2);margin:0}
+
+/* hero motion: the pen writes the course line as the reader moves through the weeks */
+section{padding-block:120px 0}
+.label{font:600 16px var(--f);color:var(--red)}
+h2{font:700 clamp(34px,4vw,52px)/1.35 var(--f);margin:8px 0 16px;text-wrap:balance}
+.plan{display:grid;grid-template-columns:120px 1fr;gap:clamp(20px,5vw,72px);margin-top:40px}
+.line{position:relative}
+.line svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.line svg:not(.nib) path{fill:none;vector-effect:non-scaling-stroke;stroke-linecap:round}
+.line .ghost{stroke:var(--line);stroke-width:3;stroke-dasharray:2 10}
+.line .ink{stroke:var(--ink);stroke-width:4}
+.line svg.nib{position:absolute;inset:auto;width:34px;height:34px;margin:-30px 0 0 -4px;left:0;top:100%;transform-origin:4px 30px;opacity:0;overflow:visible}
+.js:not(.reduce) .line svg.nib{opacity:1}
+.weeks{list-style:none;margin:0;padding:0;display:grid;gap:clamp(60px,13vh,140px)}
+.weeks li{max-width:560px;transition:opacity .4s var(--ease)}
+.js:not(.reduce) .weeks li:not(.on){opacity:.45}
+.weeks small{font:600 16px var(--f);color:var(--red)}
+.weeks h3{font:700 28px/1.5 var(--f);margin:2px 0 6px}
+.weeks p{margin:0;color:var(--ink2)}
+
+.price{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding-block:60px;margin-top:20px}
+.amount{font:700 64px/1.1 var(--f)}.amount small{font:400 20px var(--f);color:var(--mute)}
+.price ul{list-style:none;margin:0;padding:0;display:grid;gap:10px;color:var(--ink2)}
+.price li:before{content:"—";color:var(--red);margin-inline-end:10px}
+details{border-bottom:1px solid var(--line);padding-block:18px}
+summary{font:700 21px var(--f);cursor:pointer;min-height:44px;display:flex;align-items:center}
+details p{margin:8px 0 0;color:var(--ink2)}
+footer{margin-top:120px;border-top:1px solid var(--line);padding-block:30px 80px;color:var(--mute);font-size:16px}
+
+@keyframes up{from{opacity:0;transform:translateY(var(--y,12px))}to{opacity:1;transform:none}}
+.in1{animation:up .6s var(--ease) both;--y:14px}.in2{animation:up .6s var(--ease) 80ms both;--y:8px}.in3{animation:up .6s var(--ease) 140ms both;--y:6px}
+@media (prefers-reduced-motion:reduce){.in1,.in2,.in3{animation:fade .2s both}@keyframes fade{from{opacity:0}}.weeks li{transition:none}}
+@media (max-width:760px){.plan{grid-template-columns:44px 1fr}.price{grid-template-columns:1fr}.line svg.nib{width:26px;height:26px}}
+</style>
+</head>
+<body>
+<span class="demo">مثال تصميم — كورس افتراضي</span>
+<header><div class="w"><a class="logo" href="#top">قلم</a><a class="btn primary" href="#join">احجز مقعدك</a></div></header>
+<main id="top">
+<section class="hero" style="padding-top:90px"><div class="w">
+  <span class="label in1">كورس الكتابة الإعلانية — ٦ أسابيع</span>
+  <h1 class="in1">اكتب إعلانًا <mark>يقرؤه الناس</mark> حتى آخره</h1>
+  <p class="lead in2">منهج عملي بالعربية: كل أسبوع تكتب، ويراجع كتابتك محرر محترف سطرًا بسطر.</p>
+  <div class="actions in3"><a class="btn primary" href="#join">احجز مقعدك</a><a class="btn ghost" href="#plan">شاهد المنهج</a></div>
+  <div class="meta in3"><div><b>٦ أسابيع</b>مساء كل أحد</div><div><b>٢٠ طالبًا</b>في الدفعة</div><div><b>مراجعة فردية</b>لكل تكليف</div></div>
+  <div class="ba in3" aria-labelledby="baT">
+    <div class="tabs" role="group" aria-label="قبل وبعد"><button type="button" aria-pressed="true" data-k="0">قبل الكورس</button><button type="button" aria-pressed="false" data-k="1">بعد الأسبوع الثالث</button></div>
+    <p class="ad" id="baT" aria-live="polite">أفضل خدمات تنظيف بأعلى جودة وأقل سعر في مصر!</p>
+    <p class="why" id="baW">عام، ويشبه كل إعلان آخر.</p>
+  </div>
+</div></section>
+
+<section id="plan" data-plan><div class="w">
+  <span class="label">المنهج</span>
+  <h2>ستة أسابيع، وفي كل أسبوع نص تكتبه</h2>
+  <div class="plan">
+    <div class="line" aria-hidden="true"><svg viewBox="0 0 120 1000" preserveAspectRatio="none"><path class="ghost" d="M60 0 C 112 120, 8 240, 60 360 S 112 600, 60 720 S 8 900, 60 1000"/><path class="ink" d="M60 0 C 112 120, 8 240, 60 360 S 112 600, 60 720 S 8 900, 60 1000"/></svg>
+      <svg class="nib" viewBox="0 0 34 34"><path d="M4 30 L10 14 L24 2 L32 10 L20 24 Z" style="fill:#1B1A17"/><path d="M4 30 L13 21" stroke="#FBF8F2" stroke-width="1.6"/></svg></div>
+    <ol class="weeks">
+      <li><small>الأسبوع ١</small><h3>القارئ قبل الكلمة</h3><p>من يقرأ؟ ماذا يريد؟ تكتب صفحة واحدة عن عميل حقيقي.</p></li>
+      <li><small>الأسبوع ٢</small><h3>العنوان</h3><p>عشرون عنوانًا لمنتج واحد، ثم نختار ثلاثة ونعرف لماذا.</p></li>
+      <li><small>الأسبوع ٣</small><h3>الوعد والدليل</h3><p>تحويل الصفات إلى فائدة، وكل فائدة معها دليل يمكن التحقق منه.</p></li>
+      <li><small>الأسبوع ٤</small><h3>صفحة الهبوط</h3><p>ترتيب الصفحة من العنوان إلى الزر، وكتابة كل قسم في جملة.</p></li>
+      <li><small>الأسبوع ٥</small><h3>الإعلان القصير</h3><p>منشورات وإعلانات فيديو بنصوص تُقرأ في ثلاث ثوانٍ.</p></li>
+      <li><small>الأسبوع ٦</small><h3>ملف أعمالك</h3><p>تخرج بثلاثة نصوص مراجعة تعرضها على أول عميل.</p></li>
+    </ol>
+  </div>
+</div></section>
+
+<section id="join"><div class="w">
+  <div class="price"><div><span class="label">الدفعة القادمة</span><h2>مقعد في الدفعة</h2><div class="amount">٣٬٢٠٠ <small>ج.م</small></div></div>
+  <ul><li>٦ جلسات مباشرة مسجلة</li><li>مراجعة فردية لكل تكليف</li><li>مجموعة نقاش للدفعة</li><li>شهادة إتمام بعد تسليم التكليفات</li></ul></div>
+  <h2 style="margin-top:80px">أسئلة قبل التسجيل</h2>
+  <details><summary>هل أحتاج خبرة سابقة؟</summary><p>لا. تحتاج ساعتين أسبوعيًا للكتابة إلى جانب الجلسة.</p></details>
+  <details><summary>ماذا لو فاتتني جلسة؟</summary><p>الجلسات مسجلة، والتكليف يبقى مفتوحًا حتى نهاية الأسبوع.</p></details>
+  <p style="color:var(--mute);margin-top:30px">هذا مثال تصميم: لا يوجد تسجيل حقيقي. في موقع العميل يذهب الزر إلى صفحة الدفع الخاصة به.</p>
+</div></section>
+</main>
+<footer><div class="w">© ٢٠٢٦ قلم — مثال تصميم لكورس غير حقيقي. السعر والمواعيد للعرض فقط.</div></footer>
+<script>
+(() => {
+  const root = document.documentElement, reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  root.classList.add('js'); if (reduce) root.classList.add('reduce');
+  const AD = [['أفضل خدمات تنظيف بأعلى جودة وأقل سعر في مصر!', 'عام، ويشبه كل إعلان آخر.'], ['شقتك نظيفة قبل أن ترجع من الشغل، والمفتاح يعود في ظرف مختوم.', 'صورة محددة، ووعد يمكن التحقق منه، وتفصيلة تبني الثقة.']];
+  const tabs = document.querySelector('.ba .tabs');
+  tabs.addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; tabs.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', x === b)); const [a, w] = AD[+b.dataset.k]; document.getElementById('baT').textContent = a; document.getElementById('baW').textContent = w; });
+  if (reduce) { document.querySelectorAll('.weeks li').forEach((li) => li.classList.add('on')); return; }
+  // the hero motion: the pen writes the course line, tilting up and down with the curve, one week at a time
+  const sec = document.querySelector('[data-plan] .plan'), ink = sec.querySelector('.ink'), nib = sec.querySelector('.nib'), svg = sec.querySelector('svg'), weeks = [...sec.querySelectorAll('.weeks li')];
+  const measure = (path, svg) => { const box = svg.getBoundingClientRect(), vb = svg.viewBox.baseVal, L = path.getTotalLength(), pts = []; let acc = 0, prev = null; for (let i = 0; i <= 200; i++) { const q = path.getPointAtLength(L * i / 200), x = q.x / vb.width * box.width, y = q.y / vb.height * box.height; if (prev) acc += Math.hypot(x - prev[0], y - prev[1]); pts.push([acc, x, y]); prev = [x, y]; } path.style.strokeDasharray = `${acc} ${acc}`; return pts; };
+  const pointAt = (pts, d) => { let i = pts.findIndex((s) => s[0] >= d); if (i < 1) i = i < 0 ? pts.length - 1 : 1; const [a0, ax, ay] = pts[i - 1], [b0, bx, by] = pts[i], k = b0 > a0 ? (d - a0) / (b0 - a0) : 0; return [ax + (bx - ax) * k, ay + (by - ay) * k, Math.atan2(by - ay, bx - ax)]; };
+  let ticking = false, pts = null;
+  const draw = () => {
+    ticking = false; pts = pts || measure(ink, svg);
+    const r = sec.getBoundingClientRect(), p = Math.min(1, Math.max(0, (innerHeight * 0.6 - r.top) / r.height)), total = pts[pts.length - 1][0];
+    ink.style.strokeDashoffset = String(total * (1 - p));
+    const [x, y, ang] = pointAt(pts, Math.max(0.5, total * p)), tilt = ang * 57.3 - 90;
+    nib.style.left = x + 'px'; nib.style.top = y + 'px'; nib.style.transform = `rotate(${(tilt * 0.35).toFixed(1)}deg)`;
+    for (const li of weeks) li.classList.toggle('on', li.getBoundingClientRect().top < innerHeight * 0.6);
+  };
+  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(draw); } }, { passive: true });
+  addEventListener('resize', () => { pts = null; draw(); }); draw();
+})();
+</script>
+</body>
+</html>

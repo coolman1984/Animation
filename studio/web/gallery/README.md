@@ -12,6 +12,13 @@ Open it: `node studio/studio.mjs gallery` (serves `studio/web`, prints the URL o
   `luma-clinic` (date/time booking, services, FAQ), `nabaa-industrial` (SVG pump that explodes/reassembles with a ghosted interior,
   model selector), `madar-saas` (dark product dashboard in code, bento), `odda-shop` (CC0 product photos, filters, search, working cart,
   bundle builder). The twelve first-round sketches were deleted.
+- Five more examples (2026-11-06, from the Skill Leap AI study; `../prompts/README.md`), each with ONE hero motion that means something for
+  the business and a still state under reduced motion: `sabbak-plumbing` (local service: water fills a pipe beside the four service steps,
+  price estimator, quote form), `bunn-coldbrew` (café product: a 3D bottle built in code with the vendored Three.js turns with the scroll;
+  a still SVG on reduced motion, data saver, ≤ 2 cores/2 GB or no WebGL), `qalam-course` (course: a pen writes the curriculum line; before/after
+  headline), `wasla-studio` (video production: an edit timeline whose playhead follows the scroll), `sahm-offer` (seasonal offer: two panels
+  in right-to-left order, the picture swaps with the offer in view, a bottom tab bar on phones). No photos; every drawing is code.
+- `devices.html` — any example at phone 390, tablet 820 and desktop 1440 side by side, each frame live (`?site=<id>`); for showing a client.
 - `work/*.jpg` — screenshots (desktop 1280, phone 390) of existing work: the `example` site (نور), `showcase/form-field`, the motion lab and the anatomy explainer.
 - `CREDITS.json` — every photo, its StockSnap page and licence (CC0).
 

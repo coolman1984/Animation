@@ -19,6 +19,10 @@
 
 **Relations:** consumes from `../animation/` and `../presentations/`, uses templates from `../design-canva/`.
 
+**Website promo shorts (2026-11-06):** `node studio/studio.mjs web reel <site>` films a finished site scrolling on a phone and writes
+`studio/takes/web/<site>/reel.mp4` (1080×1920). It is an input for LinkedIn reels and WhatsApp status once the owner approves it; nothing
+is posted automatically (`../studio/web/WEB.md` "Promo reel of a site").
+
 ## العربي
 **بيعمل إيه (مخطّط):** ياخد المحتوى الجاهز (فيديوهات، شورتس، عروض، بوستات) ويوزّعه:
 ١. «لينكد إن» — ريلز وبوستات.
@@ -35,3 +39,5 @@
 **ليه موجود:** مكان واحد للنشر المنظّم بدل النشر العشوائي.
 
 **علاقته بالباقي:** بياخد من `../animation/` و`../presentations/`، وبيستخدم قوالب `../design-canva/`.
+
+**فيديو قصير للموقع:** الأمر `web reel <site>` بيسجّل الموقع وهو بيتحرك على الموبايل ويطلّع فيديو طولي، بيتنشر بس بعد موافقة المالك.
