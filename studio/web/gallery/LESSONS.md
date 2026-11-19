@@ -1,5 +1,7 @@
 # What professional sites do — measured 2026-11-03
 
+> **2026-11-10: the foundation is now [`../FOUNDATION.md`](../FOUNDATION.md)** (the owner's "Fable 5.2" level). Where it disagrees on taste it wins: 2–3 type families by role instead of one (rule 1), one signature moment plus motion the world motivates instead of restraint (rule 7), drawn or real material in the world's own composition instead of soft colour panels (rules 3–4). Copy clarity (rule 2), sizes (rule 6) and honest trust rows (rule 5) still apply.
+
 Owner verdict on the first gallery: "very bad — fonts very bad, design and copy very bad; study professional sites and learn well".
 So we opened 14 real sites in Chromium at 1440 × 900 (Arabic locale), took four screens of each and measured the computed type.
 Thmanyah, Salla, Zid and Aesop served a bot check (not bypassed; left out). Screens are research only and are not republished.
@@ -35,3 +37,16 @@ Thmanyah, Salla, Zid and Aesop served a bot check (not bypassed; left out). Scre
    buttons 16 px / 600, pill or 12 px radius, 48–56 px tall.
 7. **Restraint in motion:** fades and gentle rises on scroll, hover states, real interaction where it explains something (a calculator, a
    timetable, a product configurator). No decorative noise.
+8. **Measure every page we show, not only the ones the builder made (2026-11-11).** The six examples had been looked at in a browser but
+   never put through `web audit`; all seven specimens and the gallery page itself failed it. What it found, and the rule each gives:
+   - **Muted text is where a page fails.** Every `--mute` grey was 3.5–4.0:1. Darken (or on a dark page lighten) the muted token until
+     it reaches 4.5:1 on the *darkest light ground* it sits on (the soft panel, not only white).
+   - **An accent is two colours: a fill and a text.** A vivid fill (orange `#F26B1D`, coral, red) rarely carries white text at 4.5:1 and
+     never works as small text on a light ground. Keep the fill and give its label a dark ink (نبع), or deepen the fill a step (عُدّة,
+     نبض), and add a separate darker `--accent-text` for eyebrows and labels; on a dark panel the bright accent is the text colour.
+   - **A wide selector can erase a narrow one.** `.doc span{color:teal;font-size:14px}` also hit the doctors' initials, which became teal
+     on teal: invisible. Scope label rules to the element they mean (`.doc div>span`).
+   - **A closed drawer must cast no shadow and take no focus.** Off-canvas at `translateX(-102%)` its 60 px shadow still fell on the
+     page edge. Shadow and `visibility` belong to the open state.
+   - **Controls a thumb uses are 44 px tall on a phone** (filter chips, day buttons, drawer close, text links with padding).
+   - **A page served on its own needs its own viewport line**, even when it is written for a host that wraps it.

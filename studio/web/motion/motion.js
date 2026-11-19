@@ -15,6 +15,11 @@
   document.documentElement.classList.add('js');
   if (reduce) document.documentElement.classList.add('reduce');
 
+  // in-page links land below the sticky header at its real height (it wraps on a phone); site.css carries the no-script fallback
+  const top = document.querySelector('.top');
+  const pad = () => { if (top) document.documentElement.style.scrollPaddingTop = `${top.offsetHeight + 16}px`; };
+  pad(); addEventListener('resize', pad);
+
   // split headlines into word spans (kept in reading order; RTL handled by the browser)
   for (const el of $$('[data-split]')) {
     const words = el.textContent.trim().split(/\s+/);

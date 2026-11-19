@@ -2,6 +2,9 @@
 The site's reusable design record (web/WEB.md "One workflow"). Written before building; every later change follows it.
 Conflicts between tools are settled by: the client's brief and brand → this file → the owner's taste (QUALITY_PLAYBOOK §0) → tool suggestions.
 
+## 0. World brief (the foundation level — `web/FOUNDATION.md`; template `web/templates/WORLD_BRIEF.md`)
+‹paste the filled world brief here: concept, real facts, palette, material and geometry, type by role, structure, signature moment, motion numbers, details, reduced motion, responsive, performance, voice›
+
 ## A. Creative direction (owner: taste-skill)
 - Business, audience, purpose, the one action: ‹…›
 - 8–12 things only this client has: ‹…›

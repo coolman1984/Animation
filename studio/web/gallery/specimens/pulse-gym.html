@@ -4,13 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>نبض — مثال نادي تدريب</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%230B0B0C%22%2F%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%226%22%20fill%3D%22%23E5322D%22%2F%3E%3C%2Fsvg%3E">
 <meta name="description" content="مثال تصميم لنادي تدريب افتراضي. الصور CC0 من StockSnap.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap">
 <style>
 :root{
   --bg:#0B0B0C; --bg2:#141416; --ink:#F5F3EF; --ink2:#C9C5BE; --mute:#8D8981; --line:rgba(255,255,255,.12);
-  --red:#E5322D; --red-ink:#FFFFFF; --paper:#F5F3EF; --paper-ink:#121212;
+  --red:#E5322D; --red-fill:#DC302B; --red-ink:#FFFFFF; --paper:#F5F3EF; --paper-ink:#121212;
   --f:"IBM Plex Sans Arabic",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
   --ease:cubic-bezier(.2,.7,.2,1);
 }
@@ -22,7 +23,7 @@ a{color:inherit;text-decoration:none}
 :focus-visible{outline:3px solid var(--red);outline-offset:3px}
 .demo{position:fixed;inset:auto auto 16px 16px;z-index:60;background:var(--paper);color:var(--paper-ink);font:500 12px var(--f);padding:6px 12px;border-radius:99px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:54px;padding:0 28px;border-radius:4px;font:600 16px var(--f);border:0;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
-.btn.red{background:var(--red);color:var(--red-ink)}.btn.red:hover{background:#C9221E}
+.btn.red{background:var(--red-fill);color:var(--red-ink)}.btn.red:hover{background:#C9221E}
 .btn.light{background:var(--paper);color:var(--paper-ink)}.btn.light:hover{background:#fff}
 .btn.line{background:transparent;color:var(--ink);border:1.5px solid rgba(255,255,255,.4)}.btn.line:hover{border-color:var(--ink)}
 .btn.sm{height:44px;padding:0 20px;font-size:15px}
@@ -56,7 +57,7 @@ h1 span{display:block;color:var(--ink2);font-weight:400}
 .fld{display:grid;gap:6px;margin-bottom:14px}
 .fld label{font:600 14px var(--f)}
 .seg{display:flex;flex-wrap:wrap;gap:6px}
-.seg button{font:500 14px var(--f);border:1px solid #D9D5CE;background:#fff;color:var(--paper-ink);border-radius:4px;padding:8px 12px;cursor:pointer;min-height:40px}
+.seg button{font:500 14px var(--f);border:1px solid #D9D5CE;background:#fff;color:var(--paper-ink);border-radius:4px;padding:8px 12px;cursor:pointer;min-height:44px}
 .seg button[aria-pressed="true"]{background:var(--paper-ink);color:#fff;border-color:var(--paper-ink)}
 .slot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #E2DED7;padding-top:14px;margin:6px 0 16px;font-size:15px}
 .slot b{font:700 17px var(--f)}
@@ -87,11 +88,11 @@ h2.t{font:700 clamp(36px,4vw,56px)/1.25 var(--f);margin:8px 0 0;text-wrap:balanc
 .prog h3{font:700 24px/1.3 var(--f);margin:0 0 6px}
 .prog p{margin:0 0 12px;color:#4F4B45;font-size:15px;line-height:1.7}
 .prog .meta{display:flex;gap:14px;font:500 13px var(--f);color:#6E6A63}
-.prog a{display:inline-block;margin-top:12px;font:600 15px var(--f);border-bottom:2px solid var(--paper-ink);padding-bottom:2px}
+.prog a{display:inline-block;margin-top:1px;padding-block:11px;font:600 15px var(--f);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:6px}
 
 /* first class: three steps on a line */
 .first{background:var(--paper);color:var(--paper-ink);border-radius:8px;padding:clamp(32px,5vw,72px);display:grid;grid-template-columns:.9fr 1.1fr;gap:60px;align-items:center}
-.first .label{color:var(--red)}
+.first .label{color:#C9221E}
 .first h2.t{color:var(--paper-ink)}
 .first>div>p{color:#4F4B45;margin:16px 0 28px}
 .first img{border-radius:6px;aspect-ratio:4/5;object-fit:cover;width:100%;max-height:560px}
@@ -112,7 +113,7 @@ h2.t{font:700 clamp(36px,4vw,56px)/1.25 var(--f);margin:8px 0 0;text-wrap:balanc
 .rows b{font:600 19px var(--f);display:block}.rows small{color:var(--mute);font-size:14px}
 .rows .lvl{color:var(--ink2);font-size:15px}
 .rows .left{font:600 15px var(--f);color:#6FCF97}.rows .left.low{color:#FF7A6E}
-.rows .btn{height:40px;padding:0 16px;font-size:14px}
+.rows .btn{height:44px;padding:0 16px;font-size:14px}
 
 /* membership */
 .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
@@ -125,7 +126,7 @@ h2.t{font:700 clamp(36px,4vw,56px)/1.25 var(--f);margin:8px 0 0;text-wrap:balanc
 .plan .btn{margin-top:auto}
 .plan.pick{background:var(--paper);color:var(--paper-ink);border-color:var(--paper)}
 .plan.pick h3{color:var(--paper-ink)}.plan.pick ul{color:#4F4B45}.plan.pick .price small{color:#6E6A63}
-.tag{align-self:flex-start;font:600 13px var(--f);background:var(--red);color:#fff;padding:3px 10px;border-radius:3px}
+.tag{align-self:flex-start;font:600 13px var(--f);background:var(--red-fill);color:#fff;padding:3px 10px;border-radius:3px}
 
 /* closing */
 .close{position:relative;margin-top:130px;min-height:560px;display:flex;align-items:center;overflow:hidden}

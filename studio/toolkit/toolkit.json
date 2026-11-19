@@ -1,6 +1,6 @@
 {
   "about": "Third-party agent tools vendored whole (owner order 2026-10-24: 'take everything we can learn and every tool we can use'). Each package is copied unchanged from a pinned commit except the listed removals; its licence travels with it. Front door: node studio/studio.mjs toolkit. Guide: toolkit/README.md.",
-  "updated": "2026-10-25",
+  "updated": "2026-11-10",
   "packages": [
     {
       "name": "impeccable",
@@ -219,6 +219,26 @@
       "department": "web",
       "what": "Landing-page strategy and ship list: one offer / one audience / one action, intake in one batch, above-the-fold order, layout types A-D, conversion and copy rules, section-by-section build order, SEO/AEO, content realism, full state set, ship requirements, the tagline word-reveal section; plus a Latin-only visual system the house method overrides.",
       "changed": "Nothing (one SKILL.md)."
+    },
+    {
+      "name": "emil-skills",
+      "repo": "emilkowalski/skills",
+      "commit": "715c180",
+      "licence": "MIT",
+      "from": ".",
+      "include": [
+        "skills",
+        "README.md",
+        "ui-cheatsheet.md",
+        "performance-cheatsheet.md"
+      ],
+      "notices": [
+        "LICENSE"
+      ],
+      "skill": "emil-skills",
+      "department": "web",
+      "what": "Emil Kowalski's 18 design-engineering skills (Vercel/Linear): animation decisions (should it animate, purpose, easing, duration), animate, choreograph, gestures, review/improve/find/remove animations, animation performance and vocabulary, Apple design, mobile-native web fixes, break-ui worst-case data, prototype picker, UI library picks, Sonner, Expo/React Native motion and modern Swift. Text only, no scripts.",
+      "changed": "Whole skills folder + README and the two cheatsheets; .gitattributes, .pl and repo images stay upstream. Not installed with `npx skills add` (unpinned, writes its own agent folders): the wrapper skill routes every model to this pinned copy."
     }
   ],
   "notVendored": [

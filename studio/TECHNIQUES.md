@@ -493,3 +493,12 @@ The owner's supplied visual references now guide composition, imagery, type and 
   timing `k³(10 − 15k + 6k²)` with duration ≈ 110 + 70·log2(1 + d/36) ms, a small sine wave across the path that fades at both ends,
   a 4–9 px overshoot that springs back in ~90 ms, and a 3-ghost trail. Idle cursors loop (circle / figure-eight) and drift; never
   keyframe a fixed path, so no two moves repeat.
+
+## Front door, servers and checks hardened — 2026-11-11
+- **One command table.** `studio.mjs` exports `COMMANDS` (the dispatcher), `HELP` (grouped usage) and `main(argv)`; `test/frontdoor.test.mjs` fails when a command has no help row. Throw `usage('…')` for a mistyped call (exit 2, one line) and a plain `Error` for a failure (exit 1, one line, `--debug` or `STUDIO_DEBUG=1` adds the stack). Validate numbers from flags yourself: a flag without a value is `true` and `Number(true)` is 1.
+- **Static server (`lib/serve.mjs`):** byte ranges (`parseRange`, shared with the review server), HEAD, a folder URL serves its `index.html` (and redirects to the trailing slash), 40 media types, `cache` option. Renders keep `max-age=3600`; `web serve`, `lab` and `gallery` pass `cache: 'no-cache'` so an edit shows on reload.
+- **Review server:** notes and approvals answer only this loopback host and, from a browser, only its own origin (`sameOrigin`); writes are POST.
+- **MCP:** `argErrors(inputSchema, args)` checks required/type/enum/min/max/items before a tool runs; paths are contained by folder (`within`), never by string prefix.
+- **Shared clock:** `timeline()` refuses a film longer than `MAX_SECONDS` (3600) and names `beats`/`bpm`; `critique()` returns the verdict "broken spec" with lint's messages instead of throwing on an unlinted spec.
+- **Web check:** lights carry `items` (every finding); `missing-files` reads `PerformanceResourceTiming.responseStatus`; `names` computes an accessible name (aria-label, labelledby, text, labelled image, title) for links, buttons and fields; overflow inside an `overflow-x: auto|scroll` box is not page overflow.
+- **Contrast helper (scratch, not in the repo):** to move a token the smallest step that passes, scale its RGB toward black (light page) or white (dark page) in 1 % steps until every ground it sits on reaches the target ratio.

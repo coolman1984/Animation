@@ -254,3 +254,9 @@ The owner's supplied visual references now guide composition, imagery, type and 
   and the tool waits forever (Lighthouse hung > 5 min; async `spawn` finished in ~30 s). Same rule for any child that calls back.
 - Prefer our own small route over a heavy dependency when the idea is simple (FFmpeg for srcset images, CDP for vitals, Three.js for
   involute gears), and keep the heavy tool as an optional profile for the cases it really owns (exact CAD, AI stems, AI upscaling).
+
+## Improvement pass — 2026-11-11 (owner: "improve this app in all ways")
+- **A gate only protects the pages it is run on.** The web check existed and the gallery was "checked in Chromium", yet every specimen failed the check once it was actually run on them. "I looked at it" is not a measurement: run `web audit --dir --page` on every page the owner will open, and say which pages were measured.
+- **Probe a tool the way a tired agent uses it:** no arguments, a typo, a missing file, a number as text, a flag without its value. Each of those reached a stack trace, a silent success or a half-written folder. The cheapest robustness test is a loop of wrong commands.
+- **Feed the checker a broken input before trusting it.** One wrong number (`beats: 4000000000`) passed lint and froze the critic; a string where a list belongs crashed it. A checker that reads unvalidated input must refuse a broken structure by name, and bound every loop it runs on a number it was given.
+- **Fix a contrast failure without changing the design's character:** move the token the smallest step that passes on its hardest ground, and split "accent as fill" from "accent as text". Compare the before and after screenshots; if the page reads as a different brand, the step was too big.

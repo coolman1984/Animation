@@ -70,8 +70,14 @@ export function plan(brief = {}) {
 }
 
 // media: relative paths that stay inside the site folder (copied into dist at the same path), or https URLs
-const mediaOf = (site) => [site.brand?.logo, ...(site.sections || []).flatMap((s) => [s?.image, ...(Array.isArray(s?.items) ? s.items : []).map((it) => it?.image)])].filter((p) => typeof p === 'string' && p);
+const mediaOf = (site) => [site.brand?.logo, site.shareImage, ...(Array.isArray(site.sections) ? site.sections : []).flatMap((s) => [s?.image, ...(Array.isArray(s?.items) ? s.items : []).map((it) => it?.image)])].filter((p) => typeof p === 'string' && p);
 export const safeMedia = (p) => /^https:\/\//.test(p) || (!/^([a-z]+:|\/|\\)/i.test(p) && !p.split(/[\\/]/).includes('..'));
+// links a visitor can follow: in-page anchors, web, mail, phone, WhatsApp/SMS deep links and relative pages. Never script or data URLs.
+export const safeHref = (h) => typeof h === 'string' && h.trim() !== '' && !/[\u0000-\u001f]/.test(h) && (/^(#|https?:\/\/|mailto:|tel:|sms:|whatsapp:)/i.test(h.trim()) || !/^[a-z][a-z0-9+.-]*:/i.test(h.trim()));
+// what each section must carry to render as a complete block (an empty <h2></h2> or the word "undefined" is never acceptable on a page)
+const NEEDS = { hero: ['title'], problem: ['title', 'text'], features: ['title'], steps: ['title'], ring: ['title'], faq: ['title'], cta: ['title', 'cta'], quote: ['text'] };
+const ITEM_NEEDS = { features: ['title'], steps: ['title', 'text'], ring: ['title'], faq: ['q', 'a'], stats: ['label'] };
+const filled = (v) => typeof v === 'string' ? v.trim() !== '' : v !== undefined && v !== null;
 
 // ---------- validate ----------
 // The site's design record (WEB.md "One workflow"): stages A–D written, no ‹…› left. Builds and checks refuse without it (draft excepted).
@@ -86,22 +92,37 @@ export function designRecord(siteDir) {
 
 export function validate(site) {
   const errors = [], warnings = [], E = (m) => errors.push(m), W = (m) => warnings.push(m);
-  if (!site || typeof site !== 'object') return { errors: ['site.json must be an object'], warnings };
+  if (!site || typeof site !== 'object' || Array.isArray(site)) return { errors: ['site.json must be an object'], warnings };
   errors.push(...resolveDesign(site).errors);
+  if (!filled(site.title) || typeof site.title !== 'string') E('title is required: the page title a visitor sees in the tab and in search results');
+  if (!site.brand || typeof site.brand !== 'object' || typeof site.brand.name !== 'string' || !site.brand.name.trim()) E('brand.name is required, exactly as the logo writes it');
   const strings = []; const walk = (o, path) => { if (typeof o === 'string') strings.push([path, o]); else if (o && typeof o === 'object') for (const [k, v] of Object.entries(o)) walk(v, path ? `${path}.${k}` : k); };
   walk(site, '');
   for (const [path, s] of strings) if (PH.test(s)) E(`${path}: placeholder left ("${s.slice(0, 60)}") — write the real text`);
   if (!STYLES().styles.some((s) => s.slug === site.style)) E(`style "${site.style}" unknown (${STYLES().styles.map((s) => s.slug).join(', ')})`);
   if (!['ar', 'en'].includes(site.lang)) E('lang must be "ar" or "en"');
   if (!Array.isArray(site.sections) || !site.sections.length) return { errors: [...errors, 'sections must be a nonempty array'], warnings };
-  if (site.sections[0].type !== 'hero') W('the first section is usually the hero: the promise and one action above the fold');
+  if (site.sections[0]?.type !== 'hero') W('the first section is usually the hero: the promise and one action above the fold');
+  const link = (at, c) => { if (c && c.href !== undefined && !safeHref(c.href)) E(`${at}: link "${String(c.href).slice(0, 60)}" must be an in-page #anchor, an http(s), mailto:, tel:, sms: or whatsapp: link, or a relative page`); };
+  // an in-page link must land on a section that exists (a dead "#contact" is the commonest broken button on a one-page site)
+  const anchors = new Set(['top', 'main', ...site.sections.map((s) => s?.id).filter(Boolean)]);
+  const lands = (at, c) => { const h = c?.href; if (typeof h === 'string' && /^#./.test(h) && !anchors.has(h.slice(1))) E(`${at}: link "${h}" points at no section (ids here: ${[...anchors].map((a) => '#' + a).join(', ')})`); };
   const ids = new Set();
   site.sections.forEach((s, i) => {
     const at = `sections.${i} (${s?.type})`;
+    if (!s || typeof s !== 'object' || Array.isArray(s)) { E(`sections.${i}: must be an object`); return; }
     if (!SECTION_TYPES.includes(s?.type)) { E(`${at}: unknown type (use ${SECTION_TYPES.join(', ')})`); return; }
+    for (const k of NEEDS[s.type] || []) if (!filled(s[k])) E(`${at}: ${k} is required`);
+    if (Array.isArray(s.items)) s.items.forEach((it, j) => {
+      if (s.type === 'marquee') { if (typeof it !== 'string' || !it.trim()) E(`${at}.items.${j}: must be a line of text`); return; }
+      if (!it || typeof it !== 'object' || Array.isArray(it)) { E(`${at}.items.${j}: must be an object`); return; }
+      for (const k of ITEM_NEEDS[s.type] || []) if (!filled(it[k])) E(`${at}.items.${j}: ${k} is required`);
+      if (it.image && !it.imageAlt && s.type !== 'ring') E(`${at}.items.${j}: image needs imageAlt`);
+    });
+    for (const c of [s.cta, s.secondary]) { link(at, c); lands(at, c); }
     if (s.id) { if (!/^[a-z][a-z0-9-]*$/.test(s.id) || ids.has(s.id)) E(`${at}: id must be unique lowercase words`); ids.add(s.id); }
     if (['features', 'steps', 'ring', 'stats', 'faq', 'marquee'].includes(s.type) && (!Array.isArray(s.items) || !s.items.length)) E(`${at}: items must be a nonempty array`);
-    if (s.type === 'stats') for (const [j, it] of (s.items || []).entries()) { if (!Number.isFinite(+it.value)) E(`${at}.items.${j}: value must be a number`); if (!it.source) E(`${at}.items.${j}: a number on a site needs its source (skill data-honesty)`); }
+    if (s.type === 'stats') for (const [j, it] of (Array.isArray(s.items) ? s.items : []).entries()) { if (!it || typeof it !== 'object') continue; if (it.value === '' || it.value === null || typeof it.value === 'boolean' || !Number.isFinite(+it.value)) E(`${at}.items.${j}: value must be a number`); if (!it.source) E(`${at}.items.${j}: a number on a site needs its source (skill data-honesty)`); }
     if (s.type === 'quote' && (!s.name || !s.source)) E(`${at}: a quote needs the real person's name and a source (permission, link or date)`);
 
     if (s.cta && (!s.cta.label || !s.cta.href)) E(`${at}: cta needs label and href`);
@@ -111,9 +132,14 @@ export function validate(site) {
     if ((s.title || '').split(/\s+/).length > 12) W(`${at}: title has ${(s.title || '').split(/\s+/).length} words — headlines read best under 10`);
   });
   if (site.brand?.logo && !site.brand.logoAlt) E('brand.logo needs brand.logoAlt');
+  if (site.footer !== undefined && (!site.footer || typeof site.footer !== 'object' || Array.isArray(site.footer))) E('footer must be an object { text, links }');
+  else if (site.footer?.links !== undefined) { if (!Array.isArray(site.footer.links)) E('footer.links must be an array of { label, href }'); else site.footer.links.forEach((l, j) => { if (!l || typeof l !== 'object' || !filled(l.label) || !filled(l.href)) E(`footer.links.${j}: needs label and href`); else { link(`footer.links.${j}`, l); lands(`footer.links.${j}`, l); } }); }
+  // optional sharing data: a public address makes the canonical link; a share image is what WhatsApp and Facebook show
+  if (site.url !== undefined && !/^https:\/\/[^\s"'<>]+$/.test(String(site.url))) E('url must be the site\'s public https address (used for the canonical link and sharing cards)');
+  if (site.shareImage !== undefined) { if (typeof site.shareImage !== 'string' || !safeMedia(site.shareImage)) E('shareImage must be a relative path inside the site folder or an https URL'); else if (!/^https:/.test(site.shareImage) && !site.url) W('shareImage needs "url" too: WhatsApp and Facebook only read an absolute image address'); }
   for (const m of mediaOf(site)) if (!safeMedia(m)) E(`image path "${m}" must be a relative path inside the site folder (no "..", no absolute path) or an https URL`);
   if (!site.description || site.description.length > 170) W('description should be one sentence ≤ 155 characters (search results)');
-  if (!site.sections.some((s) => s.cta)) E('no call to action anywhere: give the hero or the closing section a cta');
+  if (!site.sections.some((s) => s?.cta)) E('no call to action anywhere: give the hero or the closing section a cta');
   return { errors, warnings };
 }
 
@@ -125,9 +151,9 @@ const sectionHtml = (s, i, ar) => {
     case 'hero': return `<section class="hero${s.image ? '' : ' hero-text'}"${id}><div class="wrap"><div>${s.eyebrow ? `<p class="label"${s.motion === 'reveal' ? ' data-reveal' : ''}>${esc(s.eyebrow)}</p>` : ''}<h1>${esc(s.title)}</h1>${s.subtitle ? `<p class="sub"${s.motion === 'reveal' ? ' data-reveal' : ''}>${esc(s.subtitle)}</p>` : ''}<div class="actions"${s.motion === 'reveal' ? ' data-reveal' : ''}>${cta(s.cta)}${cta(s.secondary, 'ghost')}</div></div>
 ${s.image ? `<div class="visual ${s.imageFit || 'contain'}"><img src="${esc(s.image)}" alt="${esc(s.imageAlt)}" width="${s.imageWidth || 900}" height="${s.imageHeight || 900}" fetchpriority="high"></div>` : ''}</div></section>`;
     case 'problem': return `<section class="problem"${id}><div class="wrap">${h(s.title)}<p class="muted"${s.motion === 'reveal' ? ' data-reveal' : ''}>${esc(s.text)}</p></div></section>`;
-    case 'features': return `<section class="features"${id}><div class="wrap">${h(s.title)}${s.text ? `<p class="muted"${s.motion === 'reveal' ? ' data-reveal' : ''}>${esc(s.text)}</p>` : ''}<div class="grid">${s.items.map((it) => `<article class="card"${s.motion === 'reveal' ? ' data-reveal' : ''}>${it.icon ? `<div class="icon" aria-hidden="true">${esc(it.icon)}</div>` : ''}<h3>${esc(it.title)}</h3><p>${esc(it.text)}</p></article>`).join('')}</div></div></section>`;
+    case 'features': return `<section class="features"${id}><div class="wrap">${h(s.title)}${s.text ? `<p class="muted"${s.motion === 'reveal' ? ' data-reveal' : ''}>${esc(s.text)}</p>` : ''}<div class="grid">${s.items.map((it) => `<article class="card"${s.motion === 'reveal' ? ' data-reveal' : ''}>${it.icon ? `<div class="icon" aria-hidden="true">${esc(it.icon)}</div>` : ''}<h3>${esc(it.title)}</h3>${it.text ? `<p>${esc(it.text)}</p>` : ''}</article>`).join('')}</div></div></section>`;
     case 'steps': return `<section class="steps" data-steps${id}><div class="wrap"><div class="pin" aria-hidden="true">${s.items.map((_, k) => `<span${k ? '' : ' class="on"'}>${(k + 1).toLocaleString(ar ? 'ar-EG' : 'en')}</span>`).join('')}</div><div>${h(s.title)}${s.items.map((it, k) => `<div data-step="${k}"><h3>${esc(it.title)}</h3><p class="muted">${esc(it.text)}</p></div>`).join('')}</div></div></section>`;
-    case 'ring': return `<section class="ring-sec"${id}><div class="wrap">${h(s.title)}${s.hint ? `<p class="label">${esc(s.hint)}</p>` : ''}<div class="ring" data-ring tabindex="0" role="region" aria-label="${esc(s.title)}"><div class="ring-stage">${s.items.map((it) => `<article class="ring-card">${it.image ? `<img src="${esc(it.image)}" alt="${esc(it.imageAlt || it.title)}" loading="lazy">` : ''}<h3>${esc(it.title)}</h3><p>${esc(it.text)}</p></article>`).join('')}</div></div></div></section>`;
+    case 'ring': return `<section class="ring-sec"${id}><div class="wrap">${h(s.title)}${s.hint ? `<p class="label">${esc(s.hint)}</p>` : ''}<div class="ring" data-ring tabindex="0" role="region" aria-label="${esc(s.title)}"><div class="ring-stage">${s.items.map((it) => `<article class="ring-card">${it.image ? `<img src="${esc(it.image)}" alt="${esc(it.imageAlt || it.title)}" loading="lazy">` : ''}<h3>${esc(it.title)}</h3>${it.text ? `<p>${esc(it.text)}</p>` : ''}</article>`).join('')}</div></div></div></section>`;
     case 'stats': return `<section class="stats"${id}><div class="wrap">${s.title ? h(s.title) : ''}<div class="grid">${s.items.map((it) => `<div class="stat"${s.motion === 'reveal' ? ' data-reveal' : ''}><b>${(+it.value).toLocaleString(ar ? 'ar-EG' : 'en')}</b>${it.suffix ? `<span>${esc(it.suffix)}</span>` : ''}<p>${esc(it.label)}</p><small>${esc(it.source)}</small></div>`).join('')}</div></div></section>`;
     case 'quote': return `<section class="quote"${id}><div class="wrap"><blockquote${s.motion === 'reveal' ? ' data-reveal' : ''}>${esc(s.text)}</blockquote><p class="who"${s.motion === 'reveal' ? ' data-reveal' : ''}>${esc(s.name)}${s.role ? ` · ${esc(s.role)}` : ''}</p></div></section>`;
     case 'marquee': return `<div class="marquee"><div class="track">${s.items.map((x) => `<span>${esc(x)}</span>`).join('')}</div></div>`;
@@ -150,6 +176,10 @@ export function build(site, outDir, { siteDir } = {}) {
   const media = mediaOf(site).filter((p) => !/^https:/.test(p));
   for (const m of media) { if (!siteDir || !existsSync(join(siteDir, m))) throw new Error(`missing image ${m} (put it next to site.json)`); mkdirSync(dirname(join(outDir, m)), { recursive: true }); copyFileSync(join(siteDir, m), join(outDir, m)); }
   const nav = site.sections.filter((s) => s.id && s.label && s.type !== 'hero').map((s) => `<a href="#${esc(s.id)}">${esc(s.label)}</a>`).join('');
+  const face = (S.faces[style.fonts.display] || [])[0], abs = (p) => /^https:/.test(p) ? p : site.url ? new URL(p, site.url.endsWith('/') ? site.url : site.url + '/').href : null;
+  const share = site.shareImage ? abs(site.shareImage) : null;
+  // A tab icon in the brand's own colours: without one every visit asks the server for /favicon.ico and logs a 404.
+  const icon = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="${style.tokens.accent}"/><circle cx="16" cy="16" r="6" fill="${style.tokens['accent-ink']}"/></svg>`)}`;
   const html = `<!doctype html>
 <html lang="${ar ? 'ar' : 'en'}" dir="${ar ? 'rtl' : 'ltr'}">
 <head>
@@ -157,10 +187,15 @@ export function build(site, outDir, { siteDir } = {}) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(site.title)}</title>
 <meta name="description" content="${esc(site.description)}">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="${ar ? 'ar_AR' : 'en_US'}">
+<meta property="og:site_name" content="${esc(site.brand.name)}">
 <meta property="og:title" content="${esc(site.title)}">
 <meta property="og:description" content="${esc(site.description)}">
+${site.url ? `<link rel="canonical" href="${esc(site.url)}">\n<meta property="og:url" content="${esc(site.url)}">\n` : ''}${share ? `<meta property="og:image" content="${esc(share)}">\n` : ''}<meta name="twitter:card" content="${share ? 'summary_large_image' : 'summary'}">
 <meta name="theme-color" content="${style.tokens.bg}">
-<link rel="preload" href="assets/fonts/${(S.faces[style.fonts.display] || [{}])[0].file}" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="${icon}">
+${face ? `<link rel="preload" href="assets/fonts/${face.file}" as="font" type="font/${face.file.endsWith('.woff2') ? 'woff2' : 'ttf'}" crossorigin>` : ''}
 <link rel="stylesheet" href="assets/site.css">
 <script src="assets/motion.js" defer></script>
 </head>

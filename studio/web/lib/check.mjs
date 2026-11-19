@@ -21,7 +21,7 @@ const PROBE = `(async () => {
   const H = () => document.documentElement.scrollHeight;
   for (let y = 0; y <= H(); y += innerHeight * 0.6) { scrollTo({ top: y, behavior: 'instant' }); await wait(140); }
   scrollTo({ top: H(), behavior: 'instant' }); await wait(500);
-  const clipped = (el) => { for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) { const o = getComputedStyle(p); if (/(hidden|clip)/.test(o.overflowX + o.overflow) || p.closest('.ring, .marquee')) return true; } return false; };
+  const clipped = (el) => { for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) { const o = getComputedStyle(p); if (/(hidden|clip|auto|scroll)/.test(o.overflowX + o.overflow) || p.closest('.ring, .marquee')) return true; } return false; };   // a carousel that scrolls sideways inside its own box does not widen the page
   const solid = (c) => { const m = c.match(/[\\d.]+/g); if (!m) return null; const k = /^color\\(srgb/.test(c) ? 255 : 1; const a = c.includes('/') ? +m[3] : m[3]; return a === undefined || +a > 0.9 ? m.slice(0, 3).map((v) => +v * k) : null; };   // rgb() and color(srgb …) (what color-mix computes to)
   const bgOf = (el) => { for (let p = el; p; p = p.parentElement) { const cs = getComputedStyle(p); if (cs.backgroundImage !== 'none' && !p.matches('body, html')) return null; const s = solid(cs.backgroundColor); if (s) return s; } return solid(getComputedStyle(document.body).backgroundColor) || [255, 255, 255]; };
   const lum = (c) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]); };
@@ -29,7 +29,7 @@ const PROBE = `(async () => {
   const VW = document.documentElement.clientWidth;
   // a mobile browser widens the layout viewport when anything overflows, so compare with the device width, not innerWidth
   const out = { overflowPx: Math.max(document.documentElement.scrollWidth - VW, Math.round(innerWidth - (visualViewport?.width || innerWidth))), wide: [], noAlt: [], broken: [], small: [], lowContrast: [], tiny: [], hidden: [], h1: document.querySelectorAll('h1').length, headingSkips: [],
-    longHead: [], fonts: [], gradient: [], shadow: [], pure: [], greyOnColour: [], tinyCaps: [], longLines: [], bounce: [], blank: [], moving: 0, heroMedia: 0 };
+    longHead: [], fonts: [], gradient: [], shadow: [], pure: [], greyOnColour: [], tinyCaps: [], longLines: [], bounce: [], blank: [], moving: 0, heroMedia: 0, unnamed: [], failed: [], dupIds: [] };
   const exempt = (el) => el.closest('pre, code, kbd, table, input, textarea, select, [data-ui], [aria-hidden="true"]');
   const neutral = (c) => c && Math.max(...c) - Math.min(...c) < 6, chroma = (c) => c ? Math.max(...c) - Math.min(...c) : 0;
   const tag = (el) => el.tagName.toLowerCase() + (el.className && typeof el.className === 'string' ? '.' + el.className.split(' ')[0] : '');
@@ -61,6 +61,15 @@ const PROBE = `(async () => {
     }
     if (el.matches('a, button, summary') && !el.closest('.nav, footer') && (r.height < 44 || r.width < 44) && VW < 900) out.tiny.push((el.textContent.trim() || el.getAttribute('aria-label') || el.tagName).slice(0, 30) + ' ' + Math.round(r.width) + '×' + Math.round(r.height));
   }
+  // a control a screen reader cannot name: a link or button with no text, aria-label, labelled image or title; a field with no label
+  const byIds = (ids) => String(ids || '').split(/\s+/).map((id) => document.getElementById(id)?.textContent || '').join(' ').trim();
+  const nameOf = (el) => (el.getAttribute('aria-label') || '').trim() || byIds(el.getAttribute('aria-labelledby')) || el.textContent.trim() || [...el.querySelectorAll('img[alt], svg[aria-label], [aria-label], svg title')].map((x) => x.getAttribute('alt') || x.getAttribute('aria-label') || x.textContent).join(' ').trim() || (el.getAttribute('title') || '').trim() || (el.matches('input') ? (el.value || '').trim() : '');
+  const shown = (el) => { const r = el.getBoundingClientRect(), cs = getComputedStyle(el); return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && !el.closest('[aria-hidden="true"], [inert], [hidden]'); };
+  for (const el of document.querySelectorAll('a[href], button, [role="button"], summary, input[type="submit"], input[type="button"]')) if (shown(el) && !nameOf(el)) out.unnamed.push(tag(el) + ' has no name');
+  for (const el of document.querySelectorAll('input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]), select, textarea')) if (shown(el) && !(el.labels?.length || (el.getAttribute('aria-label') || '').trim() || byIds(el.getAttribute('aria-labelledby')) || (el.getAttribute('title') || '').trim())) out.unnamed.push(tag(el) + (el.name ? '[' + el.name + ']' : '') + ' has no label');
+  const seen = new Set(); for (const el of document.querySelectorAll('[id]')) { if (seen.has(el.id) && !el.closest('svg')) out.dupIds.push('#' + el.id); seen.add(el.id); }
+  // a file the page asked for and did not get (stylesheet, script, font, photo): the page works on the developer's machine and breaks on the host
+  out.failed = performance.getEntriesByType('resource').filter((e) => e.responseStatus >= 400).map((e) => decodeURIComponent(e.name.split('?')[0].split('/').pop()) + ' ' + e.responseStatus);
   for (const img of document.images) { if (!img.hasAttribute('alt')) out.noAlt.push(img.src.split('/').pop()); if (img.complete && !img.naturalWidth) out.broken.push(img.src.split('/').pop()); }
   for (const h of document.querySelectorAll('h1, h2')) { const cs = getComputedStyle(h), lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.2, lines = Math.round(h.getBoundingClientRect().height / lh); if (lines > 2) out.longHead.push(h.textContent.trim().slice(0, 30) + ' ' + lines + ' lines'); }
   out.fonts = [...fams];
@@ -128,26 +137,34 @@ export async function checkSite({ dir, outDir, page = 'index.html' }) {
     const r = await visit(client, url, VIEWPORTS[0], { reduce: true });
     viewports.push({ name: 'phone (reduced motion)', reduced: true, running: r.running, hidden: r.hidden });
   } finally { await client?.close(); srv.close(); }
-  const lights = [], add = (id, light, why, n = 0) => lights.push({ id, light, why, n });   // n = the measure behind the light (count of findings, KB): compared before → after
+  // n = the measure behind the light (count of findings, KB): compared before → after. items = every finding, not only the few
+  // that fit on the line: whoever fixes the page needs the whole list (`web check <site> --all`, MCP web_check all: true).
+  const lights = [], add = (id, light, why, n = 0, items = []) => lights.push({ id, light, why, n, ...(items.length ? { items } : {}) });
   const all = (k) => [...new Set(viewports.filter((v) => !v.reduced).flatMap((v) => (v[k] || []).map((x) => `${v.name}: ${x}`)))];
   const over = viewports.filter((v) => !v.reduced && (v.overflowPx > 1 || v.wide.length));
-  add('no-sideways-scroll', over.length ? 'red' : 'green', over.length ? over.map((v) => `${v.name}: ${v.overflowPx}px wider (${v.wide.slice(0, 3).join(', ')})`).join(' · ') : 'nothing wider than the screen at 390 / 820 / 1440 px', over.reduce((m, v) => Math.max(m, v.overflowPx || 0, v.wide.length), 0));
-  add('images', all('noAlt').length || all('broken').length ? 'red' : 'green', [...all('noAlt').map((x) => 'no alt ' + x), ...all('broken').map((x) => 'broken ' + x)].slice(0, 5).join(' · ') || 'every image loads and has alt text', all('noAlt').length + all('broken').length);
-  add('contrast', all('lowContrast').length ? 'red' : 'green', all('lowContrast').slice(0, 5).join(' · ') || 'all text meets WCAG AA (4.5:1, large 3:1)', all('lowContrast').length);
-  add('readable-size', all('small').length ? 'yellow' : 'green', all('small').slice(0, 5).join(' · ') || 'no text under 14 px', all('small').length);
-  add('tap-targets', all('tiny').length ? 'yellow' : 'green', all('tiny').slice(0, 5).join(' · ') || 'buttons and links ≥ 44 px on phone and tablet', all('tiny').length);
-  add('motion-never-hides', all('hidden').length ? 'red' : 'green', all('hidden').slice(0, 4).join(' · ') || 'every revealed element is visible after scrolling', all('hidden').length);
+  add('no-sideways-scroll', over.length ? 'red' : 'green', over.length ? over.map((v) => `${v.name}: ${v.overflowPx}px wider (${v.wide.slice(0, 3).join(', ')})`).join(' · ') : 'nothing wider than the screen at 390 / 820 / 1440 px', over.reduce((m, v) => Math.max(m, v.overflowPx || 0, v.wide.length), 0), all('wide'));
+  const imgs = [...all('noAlt').map((x) => 'no alt ' + x), ...all('broken').map((x) => 'broken ' + x)];
+  add('images', imgs.length ? 'red' : 'green', imgs.slice(0, 5).join(' · ') || 'every image loads and has alt text', imgs.length, imgs);
+  add('contrast', all('lowContrast').length ? 'red' : 'green', all('lowContrast').slice(0, 5).join(' · ') || 'all text meets WCAG AA (4.5:1, large 3:1)', all('lowContrast').length, all('lowContrast'));
+  add('readable-size', all('small').length ? 'yellow' : 'green', all('small').slice(0, 5).join(' · ') || 'no text under 14 px', all('small').length, all('small'));
+  add('tap-targets', all('tiny').length ? 'yellow' : 'green', all('tiny').slice(0, 5).join(' · ') || 'buttons and links ≥ 44 px on phone and tablet', all('tiny').length, all('tiny'));
+  add('motion-never-hides', all('hidden').length ? 'red' : 'green', all('hidden').slice(0, 4).join(' · ') || 'every revealed element is visible after scrolling', all('hidden').length, all('hidden'));
   const red = viewports.find((v) => v.reduced);
   add('reduced-motion', red.running || red.hidden.length ? 'red' : 'green', red.running || red.hidden.length ? `${red.running} animation(s) still running, ${red.hidden.length} element(s) hidden with reduced motion` : 'reduced-motion visitors get a still, complete page', red.running + red.hidden.length);
   const d = viewports[0];
   add('structure', d.h1 === 1 && !d.headingSkips.length ? 'green' : 'yellow', `${d.h1} h1${d.headingSkips.length ? ', heading level skips at ' + d.headingSkips.slice(0, 3).join(', ') : ''}`, Math.abs(d.h1 - 1) + d.headingSkips.length);
   const meta = d.meta, metaBad = [!meta.title && 'title', !meta.description && 'description', !meta.lang && 'lang', meta.arabic && meta.dir !== 'rtl' && 'dir="rtl" for Arabic', !meta.viewport && 'viewport'].filter(Boolean);
   add('meta', metaBad.length ? 'red' : 'green', metaBad.length ? `missing: ${metaBad.join(', ')}` : 'title, description, lang, direction and viewport set', metaBad.length);
-  add('script-errors', errors.length ? 'red' : 'green', errors.slice(0, 3).join(' · ') || 'no script errors', errors.length);
+  add('script-errors', errors.length ? 'red' : 'green', errors.slice(0, 3).join(' · ') || 'no script errors', errors.length, errors);
+  // a page with no tab icon makes the browser ask for /favicon.ico on every visit: a note, not a broken page
+  const gone = all('failed'), iconOnly = gone.length > 0 && gone.every((x) => /favicon\.ico \d+$/.test(x));
+  add('missing-files', !gone.length ? 'green' : iconOnly ? 'yellow' : 'red', !gone.length ? 'every file the page asks for is there' : iconOnly ? 'no tab icon: the browser asks for favicon.ico and gets a 404 → add <link rel="icon" href="…">' : gone.filter((x) => !/favicon\.ico \d+$/.test(x)).slice(0, 5).join(' · '), new Set(gone.map((x) => x.replace(/^[^:]+: /, ''))).size, gone);
+  const names = [...all('unnamed'), ...all('dupIds').map((x) => 'repeated id ' + x)];
+  add('names', all('unnamed').length ? 'red' : names.length ? 'yellow' : 'green', names.slice(0, 5).join(' · ') || 'every link, button and field has a name a screen reader can say', names.length, names);
   const kb = Math.round((d.pageBytes || sizeOf(dir)) / 1024);
   add('weight', kb > 1500 ? 'red' : kb > 700 ? 'yellow' : 'green', `${kb} KB downloaded by the page (target ≤ 700 KB before photos; a deliberate offline single file can exceed it — say so)`, kb);
   // taste lights (yellow only; see header): after taste-skill (MIT) and Impeccable (Apache-2.0)
-  const yellow = (id, list, ok, fix, n = list.length) => add(id, list.length ? 'yellow' : 'green', list.length ? list.slice(0, 4).join(' · ') + ' → ' + fix : ok, n);
+  const yellow = (id, list, ok, fix, n = list.length) => add(id, list.length ? 'yellow' : 'green', list.length ? list.slice(0, 4).join(' · ') + ' → ' + fix : ok, n, list);
   yellow('taste-headlines', all('longHead'), 'every h1/h2 fits in two lines at 390 / 820 / 1440 px', 'cut the headline (~32 characters) or lower its size');
   const fonts = [...new Set(viewports.filter((v) => !v.reduced).flatMap((v) => v.fonts || []))];
   yellow('taste-typefaces', fonts.length > 2 ? [fonts.join(', ')] : [], `${fonts.length} typeface(s): ${fonts.join(', ')}`, 'one display and one text family', Math.max(0, fonts.length - 2));
@@ -161,5 +178,5 @@ export async function checkSite({ dir, outDir, page = 'index.html' }) {
   const desk = viewports.find((v) => v.name === 'desktop');
   add('taste-hero-media', 'green', `media covers ${desk?.heroMedia ?? 0}% of the first screen; no required ratio. Review relevance to the brief.`, desk?.heroMedia ?? 0);
   const reds = lights.filter((l) => l.light === 'red').length;
-  return { lights, verdict: reds ? `not ready: ${reds} red light(s)` : lights.some((l) => l.light === 'yellow') ? 'ready; read the yellow notes' : 'ready', viewports: viewports.map(({ wide, small, lowContrast, tiny, hidden, longHead, gradient, shadow, pure, greyOnColour, tinyCaps, longLines, bounce, blank, ...v }) => v) };
+  return { lights, verdict: reds ? `not ready: ${reds} red light(s)` : lights.some((l) => l.light === 'yellow') ? 'ready; read the yellow notes' : 'ready', viewports: viewports.map(({ wide, small, lowContrast, tiny, hidden, longHead, gradient, shadow, pure, greyOnColour, tinyCaps, longLines, bounce, blank, unnamed, failed, dupIds, ...v }) => v) };
 }
