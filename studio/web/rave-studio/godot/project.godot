@@ -1,0 +1,26 @@
+; Rave Studio — native companion (Godot 4.5). Same Blender assets as the web studio.
+config_version=5
+
+[application]
+
+config/name="Rave Studio Native"
+config/description="Canyon gate stage from the web Rave Studio, audio-reactive, with offline movie rendering."
+run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.5", "GL Compatibility")
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/stretch/mode="canvas_items"
+
+[editor]
+
+movie_writer/mjpeg_quality=0.9
+movie_writer/fps=30
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+anti_aliasing/quality/msaa_3d=2

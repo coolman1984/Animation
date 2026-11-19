@@ -254,3 +254,8 @@ The owner's supplied visual references now guide composition, imagery, type and 
 - **Probe a tool the way a tired agent uses it:** no arguments, a typo, a missing file, a number as text, a flag without its value. Each of those reached a stack trace, a silent success or a half-written folder. The cheapest robustness test is a loop of wrong commands.
 - **Feed the checker a broken input before trusting it.** One wrong number (`beats: 4000000000`) passed lint and froze the critic; a string where a list belongs crashed it. A checker that reads unvalidated input must refuse a broken structure by name, and bound every loop it runs on a number it was given.
 - **Fix a contrast failure without changing the design's character:** move the token the smallest step that passes on its hardest ground, and split "accent as fill" from "accent as text". Compare the before and after screenshots; if the page reads as a different brand, the step was too big.
+
+## Rave Studio — 2026-11-19
+- **A drop is designed in advance, not detected late.** The look, the camera, the pyro and the word all hit together because the section map is known before the bar arrives (generator arrangement or file analysis). Reacting to a kick onset alone lands everything a beat late.
+- **Look at the frame the viewer actually sees.** The first build hid the stage behind the console and lit near heads like props; both were invisible in code and obvious in one screenshot per world. Take a contact sheet of every world and shot before calling a visual done.
+- **The overlay you record is part of the picture.** Logo, lower third and drop word belong in the canvas, positioned for the uncovered area on screen and for the full frame in files.

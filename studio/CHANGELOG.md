@@ -5,6 +5,18 @@ Operating rule: **a scope is not closed until this file, `../STATUS.md` and ever
 (`test/docs.test.mjs` enforces the checkable part). Evidence lives in each film's `LEDGER.md`; techniques in `TECHNIQUES.md`;
 lessons in `CRAFT.md`. Renders (`out/`, `takes/`) are never in git.
 
+## 2026-11-19 — Rave Studio: 3D concert visualiser, two-deck DJ, lighting desk, director, layers, recording (Blender + Godot)
+
+Owner (2026-11-19, with three "Trance Plus" pages and two stage references): go beyond them to world level, use Blender and
+Godot, transitions, layers, far more controls, recording, mixing, a full DJ, 3D and effects.
+Built `studio/web/rave-studio/` (see its README and DESIGN): one offline HTML file (~1.5 MB) with four worlds, Blender-modelled
+stage assets (GLB + a Cycles key-art render), a live trance generator (4 original tracks) and file decks with offline
+analysis (colour waveform, tempo, beat grid, drops found ahead), mixer with auto transition, master FX with a tempo-locked
+trance gate, a lighting desk that follows song sections, an eight-shot director with ten transitions, a layer compositor,
+video + WAV + PNG recording, MIDI learn, scene memories and a Godot 4.5 companion that loads the same GLB and renders
+offline movies. Proved: no page errors desktop/phone; audio measured; WAV/video/PNG files written; a 20 s Godot movie
+synced to a mix recorded from the web app. Not proved: real phone GPU, Safari, a MIDI device, the owner's verdict.
+
 ## 2026-11-11 — Improvement pass: front door, servers, any-model door, web builder and the gallery
 
 Owner order: "improve this app in all ways possible". The studio was probed the way it is used (every command with wrong input, malformed specs, the web check run on every page we show) and each defect found was fixed with a test.
