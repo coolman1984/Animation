@@ -464,6 +464,36 @@ Removed automatic decorative patterns and effect quotas in the first-party web p
 ## Reference-led composition upgrade — 2026-11-03
 The owner's supplied visual references now guide composition, imagery, type and mobile art direction (`studio/web/ART_DIRECTION.md`). Presets remain fallbacks: per-site theme tokens/fonts and hero/features/width composition controls are validated, contrast checked, and browser-tested. Preserve intentional gradients, shadows and depth when justified; the earlier cleanup only removes automatic decorative defaults. Controls alone do not certify artistic quality. Uses existing font assets; no new third-party imagery.
 
+## Industrial kit, web delivery and media tools — 2026-11-06
+- **Exact parts without CAD** (`lib/mechparts.js`): `gear({ teeth, module, width, bore })` draws real involute teeth (pressure 20°,
+  addendum m, dedendum 1.25 m). Two gears mesh when the centres are `centreDistance(m, zA, zB)` apart and B turns
+  `θ · meshRatio(zA, zB) + meshPhase(zB)` (an even tooth count needs a half-pitch offset). `pumpBody` / `boltCircle` / `hexBolt` /
+  `tube` / `flange` share one unit. Client STEP files go through profile `cad` (build123d) or Blender instead.
+- **Cutaway that reads solid** (`lib/xray.js` `cutaway`): subtract a box with three-bvh-csg once in `init()`; the cut faces take the
+  hatched `sectionMaterial`. Cut every shell the box passes through (body *and* plates), or the open quarter shows a wall behind it.
+- **Ghosted shell**: `xrayMaterial` (fresnel rim, FrontSide, depthWrite off, base opacity ≈ 0.025). DoubleSide doubled the haze.
+- **Exploded view**: `explodeAt(parts, k)` — orders leave in turn (bolts → cover → gears → back plate the other way) with overlapping
+  windows, ease-out; reassembly is the same function run backwards, so render(t) stays pure.
+- **One finish pass**: postprocessing `EffectComposer` (multisampling ≤ maxSamples) → RenderPass → EffectPass(OutlineEffect on the
+  hero part with pulseSpeed 0, ACES ToneMappingEffect, Vignette); renderer tone mapping off, `composer.render(0)` for determinism.
+  Study: `examples/industrial-study` (6 s gear pump), identical md5 across two runs on software WebGL.
+- **Web delivery**: `web optimize` then `web speed` (see `web/WEB.md` "Delivery weight and speed").
+- **Upscale / stems**: `node studio.mjs upscale in out --scale=2` and `node studio.mjs stems <file>`; both pick the AI route when
+  installed (Real-ESRGAN ncnn / audio-separator) and otherwise a labelled classic FFmpeg route; both write a sidecar JSON for the LEDGER.
+
+## Build swarm — a page built in front of the visitor — 2026-11-07
+- Grammar from the owner's recording: coloured cursors select a part (box from the reading-start corner, live `W × H`, red vertical and
+  blue horizontal guides), then the part resolves — words uncovered in reading order with `clip-path` + `steps()`, digits rolling
+  then snapping to the real number already in the HTML, photos as a grey placeholder with handles that uncovers top-down.
+- Keep the content real from the start (text is DOM text, numbers are final in the markup); the effect only hides it while it is built.
+- Never make a visitor wait: parts that leave the screen finish instantly, long queues speed up, reduced motion gets the still page.
+- Overlay in page coordinates (absolute layer as tall as the document) so boxes and cursors scroll with the content.
+- Recipe in `web/WEB.md` "Build swarm"; first use `web/gallery/specimens/masar-coach.html`.
+- Human-like pointer motion (round 2): cubic path with a random perpendicular bend (mostly arcs, sometimes an S), minimum-jerk
+  timing `k³(10 − 15k + 6k²)` with duration ≈ 110 + 70·log2(1 + d/36) ms, a small sine wave across the path that fades at both ends,
+  a 4–9 px overshoot that springs back in ~90 ms, and a 3-ghost trail. Idle cursors loop (circle / figure-eight) and drift; never
+  keyframe a fixed path, so no two moves repeat.
+
 ## Front door, servers and checks hardened — 2026-11-11
 - **One command table.** `studio.mjs` exports `COMMANDS` (the dispatcher), `HELP` (grouped usage) and `main(argv)`; `test/frontdoor.test.mjs` fails when a command has no help row. Throw `usage('…')` for a mistyped call (exit 2, one line) and a plain `Error` for a failure (exit 1, one line, `--debug` or `STUDIO_DEBUG=1` adds the stack). Validate numbers from flags yourself: a flag without a value is `true` and `Number(true)` is 1.
 - **Static server (`lib/serve.mjs`):** byte ranges (`parseRange`, shared with the review server), HEAD, a folder URL serves its `index.html` (and redirects to the trailing slash), 40 media types, `cache` option. Renders keep `max-age=3600`; `web serve`, `lab` and `gallery` pass `cache: 'no-cache'` so an edit shows on reload.

@@ -29,7 +29,7 @@ export const HELP = [
   ['Start here', [
     ['doctor', 'full machine check: browser, ffmpeg, fonts, memory (lib/doctor.mjs)'],
     ['caps', 'every capability: maturity, installed?, best use'],
-    ['setup <profile>', 'install a tool pack (vision, audio, live, logo, gpu, physics, color, whisper, covers) or show links (core, pro)'],
+    ['setup <profile>', 'install a tool pack (vision, audio, live, logo, gpu, physics, color, whisper, covers, webperf, stems, cad) or show links (core, pro, upscale)'],
     ['agents [--sync]', 'any-model door: AGENTS.md, skill mirror for other agents, MCP client configs + server handshake (ANY_MODEL.md)'],
     ['toolkit [check | update <name> --from=<clone>]', 'third-party agent tools vendored whole (toolkit/README.md)'],
     ['cleanup', 'kill browsers left by crashed runs, remove their temp profiles, show memory headroom'],
@@ -52,6 +52,7 @@ export const HELP = [
     ['triage <video.mp4> [--format=reel] [--brand=brand.json | --palette=#hex,#hex] [--ask="q1|q2"]', 'code checks every frame; the critic opens only the flagged ones'],
     ['taste <video.mp4 | film> [--json]  ·  taste calibrate', 'the owner-calibrated taste gate on a finished export'],
     ['color check|scopes|range', 'export colour accuracy (ΔE), scopes for one frame, legal range'],
+    ['upscale <in> <out> [--scale=2|3|4] [--engine=auto|ai|classic]', 'enlarge a still: Real-ESRGAN when installed, else labelled Lanczos; writes a .upscale.json record (lib/upscale.mjs)'],
   ]],
   ['Sound and voice', [
     ['sfx "words" [--n=8] [--music|--effects] [--any-license] [--download=<film> --pick=1]', 'Openverse first (owner rule): free licensed audio with its credit record'],
@@ -60,11 +61,14 @@ export const HELP = [
     ['transcript <pack-folder | transcript.json> [--out=base] [--translation=layer.json --layer=en]', 'captions and edit lists from one transcript'],
     ['captions <video|audio> [--lang=ar|en|auto]', 'local speech-to-text captions (whisper.cpp, faster-whisper, sherpa-onnx)'],
     ['mixcheck <audio|video>', 'clipping, mono fold-down, phone-speaker survival, stereo phase'],
+    ['stems <audio|video> [--out=dir] [--engine=auto|ai|classic] [--model=<file>]', 'voice / rest stems: audio-separator when installed, else labelled mid/side (lib/stems.mjs)'],
   ]],
   ['Websites', [
     ['web plan <site> [--brand= --style= --lang=ar|en --cta= --problem= --promise=]', 'site.json skeleton + DESIGN.md (web/WEB.md, level: web/FOUNDATION.md)'],
     ['web build|check|serve <site> [--draft] [--all]', 'build the static site, check it in a real browser at phone/tablet/desktop (--all lists every finding), or serve it'],
     ['web audit <label> --dir=<existing site folder> [--page=index.html] [--before=<label>] [--all]', 'measure any site before and after an improvement'],
+    ['web speed <site> | web speed <label> --dir=<folder> [--page=] [--lighthouse]', 'phone speed: FCP/LCP/TBT/CLS estimate with image/font findings, or real Lighthouse (web/lib/vitals.mjs)'],
+    ['web optimize|images|fonts <site> [--avif]', 'after build: WebP/AVIF srcset via FFmpeg and subset WOFF2 fonts (web/lib/optimize.mjs, setup webperf)'],
     ['web system "<product, industry, mood>" [--site=<site>]', 'UI UX Pro Max design system for web stage B'],
     ['web styles', 'the three web style presets'],
     ['gallery', 'website design gallery: directions to choose from + rating of existing work (web/gallery/README.md)'],
@@ -473,7 +477,7 @@ async function webCmd([sub, name, ...more], opt) {
     else console.log(text);
     return;
   }
-  if (!name || !/^[a-z0-9][a-z0-9_-]*$/.test(name)) throw usage('node studio.mjs web plan|build|check|serve <site> (lowercase folder name) · web audit <label> --dir=<folder> [--page=index.html] [--before=<label>] · web system "<brief>" · web styles (build/check/serve need a filled DESIGN.md, or --draft)');
+  if (!name || !/^[a-z0-9][a-z0-9_-]*$/.test(name)) throw usage('node studio.mjs web plan|build|check|serve|speed|images|fonts|optimize <site> (lowercase folder name) · web audit <label> --dir=<folder> [--page=index.html] [--before=<label>] · web system "<brief>" · web styles (build/check/serve need a filled DESIGN.md, or --draft)');
   if (sub === 'audit') {   // any existing static site (the owner's site, another framework's build output): measure before and after an improvement
     if (!opt.dir || opt.dir === true) throw usage('node studio.mjs web audit <label> --dir=<folder with index.html> [--page=…] [--before=<earlier label>]');
     if (!ex(join(opt.dir, opt.page || 'index.html'))) throw new Error(`no ${opt.page || 'index.html'} in ${opt.dir}`);
@@ -487,6 +491,22 @@ async function webCmd([sub, name, ...more], opt) {
     return;
   }
   const dir = join(STUDIO, 'web', 'sites', name), file = join(dir, 'site.json'), dist = join(dir, 'dist');
+  if (sub === 'speed') {   // phone speed (own estimate over CDP, or real Lighthouse with --lighthouse after setup webperf); works on any static folder with --dir
+    const root = opt.dir || dist; if (!ex(join(root, opt.page || 'index.html'))) throw new Error(`usage: web speed <site> | web speed <label> --dir=<folder> [--page=index.html] [--lighthouse] (nothing at ${root})`);
+    const { speedAudit } = await import('./web/lib/vitals.mjs'), r = await speedAudit({ dir: root, page: opt.page || 'index.html', outDir: join(STUDIO, 'takes', 'web', name, 'speed'), lighthouse: !!opt.lighthouse });
+    console.log(`${name}: ${r.source}\nperformance ${r.score}/100  FCP ${(r.metrics.fcp / 1000).toFixed(1)} s · LCP ${(r.metrics.lcp / 1000).toFixed(1)} s · TBT ${r.metrics.tbt} ms · CLS ${r.metrics.cls}${r.metrics.transferKB != null ? ` · ${r.metrics.transferKB} KB in ${r.metrics.requests} requests` : ''}`);
+    if (r.categories) console.log(`accessibility ${r.categories.accessibility} · best practices ${r.categories.bestPractices} · SEO ${r.categories.seo}  (report: ${r.report})`);
+    for (const f of r.findings) console.log(`${pad(f.light.toUpperCase(), 7)} ${pad(f.id, 16)} ${f.why}`);
+    return;
+  }
+  if (sub === 'images' || sub === 'fonts' || sub === 'optimize') {   // after web build: responsive WebP/AVIF images (FFmpeg) and subset WOFF2 fonts (fontTools)
+    if (!ex(join(dist, 'index.html'))) throw new Error(`build first: node studio.mjs web build ${name}`);
+    const O = await import('./web/lib/optimize.mjs'), kb = (b) => Math.round(b / 1024);
+    if (sub !== 'fonts') for (const i of O.optimizeImages({ dist, avif: !!opt.avif })) console.log(`image ${pad(i.src, 34)} ${i.natural[0]}px → ${i.widths.join('/')} px WebP${opt.avif ? '+AVIF' : ''}; largest ${kb(i.bytesBefore)} → ${kb(i.bytesAfter)} KB`);
+    if (sub !== 'images') for (const f of O.subsetFonts({ dist })) console.log(`font  ${pad(f.file, 34)} ${kb(f.before)} → ${kb(f.after)} KB (${f.glyphs} glyphs)`);
+    console.log(`done. Measure: node studio.mjs web speed ${name}; then web check ${name}`);
+    return;
+  }
   if (sub === 'plan') {
     if (ex(file) && !opt.force) throw new Error(`${name} already has a site.json (use --force to replace it)`);
     const r = W.plan(opt); mk(dir, { recursive: true }); wf(file, JSON.stringify(r.site, null, 2) + '\n');
@@ -600,6 +620,8 @@ export const COMMANDS = {
   voice: (a) => voiceCmd(pos(a), flags(a)),
   transcript: (a) => transcriptCmd(pos(a)[0], flags(a)),
   captions: (a) => captionsCmd(pos(a)[0], flags(a)),
+  upscale: async (a) => { const { upscale } = await import('./lib/upscale.mjs'), o = flags(a), [i, out] = pos(a); if (!i || !out) throw usage('node studio.mjs upscale <in.png|jpg> <out.png> [--scale=2|3|4] [--engine=auto|ai|classic]'); console.log(JSON.stringify(await upscale({ input: i, output: out, scale: +(o.scale || 2), engine: o.engine || 'auto', model: o.model }), null, 2)); },
+  stems: async (a) => { const { stems } = await import('./lib/stems.mjs'), o = flags(a), i = pos(a)[0]; if (!i) throw usage('node studio.mjs stems <audio|video> [--out=out/stems] [--engine=auto|ai|classic] [--model=<file>]'); console.log(JSON.stringify(await stems({ input: i, outDir: o.out || join(STUDIO, 'out', 'stems'), engine: o.engine || 'auto', model: o.model }), null, 2)); },
   mixcheck: async (a) => { const f = pos(a)[0]; if (!f) throw usage('node studio.mjs mixcheck <audio|video>'); if (!existsSync(f)) throw new Error(`no such file: ${f}`); const { mixCheck } = await import('./lib/mixcheck.mjs'); console.log(JSON.stringify(await mixCheck(f), null, 2)); },
   color: (a) => colorCmd(pos(a), flags(a)),
   build: (a) => buildCmd(a),

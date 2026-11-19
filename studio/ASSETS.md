@@ -152,3 +152,8 @@ Removed automatic decorative patterns and effect quotas in the first-party web p
 
 ## Reference-led composition upgrade — 2026-11-03
 The owner's supplied visual references now guide composition, imagery, type and mobile art direction (`studio/web/ART_DIRECTION.md`). Presets remain fallbacks: per-site theme tokens/fonts and hero/features/width composition controls are validated, contrast checked, and browser-tested. Preserve intentional gradients, shadows and depth when justified; the earlier cleanup only removes automatic decorative defaults. Controls alone do not certify artistic quality. Uses existing font assets; no new third-party imagery.
+
+## Font subsets on built sites — 2026-11-06
+`web fonts` / `web optimize` write `<font>-sub-<hash>.woff2` into `web/sites/<site>/dist/` only (never into `assets/fonts/`). A subset
+is an OFL Modified Version, so its internal family name becomes `Studio Sub <HASH>` (Reserved Font Names such as IBM's "Plex" are not
+reused); copyright and licence records stay inside the file. Ship the font's OFL text with a deployed site.

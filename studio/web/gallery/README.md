@@ -18,3 +18,5 @@ Open it: `node studio/studio.mjs gallery` (serves `studio/web`, prints the URL o
 The [Athar shelf](specimens/athar-shelf.html) is a standalone Arabic demo with original covers, keyboard navigation and a native list for mobile and reduced motion.
 
 Adding an example: follow `LESSONS.md`, write `specimens/<id>.html`, add one entry to `EXAMPLES` in `index.html`. Photos: Openverse first (`license=cc0&source=stocksnap`, 960 px max); both Openverse and the Wikimedia API rate-limited this cloud session after a few calls, so build product UI in code and keep photos framed.
+
+The [Masar coach site](specimens/masar-coach.html) (2026-11-07, English since the owner's round-1 correction) follows the owner's coach-template screenshot and is built live by the swarm in `../motion/build-swarm.js`; its design record is `specimens/masar-coach.DESIGN.md`.
